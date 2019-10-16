@@ -1,5 +1,7 @@
 package main
 
+import "errors"
+
 // Storage 는
 type Storage struct {
 	ID      string // 스토리지 ID
@@ -26,4 +28,15 @@ type Item struct {
 	UsingRate   int64             // 사용 빈도 수
 	Storage                       // Item이 저장되는 스토리지 정보
 	Attributes  map[string]string // 해상도, 속성, 메타데이터 등의 파일정보
+}
+
+// CheckError 는 Item 자료구조에 값이 정확히 들어갔는지 확인하는 메소드이다.
+func (i Item) CheckError() error {
+	if !regexRFC3339Time.MatchString(i.CreateTime) {
+		return errors.New("생성시간이 2019-09-09T14:43:34+09:00 형식의 문자열이 아닙니다")
+	}
+	if !regexRFC3339Time.MatchString(i.Updatetime) {
+		return errors.New("업데이트 시간이 2019-09-09T14:43:34+09:00 형식의 문자열이 아닙니다")
+	}
+	return nil
 }

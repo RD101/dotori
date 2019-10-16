@@ -40,12 +40,15 @@ func main() {
 		i.Status = *flagStatus
 		i.Updatetime = *flagUpdatetime
 
+		err := i.CheckError()
+		if err != nil {
+			log.Fatal(err)
+		}
 		session, err := mgo.Dial(*flagDBIP)
 		if err != nil {
 			log.Fatal(err)
 		}
 		defer session.Close()
-
 		err = AddItem(session, i)
 		if err != nil {
 			log.Print(err)
