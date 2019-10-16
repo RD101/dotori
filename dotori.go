@@ -2,8 +2,10 @@ package main
 
 import (
 	"flag"
-	"fmt"
+	"log"
 	"os"
+
+	"gopkg.in/mgo.v2"
 )
 
 var (
@@ -19,6 +21,8 @@ var (
 	flagType       = flag.String("type", "", "type of asset")
 	flagStatus     = flag.String("status", "", "status of asset")
 	flagUpdatetime = flag.String("updatetime", "", "updated time")
+
+	flagDBIP = flag.String("dbip", "", "DB IP")
 )
 
 func main() {
@@ -36,7 +40,16 @@ func main() {
 		i.Status = *flagStatus
 		i.Updatetime = *flagUpdatetime
 
-		fmt.Println(i)
+		session, err := mgo.Dial(*flagDBIP)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer session.Close()
+
+		err = AddItem(session, i)
+		if err != nil {
+			log.Print(err)
+		}
 	} else {
 		flag.PrintDefaults()
 		os.Exit(1)
