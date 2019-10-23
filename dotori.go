@@ -21,6 +21,7 @@ var (
 	flagType       = flag.String("type", "", "type of asset")
 	flagStatus     = flag.String("status", "", "status of asset")
 	flagUpdatetime = flag.String("updatetime", "", "updated time")
+	flagCreatetime = flag.String("createtime", "", "created time")
 
 	flagDBIP = flag.String("dbip", "", "DB IP")
 )
@@ -39,6 +40,7 @@ func main() {
 		i.Type = *flagType
 		i.Status = *flagStatus
 		i.Updatetime = *flagUpdatetime
+		i.CreateTime = *flagCreatetime
 
 		err := i.CheckError()
 		if err != nil {
