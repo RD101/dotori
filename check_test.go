@@ -4,6 +4,7 @@ import (
 	"testing"
 )
 
+// 시간형식을 테스트하기 위한 함수
 func Test_checkTime(t *testing.T) {
 	cases := []struct {
 		time string
