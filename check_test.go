@@ -34,3 +34,8 @@ func Test_checkTime(t *testing.T) {
 		}
 	}
 }
+
+// path를 테스트하기 위한 함수
+func Test_Path(){
+	
+}
