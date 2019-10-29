@@ -38,5 +38,11 @@ func (i Item) CheckError() error {
 	if !regexRFC3339Time.MatchString(i.Updatetime) {
 		return errors.New("업데이트 시간이 2019-09-09T14:43:34+09:00 형식의 문자열이 아닙니다")
 	}
+	if !regexPath.MatchString(i.InputPath) {
+		return error.New("최초 등록 경로가 /test/test 형식의 문자열이 아닙니다")
+	}
+	if !regexPath.MatchString(i.OutputPath) {
+		return error.New("asset 저장 경로가 /test/test 형식의 문자열이 아닙니다")
+	}
 	return nil
 }
