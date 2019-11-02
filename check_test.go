@@ -87,10 +87,10 @@ func Test_CheckPath(t *testing.T) {
 		want: false,
 	}, {
 		path: "/LIBRARY_3D學問/asset/", // 경로에 한문이 들어간경우.
-		want: true,
+		want: false,
 	}, {
-		path: "/LIBRARY 3D/asset/", // 경로에 공백문자가 들어간경우. 파이프라인툴에서는 공백을 허용하지 않지만 에러는 아니다.
-		want: true,
+		path: "/LIBRARY 3D/asset/", // 경로에 공백문자가 들어간경우. 에러는 아니지만 추후 연산을 위해 파이프라인툴에서 공백을 허용하지 않는다.
+		want: false,
 	}, {
 		path: "/LIBRARY.3D/asset/", // 경로에 '.' 문자가 들어간경우
 		want: true,
