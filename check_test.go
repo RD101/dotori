@@ -68,19 +68,16 @@ func Test_CheckPath(t *testing.T) {
 		path: "/Library_3d/Asset/", // 맨앞만 대문자인 경우
 		want: true,
 	}, {
-		path: "/LIBRARY_3D/asset/src.png", // (src.png, src.mp4) 원하는 확장자가 png인 경우
+		path: "/LIBRARY_3D/asset/src.png", // 확장자가 png인 경우
 		want: true,
 	}, {
-		path: "/LIBRARY_3D/asset/src.mp4", // (src.png, src.mp4) 원하는 확장자가 mp4인 경우
+		path: "/LIBRARY_3D/asset/src.mp4", // 확장자가 mp4인 경우
 		want: true,
 	}, {
-		path: "/LIBRARY_3D/asset/src", // (src.png, src.mp4) 경로에 같은이름이 2개 이상이고, path에 확장자가 없을 경우
+		path: "/LIBRARY_3D/asset/src", // src 경로
 		want: true,
 	}, {
-		path: "/LIBRARY_3D/asset/src", // (src.png) 경로에 같은이름이 없고, path에 확장자가 없을 경우
-		want: true,
-	}, {
-		path: "/LIBRARY_3D/asset/.image.png", // image.png, image.jpg 원하는 확장자가 png인 경우
+		path: "/LIBRARY_3D/asset/.image.png", // 숨김파일 .image.png 경로의 경우
 		want: true,
 	}, {
 		path: "/#LIBRARY_3D★/asset/", // 경로에 특수문자가 들어간경우
