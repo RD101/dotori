@@ -23,6 +23,8 @@ var (
 	flagAttributes  = flag.String("attributes", "", "detail info of file") // "key:value,key:value"
 
 	flagDBIP = flag.String("dbip", "", "DB IP")
+
+	flagHTTPPort = flag.String("http", "", "Web Service Port Number")
 )
 
 func main() {
@@ -52,6 +54,8 @@ func main() {
 		if err != nil {
 			log.Print(err)
 		}
+	} else if *flagHTTPPort != "" {
+		webserver()
 	} else {
 		flag.PrintDefaults()
 		os.Exit(1)
