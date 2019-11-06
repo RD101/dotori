@@ -36,69 +36,71 @@ func Test_checkTime(t *testing.T) {
 }
 
 // path를 테스트하기 위한 함수
-func Test_CheckPath(t *testing.T){
+func Test_CheckPath(t *testing.T) {
 	cases := []struct {
 		path string
 		want bool
 	}{{
-		path: "/LIBRARY_3D/asset/"				// 정상 경로 (true)
+		path: "/LIBRARY_3D/asset/", // 정상 경로
 		want: true,
 	}, {
-		path: "/LIBRARY-3D/asset/"				// 정상이 아닌 경로 (false)
+		path: "//LIBRARY_3D/asset/", // 맨앞에 '/'가 붙은 경우
+		want: true,
+	}, {
+		path: "C:/LIBRARY_3D/asset/", // C드라이브에 있을 경우 (모든 경로는 삼바UNC 또는 유닉스 경로여야 한다.
 		want: false,
 	}, {
-		path: "//LIBRARY_3D/asset/"				// 맨앞에 '/'가 붙은 경우 (true)
-		want: true,
-	}, {
-		path: "C:/LIBRARY_3D/asset/"				// C드라이브에 있을 경우 (true)
-		want: true,
-	}, {
-		path: "D:/LIBRARY_3D/asset/"				// D드라이브에 있을 경우 (true)
-		want: true,
-	}, {
-		path: "Q:/LIBRARY_3D/asset/"				// Q드라이브가 존재하지 않을 경우 (false)
+		path: "D:/LIBRARY_3D/asset/", // D드라이브로 시작하는 경로
 		want: false,
 	}, {
-		path: "/바탕화면/LIBRARY_3D/asset/"			// Desktop을 한글로 나타냈을 때 경우 (true)
-		want: true,
-	}, {
-		path: "/library_3d/asset/"				// 전부 소문자인 경우 (true)
-		want: true,
-	}, {
-		path: "/LIBRARY_3D/ASSET/"				// 전부 대문자인 경우 (true)
-		want: true,
-	}, {
-		path: "/Library_3d/Asset/"				// 맨앞만 대문자인 경우 (true)
-		want: true,
-	}, {
-		path: "/LIBRARY_3D/asset/src.png"			// (src.png, src.mp4) 원하는 확장자가 png인 경우 (true)
-		want: true,
-	}, {
-		path: "/LIBRARY_3D/asset/src.mp4"			// (src.png, src.mp4) 원하는 확장자가 mp4인 경우 (true)
-		want: true,
-	}, {
-		path: "/LIBRARY_3D/asset/src"				// (src.png, src.mp4) 경로에 같은이름이 2개 이상이고, path에 확장자가 없을 경우 (false)
+		path: "Q:/LIBRARY_3D/asset/", // Q드라이브로 시작하는 경로
 		want: false,
 	}, {
-		path: "/LIBRARY_3D/asset/src"				// (src.png) 경로에 같은이름이 없고, path에 확장자가 없을 경우 (true)
+		path: "/바탕화면/LIBRARY_3D/asset/", // 경로에 한글이 섞이면 안된다.
+		want: false,
+	}, {
+		path: "/library_3d/asset/", // 전부 소문자인 경우
 		want: true,
 	}, {
-		path: "/LIBRARY_3D/asset/.image.png"			// image.png, image.jpg 원하는 확장자가 png인 경우 (true)
+		path: "/LIBRARY_3D/ASSET/", // 전부 대문자인 경우
 		want: true,
 	}, {
-		path: "/#LIBRARY_3D★/asset/"				// 경로에 특수문자가 들어간경우 (true)
+		path: "/Library_3d/Asset/", // 맨앞만 대문자인 경우
 		want: true,
 	}, {
-		path: "/LIBRARY_3D學問/asset/"				// 경로에 한문이 들어간경우 (true)
+		path: "/LIBRARY_3D/asset/src.png", // 확장자가 png인 경우
 		want: true,
 	}, {
-		path: "/LIBRARY 3D/asset/"				// 경로에 공백문자가 들어간경우 (true)
+		path: "/LIBRARY_3D/asset/src.mp4", // 확장자가 mp4인 경우
 		want: true,
 	}, {
-		path: "/LIBRARY.3D/asset/"				// 경로에 '.' 문자가 들어간경우 (true)
+		path: "/LIBRARY_3D/asset/src", // src 경로
 		want: true,
-	}
-
+	}, {
+		path: "/LIBRARY_3D/asset/.image.png", // 숨김파일 .image.png 경로의 경우
+		want: true,
+	}, {
+		path: "/#LIBRARY_3D★/asset/", // 경로에 특수문자가 들어간경우
+		want: false,
+	}, {
+		path: "/LIBRARY_3D學問/asset/", // 경로에 한문이 들어간경우.
+		want: false,
+	}, {
+		path: "/LIBRARY 3D/asset/", // 경로에 공백문자가 들어간경우. 에러는 아니지만 추후 연산을 위해 파이프라인툴에서 공백을 허용하지 않는다.
+		want: false,
+	}, {
+		path: "/LIBRARY.3D/asset/", // 경로에 '.' 문자가 들어간경우
+		want: true,
+	}, {
+		path: "\\\\LIBRARY.3D\\asset", // \\문자로 시작하는 경로
+		want: false,
+	}, {
+		path: "//10.0.20.30/library", // unc path
+		want: true,
+	}, {
+		path: "10.0.20.30/library", // /문자로 시작하지 않을 경우
+		want: false,
+	},
 	}
 
 	for _, c := range cases {
