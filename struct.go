@@ -32,6 +32,7 @@ type Item struct {
 
 // CheckError 는 Item 자료구조에 값이 정확히 들어갔는지 확인하는 메소드이다.
 func (i Item) CheckError() error {
+	// 테스트를 하기 위해 임시로 넣어놓은 값. 나중에 제거해야 한다.
 	i.CreateTime = "2019-09-09T14:43:34+09:00"
 	i.Updatetime = "2019-09-09T14:43:34+09:00"
 
