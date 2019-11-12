@@ -7,7 +7,7 @@ var (
 
 	regexPath        		= regexp.MustCompile(`^/[/_.\w]+$`)
 
-	regexItemtype_LangUS 	= regexp.MustCompile(`^/[a-zA-Z]+$`)
+	regexItemtype_LangUS	= regexp.MustCompile(`^/[a-zA-Z]+$`)
 
-	regexDbname_LangUS 		= regexp.MustCompile(`^/[a-zA-Z]+$`)
+	regexDbname_LangUS		= regexp.MustCompile(`^/[a-zA-Z]+$`)
 )

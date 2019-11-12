@@ -109,52 +109,60 @@ func Test_CheckPath(t *testing.T) {
 			t.Fatalf("Test_checkPath(): 입력 값: %v, 원하는 값: %v, 얻은 값: %v\n", c.path, c.want, b)
 		}
 	}
+}
 
-	// Itemtype을 테스트하기위한 함수
-	func Test_Itemtype(t *testing.T) {
-		cases := []struct {
-			Itemtype string
-			want bool
-		}{{
-			Itemtype: "abcdefg", // 정상 영문
-			want: true,
-		},{
-			Itemtype: "abcd이f지", // 한글포함
-			want: false,
-		},{
-			Itemtype: "abcd2fg", // 숫자포함
-			want: false,
-		},
+// Itemtype을 테스트하기위한 함수
+func Test_Itemtype(t *testing.T) {
+	cases := []struct {
+		Itemtype string
+		want     bool
+	}{{
+		Itemtype: "abcdefg", // 정상 영문
+		want:     true,
+	}, {
+		Itemtype: "AbCdEfG", // 정상 대소문자 영문
+		want:     true,
+	}, {
+		Itemtype: "abcd이f지", // 한글포함
+		want:     false,
+	}, {
+		Itemtype: "abcd2fg", // 숫자포함
+		want:     false,
+	},
 	}
 
 	for _, c := range cases {
-		b := regexItemtype_LangUS.MatchString(c.path)
+		b := regexItemtypeLangUS.MatchString(c.Itemtype)
 		if c.want != b {
-			t.Fatalf("Test_checkPath(): 입력 값: %v, 원하는 값: %v, 얻은 값: %v\n", c.path, c.want, b)
+			t.Fatalf("Test_checkPath(): 입력 값: %v, 원하는 값: %v, 얻은 값: %v\n", c.Itemtype, c.want, b)
 		}
+	}
+}
+
+// Dbname을 테스트하기위한 함수
+func Test_Dbname(t *testing.T) {
+	cases := []struct {
+		Dbname string
+		want   bool
+	}{{
+		Dbname: "abcdefg", // 정상 영문
+		want:   true,
+	}, {
+		Dbname: "AbCdEfG", // 정상 대소문자 영문
+		want:   true,
+	}, {
+		Dbname: "abcd이f지", // 한글포함
+		want:   false,
+	}, {
+		Dbname: "abcd2fg", // 숫자포함
+		want:   false,
+	},
 	}
 
-	// Dbname을 테스트하기위한 함수
-	func Test_Dbname(t *testing.T) {
-			cases := []struct {
-				Dbname string
-				want bool
-			}{{
-				Dbname: "abcdefg", // 정상 영문
-				want: true,
-			},{
-				Dbname: "abcd이f지", // 한글포함
-				want: false,
-			},{
-				Dbname: "abcd2fg", // 숫자포함
-				want: false,
-			},
-		}
-	
-		for _, c := range cases {
-			b := regexDbname_LangUS.MatchString(c.path)
-			if c.want != b {
-				t.Fatalf("Test_checkPath(): 입력 값: %v, 원하는 값: %v, 얻은 값: %v\n", c.path, c.want, b)
-			}
+	for _, c := range cases {
+		b := regexDbnameLangUS.MatchString(c.Dbname)
+		if c.want != b {
+			t.Fatalf("Test_checkPath(): 입력 값: %v, 원하는 값: %v, 얻은 값: %v\n", c.Dbname, c.want, b)
 		}
 	}
+}
