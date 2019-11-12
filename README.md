@@ -7,6 +7,7 @@ Dotori is web based asset library tool.
 ## 목 표
 - VFX, 애니메이션, 게임에 사용되는 모든 타입의 에셋을 등록,관리
 - 사용라이브러리: OpenColorIO, OpenImageIO, FFmpeg
+- 주의사항: 회사 특이사항과 관련된 코드를 내부에 넣지말것. 셋팅영역으로 뺄 것
 
 ## DB 설치, 실행
 mongoDB 설치
