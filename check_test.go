@@ -110,3 +110,37 @@ func Test_CheckPath(t *testing.T) {
 		}
 	}
 }
+
+// IP형식을 테스트하기 위한 함수
+func Test_checkIp(t *testing.T) {
+	cases := []struct {
+		ip   string
+		want bool
+	}{{
+		ip:   "10.20.30.230",
+		want: true,
+	}, {
+		ip:   "255.255.255.255",
+		want: true,
+	}, {
+		ip:   "256.0.0.1", // 0~255 범위를 넘겼을 경우
+		want: false,
+	}, {
+		ip:   "10.20.30", // -.-.-.- 형식이 아닌 경우
+		want: false,
+	}, {
+		ip:   "...", // 숫자를 입력하지 않고 .만 찍었을 경우
+		want: false,
+	}, {
+		ip:   "10.20.30.", // 마지막에 숫자를 입력하지 않은 경우
+		want: false,
+	},
+	}
+
+	for _, c := range cases {
+		b := regexIp.MatchString(c.ip)
+		if c.want != b {
+			t.Fatalf("Test_checkTime(): 입력 값: %v, 원하는 값: %v, 얻은 값: %v\n", c.ip, c.want, b)
+		}
+	}
+}
