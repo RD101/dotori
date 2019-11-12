@@ -1,39 +1,39 @@
 package main
 
-import {
+import (
 	"net"
-}
+)
 
-func serviceIP() (string, error){
+func serviceIP() (string, error) {
 	ip := "127.0.0.1"
 	ifaces, err := net.Interfaces()
 	if err != nil {
 		return ip, err
 	}
-	for _, iface := range ifaces{
-		if iface.Flags&net.FlagLoopback != 0{
+	for _, iface := range ifaces {
+		if iface.Flags&net.FlagLoopback != 0 {
 			continue //interface down
 		}
-		if iface.Flags&net.FlagLoopback != 0{
+		if iface.Flags&net.FlagLoopback != 0 {
 			continue // loopback interface
 		}
 		addrs, err := iface.Addrs()
-		if err != nil{
+		if err != nil {
 			return ip, err
 		}
-		for _, addr := range addrs{
+		for _, addr := range addrs {
 			var ip net.IP
-			switch v := addr.(type){
+			switch v := addr.(type) {
 			case *net.IPNet:
 				ip = v.IP
 			case *net.IPAddr:
-				ip=v.IP
+				ip = v.IP
 			}
-			if ip == nil || ip.IsLoopback(){
+			if ip == nil || ip.IsLoopback() {
 				continue
 			}
 			ip = ip.To4()
-			if ip == nil{
+			if ip == nil {
 				continue // not an ipv4 address
 			}
 			return ip.String(), nil
