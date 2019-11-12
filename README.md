@@ -49,13 +49,13 @@ $ dotori -add -inputpath /project/path -outputpath /library/backup/path -author 
 ```
 
 #### Item 삭제
-```
-# dotori -rm -id "idstring"
+```bash
+$ sudo dotori -rm -id "idstring"
 ```
 
 #### 웹서버 실행
-```
-# dotori -http :80
+```bash
+$ sudo dotori -http :80
 ```
 
 ## restAPI
