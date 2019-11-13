@@ -14,7 +14,10 @@ func webserver() {
 	http.HandleFunc("/add", handleAdd)
 	http.HandleFunc("/search", handleSearch)
 	// 웹서버 실행
-	http.ListenAndServe(*flagHTTPPort, nil)
+	err := http.ListenAndServe(*flagHTTPPort, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 }
 
@@ -32,22 +35,29 @@ func handleAdd(w http.ResponseWriter, r *http.Request) {
 func handleSearch(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query()
 	itemType := q.Get("itemtype")
+	if itemType == "" {
+		http.Error(w, "URL에 itemtype을 입력해주세요", http.StatusBadRequest)
+		return
+	}
 
 	log.Println(itemType)
 
 	session, err := mgo.Dial(*flagDBIP)
 	if err != nil {
+		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	defer session.Close()
 	items, err := allItems(session, itemType)
 	if err != nil {
+		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	err = json.NewEncoder(w).Encode(items)
 	if err != nil {
+		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
