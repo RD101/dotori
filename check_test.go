@@ -110,3 +110,53 @@ func Test_CheckPath(t *testing.T) {
 		}
 	}
 }
+
+// Itemtype을 테스트하기위한 함수
+func Test_Itemtype(t *testing.T) {
+	cases := []struct {
+		Itemtype string
+		want     bool
+	}{{
+		Itemtype: "maya", // 정상 영문
+		want:     true,
+	}, {
+		Itemtype: "ma야", // 한글포함
+		want:     false,
+	}, {
+		Itemtype: "maya2", // 숫자포함
+		want:     false,
+	},
+	}
+
+	for _, c := range cases {
+		b := regexItemtypeLangUS.MatchString(c.Itemtype)
+		if c.want != b {
+			t.Fatalf("Test_checkPath(): 입력 값: %v, 원하는 값: %v, 얻은 값: %v\n", c.Itemtype, c.want, b)
+		}
+	}
+}
+
+// Dbname을 테스트하기위한 함수
+func Test_Dbname(t *testing.T) {
+	cases := []struct {
+		Dbname string
+		want   bool
+	}{{
+		Dbname: " dotori", // 정상 영문
+		want:   true,
+	}, {
+		Dbname: " doto리", // 한글포함
+		want:   false,
+	}, {
+		Dbname: " doto2", // 숫자포함
+		want:   false,
+	},
+	}
+
+	for _, c := range cases {
+		b := regexDbnameLangUS.MatchString(c.Dbname)
+		if c.want != b {
+			t.Fatalf("Test_checkPath(): 입력 값: %v, 원하는 값: %v, 얻은 값: %v\n", c.Dbname, c.want, b)
+		}
+	}
+}
