@@ -138,7 +138,7 @@ func Test_checkIp(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		b := regexIp.MatchString(c.ip)
+		b := regexIPv4.MatchString(c.ip)
 		if c.want != b {
 			t.Fatalf("Test_checkTime(): 입력 값: %v, 원하는 값: %v, 얻은 값: %v\n", c.ip, c.want, b)
 		}
