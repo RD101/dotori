@@ -14,7 +14,10 @@ func webserver() {
 	http.HandleFunc("/add", handleAdd)
 	http.HandleFunc("/search", handleSearch)
 	// 웹서버 실행
-	http.ListenAndServe(*flagHTTPPort, nil)
+	err := http.ListenAndServe(*flagHTTPPort, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 }
 
