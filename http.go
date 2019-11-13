@@ -33,7 +33,7 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query()
 	itemType := q.Get("itemtype")
 	if itemType == "" {
-		w.Write([]byte("URL에 itemtype을 입력해주세요"))
+		http.Error(w, "URL에 itemtype을 입력해주세요", http.StatusBadRequest)
 		return
 	}
 
