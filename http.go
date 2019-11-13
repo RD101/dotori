@@ -14,7 +14,10 @@ func webserver() {
 	http.HandleFunc("/add", handleAdd)
 	http.HandleFunc("/search", handleSearch)
 	// 웹서버 실행
-	http.ListenAndServe(*flagHTTPPort, nil)
+	err := http.ListenAndServe(*flagHTTPPort, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 }
 
@@ -37,17 +40,20 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 
 	session, err := mgo.Dial(*flagDBIP)
 	if err != nil {
+		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	defer session.Close()
 	items, err := allItems(session, itemType)
 	if err != nil {
+		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	err = json.NewEncoder(w).Encode(items)
 	if err != nil {
+		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
