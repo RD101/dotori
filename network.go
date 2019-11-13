@@ -11,7 +11,7 @@ func serviceIP() (string, error) {
 		return ip, err
 	}
 	for _, iface := range ifaces {
-		if iface.Flags&net.FlagLoopback != 0 {
+		if iface.Flags&net.FlagUp != 0 {
 			continue //interface down
 		}
 		if iface.Flags&net.FlagLoopback != 0 {
