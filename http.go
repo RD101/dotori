@@ -2,19 +2,33 @@ package main
 
 import (
 	"encoding/json"
+	"html/template"
 	"log"
 	"net/http"
 
+	"github.com/shurcooL/httpfs/html/vfstemplate"
 	"gopkg.in/mgo.v2"
 )
 
+func LoadTemplates() (*template.Template, error) {
+	t := template.New("")
+	t, err := vfstemplate.ParseGlob(assets, t, "/template/*.html")
+	return t, err
+}
+
 func webserver() {
+	// 템플릿 로딩을 위해서 vfs(가상파일시스템)을 로딩합니다.
+	vfsTemplate, err := LoadTemplates()
+	if err != nil {
+		log.Fatal(err)
+	}
+	TEMPLATES = vfsTemplate
 	// 웹주소 설정
 	http.HandleFunc("/", handleIndex)
 	http.HandleFunc("/add", handleAdd)
 	http.HandleFunc("/search", handleSearch)
 	// 웹서버 실행
-	err := http.ListenAndServe(*flagHTTPPort, nil)
+	err = http.ListenAndServe(*flagHTTPPort, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -23,7 +37,11 @@ func webserver() {
 
 func handleIndex(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte("dotori"))
+	err := TEMPLATES.ExecuteTemplate(w, "index", nil)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
 
 func handleAdd(w http.ResponseWriter, r *http.Request) {
