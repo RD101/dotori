@@ -10,6 +10,7 @@ import (
 	"gopkg.in/mgo.v2"
 )
 
+// LoadTemplates 함수는 템플릿을 로딩합니다.
 func LoadTemplates() (*template.Template, error) {
 	t := template.New("")
 	t, err := vfstemplate.ParseGlob(assets, t, "/template/*.html")
