@@ -47,6 +47,11 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
+		if *flagDBIP != "" {
+			if !regexIPv4.MatchString(*flagDBIP) { // 입력받은 DB IP의 형식이 맞는지 확인
+				log.Fatal(err)
+			}
+		}
 		session, err := mgo.Dial(*flagDBIP)
 		if err != nil {
 			log.Fatal(err)
