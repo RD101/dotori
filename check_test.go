@@ -163,7 +163,7 @@ func Test_Itemtype(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		b := regexLangUS.MatchString(c.Itemtype)
+		b := regexLower.MatchString(c.Itemtype)
 		if c.want != b {
 			t.Fatalf("Test_Itemtype(): 입력 값: %v, 원하는 값: %v, 얻은 값: %v\n", c.Itemtype, c.want, b)
 		}
@@ -188,7 +188,7 @@ func Test_Dbname(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		b := regexLangUS.MatchString(c.Dbname)
+		b := regexLower.MatchString(c.Dbname)
 		if c.want != b {
 			t.Fatalf("Test_Dbname(): 입력 값: %v, 원하는 값: %v, 얻은 값: %v\n", c.Dbname, c.want, b)
 		}
