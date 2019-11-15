@@ -56,6 +56,13 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
+
+		if *flagDBName != "" {
+			if !regexLangUS.MatchString(*flagDBName) { // 입력받은 dbname이 소문자인지 확인
+				log.Fatal(err)
+			}
+		}
+
 		defer session.Close()
 		err = AddItem(session, i)
 		if err != nil {
