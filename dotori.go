@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"html/template"
 	"log"
 	"os"
 
@@ -10,6 +11,9 @@ import (
 )
 
 var (
+	// TEMPLATES 는 kalena에서 사용하는 템플릿 글로벌 변수이다.
+	TEMPLATES = template.New("")
+
 	flagAdd = flag.Bool("add", false, "add")
 	flagRm  = flag.Bool("remove", false, "remove")
 
