@@ -1,4 +1,5 @@
 #!/bin/sh
 go run assets/asset_generate.go
 go install
-dotori -http :80
+sudo dotori -http :80
+

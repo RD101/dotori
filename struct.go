@@ -48,5 +48,8 @@ func (i Item) CheckError() error {
 	if !regexPath.MatchString(i.Outputpath) {
 		return errors.New("asset 저장 경로가 /test/test 형식의 문자열이 아닙니다")
 	}
+	if !regexLower.MatchString(i.Type) {
+		return errors.New("type이 소문자가 아닙니다")
+	}
 	return nil
 }

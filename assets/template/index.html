@@ -1,4 +1,15 @@
 {{define "index"}}
-{{template "search"}}
-dotori
+    {{template "head"}}
+    <body>
+        {{template "navbar"}}
+        {{template "search"}}
+            <div class="text-center">
+                dotori
+            </div>
+        {{template "footer"}}
+    </body>
+    <!--add javascript-->
+    <script src="/assets/js/jquery-3.1.1.min.js"></script>
+    <script src="/assets/bootstrap-4/js/bootstrap.min.js"></script>
+    </html>
 {{end}}
