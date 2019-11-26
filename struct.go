@@ -1,6 +1,9 @@
 package main
 
-import "errors"
+import (
+	"errors"
+	"gopkg.in/mgo.v2/bson"
+)
 
 // Storage 는
 type Storage struct {
@@ -12,7 +15,7 @@ type Storage struct {
 
 // Item 은 라이브러리의 에셋 자료구조이다.
 type Item struct {
-	ID          string            // ID
+	ID          bson.ObjectId     // ID
 	Author      string            // 에셋을 제작한 사람
 	Tags        []string          // 태그리스트
 	Description string            // 에셋에 대한 추가 정보. 에셋의 제약, 사용전 알아야 할 특징
