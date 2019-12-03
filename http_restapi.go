@@ -23,31 +23,37 @@ func handleAPIAdd(w http.ResponseWriter, r *http.Request) {
 				http.Error(w, "type을 설정해 주세요", http.StatusBadRequest)
 				return
 			}
+			i.Type = values[0]
 		case "author":
 			if len(values) != 1 {
 				http.Error(w, "author를 설정해 주세요", http.StatusBadRequest)
 				return
 			}
+			i.Author = values[0]
 		case "inputpath":
 			if len(values) != 1 {
 				http.Error(w, "inputpath를 설정해 주세요", http.StatusBadRequest)
 				return
 			}
+			i.Inputpath = values[0]
 		case "outputpath":
 			if len(values) != 1 {
 				http.Error(w, "outputpath를 설정해 주세요", http.StatusBadRequest)
 				return
 			}
+			i.Outputpath = values[0]
 		case "thumbimg":
 			if len(values) != 1 {
 				http.Error(w, "thumbnail image의 경로를 설정해 주세요", http.StatusBadRequest)
 				return
 			}
+			i.Thumbimg = values[0]
 		case "thumbmov":
 			if len(values) != 1 {
 				http.Error(w, "thumbnail mov의 경로를 설정해 주세요", http.StatusBadRequest)
 				return
 			}
+			i.Thumbmov = values[0]
 		}
 	}
 	err := i.CheckError()
