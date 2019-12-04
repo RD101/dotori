@@ -59,6 +59,7 @@ func handleAPIAdd(w http.ResponseWriter, r *http.Request) {
 	err := i.CheckError()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
 	}
 	session, err := mgo.Dial(*flagType)
 	if err != nil {
