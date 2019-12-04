@@ -1,6 +1,9 @@
 package main
 
-import "errors"
+import (
+	"errors"
+	"gopkg.in/mgo.v2/bson"
+)
 
 // Storage 는
 type Storage struct {
@@ -12,22 +15,22 @@ type Storage struct {
 
 // Item 은 라이브러리의 에셋 자료구조이다.
 type Item struct {
-	ID          string            // ID
-	Author      string            // 에셋을 제작한 사람
-	Tags        []string          // 태그리스트
-	Description string            // 에셋에 대한 추가 정보. 에셋의 제약, 사용전 알아야 할 특징
-	Thumbimg    string            // 썸네일 이미지 주소
-	Thumbmov    string            // 썸네일 영상 주소
-	Inputpath   string            // 최초 등록되는 경로
-	Outputpath  string            // 저장되는 경로
-	Type        string            // maya, source, houdini, blender, nuke ..  같은 형태인가.
-	Status      string            // 상태(에러, done, wip)
-	Log         string            // 데이터를 처리할 때 생성되는 로그
-	CreateTime  string            // Item 생성 시간
-	Updatetime  string            // UTC 타임으로 들어가도록 하기.
-	UsingRate   int64             // 사용 빈도 수
-	Storage                       // Item이 저장되는 스토리지 정보
-	Attributes  map[string]string // 해상도, 속성, 메타데이터 등의 파일정보
+	ID          bson.ObjectId                   `json:"id" bson:"_id,omitempty"`        // ID
+	Author      string                          `json:"author" bson:"author"`           // 에셋을 제작한 사람
+	Tags        []string                        `json:"tags" bson:"tags"`               // 태그리스트
+	Description string                          `json:"description" bson:"description"` // 에셋에 대한 추가 정보. 에셋의 제약, 사용전 알아야 할 특징
+	Thumbimg    string                          `json:"thumbimg" bson:"thumbimg"`       // 썸네일 이미지 주소
+	Thumbmov    string                          `json:"thumbmov" bson:"thumbmov"`       // 썸네일 영상 주소
+	Inputpath   string                          `json:"inputpath" bson:"inputpath"`     // 최초 등록되는 경로
+	Outputpath  string                          `json:"outputpath" bson:"outputpath"`   // 저장되는 경로
+	Type        string                          `json:"type" bson:"type"`               // maya, source, houdini, blender, nuke ..  같은 형태인가.
+	Status      string                          `json:"status" bson:"status"`            // 상태(에러, done, wip)
+	Log         string                          `json:"log" bson:"log"`                 // 데이터를 처리할 때 생성되는 로그
+	CreateTime  string                          `json:"createtime" bson:"createtime"`   // Item 생성 시간
+	Updatetime  string                          `json:"updatetime" bson:"updatetime"`   // UTC 타임으로 들어가도록 하기.
+	UsingRate   int64                           `json:"usingrate" bson:"usingrate"`     // 사용 빈도 수
+	Storage     `json:"storage" bson:"storage"` // Item이 저장되는 스토리지 정보
+	Attributes  map[string]string               `json:"attributes" bson:"attributes"` // 해상도, 속성, 메타데이터 등의 파일정보
 }
 
 // CheckError 는 Item 자료구조에 값이 정확히 들어갔는지 확인하는 메소드이다.
