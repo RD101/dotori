@@ -32,7 +32,7 @@ func webserver() {
 	http.HandleFunc("/add", handleAdd)
 	http.HandleFunc("/search", handleSearch)
 	// REST API
-	http.HandleFunc("/api/add", handleAPIAdd)
+	http.HandleFunc("/api/item", handleAPIAdd)
 	// 웹서버 실행
 	err = http.ListenAndServe(*flagHTTPPort, nil)
 	if err != nil {
