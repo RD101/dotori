@@ -75,7 +75,7 @@ func searchSeq(searchpath string) ([]Seq, error) {
 	if len(items) == 0 {
 		return nil, errors.New("소스가 존재하지 않습니다")
 	}
-	return items, err
+	return items, nil
 }
 
 // Seqnum2Sharp 함수는 경로와 파일명을 받아서 시퀀스부분을 #문자열로 바꾸고 시퀀스의 숫자를 int로 바꾼다.
