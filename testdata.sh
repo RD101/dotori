@@ -3,3 +3,6 @@
 dotori -add -author bae -type nuke -inputpath /library/asset -outputpath /library/asset
 dotori -add -author woong -type maya -inputpath /library/asset -outputpath /library/asset
 dotori -add -author liah -type houdini -inputpath /library/asset -outputpath /library/asset
+
+#REST API
+curl -X POST -d "author=bae&type=nuke&inputpath=/library/asset&outputpath=/library/asset&thumbimg=/library/asset&thumbmov=/library/asset" http://127.0.0.1/api/item
