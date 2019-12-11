@@ -1,8 +1,8 @@
 #!/bin/sh
 APP="dotori"
-GOOS=linux GOARCH=amd64 go build -o ./bin/linux/${APP} check.go dbapi.go dotori.go struct.go network.go
-GOOS=darwin GOARCH=amd64 go build -o ./bin/darwin/${APP} check.go dbapi.go dotori.go struct.go network.go
-GOOS=windows GOARCH=amd64 go build -o ./bin/windows/${APP} check.go dbapi.go dotori.go struct.go network.go
+GOOS=linux GOARCH=amd64 go build -o ./bin/linux/${APP} *.go
+GOOS=darwin GOARCH=amd64 go build -o ./bin/darwin/${APP} *.go
+GOOS=windows GOARCH=amd64 go build -o ./bin/windows/${APP} *.go
 
 # Github Release에 업로드 하기위해 압축
 cd ./bin/linux/ && mkdir thumbnail && tar -zcvf ../${APP}_linux_x86-64.tgz . && cd -
