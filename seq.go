@@ -5,16 +5,18 @@ type Seq struct {
 	// 사용자 입력값
 	InColorspace  string `json:"incolorspace" bson:"incolorspace"`   // 시퀀스의 IN 컬러스페이스
 	OutColorspace string `json:"outcolorspace" bson:"outcolorspace"` // 시퀀스의 OUT 컬러스페이스
-	FrameInPoint  int    `json:"frameinpoint" bson:"frameinpoint"`   // 사용자 시작 IN 프레임
-	FrameOutPoint int    `json:"frameoutpoint" bson:"frameoutpoint"` // 사용자 끝 OUT 프레임
+	RenderIn      int    `json:"renderin" bson:"renderin"`           // 렌더링 할 시작 IN 프레임
+	RenderOut     int    `json:"renderout" bson:"renderout"`         // 렌더링 할 끝 OUT 프레임
+	Searchpath    string `json:"searchpath" bson:"searchpath"`       // 시퀀스 검색을 시작한 Endpoint
+	ConvertExt    string `json:"convertext" bson:"convertext"`       // 만약 소스를 저장할 때 변환하여 저장한다면 사용할 확장자
 
 	// 분석을 통해서 구할 수 있는 것
 	Dir         string  `json:"dir" bson:"dir"`                 // 시퀀스 디렉토리
 	Base        string  `json:"base" bson:"base"`               // 파일명(시퀀스 숫자 제외)
 	Ext         string  `json:"ext" bson:"ext"`                 // 확장자
 	Digitnum    int     `json:"digitnum" bson:"digitnum"`       // 시퀀스 자릿수
-	StartFrame  int     `json:"startframe" bson:"startframe"`   // 시작프레임
-	EndFrame    int     `json:"endframe" bson:"endframe"`       // 끝프레임
+	FrameIn     int     `json:"framein" bson:"framein"`         // 시작프레임
+	FrameOut    int     `json:"frameout" bson:"frameout"`       // 끝프레임
 	Width       int     `json:"width" bson:"width"`             // 가로길이
 	Height      int     `json:"height" bson:"height"`           // 세로길이
 	TimecodeIn  string  `json:"timecodein" bson:"timecodein"`   // 시작 타임코드

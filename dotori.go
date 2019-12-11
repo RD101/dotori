@@ -14,8 +14,9 @@ var (
 	// TEMPLATES 는 kalena에서 사용하는 템플릿 글로벌 변수이다.
 	TEMPLATES = template.New("")
 
-	flagAdd = flag.Bool("add", false, "add")
-	flagRm  = flag.Bool("remove", false, "remove")
+	flagAdd    = flag.Bool("add", false, "add mode")
+	flagRm     = flag.Bool("remove", false, "remove mode")
+	flagSearch = flag.Bool("search", false, "search mode")
 
 	flagAuthor      = flag.String("author", "", "author")
 	flagTag         = flag.String("tag", "", "tag")
@@ -35,7 +36,14 @@ var (
 
 func main() {
 	flag.Parse()
-	if *flagAdd {
+	if *flagSearch {
+		items, err := searchSeq(*flagInputpath)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println(items)
+		os.Exit(0)
+	} else if *flagAdd {
 		i := Item{}
 
 		i.Author = *flagAuthor
