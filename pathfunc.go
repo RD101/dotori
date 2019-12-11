@@ -19,10 +19,12 @@ func searchSeq(searchpath string) ([]Seq, error) {
 	}
 	paths := make(map[string]Seq)
 	err = filepath.Walk(searchpath, func(path string, info os.FileInfo, err error) error {
+		// 숨김폴더
 		if info.IsDir() && strings.HasPrefix(info.Name(), ".") {
 			return filepath.SkipDir
 		}
-		if strings.HasPrefix(info.Name(), ".") { // 숨김폴더는 Skip 한다.
+		// 숨김파일
+		if strings.HasPrefix(info.Name(), ".") {
 			return nil
 		}
 		ext := strings.ToLower(filepath.Ext(path))
