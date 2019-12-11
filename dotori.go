@@ -32,6 +32,8 @@ var (
 	flagDBName = flag.String("dbname", "dotori", "DB name")
 
 	flagHTTPPort = flag.String("http", "", "Web Service Port Number")
+
+	flagItemID = flag.String("itemid", "", "bson ObjectID assigned by mongodb")
 )
 
 func main() {
@@ -79,6 +81,22 @@ func main() {
 		}
 		defer session.Close()
 		err = AddItem(session, i)
+		if err != nil {
+			log.Print(err)
+		}
+	} else if *flagRm {
+		if *flagType == "" {
+			log.Fatal("flagType이 빈 문자열 입니다")
+		}
+		if *flagItemID == "" {
+			log.Fatal("id가 빈 문자열 입니다")
+		}
+		session, err := mgo.Dial(*flagDBIP)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer session.Close()
+		err = RmItem(session, *flagItemID)
 		if err != nil {
 			log.Print(err)
 		}

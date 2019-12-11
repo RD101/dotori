@@ -16,6 +16,17 @@ func AddItem(session *mgo.Session, i Item) error {
 	return nil
 }
 
+// RmItem 는 컬렉션 이름과 id를 받아서, 해당 컬렉션에서 id가 일치하는 Item을 삭제한다.
+func RmItem(session *mgo.Session, id string) error {
+	session.SetMode(mgo.Monotonic, true)
+	c := session.DB(*flagDBName).C(*flagType)
+	err := c.RemoveId(bson.ObjectIdHex(*flagItemID))
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // allItems는 DB에서 전체 아이템 정보를 가져오는 함수입니다.
 func allItems(session *mgo.Session, itemType string) ([]Item, error) {
 	session.SetMode(mgo.Monotonic, true)
