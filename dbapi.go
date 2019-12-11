@@ -17,9 +17,9 @@ func AddItem(session *mgo.Session, i Item) error {
 }
 
 // RmItem 는 컬렉션 이름과 id를 받아서, 해당 컬렉션에서 id가 일치하는 Item을 삭제한다.
-func RmItem(session *mgo.Session, id string) error {
+func RmItem(session *mgo.Session, itemType, id string) error {
 	session.SetMode(mgo.Monotonic, true)
-	c := session.DB(*flagDBName).C(*flagType)
+	c := session.DB(*flagDBName).C(itemType)
 	err := c.RemoveId(bson.ObjectIdHex(*flagItemID))
 	if err != nil {
 		return err

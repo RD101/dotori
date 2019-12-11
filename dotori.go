@@ -96,7 +96,7 @@ func main() {
 			log.Fatal(err)
 		}
 		defer session.Close()
-		err = RmItem(session, *flagItemID)
+		err = RmItem(session, *flagType, *flagItemID)
 		if err != nil {
 			log.Print(err)
 		}
