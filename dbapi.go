@@ -20,7 +20,7 @@ func AddItem(session *mgo.Session, i Item) error {
 func RmItem(session *mgo.Session, itemType, id string) error {
 	session.SetMode(mgo.Monotonic, true)
 	c := session.DB(*flagDBName).C(itemType)
-	err := c.RemoveId(bson.ObjectIdHex(*flagItemID))
+	err := c.RemoveId(bson.ObjectIdHex(id))
 	if err != nil {
 		return err
 	}
