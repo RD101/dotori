@@ -6,3 +6,5 @@ dotori -add -author liah -type houdini -inputpath /library/asset -outputpath /li
 
 #REST API
 curl -X POST -d "author=bae&type=nuke&inputpath=/library/asset&outputpath=/library/asset&thumbimg=/library/asset&thumbmov=/library/asset" http://127.0.0.1/api/item
+#DELETE는 실행 전에 직접 id를 넣어준 후 테스트한다.
+#curl -X DELETE -d "type=nuke&id=" http://127.0.0.1/api/item
