@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"gopkg.in/mgo.v2"
@@ -74,23 +73,16 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write(data)
 	} else if r.Method == http.MethodDelete {
-		var itemtype, id string
-		r.ParseForm()
-		for key, values := range r.Form {
-			switch key {
-			case "type":
-				if len(values) != 1 {
-					http.Error(w, "type을 설정해 주세요", http.StatusBadRequest)
-					return
-				}
-				itemtype = values[0]
-			case "id":
-				if len(values) != 1 {
-					http.Error(w, "id를 설정해 주세요", http.StatusBadRequest)
-					return
-				}
-				id = values[0]
-			}
+		q := r.URL.Query()
+		itemtype := q.Get("type")
+		id := q.Get("id")
+		if itemtype == "" {
+			http.Error(w, "URL에 itemtype을 입력해주세요", http.StatusBadRequest)
+			return
+		}
+		if id == "" {
+			http.Error(w, "URL에 id를 입력해주세요", http.StatusBadRequest)
+			return
 		}
 		session, err := mgo.Dial(*flagDBIP)
 		if err != nil {
@@ -98,8 +90,6 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		defer session.Close()
-		fmt.Printf("itemtype  %T  %s\n", itemtype, itemtype)
-		fmt.Printf("id  %T  %s\n", id, id)
 		RmItem(session, itemtype, id)
 		data, _ := json.Marshal(id)
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
