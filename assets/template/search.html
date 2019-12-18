@@ -1,9 +1,28 @@
 {{define "search"}}
-<div class="text-center">
-    <form>
-        <input type="text" title="검색">
-        <input type="submit" value="검색">
-    </form>
-</div>
+<form action="/searchsubmit" method="POST">
+	<div class="row justify-content-center align-items-center m-3">
+		<div class="col-lg-7">
+			<div class="input-group mb-3">
+				<div class="input-group-prepend">
+					<select name="Type" class="custom-select left-radius">
+                        <option value="">All</option>
+                        <option value="maya">Maya</option>
+					</select>
+				</div>
+				
+				<input class="form-control" id="search" placeholder="Search word.." type="text" name="Searchword" value="">
+				
+				<div class="input-group-append">
+					<button class="btn btn-darkmode" id="button">
+						Search
+							<span class="badge badge-darkmode">0</span>
+					</button>
+				</div>
+			</div>
+        </div>
+    </div>
+</form>
+
+
 
 {{end}}  
