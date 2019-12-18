@@ -90,8 +90,16 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		defer session.Close()
-		RmItem(session, itemtype, id)
-		data, _ := json.Marshal(id)
+		err = RmItem(session, itemtype, id)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		data, err := json.Marshal(id)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(http.StatusOK)
 		w.Write(data)
