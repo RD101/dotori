@@ -34,7 +34,7 @@ func webserver() {
 	// Add
 	http.HandleFunc("/addmaya", handleAddMaya)
 	// REST API
-	http.HandleFunc("/api/item", handleAPIAdd)
+	http.HandleFunc("/api/item", handleAPIItem)
 	// 웹서버 실행
 	err = http.ListenAndServe(*flagHTTPPort, nil)
 	if err != nil {
