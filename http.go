@@ -33,6 +33,7 @@ func webserver() {
 	http.HandleFunc("/search", handleSearch)
 	// Add
 	http.HandleFunc("/addmaya", handleAddMaya)
+	http.HandleFunc("/addmaya-process", handleAddMayaProcess)
 	// REST API
 	http.HandleFunc("/api/item", handleAPIItem)
 	// 웹서버 실행
