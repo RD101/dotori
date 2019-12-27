@@ -46,7 +46,7 @@ func SearchTags(session *mgo.Session, itemType string, tag string) ([]Item, erro
 	var results []Item
 	err := c.Find(bson.M{"tags": tag}).All(&results)
 	if err != nil {
-		return results, err
+		return nil, err
 	}
 	return results, nil
 }

@@ -89,3 +89,5 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
+
+items, err = SearchTags(session, itemType, tag)
