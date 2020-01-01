@@ -31,3 +31,13 @@ func handleAddBlender(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+// handleAddMayaProcess 함수는 Maya 파일을 처리하는 페이지 이다.
+func handleAddMayaProcess(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html")
+	err := TEMPLATES.ExecuteTemplate(w, "addmaya-process", nil)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
