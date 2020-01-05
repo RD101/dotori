@@ -107,11 +107,12 @@ func Seqnum2Sharp(filename string) (string, int, error) {
 // IDConverter 함수는 MongoDB ID를 받아서 정한 형식에 맞게 ID를 변경시켜준다.
 // "54759eb3c090d83494e2d804" -> “54/75/9e/b3/c090d8/3494/e2/d8/04”
 func IDConverter(idname string) (string, error) {
-	if len(idname) == 0 {
-		return idname, errors.New("id 값이 없습니다.")
+	if len(idname) != 24 {
+		return idname, errors.New("MongoDB ID 형식이 아닙니다.")
 	}
 
-	err, _ := regexp.MatchString("([0-9]+/[0-9]+)([a-zA-Z]+/[a-zA-Z])", idname)
+	// 영문 소문자와 숫자만 허용
+	err, _ := regexp.MatchString("^[a-z0-9]*$", idname)
 	if err == false {
 		return idname, errors.New("정규 표현식이 잘못되었습니다.")
 	}
