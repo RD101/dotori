@@ -112,7 +112,7 @@ func IDConverter(idname string) (string, error) {
 	}
 
 	err, _ := regexp.MatchString("([0-9]+/[0-9]+)([a-zA-Z]+/[a-zA-Z])", idname)
-	if err != false {
+	if err == false {
 		return idname, errors.New("정규 표현식이 잘못되었습니다.")
 	}
 
