@@ -27,7 +27,6 @@ func webserver() {
 	// 리소스 로딩
 	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(assets)))
 
-
 	// 웹주소 설정
 	http.HandleFunc("/", handleIndex)
 	http.HandleFunc("/add", handleAdd)
@@ -36,6 +35,8 @@ func webserver() {
 	http.HandleFunc("/addmaya", handleAddMaya)
 	http.HandleFunc("/addhoudini", handleAddHoudini)
 	http.HandleFunc("/addblender", handleAddBlender)
+	http.HandleFunc("/addabc", handleAddABC)
+	http.HandleFunc("/addusd", handleAddUSD)
 	http.HandleFunc("/addmaya-process", handleAddMayaProcess)
 	// REST API
 	http.HandleFunc("/api/item", handleAPIItem)
