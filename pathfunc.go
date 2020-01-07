@@ -1,6 +1,7 @@
 package main
 
 import (
+	"container/list"
 	"errors"
 	"fmt"
 	"os"
@@ -8,6 +9,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	s "strings"
 )
 
 // searchSeq 함수는 탐색할 경로를 입력받고 dpx, exr, mov 정보를 수집 반환한다.
@@ -100,4 +102,42 @@ func Seqnum2Sharp(filename string) (string, int, error) {
 		return filename, -1, err
 	}
 	return header + strings.Repeat("#", len(seq)) + ext, seqNum, nil
+}
+
+// IDConverter 함수는 MongoDB ID를 받아서 정한 형식에 맞게 ID를 변경시켜준다.
+// "54759eb3c090d83494e2d804" -> “54/75/9e/b3/c090d8/3494/e2/d8/04”
+func IDConverter(idname string) (string, error) {
+	if len(idname) != 24 {
+		return idname, errors.New("MongoDB ID 형식이 아닙니다.")
+	}
+
+	// 영문 소문자와 숫자만 허용
+	err, _ := regexp.MatchString("^[a-z0-9]*$", idname)
+	if err == false {
+		return idname, errors.New("정규 표현식이 잘못되었습니다.")
+	}
+
+	var list_num = s.Split(idname, "")
+	l := list.New()
+
+	// 형식에 맞게 "/" 추가 (2/2/2/2/6/4/2/2/2)
+	for i := 0; i < len(list_num); i++ {
+		n1 := l.PushBack(list_num[i])
+		if i == 1 || i == 3 || i == 5 || i == 7 || i == 13 || i == 17 || i == 19 || i == 21 {
+			l.InsertAfter("/", n1)
+		}
+	}
+
+	var result string = ""
+
+	// 리스트의 맨 앞부터 끝까지 순회
+	for e := l.Front(); e != nil; e = e.Next() {
+		result += (e.Value).(string)
+	}
+
+	if len(result) != 32 {
+		return result, errors.New("id 값이 형식에 맞지 않습니다.")
+	}
+
+	return result, nil
 }
