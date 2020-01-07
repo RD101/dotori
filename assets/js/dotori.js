@@ -1,6 +1,5 @@
 
 function addAttribute() {
-    let beforeAttributes = document.getElementById("attributes");
     let childnum = document.getElementById("attributes").childElementCount;
     let e = document.createElement('div');
     e.className = "row";
@@ -17,7 +16,7 @@ function addAttribute() {
         </div>
     `
     e.innerHTML = html;
-    beforeAttributes.appendChild(e);
+    document.getElementById("attributes").appendChild(e);
 }
 
 function changeInput(obj) {
