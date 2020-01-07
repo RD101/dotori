@@ -194,3 +194,28 @@ func Test_Dbname(t *testing.T) {
 		}
 	}
 }
+
+// Dbname을 테스트하기위한 함수
+func Test_idToPath(t *testing.T) {
+	cases := []struct {
+		Dbname string
+		want   bool
+	}{{
+		Dbname: "asdils2137", // 정상 영문
+		want:   true,
+	}, {
+		Dbname: "", // 한글포함
+		want:   false,
+	}, {
+		Dbname: "doto2", // 숫자포함
+		want:   false,
+	},
+	}
+
+	for _, c := range cases {
+		b := regexLowerNum.MatchString(c.Dbname)
+		if c.want != b {
+			t.Fatalf("Test_Dbname(): 입력 값: %v, 원하는 값: %v, 얻은 값: %v\n", c.Dbname, c.want, b)
+		}
+	}
+}

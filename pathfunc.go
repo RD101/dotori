@@ -9,7 +9,6 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
-	s "strings"
 )
 
 // searchSeq 함수는 탐색할 경로를 입력받고 dpx, exr, mov 정보를 수집 반환한다.
@@ -104,20 +103,21 @@ func Seqnum2Sharp(filename string) (string, int, error) {
 	return header + strings.Repeat("#", len(seq)) + ext, seqNum, nil
 }
 
-// IDConverter 함수는 MongoDB ID를 받아서 정한 형식에 맞게 ID를 변경시켜준다.
+// idToPath 함수는 MongoDB ID를 받아서 정한 형식에 맞게 ID를 변경시켜준다.
+// 나누는 이유 : 한폴더에 파일이 몰리면 디렉토리 로딩시 문제가 생기고, 한폴더에는 파일 저장이 한정적이다.
 // "54759eb3c090d83494e2d804" -> “54/75/9e/b3/c090d8/3494/e2/d8/04”
-func IDConverter(idname string) (string, error) {
+func idToPath(idname string) (string, error) {
 	if len(idname) != 24 {
 		return idname, errors.New("MongoDB ID 형식이 아닙니다.")
 	}
 
 	// 영문 소문자와 숫자만 허용
-	err, _ := regexp.MatchString("^[a-z0-9]*$", idname)
+	err := regexLowerNum.MatchString(idname)
 	if err == false {
 		return idname, errors.New("정규 표현식이 잘못되었습니다.")
 	}
 
-	var list_num = s.Split(idname, "")
+	var list_num = strings.Split(idname, "")
 	l := list.New()
 
 	// 형식에 맞게 "/" 추가 (2/2/2/2/6/4/2/2/2)
