@@ -201,13 +201,25 @@ func Test_idToPath(t *testing.T) {
 		Dbname string
 		want   bool
 	}{{
-		Dbname: "asdils2137", // 정상 영문
+		Dbname: "hellogo", // 정상 소문자
 		want:   true,
 	}, {
-		Dbname: "", // 한글포함
+		Dbname: "6572362", // 정상 숫자
+		want:   true,
+	}, {
+		Dbname: "h2llogo", // 정상 소문자와 숫자포함
+		want:   true,
+	}, {
+		Dbname: "hello/go", // 특수문자"/" 포함
 		want:   false,
 	}, {
-		Dbname: "doto2", // 숫자포함
+		Dbname: "HelloGo", // 대문자 포함
+		want:   false,
+	}, {
+		Dbname: "hellogo.", // 특수문자"." 포함
+		want:   false,
+	}, {
+		Dbname: "hello go", // 공백 포함
 		want:   false,
 	},
 	}

@@ -135,9 +135,5 @@ func idToPath(idname string) (string, error) {
 		result += (e.Value).(string)
 	}
 
-	if len(result) != 32 {
-		return result, errors.New("id 값이 형식에 맞지 않습니다.")
-	}
-
 	return result, nil
 }
