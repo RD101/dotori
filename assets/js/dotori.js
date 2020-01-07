@@ -4,7 +4,7 @@ function addAttribute() {
     let childnum = document.getElementById("attributes").childElementCount;
     let e = document.createElement('div');
     e.className = "row";
-    html = `
+    let html = `
         <div class="col pt-2">
             <div class="form-group p-0 m-0">
                 <input type="text" class="form-control" placeholder="key" value="" id="key${childnum}" name="key${childnum}" onchange="changeInput(this);">
