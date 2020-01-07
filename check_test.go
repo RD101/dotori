@@ -195,7 +195,7 @@ func Test_Dbname(t *testing.T) {
 	}
 }
 
-// Dbname을 테스트하기위한 함수
+// idToPath를 테스트하기위한 함수
 func Test_idToPath(t *testing.T) {
 	cases := []struct {
 		Dbname string
