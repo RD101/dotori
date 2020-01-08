@@ -194,3 +194,40 @@ func Test_Dbname(t *testing.T) {
 		}
 	}
 }
+
+// idToPath를 테스트하기위한 함수
+func Test_idToPath(t *testing.T) {
+	cases := []struct {
+		Dbname string
+		want   bool
+	}{{
+		Dbname: "hellogo", // 정상 소문자
+		want:   true,
+	}, {
+		Dbname: "6572362", // 정상 숫자
+		want:   true,
+	}, {
+		Dbname: "h2llogo", // 정상 소문자와 숫자포함
+		want:   true,
+	}, {
+		Dbname: "hello/go", // 특수문자"/" 포함
+		want:   false,
+	}, {
+		Dbname: "HelloGo", // 대문자 포함
+		want:   false,
+	}, {
+		Dbname: "hellogo.", // 특수문자"." 포함
+		want:   false,
+	}, {
+		Dbname: "hello go", // 공백 포함
+		want:   false,
+	},
+	}
+
+	for _, c := range cases {
+		b := regexLowerNum.MatchString(c.Dbname)
+		if c.want != b {
+			t.Fatalf("Test_Dbname(): 입력 값: %v, 원하는 값: %v, 얻은 값: %v\n", c.Dbname, c.want, b)
+		}
+	}
+}
