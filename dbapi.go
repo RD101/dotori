@@ -39,7 +39,7 @@ func allItems(session *mgo.Session, itemType string) ([]Item, error) {
 	return result, nil
 }
 
-// SearchTag는 collection, tag를 입력받아 tag의 값이 일치하면 반환하는 함수입니다.
+// SearchTag는 itemType, tag를 입력받아 tag의 값이 일치하면 반환하는 함수입니다.
 func SearchTags(session *mgo.Session, itemType string, tag string) ([]Item, error) {
 	session.SetMode(mgo.Monotonic, true)
 	c := session.DB(*flagDBName).C(itemType)
