@@ -17,4 +17,6 @@ function addAttribute() {
     `
     e.innerHTML = html;
     document.getElementById("attributes").appendChild(e);
+    // 최종 생성된 Attributes 갯수를 attributeNum에 저장한다.
+    document.getElementById("attributesNum").value = document.getElementById("attributes").childElementCount;
 }
