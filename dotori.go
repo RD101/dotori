@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"log"
 	"os"
+	"strings"
 
 	"gopkg.in/mgo.v2"
 )
@@ -49,7 +50,7 @@ func main() {
 		i := Item{}
 
 		i.Author = *flagAuthor
-		i.Tags = append(i.Tags, *flagTag)
+		i.Tags = strings.Split(*flagTag, ",")
 		i.Description = *flagDescription
 		i.Thumbimg = *flagThumbimg
 		i.Thumbmov = *flagThumbmov
