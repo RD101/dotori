@@ -221,12 +221,6 @@ func Test_idToPath(t *testing.T) {
 	}, {
 		Dbname: "54759eb3c090d83494 e2d804", // 공백 포함
 		want:   false,
-	}, {
-		Dbname: "54759eb3c090d83494e2d804234qwe", // 24길이보다 많은 경우
-		want:   false,
-	}, {
-		Dbname: "54759eb3c090d83494e804", // 24길이보다 적은 경우
-		want:   false,
 	},
 	}
 
