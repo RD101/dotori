@@ -201,25 +201,31 @@ func Test_idToPath(t *testing.T) {
 		Dbname string
 		want   bool
 	}{{
-		Dbname: "hellogo", // 정상 소문자
+		Dbname: "54759eb3c090d83494e2d804", // 정상 소문자와 숫자포함
 		want:   true,
 	}, {
-		Dbname: "6572362", // 정상 숫자
+		Dbname: "129638926139621982386219", // 정상 숫자
 		want:   true,
 	}, {
-		Dbname: "h2llogo", // 정상 소문자와 숫자포함
+		Dbname: "oweiruioqrjkldafieuqwrri", // 정상 소문자
 		want:   true,
 	}, {
-		Dbname: "hello/go", // 특수문자"/" 포함
+		Dbname: "54759eb3c090d83494e2d8/4", // 특수문자"/" 포함
 		want:   false,
 	}, {
-		Dbname: "HelloGo", // 대문자 포함
+		Dbname: "54759eB3c090d83494E2d804", // 대문자 포함
 		want:   false,
 	}, {
-		Dbname: "hellogo.", // 특수문자"." 포함
+		Dbname: "54759eb3c090d83494e2d.04", // 특수문자"." 포함
 		want:   false,
 	}, {
-		Dbname: "hello go", // 공백 포함
+		Dbname: "54759eb3c090d83494 e2d804", // 공백 포함
+		want:   false,
+	}, {
+		Dbname: "54759eb3c090d83494e2d804234qwe", // 24길이보다 많은 경우
+		want:   false,
+	}, {
+		Dbname: "54759eb3c090d83494e804", // 24길이보다 적은 경우
 		want:   false,
 	},
 	}
