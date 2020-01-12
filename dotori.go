@@ -50,7 +50,7 @@ func main() {
 		i := Item{}
 
 		i.Author = *flagAuthor
-		i.Tags = strings.Split(*flagTag, ",")
+		i.Tags = strings.Split(strings.Replace(*flagTag, " ", "", -1), ",")  // 입력받은 tag에서 공백을 제거한 후 ","으로 split하여 리스트 형식으로 저장
 		i.Description = *flagDescription
 		i.Thumbimg = *flagThumbimg
 		i.Thumbmov = *flagThumbmov
