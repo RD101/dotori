@@ -38,24 +38,26 @@
                     <div class="col-sm">
                         <div class="form-group">
                             <label class="text-muted">Attributes</label>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group p-0 m-0">
-                                        <small class="form-text text-muted">Key</small>
-                                        <input type="text" class="form-control" placeholder="key" value="" name="key1">
+                            <div id="attributes">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group p-0 m-0">
+                                            <input type="text" class="form-control" placeholder="key" value="" id="key0" name="key0">
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group p-0 m-0">
+                                            <input type="text" class="form-control" placeholder="value" value="" id="value0" name="value0">
+                                        </div>			
                                     </div>
                                 </div>
-                                <div class="col">
-                                    <div class="form-group p-0 m-0">
-                                        <small class="form-text text-muted">Value</small>
-                                        <input type="text" class="form-control" placeholder="value" value="" name="value1">
-                                    </div>			
-                                </div>
                             </div>
-                            <small class="form-text text-muted">속성을 추가해 주세요.</small>
+                            
                             <div class="row">
                                 <div class="col">
-                                    <span class="add float-right">+</span>
+                                    <small class="form-text text-muted float-right">필요시 속성을 추가해 주세요.</small>
+                                    <br>
+                                    <span class="add float-right" onclick="addAttribute();">+</span>
                                 </div>
                             </div>
                         </div>
@@ -74,5 +76,6 @@
     <script src="/assets/js/jquery-3.1.1.min.js"></script>
     <script src="/assets/bootstrap-4/js/bootstrap.min.js"></script>
     <script src="/assets/js/dropzone.js"></script>
+    <script src="/assets/js/dotori.js"></script>
     </html>
 {{end}}

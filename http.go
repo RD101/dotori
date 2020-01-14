@@ -35,6 +35,8 @@ func webserver() {
 	http.HandleFunc("/addmaya", handleAddMaya)
 	http.HandleFunc("/addhoudini", handleAddHoudini)
 	http.HandleFunc("/addblender", handleAddBlender)
+	http.HandleFunc("/addabc", handleAddABC)
+	http.HandleFunc("/addusd", handleAddUSD)
 	http.HandleFunc("/addmaya-process", handleAddMayaProcess)
 	http.HandleFunc("/upload-maya", handleUploadMaya)
 	// REST API
