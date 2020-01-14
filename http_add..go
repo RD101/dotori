@@ -1,7 +1,12 @@
 package main
 
 import (
+	"fmt"
+	"io/ioutil"
+	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 )
 
 // handleAddMaya 함수는 Maya 파일을 추가하는 페이지 이다.
@@ -40,4 +45,42 @@ func handleAddMayaProcess(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+}
+
+// handleUploadMaya 함수는 Maya파일을 DB에 업로드하는 페이지를 연다.
+func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
+	//dropzone setting
+	file, header, err := r.FormFile("file")
+	if err != nil {
+		log.Println(err)
+	}
+	defer file.Close()
+	mimeType := header.Header.Get("Content-Type")
+	switch mimeType {
+	case "image/jpeg", "image/png":
+		data, err := ioutil.ReadAll(file)
+		if err != nil {
+			fmt.Fprintf(w, "%v", err)
+			return
+		}
+		tempDir, err := ioutil.TempDir("", "")
+		path := filepath.Dir(tempDir) + "/" + "dotori"
+		err = os.MkdirAll(path, 0766)
+		if err != nil {
+			return
+		}
+		fmt.Println(path)
+		err = ioutil.WriteFile(tempDir, data, 0666)
+		if err != nil {
+			fmt.Fprintf(w, "%v", err)
+			return
+		}
+	case "video/quicktime", "video/mp4", "video/ogg", "application/ogg":
+	case "application/octet-stream":
+		//ext := filepath.Ext()
+	default:
+		//컨텐츠가 따로 있는게 편할지 같이 있는게 편할지
+	}
+
+	log.Println(mimeType)
 }
