@@ -63,15 +63,13 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, "%v", err)
 			return
 		}
-		tempDir, err := ioutil.TempDir("", "")
-		fmt.Println(tempDir)
-		path := filepath.Dir(tempDir) + "/dotori/thumbnail"
-		err = os.MkdirAll(path, 0766)
+		path := os.TempDir() + "/dotori/thumbnail"
+		err = os.MkdirAll(path, 0777) //0766
 		if err != nil {
 			return
 		}
 		fmt.Println(path)
-		err = ioutil.WriteFile(path, data, 0666)
+		err = ioutil.WriteFile(path+"/"+header.Filename, data, 0777) //0666
 		if err != nil {
 			fmt.Fprintf(w, "%v", err)
 			return
@@ -82,24 +80,54 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, "%v", err)
 			return
 		}
-		tempDir, err := ioutil.TempDir("", "")
-		fmt.Println(tempDir)
-		path := filepath.Dir(tempDir) + "/dotori/preview"
+		path := os.TempDir() + "/dotori/preview"
 		err = os.MkdirAll(path, 0777) //0766
 		if err != nil {
 			return
 		}
 		fmt.Println(path)
-		err = ioutil.WriteFile(path, data, 0777) //0666
+		err = ioutil.WriteFile(path+"/"+header.Filename, data, 0777) //0666
 		if err != nil {
 			fmt.Fprintf(w, "%v", err)
 			return
 		}
 	case "application/octet-stream":
-		//ext := filepath.Ext()
+		ext := filepath.Ext(header.Filename)
+		if ext == ".mb" || ext == ".ma" {
+			data, err := ioutil.ReadAll(file)
+			if err != nil {
+				fmt.Fprintf(w, "%v", err)
+				return
+			}
+			path := os.TempDir() + "/dotori"
+			err = os.MkdirAll(path, 0777) //0766
+			if err != nil {
+				return
+			}
+			fmt.Println(path)
+			err = ioutil.WriteFile(path+"/"+header.Filename, data, 0777) //0666
+			if err != nil {
+				fmt.Fprintf(w, "%v", err)
+				return
+			}
+		}
 	default:
-		//컨텐츠가 따로 있는게 편할지 같이 있는게 편할지
+		data, err := ioutil.ReadAll(file)
+		if err != nil {
+			fmt.Fprintf(w, "%v", err)
+			return
+		}
+		path := os.TempDir() + "/dotori"
+		err = os.MkdirAll(path, 0777) //0766
+		if err != nil {
+			return
+		}
+		fmt.Println(path)
+		err = ioutil.WriteFile(path+"/"+header.Filename, data, 0777) //0666
+		if err != nil {
+			fmt.Fprintf(w, "%v", err)
+			return
+		}
 	}
-
 	log.Println(mimeType)
 }
