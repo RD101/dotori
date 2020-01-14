@@ -64,18 +64,37 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		tempDir, err := ioutil.TempDir("", "")
-		path := filepath.Dir(tempDir) + "/" + "dotori"
+		fmt.Println(tempDir)
+		path := filepath.Dir(tempDir) + "/dotori/thumbnail"
 		err = os.MkdirAll(path, 0766)
 		if err != nil {
 			return
 		}
 		fmt.Println(path)
-		err = ioutil.WriteFile(tempDir, data, 0666)
+		err = ioutil.WriteFile(path, data, 0666)
 		if err != nil {
 			fmt.Fprintf(w, "%v", err)
 			return
 		}
 	case "video/quicktime", "video/mp4", "video/ogg", "application/ogg":
+		data, err := ioutil.ReadAll(file)
+		if err != nil {
+			fmt.Fprintf(w, "%v", err)
+			return
+		}
+		tempDir, err := ioutil.TempDir("", "")
+		fmt.Println(tempDir)
+		path := filepath.Dir(tempDir) + "/dotori/preview"
+		err = os.MkdirAll(path, 0777) //0766
+		if err != nil {
+			return
+		}
+		fmt.Println(path)
+		err = ioutil.WriteFile(path, data, 0777) //0666
+		if err != nil {
+			fmt.Fprintf(w, "%v", err)
+			return
+		}
 	case "application/octet-stream":
 		//ext := filepath.Ext()
 	default:
