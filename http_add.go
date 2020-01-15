@@ -81,12 +81,12 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		path := os.TempDir() + "/dotori/thumbnail"
-		err = os.MkdirAll(path, 0777) //0766
+		err = os.MkdirAll(path, 0766)
 		if err != nil {
 			return
 		}
 		fmt.Println(path)
-		err = ioutil.WriteFile(path+"/"+header.Filename, data, 0777) //0666
+		err = ioutil.WriteFile(path+"/"+header.Filename, data, 0666)
 		if err != nil {
 			fmt.Fprintf(w, "%v", err)
 			return
@@ -98,12 +98,12 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		path := os.TempDir() + "/dotori/preview"
-		err = os.MkdirAll(path, 0777) //0766
+		err = os.MkdirAll(path, 0766)
 		if err != nil {
 			return
 		}
 		fmt.Println(path)
-		err = ioutil.WriteFile(path+"/"+header.Filename, data, 0777) //0666
+		err = ioutil.WriteFile(path+"/"+header.Filename, data, 0666)
 		if err != nil {
 			fmt.Fprintf(w, "%v", err)
 			return
@@ -117,12 +117,12 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			path := os.TempDir() + "/dotori"
-			err = os.MkdirAll(path, 0777) //0766
+			err = os.MkdirAll(path, 0766)
 			if err != nil {
 				return
 			}
 			fmt.Println(path)
-			err = ioutil.WriteFile(path+"/"+header.Filename, data, 0777) //0666
+			err = ioutil.WriteFile(path+"/"+header.Filename, data, 0666) // 악성 코드가 들어올 수 있으므로 실행권한은 주지 않는다.
 			if err != nil {
 				fmt.Fprintf(w, "%v", err)
 				return
@@ -135,12 +135,12 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		path := os.TempDir() + "/dotori"
-		err = os.MkdirAll(path, 0777) //0766
+		err = os.MkdirAll(path, 0766)
 		if err != nil {
 			return
 		}
 		fmt.Println(path)
-		err = ioutil.WriteFile(path+"/"+header.Filename, data, 0777) //0666
+		err = ioutil.WriteFile(path+"/"+header.Filename, data, 0666)
 		if err != nil {
 			fmt.Fprintf(w, "%v", err)
 			return
