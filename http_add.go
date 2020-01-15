@@ -67,7 +67,6 @@ func handleAddMayaProcess(w http.ResponseWriter, r *http.Request) {
 
 // handleUploadMaya 함수는 Maya파일을 DB에 업로드하는 페이지를 연다.
 func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
-	//dropzone setting
 	file, header, err := r.FormFile("file")
 	if err != nil {
 		log.Println(err)
