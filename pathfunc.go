@@ -108,12 +108,12 @@ func Seqnum2Sharp(filename string) (string, int, error) {
 // "54759eb3c090d83494e2d804" -> “54/75/9e/b3/c090d8/3494/e2/d8/04”
 func idToPath(id string) (string, error) {
 	if len(id) != 24 {
-		return id, errors.New("MongoDB ID 형식이 아닙니다.")
+		return id, errors.New("MongoDB ID 형식이 아닙니다")
 	}
 
 	// 영문 소문자와 숫자만 허용
 	if !regexLowerNum.MatchString(id) {
-		return id, errors.New("정규 표현식이 잘못되었습니다.")
+		return id, errors.New("정규 표현식이 잘못되었습니다")
 	}
 
 	// 형식에 맞게 "/" 추가 (2/2/2/2/6/4/2/2/2)
