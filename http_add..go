@@ -14,6 +14,15 @@ func handleAddMaya(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func handleAddNuke(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html")
+	err := TEMPLATES.ExecuteTemplate(w, "addnuke", nil)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
 func handleAddHoudini(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
 	err := TEMPLATES.ExecuteTemplate(w, "addhoudini", nil)
