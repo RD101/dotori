@@ -16,8 +16,8 @@ var (
 
 	flagAdd    = flag.Bool("add", false, "add mode")
 	flagRm     = flag.Bool("remove", false, "remove mode")
-	flagSeek   = flag.Bool("seek", false, "seek mode")  // 해당 폴더를 탐색할 때 사용합니다.
-	flagSearch = flag.String("search", "", "seek mode") // DB를 검색할 때 사용합니다.
+	flagSeek   = flag.Bool("seek", false, "seek mode")    // 해당 폴더를 탐색할 때 사용합니다.
+	flagSearch = flag.String("search", "", "search mode") // DB를 검색할 때 사용합니다.
 
 	flagAuthor      = flag.String("author", "", "author")
 	flagTag         = flag.String("tag", "", "tag")
