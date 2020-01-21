@@ -85,7 +85,6 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			return
 		}
-		fmt.Println(path)
 		err = ioutil.WriteFile(path+"/"+header.Filename, data, 0666)
 		if err != nil {
 			fmt.Fprintf(w, "%v", err)
@@ -102,7 +101,6 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			return
 		}
-		fmt.Println(path)
 		err = ioutil.WriteFile(path+"/"+header.Filename, data, 0666)
 		if err != nil {
 			fmt.Fprintf(w, "%v", err)
@@ -121,7 +119,6 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				return
 			}
-			fmt.Println(path)
 			err = ioutil.WriteFile(path+"/"+header.Filename, data, 0666) // 악성 코드가 들어올 수 있으므로 실행권한은 주지 않는다.
 			if err != nil {
 				fmt.Fprintf(w, "%v", err)
@@ -139,12 +136,10 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			return
 		}
-		fmt.Println(path)
 		err = ioutil.WriteFile(path+"/"+header.Filename, data, 0666)
 		if err != nil {
 			fmt.Fprintf(w, "%v", err)
 			return
 		}
 	}
-	log.Println(mimeType)
 }
