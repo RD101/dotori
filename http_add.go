@@ -65,6 +65,16 @@ func handleAddMayaProcess(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// handleSetLibraryPath 함수는 LibraryPat를 설정하는 페이지로 이동한다.
+func handleSetLibraryPath(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html")
+	err := TEMPLATES.ExecuteTemplate(w, "setlibrarypath", nil)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
 // handleUploadMaya 함수는 Maya파일을 DB에 업로드하는 페이지를 연다.
 func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 	file, header, err := r.FormFile("file")

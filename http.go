@@ -39,6 +39,9 @@ func webserver() {
 	http.HandleFunc("/addusd", handleAddUSD)
 	http.HandleFunc("/addmaya-process", handleAddMayaProcess)
 	http.HandleFunc("/upload-maya", handleUploadMaya)
+	// Admin
+	http.HandleFunc("/setlibrarypath", handleSetLibraryPath)
+
 	// REST API
 	http.HandleFunc("/api/item", handleAPIItem)
 	// 웹서버 실행
