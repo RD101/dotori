@@ -17,7 +17,8 @@ var (
 
 	flagAdd    = flag.Bool("add", false, "add mode")
 	flagRm     = flag.Bool("remove", false, "remove mode")
-	flagSearch = flag.Bool("search", false, "search mode")
+	flagSeek   = flag.Bool("seek", false, "seek mode")    // 해당 폴더를 탐색할 때 사용합니다.
+	flagSearch = flag.String("search", "", "search mode") // DB를 검색할 때 사용합니다.
 
 	flagAuthor      = flag.String("author", "", "author")
 	flagTag         = flag.String("tag", "", "tag")
@@ -39,13 +40,26 @@ var (
 
 func main() {
 	flag.Parse()
-	if *flagSearch {
+	if *flagSeek {
 		items, err := searchSeq(*flagInputpath)
 		if err != nil {
 			log.Fatal(err)
 		}
 		fmt.Println(items)
 		os.Exit(0)
+	} else if *flagSearch != "" {
+		session, err := mgo.Dial(*flagDBIP)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer session.Close()
+		items, err := Search(session, *flagType, *flagSearch)
+		if err != nil {
+			log.Fatal(err)
+		}
+		for _, item := range items {
+			fmt.Println(item)
+		}
 	} else if *flagAdd {
 		i := Item{}
 
@@ -71,16 +85,12 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		if err != nil {
-			log.Fatal(err)
-		}
-
+		defer session.Close()
 		if *flagDBName != "" {
 			if !regexLower.MatchString(*flagDBName) { // 입력받은 dbname이 소문자인지 확인
 				log.Fatal(err)
 			}
 		}
-		defer session.Close()
 		err = AddItem(session, i)
 		if err != nil {
 			log.Print(err)

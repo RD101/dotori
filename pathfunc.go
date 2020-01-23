@@ -1,7 +1,6 @@
 package main
 
 import (
-	"container/list"
 	"errors"
 	"fmt"
 	"os"
@@ -104,36 +103,20 @@ func Seqnum2Sharp(filename string) (string, int, error) {
 }
 
 // idToPath 함수는 MongoDB ID를 받아서 정한 형식에 맞게 ID를 변경시켜준다.
-// 나누는 이유 : 한폴더에 파일이 몰리면 디렉토리 로딩시 문제가 생기고, 한폴더에는 파일 저장이 한정적이다.
+// 용도 : 몽고디비에서 생성되는 고유아이디로 폴더구조를 생성하여 각 유저마다 해당 에셋에 대한 데이터를 쌓아주기 위함이다.
+// 나누는 이유 : 폴더에 저장할 수 있는 파일의 개수는 한정적이기 때문에 파일이 몰리지 않도록 분산해주기 위함이다.
 // "54759eb3c090d83494e2d804" -> “54/75/9e/b3/c090d8/3494/e2/d8/04”
-func idToPath(idname string) (string, error) {
-	if len(idname) != 24 {
-		return idname, errors.New("MongoDB ID 형식이 아닙니다.")
+func idToPath(id string) (string, error) {
+	if len(id) != 24 {
+		return id, errors.New("MongoDB ID 형식이 아닙니다")
 	}
 
 	// 영문 소문자와 숫자만 허용
-	err := regexLowerNum.MatchString(idname)
-	if err == false {
-		return idname, errors.New("정규 표현식이 잘못되었습니다.")
+	if !regexLowerNum.MatchString(id) {
+		return id, errors.New("정규 표현식이 잘못되었습니다")
 	}
-
-	var list_num = strings.Split(idname, "")
-	l := list.New()
 
 	// 형식에 맞게 "/" 추가 (2/2/2/2/6/4/2/2/2)
-	for i := 0; i < len(list_num); i++ {
-		n1 := l.PushBack(list_num[i])
-		if i == 1 || i == 3 || i == 5 || i == 7 || i == 13 || i == 17 || i == 19 || i == 21 {
-			l.InsertAfter("/", n1)
-		}
-	}
-
-	var result string = ""
-
-	// 리스트의 맨 앞부터 끝까지 순회
-	for e := l.Front(); e != nil; e = e.Next() {
-		result += (e.Value).(string)
-	}
-
+	result := fmt.Sprintf("%s/%s/%s/%s/%s/%s/%s/%s/%s", id[0:2], id[2:4], id[4:6], id[6:8], id[8:14], id[14:18], id[18:20], id[20:22], id[22:24])
 	return result, nil
 }
