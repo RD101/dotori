@@ -29,10 +29,11 @@ var (
 	flagType        = flag.String("type", "", "type of asset")
 	flagAttributes  = flag.String("attributes", "", "detail info of file") // "key:value,key:value"
 
-	flagDBIP   = flag.String("dbip", "", "DB IP")
-	flagDBName = flag.String("dbname", "dotori", "DB name")
-
+	// 서비스에 필요한 인수
+	flagDBIP     = flag.String("dbip", "", "DB IP")
+	flagDBName   = flag.String("dbname", "dotori", "DB name")
 	flagHTTPPort = flag.String("http", "", "Web Service Port Number")
+	flagPagenum  = flag.Int("pagenum", 9, "Max number of item in a page.")
 
 	flagItemID = flag.String("itemid", "", "bson ObjectID assigned by mongodb")
 )
