@@ -41,6 +41,8 @@ func webserver() {
 	http.HandleFunc("/upload-maya", handleUploadMaya)
 	// Admin
 	http.HandleFunc("/setlibrarypath", handleSetLibraryPath)
+	// Help
+	http.HandleFunc("/help", handleHelp)
 
 	// REST API
 	http.HandleFunc("/api/item", handleAPIItem)
@@ -97,4 +99,13 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+}
+
+func handleHelp(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html")
+	err := TEMPLATES.ExecuteTemplate(w, "help", nil)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
