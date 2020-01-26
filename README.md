@@ -1,6 +1,7 @@
 # Dotori
 
 ![travisCI](https://secure.travis-ci.org/rd101/dotori.svg)
+[![Go Report Card](https://goreportcard.com/badge/github.com/rd101/dotori)](https://goreportcard.com/report/github.com/rd101/dotori)
 
 Dotori is web based asset library tool.
 
