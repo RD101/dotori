@@ -33,7 +33,7 @@ var (
 	flagDBIP     = flag.String("dbip", "", "DB IP")
 	flagDBName   = flag.String("dbname", "dotori", "DB name")
 	flagHTTPPort = flag.String("http", "", "Web Service Port Number")
-	flagPagenum  = flag.Int("pagenum", 9, "Max number of item in a page.")
+	flagPagenum  = flag.Int("pagenum", 9, "maximum number of items in a page")
 
 	flagItemID = flag.String("itemid", "", "bson ObjectID assigned by mongodb")
 )
