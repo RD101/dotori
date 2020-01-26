@@ -39,6 +39,7 @@ func webserver() {
 	http.HandleFunc("/addusd", handleAddUSD)
 	http.HandleFunc("/addmaya-process", handleAddMayaProcess)
 	http.HandleFunc("/upload-maya", handleUploadMaya)
+	http.HandleFunc("/edit-item", handleEditItem)
 	// Admin
 	http.HandleFunc("/setlibrarypath", handleSetLibraryPath)
 
@@ -96,5 +97,13 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+}
 
+func handleEditItem(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html")
+	err := TEMPLATES.ExecuteTemplate(w, "edit-item", nil)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
