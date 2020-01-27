@@ -85,13 +85,13 @@ func Search(session *mgo.Session, itemType string, words string) ([]Item, error)
 }
 
 // SearchItem 은 컬렉션 이름(itemType)과 id를 받아서, 해당 컬렉션에서 id가 일치하는 item을 검색, 반환한다.
-func SearchItem(session *mgo.Session, itemType, id string) ([]Item, error) {
+func SearchItem(session *mgo.Session, itemType, id string) (Item, error) {
 	session.SetMode(mgo.Monotonic, true)
 	c := session.DB(*flagDBName).C(itemType)
-	var result []Item
-	err := c.FindId(bson.ObjectIdHex(id)).All(&result)
+	var result Item
+	err := c.FindId(bson.ObjectIdHex(id)).One(&result)
 	if err != nil {
-		return nil, err
+		return result, err
 	}
 	return result, nil
 }
