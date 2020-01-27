@@ -101,7 +101,27 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 
 func handleEditItem(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	err := TEMPLATES.ExecuteTemplate(w, "edit-item", nil)
+	type recipe struct {
+	}
+	q := r.URL.Query()
+	itemtype := q.Get("itemtype")
+	id := q.Get("id")
+	if itemtype == "" {
+		http.Error(w, "URL에 itemtype을 입력해주세요", http.StatusBadRequest)
+		return
+	}
+	if id == "" {
+		http.Error(w, "URL에 id를 입력해주세요", http.StatusBadRequest)
+		return
+	}
+	session, err := mgo.Dial(*flagDBIP)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer session.Close()
+
+	err = TEMPLATES.ExecuteTemplate(w, "edit-item", nil)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
