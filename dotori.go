@@ -14,11 +14,11 @@ var (
 	// TEMPLATES 는 kalena에서 사용하는 템플릿 글로벌 변수이다.
 	TEMPLATES = template.New("")
 
-	flagAdd        = flag.Bool("add", false, "add mode")
-	flagRm         = flag.Bool("remove", false, "remove mode")
-	flagSeek       = flag.Bool("seek", false, "seek mode")    // 해당 폴더를 탐색할 때 사용합니다.
-	flagSearch     = flag.String("search", "", "search mode") // DB를 검색할 때 사용합니다.
-	flagSearchItem = flag.Bool("searchitem", false, "search a item by its id")
+	flagAdd      = flag.Bool("add", false, "add mode")
+	flagRm       = flag.Bool("remove", false, "remove mode")
+	flagSeek     = flag.Bool("seek", false, "seek mode")    // 해당 폴더를 탐색할 때 사용합니다.
+	flagSearch   = flag.String("search", "", "search mode") // DB를 검색할 때 사용합니다.
+	flagSearchId = flag.Bool("searchid", false, "search a item by its id")
 
 	flagAuthor      = flag.String("author", "", "author")
 	flagTag         = flag.String("tag", "", "tag")
@@ -118,7 +118,7 @@ func main() {
 		}
 		fmt.Printf("Service start: http://%s\n", ip)
 		webserver()
-	} else if *flagSearchItem {
+	} else if *flagSearchId {
 		session, err := mgo.Dial(*flagDBIP)
 		if err != nil {
 			log.Fatal(err)
