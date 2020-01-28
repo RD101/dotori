@@ -13,11 +13,11 @@ func StringToMap(str string) map[string]string {
 
 	var result map[string]string
 	result = make(map[string]string)
-	for _,s := range strings.Split(str, ",") {
+	for _, s := range strings.Split(str, ",") {
 		if s == "" {
 			continue
 		}
-		
+
 		key := strings.Split(s, ":")[0]
 		value := strings.Split(s, ":")[1]
 		result[key] = value
