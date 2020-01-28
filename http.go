@@ -104,6 +104,10 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 func handleEditItem(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
 	type recipe struct {
+		Author      string            `json:"author" bson:"author"`
+		Description string            `json:"description" bson:"description"`
+		Tags        []string          `json:"tags" bson:"tags"`
+		Attributes  map[string]string `json:"tags" bson:"tags"`
 	}
 	q := r.URL.Query()
 	itemtype := q.Get("itemtype")
@@ -123,7 +127,16 @@ func handleEditItem(w http.ResponseWriter, r *http.Request) {
 	}
 	defer session.Close()
 
-	err = TEMPLATES.ExecuteTemplate(w, "edit-item", nil)
+	item, err := SearchItem(session, itemtype, id)
+
+	rcp := recipe{
+		Author:      item.Author,
+		Description: item.Description,
+		Tags:        item.Tags,
+		Attributes:  item.Attributes,
+	}
+
+	err = TEMPLATES.ExecuteTemplate(w, "edit-item", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
