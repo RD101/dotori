@@ -65,7 +65,7 @@ func main() {
 		i := Item{}
 
 		i.Author = *flagAuthor
-		i.Tags = append(i.Tags, *flagTag)
+		i.Tags = SplitBySpace(*flagTag)
 		i.Description = *flagDescription
 		i.Thumbimg = *flagThumbimg
 		i.Thumbmov = *flagThumbmov
