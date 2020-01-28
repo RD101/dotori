@@ -33,6 +33,7 @@ func webserver() {
 	http.HandleFunc("/search", handleSearch)
 	// Add
 	http.HandleFunc("/addmaya", handleAddMaya)
+	http.HandleFunc("/addnuke", handleAddNuke)
 	http.HandleFunc("/addhoudini", handleAddHoudini)
 	http.HandleFunc("/addblender", handleAddBlender)
 	http.HandleFunc("/addabc", handleAddABC)
