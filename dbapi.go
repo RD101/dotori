@@ -93,7 +93,7 @@ func TotalPage(itemNum int) int {
 	return page
 }
 
-// SearchPage 는 itemType, words, page수를 입력받아 해당 아이템을 검색한다.
+// SearchPage 는 itemType, words, 해당 page를 입력받아 해당 아이템을 검색한다.
 func SearchPage(session *mgo.Session, itemType string, words string, page int) ([]Item, error) {
 	session.SetMode(mgo.Monotonic, true)
 	c := session.DB(*flagDBName).C(itemType)
