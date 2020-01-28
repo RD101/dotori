@@ -8,7 +8,7 @@ import (
 func SplitBySpace(str string) []string {
 	str = strings.TrimSpace(str)
 	if str == "" {
-		return nil
+		return []string
 	}
 
 	// 빈 문자열은 리스트에서 제외
@@ -18,6 +18,5 @@ func SplitBySpace(str string) []string {
 			result = append(result, s)
 		}
 	}
-
 	return result
 }
