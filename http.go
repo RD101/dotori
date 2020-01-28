@@ -42,6 +42,8 @@ func webserver() {
 	http.HandleFunc("/edit-item", handleEditItem)
 	// Admin
 	http.HandleFunc("/setlibrarypath", handleSetLibraryPath)
+	// Help
+	http.HandleFunc("/help", handleHelp)
 
 	// REST API
 	http.HandleFunc("/api/item", handleAPIItem)
@@ -122,6 +124,15 @@ func handleEditItem(w http.ResponseWriter, r *http.Request) {
 	defer session.Close()
 
 	err = TEMPLATES.ExecuteTemplate(w, "edit-item", nil)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func handleHelp(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html")
+	err := TEMPLATES.ExecuteTemplate(w, "help", nil)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

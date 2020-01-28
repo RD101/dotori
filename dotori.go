@@ -14,10 +14,11 @@ var (
 	// TEMPLATES 는 kalena에서 사용하는 템플릿 글로벌 변수이다.
 	TEMPLATES = template.New("")
 
-	flagAdd    = flag.Bool("add", false, "add mode")
-	flagRm     = flag.Bool("remove", false, "remove mode")
-	flagSeek   = flag.Bool("seek", false, "seek mode")    // 해당 폴더를 탐색할 때 사용합니다.
-	flagSearch = flag.String("search", "", "search mode") // DB를 검색할 때 사용합니다.
+	flagAdd      = flag.Bool("add", false, "add mode")
+	flagRm       = flag.Bool("remove", false, "remove mode")
+	flagSeek     = flag.Bool("seek", false, "seek mode")    // 해당 폴더를 탐색할 때 사용합니다.
+	flagSearch   = flag.String("search", "", "search mode") // DB를 검색할 때 사용합니다.
+	flagSearchId = flag.Bool("searchid", false, "search a item by its id")
 
 	flagAuthor      = flag.String("author", "", "author")
 	flagTag         = flag.String("tag", "", "tag")
@@ -29,10 +30,11 @@ var (
 	flagType        = flag.String("type", "", "type of asset")
 	flagAttributes  = flag.String("attributes", "", "detail info of file") // "key:value,key:value"
 
-	flagDBIP   = flag.String("dbip", "", "DB IP")
-	flagDBName = flag.String("dbname", "dotori", "DB name")
-
+	// 서비스에 필요한 인수
+	flagDBIP     = flag.String("dbip", "", "DB IP")
+	flagDBName   = flag.String("dbname", "dotori", "DB name")
 	flagHTTPPort = flag.String("http", "", "Web Service Port Number")
+	flagPagenum  = flag.Int("pagenum", 9, "maximum number of items in a page")
 
 	flagItemID = flag.String("itemid", "", "bson ObjectID assigned by mongodb")
 )
@@ -117,6 +119,17 @@ func main() {
 		}
 		fmt.Printf("Service start: http://%s\n", ip)
 		webserver()
+	} else if *flagSearchId {
+		session, err := mgo.Dial(*flagDBIP)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer session.Close()
+		item, err := SearchItem(session, *flagType, *flagItemID)
+		if err != nil {
+			log.Print(err)
+		}
+		fmt.Println(item)
 	} else {
 		flag.PrintDefaults()
 		os.Exit(1)
