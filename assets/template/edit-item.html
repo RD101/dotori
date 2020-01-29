@@ -11,7 +11,7 @@
                     <div class="col-sm">
                         <div class="form-group">
                             <label class="text-muted">Author</label>
-                            <input type="text" name="author" class="form-control" placeholder="에셋 제작자 이름">
+                            <input type="text" name="author" class="form-control" placeholder="에셋 제작자 이름" value="{{.Author}}">
                             <small class="form-text text-muted">에셋 제작자 이름을 적어주세요.</small>
                         </div>
                     </div>
@@ -20,7 +20,7 @@
                     <div class="col-sm">
                         <div class="form-group">
                             <label class="text-muted">Description</label>
-                            <textarea name="description" class="form-control" rows="5"></textarea>
+                            <textarea name="description" class="form-control" rows="5">{{.Description}}</textarea>
                             <small class="form-text text-muted">에셋 사용시 참고해야할 사항</small>
                         </div>
                     </div>
@@ -29,7 +29,7 @@
                     <div class="col-sm">
                         <div class="form-group">
                             <label class="text-muted">Tag</label>
-                            <input type="text" name="tag" class="form-control" placeholder="자동차 하늘">
+                            <input type="text" name="tag" class="form-control" placeholder="자동차 하늘" value="{{Tags2str .Tags}}">
                             <small class="form-text text-muted">태그를 입력하세요. 태그는 띄어쓰기로 구분합니다.</small>
                         </div>
                     </div>
@@ -39,18 +39,20 @@
                         <div class="form-group">
                             <label class="text-muted">Attributes</label>
                             <div id="attributes">
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="form-group p-0 m-0">
-                                            <input type="text" class="form-control" placeholder="key" value="" id="key0" name="key0">
+                                {{range $key, $value := .Attributes}}
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group p-0 m-0">
+                                                <input type="text" class="form-control" placeholder="key" value="{{$key}}" id="key0" name="key0">
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group p-0 m-0">
+                                                <input type="text" class="form-control" placeholder="value" value="{{$value}}" id="value0" name="value0">
+                                            </div>			
                                         </div>
                                     </div>
-                                    <div class="col">
-                                        <div class="form-group p-0 m-0">
-                                            <input type="text" class="form-control" placeholder="value" value="" id="value0" name="value0">
-                                        </div>			
-                                    </div>
-                                </div>
+                                {{end}}
                             </div>
                             
                             <div class="row">

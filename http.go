@@ -12,9 +12,13 @@ import (
 
 // LoadTemplates 함수는 템플릿을 로딩합니다.
 func LoadTemplates() (*template.Template, error) {
-	t := template.New("")
+	t := template.New("").Funcs(funcMap)
 	t, err := vfstemplate.ParseGlob(assets, t, "/template/*.html")
 	return t, err
+}
+
+var funcMap = template.FuncMap{
+	"Tags2str": Tags2str,
 }
 
 func webserver() {
