@@ -111,7 +111,7 @@ func handleEditItem(w http.ResponseWriter, r *http.Request) {
 		Author      string            `json:"author" bson:"author"`
 		Description string            `json:"description" bson:"description"`
 		Tags        []string          `json:"tags" bson:"tags"`
-		Attributes  map[string]string `json:"tags" bson:"tags"`
+		Attributes  map[string]string `json:"attributes" bson:"attributes"`
 	}
 	q := r.URL.Query()
 	itemtype := q.Get("itemtype")
