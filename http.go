@@ -12,9 +12,13 @@ import (
 
 // LoadTemplates 함수는 템플릿을 로딩합니다.
 func LoadTemplates() (*template.Template, error) {
-	t := template.New("")
+	t := template.New("").Funcs(funcMap)
 	t, err := vfstemplate.ParseGlob(assets, t, "/template/*.html")
 	return t, err
+}
+
+var funcMap = template.FuncMap{
+	"Tags2str": Tags2str,
 }
 
 func webserver() {
@@ -31,14 +35,20 @@ func webserver() {
 	http.HandleFunc("/", handleIndex)
 	http.HandleFunc("/add", handleAdd)
 	http.HandleFunc("/search", handleSearch)
-	// Add
+
+	// Maya
 	http.HandleFunc("/addmaya", handleAddMaya)
+	http.HandleFunc("/addmaya-process", handleAddMayaProcess)
+	http.HandleFunc("/upload-maya", handleUploadMaya)
+	http.HandleFunc("/editmaya", handleEditMaya)
+	http.HandleFunc("/editmaya-submit", handleEditMayaSubmit)
+
+	// 앞으로 정리할 것
 	http.HandleFunc("/addhoudini", handleAddHoudini)
 	http.HandleFunc("/addblender", handleAddBlender)
 	http.HandleFunc("/addabc", handleAddABC)
 	http.HandleFunc("/addusd", handleAddUSD)
-	http.HandleFunc("/addmaya-process", handleAddMayaProcess)
-	http.HandleFunc("/upload-maya", handleUploadMaya)
+
 	// Admin
 	http.HandleFunc("/setlibrarypath", handleSetLibraryPath)
 	// Help
@@ -98,7 +108,6 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
 }
 
 func handleHelp(w http.ResponseWriter, r *http.Request) {
