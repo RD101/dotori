@@ -11,7 +11,7 @@
                     <div class="col-sm">
                         <div class="form-group">
                             <label class="text-muted">Author</label>
-                            <input type="text" name="author" class="form-control" placeholder="에셋 제작자 이름" value="{{.Author}}">
+                            <input type="text" id="author" name="author" class="form-control" placeholder="에셋 제작자 이름" value="{{.Author}}">
                             <small class="form-text text-muted">에셋 제작자 이름을 적어주세요.</small>
                         </div>
                     </div>
@@ -20,7 +20,7 @@
                     <div class="col-sm">
                         <div class="form-group">
                             <label class="text-muted">Description</label>
-                            <textarea name="description" class="form-control" rows="5">{{.Description}}</textarea>
+                            <textarea id="description" name="description" class="form-control" rows="5">{{.Description}}</textarea>
                             <small class="form-text text-muted">에셋 사용시 참고해야할 사항</small>
                         </div>
                     </div>
@@ -29,7 +29,7 @@
                     <div class="col-sm">
                         <div class="form-group">
                             <label class="text-muted">Tag</label>
-                            <input type="text" name="tag" class="form-control" placeholder="자동차 하늘" value="{{Tags2str .Tags}}">
+                            <input type="text" id="tag" name="tag" class="form-control" placeholder="자동차 하늘" value="{{Tags2str .Tags}}">
                             <small class="form-text text-muted">태그를 입력하세요. 태그는 띄어쓰기로 구분합니다.</small>
                         </div>
                     </div>
@@ -69,7 +69,7 @@
                 
             </div>
             <div class="text-center pt-5">
-                <a href="/" class="btn btn-outline-warning">수정</a>
+                <a class="btn btn-outline-warning" onclick="editItem()">수정</a>
             </div>
         </div>
         {{template "footer"}}

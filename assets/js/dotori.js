@@ -20,3 +20,29 @@ function addAttribute() {
     // 최종 생성된 Attributes 갯수를 attributeNum에 저장한다.
     document.getElementById("attributesNum").value = document.getElementById("attributes").childElementCount;
 }
+
+// 버튼을 누르면 아이템에 대한 정보가 저장된다.
+function editItem(){
+    console.log("debug1")
+    let author = document.getElementById("author");
+    let description = document.getElementById("description")
+    let tag = document.getElementById("tag")
+
+    console.log("debug2")
+    $.ajax({
+        url:"/api/item",
+        type:"post",
+        data:{
+            type: "maya",
+            author: author,
+        },
+        dataType: "json",
+        success: function(data){
+            console.log("success")
+            alert("success");
+        },
+        eorr: function(request, status, erroir){
+            alert("code:"+request.status+"\n"+"status:"+status+"\n"+"msg:"+request.responseText+"\n"+"error:"+error);
+        }
+    });
+}
