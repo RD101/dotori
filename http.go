@@ -35,15 +35,20 @@ func webserver() {
 	http.HandleFunc("/", handleIndex)
 	http.HandleFunc("/add", handleAdd)
 	http.HandleFunc("/search", handleSearch)
-	// Add
+
+	// Maya
 	http.HandleFunc("/addmaya", handleAddMaya)
+	http.HandleFunc("/addmaya-process", handleAddMayaProcess)
+	http.HandleFunc("/upload-maya", handleUploadMaya)
+	http.HandleFunc("/editmaya", handleEditMaya)
+	http.HandleFunc("/editmaya-submit", handleEditMayaSubmit)
+
+	// 앞으로 정리할 것
 	http.HandleFunc("/addhoudini", handleAddHoudini)
 	http.HandleFunc("/addblender", handleAddBlender)
 	http.HandleFunc("/addabc", handleAddABC)
 	http.HandleFunc("/addusd", handleAddUSD)
-	http.HandleFunc("/addmaya-process", handleAddMayaProcess)
-	http.HandleFunc("/upload-maya", handleUploadMaya)
-	http.HandleFunc("/edit-item", handleEditItem)
+
 	// Admin
 	http.HandleFunc("/setlibrarypath", handleSetLibraryPath)
 	// Help
@@ -100,48 +105,6 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 	err = json.NewEncoder(w).Encode(items)
 	if err != nil {
 		log.Println(err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-}
-
-func handleEditItem(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html")
-	type recipe struct {
-		Author      string            `json:"author" bson:"author"`
-		Description string            `json:"description" bson:"description"`
-		Tags        []string          `json:"tags" bson:"tags"`
-		Attributes  map[string]string `json:"attributes" bson:"attributes"`
-	}
-	q := r.URL.Query()
-	itemtype := q.Get("itemtype")
-	id := q.Get("id")
-	if itemtype == "" {
-		http.Error(w, "URL에 itemtype을 입력해주세요", http.StatusBadRequest)
-		return
-	}
-	if id == "" {
-		http.Error(w, "URL에 id를 입력해주세요", http.StatusBadRequest)
-		return
-	}
-	session, err := mgo.Dial(*flagDBIP)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	defer session.Close()
-
-	item, err := SearchItem(session, itemtype, id)
-
-	rcp := recipe{
-		Author:      item.Author,
-		Description: item.Description,
-		Tags:        item.Tags,
-		Attributes:  item.Attributes,
-	}
-
-	err = TEMPLATES.ExecuteTemplate(w, "edit-item", rcp)
-	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
