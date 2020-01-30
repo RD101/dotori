@@ -29,6 +29,17 @@ func RmItem(session *mgo.Session, itemType, id string) error {
 	return nil
 }
 
+// UpdateItem 은 컬렉션 이름과 Item을 받아서, Item을 업데이트한다.
+func UpdateItem(session *mgo.Session, itemType string, item Item) error {
+	session.SetMode(mgo.Monotonic, true)
+	c := session.DB(*flagDBName).C(itemType)
+	err := c.Update(bson.M{"_id": item.ID}, item)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // allItems는 DB에서 전체 아이템 정보를 가져오는 함수입니다.
 func allItems(session *mgo.Session, itemType string) ([]Item, error) {
 	session.SetMode(mgo.Monotonic, true)
