@@ -53,7 +53,7 @@ func SearchTags(session *mgo.Session, itemType string, tag string) ([]Item, erro
 	return results, nil
 }
 
-// Search 는 words를 입력받아 해당 아이템을 검색한다.
+// Search 는 itemType, words를 입력받아 해당 아이템을 검색한다.
 func Search(session *mgo.Session, itemType string, words string) ([]Item, error) {
 	session.SetMode(mgo.Monotonic, true)
 	c := session.DB(*flagDBName).C(itemType)
@@ -78,6 +78,46 @@ func Search(session *mgo.Session, itemType string, words string) ([]Item, error)
 	// 사용률이 많은 소스가 위로 출력되도록 한다.
 	q := bson.M{"$and": wordsQueries} // 최종 쿼리는 BSON type 오브젝트가 되어야 한다.
 	err := c.Find(q).Sort("-usingrate").All(&results)
+	if err != nil {
+		return nil, err
+	}
+	return results, nil
+}
+
+// TotalPage 함수는 아이템의 갯수를 입력받아 필요한 총 페이지 수를 구한다.
+func TotalPage(itemNum int) int {
+	page := itemNum / *flagPagenum
+	if itemNum%*flagPagenum != 0 {
+		page++
+	}
+	return page
+}
+
+// SearchPage 는 itemType, words, 해당 page를 입력받아 해당 아이템을 검색한다.
+func SearchPage(session *mgo.Session, itemType string, words string, page int) ([]Item, error) {
+	session.SetMode(mgo.Monotonic, true)
+	c := session.DB(*flagDBName).C(itemType)
+	var results []Item
+	wordsQueries := []bson.M{}
+	for _, word := range strings.Split(words, " ") {
+		if word == "" {
+			continue
+		}
+		querys := []bson.M{}
+		querys = append(querys, bson.M{"author": &bson.RegEx{Pattern: word, Options: "i"}})
+		querys = append(querys, bson.M{"tags": &bson.RegEx{Pattern: word, Options: "i"}})
+		querys = append(querys, bson.M{"description": &bson.RegEx{Pattern: word, Options: "i"}})
+		querys = append(querys, bson.M{"type": &bson.RegEx{Pattern: word, Options: "i"}})
+		querys = append(querys, bson.M{"inputpath": &bson.RegEx{Pattern: word, Options: "i"}})
+		querys = append(querys, bson.M{"outputpath": &bson.RegEx{Pattern: word, Options: "i"}})
+		querys = append(querys, bson.M{"createtime": &bson.RegEx{Pattern: word, Options: "i"}})
+		querys = append(querys, bson.M{"updatetime": &bson.RegEx{Pattern: word, Options: "i"}})
+		querys = append(querys, bson.M{"attributes.*": word})
+		wordsQueries = append(wordsQueries, bson.M{"$or": querys})
+	}
+	// 사용률이 많은 소스가 위로 출력되도록 한다.
+	q := bson.M{"$and": wordsQueries} // 최종 쿼리는 BSON type 오브젝트가 되어야 한다.
+	err := c.Find(q).Sort("-usingrate").Skip(page - 1).Limit(*flagPagenum).All(&results)
 	if err != nil {
 		return nil, err
 	}
