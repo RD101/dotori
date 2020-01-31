@@ -225,7 +225,7 @@ func Test_idToPath(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		b := regexLowerNum.MatchString(c.Dbname)
+		b := regexObjectID.MatchString(c.Dbname)
 		if c.want != b {
 			t.Fatalf("Test_Dbname(): 입력 값: %v, 원하는 값: %v, 얻은 값: %v\n", c.Dbname, c.want, b)
 		}
