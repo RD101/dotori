@@ -64,7 +64,6 @@ func Search(session *mgo.Session, itemType string, words string) ([]Item, error)
 			continue
 		}
 		querys := []bson.M{}
-		querys = append(querys, bson.M{"_id": bson.ObjectIdHex(word)})
 		querys = append(querys, bson.M{"author": &bson.RegEx{Pattern: word, Options: "i"}})
 		querys = append(querys, bson.M{"tags": &bson.RegEx{Pattern: word, Options: "i"}})
 		querys = append(querys, bson.M{"description": &bson.RegEx{Pattern: word, Options: "i"}})
@@ -109,7 +108,6 @@ func SearchPage(session *mgo.Session, itemType string, words string, page int) (
 			continue
 		}
 		querys := []bson.M{}
-		querys = append(querys, bson.M{"_id": bson.ObjectIdHex(word)})
 		querys = append(querys, bson.M{"author": &bson.RegEx{Pattern: word, Options: "i"}})
 		querys = append(querys, bson.M{"tags": &bson.RegEx{Pattern: word, Options: "i"}})
 		querys = append(querys, bson.M{"description": &bson.RegEx{Pattern: word, Options: "i"}})
