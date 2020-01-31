@@ -1,0 +1,12 @@
+{{define "items"}}
+    <div class="row mx-auto mb-5">
+        {{range .Items}}
+            <div class="col-sm-4">
+                <h5 class="text-light">{{.ID.Hex}}</h5>
+                <div class="">
+                    <span class="text-light">Author: {{.Author}}</span><br>
+                </div>
+            </div>
+        {{end}}
+    </div>   
+{{end}}
