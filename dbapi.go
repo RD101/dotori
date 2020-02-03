@@ -95,9 +95,13 @@ func TotalPage(itemNum int) int {
 
 // SearchPage 는 itemType, words, 해당 page를 입력받아 해당 아이템을 검색한다.
 func SearchPage(session *mgo.Session, itemType string, words string, page int) ([]Item, error) {
+	var results []Item
+	if words == "" {
+		return results, nil
+	}
 	session.SetMode(mgo.Monotonic, true)
 	c := session.DB(*flagDBName).C(itemType)
-	var results []Item
+
 	wordsQueries := []bson.M{}
 	for _, word := range strings.Split(words, " ") {
 		if word == "" {

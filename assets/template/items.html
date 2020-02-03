@@ -1,0 +1,15 @@
+{{define "items"}}
+    <div class="row mx-auto mb-5">
+        {{range .Items}}
+            <div class="col-sm-4">
+                <div class="thumbnail">
+                    <img src="/assets/img/noimage.svg">
+                </div>
+                <div class="info">
+                    <span class="text-light">ID: {{.ID.Hex}}</span><br>
+                    <span class="text-light">Author: {{.Author}}</span><br>
+                </div>
+            </div>
+        {{end}}
+    </div>   
+{{end}}
