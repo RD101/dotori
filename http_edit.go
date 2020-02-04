@@ -18,8 +18,12 @@ func handleEditMaya(w http.ResponseWriter, r *http.Request) {
 		Attributes  map[string]string `json:"attributes" bson:"attributes"`
 	}
 	q := r.URL.Query()
-	itemtype := "maya"
+	itemtype := q.Get("itemtype")
 	id := q.Get("id")
+	if itemtype == "" {
+		http.Error(w, "URL에 itemtype을 입력해주세요", http.StatusBadRequest)
+		return
+	}
 	if id == "" {
 		http.Error(w, "URL에 id를 입력해주세요", http.StatusBadRequest)
 		return
