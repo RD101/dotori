@@ -18,12 +18,8 @@ func handleEditMaya(w http.ResponseWriter, r *http.Request) {
 		Attributes  map[string]string `json:"attributes" bson:"attributes"`
 	}
 	q := r.URL.Query()
-	itemtype := q.Get("itemtype")
+	itemtype := "maya"
 	id := q.Get("id")
-	if itemtype == "" {
-		http.Error(w, "URL에 itemtype을 입력해주세요", http.StatusBadRequest)
-		return
-	}
 	if id == "" {
 		http.Error(w, "URL에 id를 입력해주세요", http.StatusBadRequest)
 		return
@@ -54,5 +50,35 @@ func handleEditMaya(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleEditMayaSubmit(w http.ResponseWriter, r *http.Request) {
+	id := r.FormValue("id")
+	itemtype := r.FormValue("itemtype")
+	session, err := mgo.Dial(*flagDBIP)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer session.Close()
+	item, err := SearchItem(session, itemtype, id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	item.Author = r.FormValue("author")
+	item.Description = r.FormValue("description")
+	item.Tags = SplitBySpace(r.FormValue("tags"))
+	err = UpdateItem(session, itemtype, item)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	http.Redirect(w, r, "/editmaya-success", http.StatusSeeOther)
+}
 
+func handleEditMayaSuccess(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html")
+	err := TEMPLATES.ExecuteTemplate(w, "editmaya-success", nil)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
