@@ -72,6 +72,7 @@ func main() {
 		i.Inputpath = *flagInputpath
 		i.Outputpath = *flagOutputpath
 		i.Type = *flagType
+		i.Attributes = StringToMap(*flagAttributes)
 
 		err := i.CheckError()
 		if err != nil {

@@ -8,4 +8,5 @@ var (
 	regexIPv4        = regexp.MustCompile(`^([01]?\d?\d|2[0-4]\d|25[0-5]).([01]?\d?\d|2[0-4]\d|25[0-5]).([01]?\d?\d|2[0-4]\d|25[0-5]).([01]?\d?\d|2[0-4]\d|25[0-5])$`) // 0.0.0.0 ~ 255.255.255.255
 	regexLower       = regexp.MustCompile(`[a-z]+$`)                                                                                                                   // Itemtype, Dbname (maya, nuke, dotori..)
 	regexObjectID    = regexp.MustCompile(`^[a-z0-9]*$`)                                                                                                               // "54759eb3c090d83494e2d804"
+	regexMap         = regexp.MustCompile(`^([a-zA-Z0-9]+:[a-zA-Z0-9.-_]+)(,?([a-zA-Z0-9]+:[a-zA-Z0-9.-_]+))*$`)                                                       // key:value,key:value
 )
