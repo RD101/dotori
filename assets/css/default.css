@@ -109,3 +109,10 @@ body {
 	cursor: pointer;
 	text-decoration: none;
 }
+
+.badge-outline-darkmode, .badge-outline-darkmode:link, .badge-outline-darkmode:active, .badge-outline-darkmode:hover {
+	background-color:  #212121!important;
+	border:1px solid #A7A59C;
+	color: #A7A59C;
+	text-decoration: none;
+}
