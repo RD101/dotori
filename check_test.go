@@ -231,3 +231,49 @@ func Test_idToPath(t *testing.T) {
 		}
 	}
 }
+
+// Attributes을 테스트하기위한 함수
+func Test_Attributes(t *testing.T) {
+	cases := []struct {
+		Attributes string
+		want       bool
+	}{{
+		Attributes: "Nuke:10", // 값이 하나만 있는 경우
+		want:       true,
+	}, {
+		Attributes: "Nuke:10,size:2048x858", // 값이 두개인 경우
+		want:       true,
+	}, {
+		Attributes: "Nuke:10,", // , 뒤에 값이 없는 경우
+		want:       false,
+	}, {
+		Attributes: "Nuke:10,size:", // : 뒤에 값이 없는 경우
+		want:       false,
+	}, {
+		Attributes: "Nuke:10,size", // key까지만 입력한 경우
+		want:       false,
+	}, {
+		Attributes: "Nuke,size", // key만 입력한 경우
+		want:       false,
+	}, {
+		Attributes: ":10,:2048x858", // value만 입력한 경우
+		want:       false,
+	}, {
+		Attributes: "Nuke:10,,size:2048x858", // 중간에 값이 없는 경우
+		want:       false,
+	}, {
+		Attributes: "Nuke:10.5,size:2048x858", // value에 특수문자가 포함된 경우
+		want:       true,
+	}, {
+		Attributes: ",Nuke:10", // ,으로 시작한 경우
+		want:       false,
+	},
+	}
+
+	for _, c := range cases {
+		b := regexMap.MatchString(c.Attributes)
+		if c.want != b {
+			t.Fatalf("Test_Attributes(): 입력 값: %v, 원하는 값: %v, 얻은 값: %v\n", c.Attributes, c.want, b)
+		}
+	}
+}

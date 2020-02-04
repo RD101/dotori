@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"strings"
 )
 
@@ -17,5 +18,34 @@ func SplitBySpace(str string) []string {
 			result = append(result, s)
 		}
 	}
+	return result
+}
+
+// StringToMap 함수는 "key:value,key:value" 형식의 문자열을 map 형으로 변환하는 함수이다.
+func StringToMap(str string) map[string]string {
+	str = strings.TrimSpace(str)
+	if str == "" {
+		return nil
+	}
+
+	var result map[string]string
+	result = make(map[string]string)
+
+	if !regexMap.MatchString(str) { // 전달받은 str이 key:value,key:value 형식이 맞는지 확인
+		log.Fatal("map 형식이 아닙니다")
+		return result
+	}
+
+	for _, s := range strings.Split(str, ",") {
+		s = strings.TrimSpace(s)
+		if s == "" {
+			continue
+		}
+
+		key := strings.Split(s, ":")[0]
+		value := strings.Split(s, ":")[1]
+		result[key] = value
+	}
+
 	return result
 }
