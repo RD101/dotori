@@ -77,6 +77,7 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 		Items      []Item
 		Searchword string
 		ItemType   string
+		TotalNum   int
 	}
 	rcp := recipe{}
 	rcp.Searchword = searchword
@@ -87,12 +88,13 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer session.Close()
-	items, err := SearchPage(session, itemType, searchword, 1)
+	totalNum, items, err := SearchPage(session, itemType, searchword, 1)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	rcp.Items = items
+	rcp.TotalNum = totalNum
 	err = TEMPLATES.ExecuteTemplate(w, "index", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
