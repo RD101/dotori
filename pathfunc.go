@@ -112,7 +112,7 @@ func idToPath(id string) (string, error) {
 	}
 
 	// 영문 소문자와 숫자만 허용
-	if !regexLowerNum.MatchString(id) {
+	if !regexObjectID.MatchString(id) {
 		return id, errors.New("정규 표현식이 잘못되었습니다")
 	}
 
