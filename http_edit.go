@@ -35,7 +35,7 @@ func handleEditMaya(w http.ResponseWriter, r *http.Request) {
 
 	rcp := recipe{
 		ID:          item.ID,
-		Type:        item.Type,
+		Type:        item.ItemType,
 		Author:      item.Author,
 		Description: item.Description,
 		Tags:        item.Tags,
