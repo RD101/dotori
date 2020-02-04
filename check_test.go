@@ -256,7 +256,7 @@ func Test_Attributes(t *testing.T) {
 		Attributes: "Nuke,size", // key만 입력한 경우
 		want:       false,
 	}, {
-		Attributes: ":10,:2048x858", // key만 입력한 경우
+		Attributes: ":10,:2048x858", // value만 입력한 경우
 		want:       false,
 	}, {
 		Attributes: "Nuke:10,,size:2048x858", // 중간에 값이 없는 경우
