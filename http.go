@@ -44,8 +44,13 @@ func webserver() {
 	http.HandleFunc("/editmaya-submit", handleEditMayaSubmit)
 	http.HandleFunc("/editmaya-success", handleEditMayaSuccess)
 
-	// 앞으로 정리할 것
+	// Houdini
 	http.HandleFunc("/addhoudini", handleAddHoudini)
+	http.HandleFunc("/addhoudini-process",handleAddHoudiniProcess)
+	http.HandleFunc("/upload-houdini", handleUploadHoudini)
+
+
+	// 앞으로 정리할 것
 	http.HandleFunc("/addblender", handleAddBlender)
 	http.HandleFunc("/addabc", handleAddABC)
 	http.HandleFunc("/addusd", handleAddUSD)
