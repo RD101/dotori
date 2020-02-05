@@ -3,7 +3,7 @@
 ![travisCI](https://secure.travis-ci.org/rd101/dotori.svg)
 [![Go Report Card](https://goreportcard.com/badge/github.com/rd101/dotori)](https://goreportcard.com/report/github.com/rd101/dotori)
 
-Dotori is web based asset library tool.
+Dotori is web-based asset library tool.
 
 ## 목 표
 - VFX, 애니메이션, 게임에 사용되는 모든 타입의 에셋을 등록,관리
