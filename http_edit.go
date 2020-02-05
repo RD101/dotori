@@ -11,7 +11,7 @@ func handleEditMaya(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
 	type recipe struct {
 		ID          bson.ObjectId     `json:"id" bson:"id"`
-		Type        string            `json:"type" bson:"type"`
+		ItemType    string            `json:"itemtype" bson:"itemtype"`
 		Author      string            `json:"author" bson:"author"`
 		Description string            `json:"description" bson:"description"`
 		Tags        []string          `json:"tags" bson:"tags"`
@@ -39,7 +39,7 @@ func handleEditMaya(w http.ResponseWriter, r *http.Request) {
 
 	rcp := recipe{
 		ID:          item.ID,
-		Type:        item.ItemType,
+		ItemType:    item.ItemType,
 		Author:      item.Author,
 		Description: item.Description,
 		Tags:        item.Tags,
