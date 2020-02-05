@@ -27,7 +27,7 @@ var (
 	flagThumbmov    = flag.String("thumbmov", "", "path of thumbnail mov")
 	flagInputpath   = flag.String("inputpath", "", "input path")
 	flagOutputpath  = flag.String("outputpath", "", "output path")
-	flagType        = flag.String("type", "", "type of asset")
+	flagItemType    = flag.String("itemtype", "", "type of asset")
 	flagAttributes  = flag.String("attributes", "", "detail info of file") // "key:value,key:value"
 
 	// 서비스에 필요한 인수
@@ -54,7 +54,7 @@ func main() {
 			log.Fatal(err)
 		}
 		defer session.Close()
-		items, err := Search(session, *flagType, *flagSearch)
+		items, err := Search(session, *flagItemType, *flagSearch)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -71,7 +71,7 @@ func main() {
 		i.Thumbmov = *flagThumbmov
 		i.Inputpath = *flagInputpath
 		i.Outputpath = *flagOutputpath
-		i.ItemType = *flagType
+		i.ItemType = *flagItemType
 		i.Attributes = StringToMap(*flagAttributes)
 
 		err := i.CheckError()
@@ -98,7 +98,7 @@ func main() {
 			log.Print(err)
 		}
 	} else if *flagRm {
-		if *flagType == "" {
+		if *flagItemType == "" {
 			log.Fatal("flagType이 빈 문자열 입니다")
 		}
 		if *flagItemID == "" {
@@ -109,7 +109,7 @@ func main() {
 			log.Fatal(err)
 		}
 		defer session.Close()
-		err = RmItem(session, *flagType, *flagItemID)
+		err = RmItem(session, *flagItemType, *flagItemID)
 		if err != nil {
 			log.Print(err)
 		}
@@ -126,7 +126,7 @@ func main() {
 			log.Fatal(err)
 		}
 		defer session.Close()
-		item, err := SearchItem(session, *flagType, *flagItemID)
+		item, err := SearchItem(session, *flagItemType, *flagItemID)
 		if err != nil {
 			log.Print(err)
 		}
