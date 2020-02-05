@@ -19,6 +19,7 @@ func LoadTemplates() (*template.Template, error) {
 
 var funcMap = template.FuncMap{
 	"Tags2str": Tags2str,
+	"add":      add,
 }
 
 func webserver() {
@@ -46,9 +47,8 @@ func webserver() {
 
 	// Houdini
 	http.HandleFunc("/addhoudini", handleAddHoudini)
-	http.HandleFunc("/addhoudini-process",handleAddHoudiniProcess)
+	http.HandleFunc("/addhoudini-process", handleAddHoudiniProcess)
 	http.HandleFunc("/upload-houdini", handleUploadHoudini)
-
 
 	// 앞으로 정리할 것
 	http.HandleFunc("/addblender", handleAddBlender)

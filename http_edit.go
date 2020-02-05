@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
+	"strconv"
 
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -56,6 +58,15 @@ func handleEditMaya(w http.ResponseWriter, r *http.Request) {
 func handleEditMayaSubmit(w http.ResponseWriter, r *http.Request) {
 	id := r.FormValue("id")
 	itemtype := r.FormValue("itemtype")
+	attrNum := r.FormValue("attributesNum")
+	aNum, _ := strconv.Atoi(attrNum)
+	var attr map[string]string
+	attr = make(map[string]string)
+	for i := 0; i < aNum; i++ {
+		key := r.FormValue(fmt.Sprintf("key%d", i))
+		value := r.FormValue(fmt.Sprintf("value%d", i))
+		attr[key] = value
+	}
 	session, err := mgo.Dial(*flagDBIP)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -70,6 +81,7 @@ func handleEditMayaSubmit(w http.ResponseWriter, r *http.Request) {
 	item.Author = r.FormValue("author")
 	item.Description = r.FormValue("description")
 	item.Tags = SplitBySpace(r.FormValue("tags"))
+	item.Attributes = attr
 	err = UpdateItem(session, itemtype, item)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
