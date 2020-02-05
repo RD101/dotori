@@ -1,7 +1,7 @@
 {{define "items"}}
     <div class="row mx-auto mb-5">
         {{range .Items}}
-            {{$itemtype := .Type}}
+            {{$itemtype := .ItemType}}
             <div class="col-sm-4">
                 <div class="thumbnail">
                     <img src="/assets/img/noimage.svg">
@@ -16,7 +16,7 @@
                             </div>
                         {{end}}
                     </div>
-                    <a href="/edit{{.Type}}?itemtype={{.Type}}&id={{.ID.Hex}}" class="text-muted">Edit</a>
+                    <a href="/edit{{.ItemType}}?itemtype={{.ItemType}}&id={{.ID.Hex}}" class="text-muted">Edit</a>
                 </div>
             </div>
         {{end}}

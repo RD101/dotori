@@ -71,7 +71,7 @@ func main() {
 		i.Thumbmov = *flagThumbmov
 		i.Inputpath = *flagInputpath
 		i.Outputpath = *flagOutputpath
-		i.Type = *flagType
+		i.ItemType = *flagType
 		i.Attributes = StringToMap(*flagAttributes)
 
 		err := i.CheckError()
