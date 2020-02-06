@@ -2,7 +2,9 @@
     {{template "head"}}
     <body>
         {{template "navbar"}}
-        {{template "search"}}
+        {{template "search" .}}
+        {{template "items" .}}
+        {{template "page"}}
         {{template "footer"}}
     </body>
     <!--add javascript-->

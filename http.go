@@ -1,7 +1,7 @@
 package main
 
 import (
-	"encoding/json"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -12,9 +12,13 @@ import (
 
 // LoadTemplates 함수는 템플릿을 로딩합니다.
 func LoadTemplates() (*template.Template, error) {
-	t := template.New("")
+	t := template.New("").Funcs(funcMap)
 	t, err := vfstemplate.ParseGlob(assets, t, "/template/*.html")
 	return t, err
+}
+
+var funcMap = template.FuncMap{
+	"Tags2str": Tags2str,
 }
 
 func webserver() {
@@ -28,22 +32,36 @@ func webserver() {
 	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(assets)))
 
 	// 웹주소 설정
-	http.HandleFunc("/", handleIndex)
-	http.HandleFunc("/add", handleAdd)
+	http.HandleFunc("/", handleSearch)
 	http.HandleFunc("/search", handleSearch)
-	// Add
+	http.HandleFunc("/search-submit", handleSearchSubmit)
+
+	// Maya
 	http.HandleFunc("/addmaya", handleAddMaya)
+	http.HandleFunc("/addmaya-process", handleAddMayaProcess)
+	http.HandleFunc("/upload-maya", handleUploadMaya)
+	http.HandleFunc("/editmaya", handleEditMaya)
+	http.HandleFunc("/editmaya-submit", handleEditMayaSubmit)
+	http.HandleFunc("/editmaya-success", handleEditMayaSuccess)
+
+	// nuke
 	http.HandleFunc("/addnuke", handleAddNuke)
+	http.HandleFunc("/addnuke-process", handleAddNukeProcess)
+	http.HandleFunc("/upload-nuke", handleUploadNuke)
+
+	// Houdini
 	http.HandleFunc("/addhoudini", handleAddHoudini)
+	http.HandleFunc("/addhoudini-process", handleAddHoudiniProcess)
+	http.HandleFunc("/upload-houdini", handleUploadHoudini)
+
+	// 앞으로 정리할 것
 	http.HandleFunc("/addblender", handleAddBlender)
 	http.HandleFunc("/addabc", handleAddABC)
 	http.HandleFunc("/addusd", handleAddUSD)
-	http.HandleFunc("/addmaya-process", handleAddMayaProcess)
-	http.HandleFunc("/addnuke-process", handleAddNukeProcess)
-	http.HandleFunc("/upload-maya", handleUploadMaya)
-	http.HandleFunc("/upload-nuke", handleUploadNuke)
 	// Admin
 	http.HandleFunc("/setlibrarypath", handleSetLibraryPath)
+	// Help
+	http.HandleFunc("/help", handleHelp)
 
 	// REST API
 	http.HandleFunc("/api/item", handleAPIItem)
@@ -55,49 +73,54 @@ func webserver() {
 
 }
 
-func handleIndex(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html")
-	err := TEMPLATES.ExecuteTemplate(w, "index", nil)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-}
-
-func handleAdd(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte("add page"))
-}
-
 // handleSearch는 URL을 통해 query를 할 수 있게 해주는 함수입니다.
 func handleSearch(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query()
 	itemType := q.Get("itemtype")
+	searchword := q.Get("searchword")
 	if itemType == "" {
-		http.Error(w, "URL에 itemtype을 입력해주세요", http.StatusBadRequest)
-		return
+		itemType = "maya"
 	}
-
-	log.Println(itemType)
-
+	type recipe struct {
+		Items      []Item
+		Searchword string
+		ItemType   string
+		TotalNum   int
+	}
+	rcp := recipe{}
+	rcp.Searchword = searchword
+	rcp.ItemType = itemType
 	session, err := mgo.Dial(*flagDBIP)
 	if err != nil {
-		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	defer session.Close()
-	items, err := allItems(session, itemType)
+	totalNum, items, err := SearchPage(session, itemType, searchword, 1)
 	if err != nil {
-		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	err = json.NewEncoder(w).Encode(items)
+	rcp.Items = items
+	rcp.TotalNum = totalNum
+	err = TEMPLATES.ExecuteTemplate(w, "index", rcp)
 	if err != nil {
-		log.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+}
 
+func handleSearchSubmit(w http.ResponseWriter, r *http.Request) {
+	itemType := r.FormValue("itemtype")
+	searchword := r.FormValue("searchword")
+	http.Redirect(w, r, fmt.Sprintf("/search?itemtype=%s&searchword=%s", itemType, searchword), http.StatusSeeOther)
+}
+
+func handleHelp(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html")
+	err := TEMPLATES.ExecuteTemplate(w, "help", nil)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }

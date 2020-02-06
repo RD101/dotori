@@ -23,8 +23,8 @@ type Item struct {
 	Thumbmov    string                          `json:"thumbmov" bson:"thumbmov"`       // 썸네일 영상 주소
 	Inputpath   string                          `json:"inputpath" bson:"inputpath"`     // 최초 등록되는 경로
 	Outputpath  string                          `json:"outputpath" bson:"outputpath"`   // 저장되는 경로
-	Type        string                          `json:"type" bson:"type"`               // maya, source, houdini, blender, nuke ..  같은 형태인가.
-	Status      string                          `json:"status" bson:"status"`            // 상태(에러, done, wip)
+	ItemType    string                          `json:"itemtype" bson:"itemtype"`       // maya, source, houdini, blender, nuke ..  같은 형태인가.
+	Status      string                          `json:"status" bson:"status"`           // 상태(에러, done, wip)
 	Log         string                          `json:"log" bson:"log"`                 // 데이터를 처리할 때 생성되는 로그
 	CreateTime  string                          `json:"createtime" bson:"createtime"`   // Item 생성 시간
 	Updatetime  string                          `json:"updatetime" bson:"updatetime"`   // UTC 타임으로 들어가도록 하기.
@@ -51,7 +51,7 @@ func (i Item) CheckError() error {
 	if !regexPath.MatchString(i.Outputpath) {
 		return errors.New("asset 저장 경로가 /test/test 형식의 문자열이 아닙니다")
 	}
-	if !regexLower.MatchString(i.Type) {
+	if !regexLower.MatchString(i.ItemType) {
 		return errors.New("type이 소문자가 아닙니다")
 	}
 	return nil

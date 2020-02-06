@@ -1,0 +1,24 @@
+{{define "items"}}
+    <div class="row mx-auto mb-5">
+        {{range .Items}}
+            {{$itemtype := .ItemType}}
+            <div class="col-sm-4">
+                <div class="thumbnail">
+                    <img src="/assets/img/noimage.svg">
+                </div>
+                <div class="info mb-3">
+                    <span class="text-muted">ID: {{.ID.Hex}}</span><br>
+                    <span class="text-muted">Author: {{.Author}}</span><br>
+                    <div class="row ml-0 text-muted">Tags:
+                        {{range .Tags}}
+                            <div class="ml-1">
+                                <a href="/search?itemtype={{$itemtype}}&searchword={{.}}" class="badge badge-outline-darkmode">{{.}}</a>
+                            </div>
+                        {{end}}
+                    </div>
+                    <a href="/edit{{.ItemType}}?itemtype={{.ItemType}}&id={{.ID.Hex}}" class="text-muted">Edit</a>
+                </div>
+            </div>
+        {{end}}
+    </div>   
+{{end}}

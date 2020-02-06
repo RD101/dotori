@@ -1,21 +1,23 @@
 {{define "search"}}
-<form action="/searchsubmit" method="POST">
+<form action="/search-submit" method="POST">
 	<div class="row justify-content-center align-items-center m-3">
 		<div class="col-lg-7">
 			<div class="input-group mb-3">
 				<div class="input-group-prepend">
-					<select name="Type" class="custom-select left-radius">
-                        <option value="">All</option>
-                        <option value="maya">Maya</option>
+					<select name="itemtype" class="custom-select left-radius">
+						<option value="maya" {{if eq .ItemType "maya" }}selected{{end}}>Maya</option>
+						<option value="nuke" {{if eq .ItemType "nuke" }}selected{{end}}>Nuke</option>
+						<option value="houdini" {{if eq .ItemType "houdini" }}selected{{end}}>Houdini</option>
+						<option value="" {{if eq .ItemType "" }}selected{{end}}>All</option>
 					</select>
 				</div>
 				
-				<input class="form-control" id="search" placeholder="Search word.." type="text" name="Searchword" value="">
+				<input class="form-control" id="searchword" placeholder="Search word.." type="text" name="searchword" value="{{.Searchword}}">
 				
 				<div class="input-group-append">
 					<button class="btn btn-darkmode" id="button">
 						Search
-							<span class="badge badge-darkmode">0</span>
+						<span class="badge badge-secondary ml-3">{{$.TotalNum}}</span>
 					</button>
 				</div>
 			</div>

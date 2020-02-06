@@ -19,7 +19,7 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 					http.Error(w, "type을 설정해 주세요", http.StatusBadRequest)
 					return
 				}
-				i.Type = values[0]
+				i.ItemType = values[0]
 			case "author":
 				if len(values) != 1 {
 					http.Error(w, "author를 설정해 주세요", http.StatusBadRequest)
@@ -72,6 +72,7 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(http.StatusOK)
 		w.Write(data)
+		return
 	} else if r.Method == http.MethodDelete {
 		q := r.URL.Query()
 		itemtype := q.Get("itemtype")
@@ -103,6 +104,7 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(http.StatusOK)
 		w.Write(data)
+		return
 	} else {
 		http.Error(w, "Not Supported Method", http.StatusMethodNotAllowed)
 		return

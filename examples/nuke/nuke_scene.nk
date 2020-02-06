@@ -1,0 +1,93 @@
+#! /usr/local/Nuke10.5v4/libnuke-10.5.4.so -nx
+#write_info Write1 file:"/home/aerim.shim/Desktop/dotori/samplenuke.mov" format:"2048 1556 1" chans:":rgba.red:rgba.green:rgba.blue:" framerange:"1 100" fps:"0" colorspace:"default (Gamma1.8)" datatype:"unknown" transfer:"unknown" views:"main" colorManagement:"Nuke"
+version 10.5 v4
+define_window_layout_xml {<?xml version="1.0" encoding="UTF-8"?>
+<layout version="1.0">
+    <window x="0" y="0" w="1922" h="1020" maximized="1" screen="0">
+        <splitter orientation="1">
+            <split size="40"/>
+            <dock id="" hideTitles="1" activePageId="Toolbar.1">
+                <page id="Toolbar.1"/>
+            </dock>
+            <split size="1257" stretch="1"/>
+            <splitter orientation="2">
+                <split size="560"/>
+                <dock id="" activePageId="Viewer.1">
+                    <page id="Viewer.1"/>
+                </dock>
+                <split size="394"/>
+                <dock id="" activePageId="DAG.1">
+                    <page id="DAG.1"/>
+                    <page id="Curve Editor.1"/>
+                    <page id="DopeSheet.1"/>
+                </dock>
+            </splitter>
+            <split size="615"/>
+            <dock id="" activePageId="Properties.1">
+                <page id="Properties.1"/>
+            </dock>
+        </splitter>
+    </window>
+</layout>
+}
+Root {
+ inputs 0
+ name /home/aerim.shim/Desktop/dotori/samplenuke.nk
+ format "2048 1556 0 0 2048 1556 1 2K_Super_35(full-ap)"
+ proxy_type scale
+ proxy_format "1024 778 0 0 1024 778 1 1K_Super_35(full-ap)"
+ colorManagement Nuke
+ workingSpaceLUT linear
+ monitorLut sRGB
+ int8Lut sRGB
+ int16Lut sRGB
+ logLut Cineon
+ floatLut linear
+}
+CheckerBoard2 {
+ inputs 0
+ name CheckerBoard1
+ xpos 199
+ ypos -168
+}
+Transform {
+ rotate {{curve x1 0 x11 180}}
+ scale {{curve x-1 1 x11 0.22}}
+ center {1024 778}
+ name Transform1
+ xpos 199
+ ypos -74
+}
+set N8e80b80 [stack 0]
+Cube {
+ name Cube1
+ xpos 309
+ ypos -74
+}
+push $N8e80b80
+Write {
+ file /home/aerim.shim/Desktop/dotori/samplenuke.mov
+ file_type mov
+ mov64_format "mov (QuickTime / MOV)"
+ mov64_codec ap4h
+ mov64_bitrate 20000
+ mov64_bitrate_tolerance 40000000
+ mov64_quality_min 2
+ mov64_quality_max 31
+ mov64_gop_size 12
+ mov64_b_frames 0
+ checkHashOnRead false
+ version 2
+ name Write1
+ xpos 199
+ ypos -26
+ addUserKnob {20 User}
+ addUserKnob {4 render_type l "render type" M {exr jpeg dpx png mov}}
+}
+Viewer {
+ frame 1
+ frame_range 1-100
+ name Viewer1
+ xpos 19
+ ypos -20
+}
