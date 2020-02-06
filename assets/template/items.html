@@ -12,7 +12,7 @@
                     <div class="row ml-0 text-muted">Tags:
                         {{range .Tags}}
                             <div class="ml-1">
-                                <a href="/search?itemtype={{$itemtype}}&searchword={{.}}" class="badge badge-outline-darkmode">{{.}}</a>
+                                <a href="/search?itemtype={{$itemtype}}&searchword=tag:{{.}}" class="badge badge-outline-darkmode">{{.}}</a>
                             </div>
                         {{end}}
                     </div>
