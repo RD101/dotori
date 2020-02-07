@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/shurcooL/httpfs/html/vfstemplate"
 	"gopkg.in/mgo.v2"
@@ -78,6 +79,10 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query()
 	itemType := q.Get("itemtype")
 	searchword := q.Get("searchword")
+	page := q.Get("page")
+	if page == "" {
+		page = "1"
+	}
 	if itemType == "" {
 		itemType = "maya"
 	}
@@ -86,6 +91,7 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 		Searchword string
 		ItemType   string
 		TotalNum   int
+		Pages      []int
 	}
 	rcp := recipe{}
 	rcp.Searchword = searchword
@@ -96,13 +102,23 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer session.Close()
-	totalNum, items, err := SearchPage(session, itemType, searchword, 1)
+	pageInt, err := strconv.Atoi(page)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	totalPageNum, totalNum, items, err := SearchPage(session, itemType, searchword, pageInt)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	rcp.Items = items
 	rcp.TotalNum = totalNum
+	// Pages를 설정한다.
+	rcp.Pages = make([]int, totalPageNum)
+	for i := range rcp.Pages {
+		rcp.Pages[i] = i + 1
+	}
 	err = TEMPLATES.ExecuteTemplate(w, "index", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -113,7 +129,11 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 func handleSearchSubmit(w http.ResponseWriter, r *http.Request) {
 	itemType := r.FormValue("itemtype")
 	searchword := r.FormValue("searchword")
-	http.Redirect(w, r, fmt.Sprintf("/search?itemtype=%s&searchword=%s", itemType, searchword), http.StatusSeeOther)
+	page := r.FormValue("page")
+	if page == "" {
+		page = "1"
+	}
+	http.Redirect(w, r, fmt.Sprintf("/search?itemtype=%s&searchword=%s&page=%s", itemType, searchword, page), http.StatusSeeOther)
 }
 
 func handleHelp(w http.ResponseWriter, r *http.Request) {

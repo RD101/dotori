@@ -9,9 +9,10 @@
                         <span class="sr-only">Previous</span>
                     </a>
                 </li>
-                <li class="page-item"><a class="page-link btn-darkmode" href="#">1</a></li>
-                <li class="page-item"><a class="page-link btn-darkmode" href="#">2</a></li>
-                <li class="page-item"><a class="page-link btn-darkmode" href="#">3</a></li>
+                {{range .Pages}}
+                    <li class="page-item"><a class="page-link btn-darkmode" href="/search?itemtype={{$.ItemType}}&searchword={{$.Searchword}}&page={{.}}">{{.}}</a></li>
+                {{end}}
+                
                 <li class="page-item">
                     <a class="page-link btn-darkmode" href="#" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
