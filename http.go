@@ -45,6 +45,11 @@ func webserver() {
 	http.HandleFunc("/editmaya-submit", handleEditMayaSubmit)
 	http.HandleFunc("/editmaya-success", handleEditMayaSuccess)
 
+	// nuke
+	http.HandleFunc("/addnuke", handleAddNuke)
+	http.HandleFunc("/addnuke-process", handleAddNukeProcess)
+	http.HandleFunc("/upload-nuke", handleUploadNuke)
+
 	// Houdini
 	http.HandleFunc("/addhoudini", handleAddHoudini)
 	http.HandleFunc("/addhoudini-process", handleAddHoudiniProcess)
@@ -54,7 +59,6 @@ func webserver() {
 	http.HandleFunc("/addblender", handleAddBlender)
 	http.HandleFunc("/addabc", handleAddABC)
 	http.HandleFunc("/addusd", handleAddUSD)
-
 	// Admin
 	http.HandleFunc("/setlibrarypath", handleSetLibraryPath)
 	// Help
