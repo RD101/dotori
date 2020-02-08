@@ -115,7 +115,7 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 	rcp.Items = items
 	rcp.TotalNum = totalNum
 	// Pages를 설정한다.
-	rcp.Pages = make([]int, totalPageNum)
+	rcp.Pages = make([]int, totalPageNum) // page에 필요한 메모리를 미리 설정한다.
 	for i := range rcp.Pages {
 		rcp.Pages[i] = i + 1
 	}
