@@ -107,6 +107,7 @@ func TotalPage(itemNum int) int {
 // SearchPage 는 itemType, words, 해당 page를 입력받아 해당 아이템을 검색한다. 검색된 아이템과 그 개수를 반환한다.
 func SearchPage(session *mgo.Session, itemType string, words string, page int) (int, []Item, error) {
 	var results []Item
+	//검색어가 존재하지 않으면 빈 결과를 반환한다.
 	if words == "" {
 		return 0, results, nil
 	}
@@ -119,15 +120,20 @@ func SearchPage(session *mgo.Session, itemType string, words string, page int) (
 			continue
 		}
 		querys := []bson.M{}
-		querys = append(querys, bson.M{"author": &bson.RegEx{Pattern: word, Options: "i"}})
-		querys = append(querys, bson.M{"tags": &bson.RegEx{Pattern: word, Options: "i"}})
-		querys = append(querys, bson.M{"description": &bson.RegEx{Pattern: word, Options: "i"}})
-		querys = append(querys, bson.M{"type": &bson.RegEx{Pattern: word, Options: "i"}})
-		querys = append(querys, bson.M{"inputpath": &bson.RegEx{Pattern: word, Options: "i"}})
-		querys = append(querys, bson.M{"outputpath": &bson.RegEx{Pattern: word, Options: "i"}})
-		querys = append(querys, bson.M{"createtime": &bson.RegEx{Pattern: word, Options: "i"}})
-		querys = append(querys, bson.M{"updatetime": &bson.RegEx{Pattern: word, Options: "i"}})
-		querys = append(querys, bson.M{"attributes.*": word})
+		//"tag:"가 앞에 붙어있으면 태그에서 검색한다.
+		if strings.HasPrefix(word, "tag:") {
+			querys = append(querys, bson.M{"tags": strings.TrimPrefix(word, "tag:")})
+		} else {
+			querys = append(querys, bson.M{"author": &bson.RegEx{Pattern: word, Options: "i"}})
+			querys = append(querys, bson.M{"tags": &bson.RegEx{Pattern: word, Options: "i"}})
+			querys = append(querys, bson.M{"description": &bson.RegEx{Pattern: word, Options: "i"}})
+			querys = append(querys, bson.M{"type": &bson.RegEx{Pattern: word, Options: "i"}})
+			querys = append(querys, bson.M{"inputpath": &bson.RegEx{Pattern: word, Options: "i"}})
+			querys = append(querys, bson.M{"outputpath": &bson.RegEx{Pattern: word, Options: "i"}})
+			querys = append(querys, bson.M{"createtime": &bson.RegEx{Pattern: word, Options: "i"}})
+			querys = append(querys, bson.M{"updatetime": &bson.RegEx{Pattern: word, Options: "i"}})
+			querys = append(querys, bson.M{"attributes.*": word})
+		}
 		wordsQueries = append(wordsQueries, bson.M{"$or": querys})
 	}
 	// 사용률이 많은 소스가 위로 출력되도록 한다.
