@@ -95,15 +95,6 @@ func Search(session *mgo.Session, itemType string, words string) ([]Item, error)
 	return results, nil
 }
 
-// TotalPage 함수는 아이템의 갯수를 입력받아 필요한 총 페이지 수를 구한다.
-func TotalPage(itemNum int) int {
-	page := itemNum / *flagPagenum
-	if itemNum%*flagPagenum != 0 {
-		page++
-	}
-	return page
-}
-
 // SearchPage 는 itemType, words, 해당 page를 입력받아 해당 아이템을 검색한다. 검색된 아이템과 그 개수를 반환한다.
 func SearchPage(session *mgo.Session, itemType string, words string, page int) (int, int, []Item, error) {
 	var results []Item
