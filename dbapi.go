@@ -131,7 +131,7 @@ func SearchPage(session *mgo.Session, itemType string, words string, page, limit
 	if err != nil {
 		return 0, 0, nil, err
 	}
-	return TotalPage(totalNum), totalNum, results, nil
+	return TotalPage(totalNum, limitnum), totalNum, results, nil
 }
 
 // SearchItem 은 컬렉션 이름(itemType)과 id를 받아서, 해당 컬렉션에서 id가 일치하는 item을 검색, 반환한다.

@@ -3,9 +3,9 @@ package main
 import "strconv"
 
 // TotalPage 함수는 아이템의 갯수를 입력받아 필요한 총 페이지 수를 구한다.
-func TotalPage(itemNum int) int {
-	page := itemNum / *flagPagenum
-	if itemNum%*flagPagenum != 0 {
+func TotalPage(itemNum, limitnum int) int {
+	page := itemNum / limitnum
+	if itemNum%limitnum != 0 {
 		page++
 	}
 	return page
