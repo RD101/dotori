@@ -96,7 +96,7 @@ func Search(session *mgo.Session, itemType string, words string) ([]Item, error)
 }
 
 // SearchPage 는 itemType, words, 해당 page를 입력받아 해당 아이템을 검색한다. 검색된 아이템과 그 개수를 반환한다.
-func SearchPage(session *mgo.Session, itemType string, words string, page int) (int, int, []Item, error) {
+func SearchPage(session *mgo.Session, itemType string, words string, page, limitnum int) (int, int, []Item, error) {
 	var results []Item
 	if words == "" {
 		return 0, 0, results, nil
@@ -123,7 +123,7 @@ func SearchPage(session *mgo.Session, itemType string, words string, page int) (
 	}
 	// 사용률이 많은 소스가 위로 출력되도록 한다.
 	q := bson.M{"$and": wordsQueries} // 최종 쿼리는 BSON type 오브젝트가 되어야 한다.
-	err := c.Find(q).Sort("-usingrate").Skip((page - 1) * *flagPagenum).Limit(*flagPagenum).All(&results)
+	err := c.Find(q).Sort("-usingrate").Skip((page - 1) * limitnum).Limit(limitnum).All(&results)
 	if err != nil {
 		return 0, 0, nil, err
 	}
