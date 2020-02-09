@@ -19,6 +19,7 @@ func LoadTemplates() (*template.Template, error) {
 
 var funcMap = template.FuncMap{
 	"Tags2str": Tags2str,
+	"add":      add,
 }
 
 func webserver() {

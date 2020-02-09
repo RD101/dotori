@@ -12,3 +12,8 @@ func Tags2str(tags []string) string {
 	}
 	return strings.Join(newtags, " ")
 }
+
+// add함수는 입력받은 두 정수를 더한 값을 반환한다.
+func add(a, b int) int {
+	return (a + b)
+}
