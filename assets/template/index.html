@@ -4,7 +4,9 @@
         {{template "navbar"}}
         {{template "search" .}}
         {{template "items" .}}
-        {{template "page" .}}
+        {{if .Items}}
+            {{template "page" .}}
+        {{end}}
         {{template "footer"}}
     </body>
     <!--add javascript-->
