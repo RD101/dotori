@@ -95,21 +95,12 @@ func Search(session *mgo.Session, itemType string, words string) ([]Item, error)
 	return results, nil
 }
 
-// TotalPage 함수는 아이템의 갯수를 입력받아 필요한 총 페이지 수를 구한다.
-func TotalPage(itemNum int) int {
-	page := itemNum / *flagPagenum
-	if itemNum%*flagPagenum != 0 {
-		page++
-	}
-	return page
-}
-
 // SearchPage 는 itemType, words, 해당 page를 입력받아 해당 아이템을 검색한다. 검색된 아이템과 그 개수를 반환한다.
-func SearchPage(session *mgo.Session, itemType string, words string, page int) (int, []Item, error) {
+func SearchPage(session *mgo.Session, itemType string, words string, page, limitnum int) (int, int, []Item, error) {
 	var results []Item
 	//검색어가 존재하지 않으면 빈 결과를 반환한다.
 	if words == "" {
-		return 0, results, nil
+		return 0, 0, results, nil
 	}
 	session.SetMode(mgo.Monotonic, true)
 	c := session.DB(*flagDBName).C(itemType)
@@ -138,16 +129,15 @@ func SearchPage(session *mgo.Session, itemType string, words string, page int) (
 	}
 	// 사용률이 많은 소스가 위로 출력되도록 한다.
 	q := bson.M{"$and": wordsQueries} // 최종 쿼리는 BSON type 오브젝트가 되어야 한다.
-	err := c.Find(q).Sort("-usingrate").Skip(page - 1).Limit(*flagPagenum).All(&results)
+	err := c.Find(q).Sort("-usingrate").Skip((page - 1) * limitnum).Limit(limitnum).All(&results)
 	if err != nil {
-		return 0, nil, err
+		return 0, 0, nil, err
 	}
-
 	totalNum, err := c.Find(q).Count()
 	if err != nil {
-		return 0, nil, err
+		return 0, 0, nil, err
 	}
-	return totalNum, results, nil
+	return TotalPage(totalNum, limitnum), totalNum, results, nil
 }
 
 // SearchItem 은 컬렉션 이름(itemType)과 id를 받아서, 해당 컬렉션에서 id가 일치하는 item을 검색, 반환한다.
