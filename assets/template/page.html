@@ -10,7 +10,11 @@
                     </a>
                 </li>
                 {{range .Pages}}
-                    <li class="page-item"><a class="page-link btn-darkmode" href="/search?itemtype={{$.ItemType}}&searchword={{$.Searchword}}&page={{.}}">{{.}}</a></li>
+                    <li class="page-item">
+                        <a class="{{if eq $.CurrentPage .}}text-white {{end}}page-link btn-darkmode" href="/search?itemtype={{$.ItemType}}&searchword={{$.Searchword}}&page={{.}}">
+                            {{.}}
+                        </a>
+                    </li>
                 {{end}}
                 
                 <li class="page-item">
