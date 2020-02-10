@@ -22,9 +22,11 @@ func PageToInt(page string) int {
 
 // PageToString 함수는 페이지 문자를 받아서 String형 페이지수를 반환한다.
 func PageToString(page string) string {
+	// url에서 "&page=1"이 아닌 "&page=1#" 로 실수로 입력했을 때,
+	// 변환할 수 없는 문자라면, 1페이지를 반환하도록 하기 위해 이 함수가 존재한다.
 	_, err := strconv.Atoi(page)
 	if err != nil {
-		return "1" // 변환할 수 없는 문자라면, 1페이지를 반환한다.
+		return "1"
 	}
 	return page
 }
