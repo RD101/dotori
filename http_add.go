@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+
+	"golang.org/x/sys/unix"
 )
 
 // handleAddMaya 함수는 Maya 파일을 추가하는 페이지 이다.
@@ -109,6 +111,7 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 	defer file.Close()
+	unix.Umask(0)
 	mimeType := header.Header.Get("Content-Type")
 	switch mimeType {
 	case "image/jpeg", "image/png":
@@ -118,11 +121,15 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		path := os.TempDir() + "/dotori/thumbnail"
-		err = os.MkdirAll(path, 0766)
+		err = os.MkdirAll(path, 0770)
 		if err != nil {
 			return
 		}
-		err = ioutil.WriteFile(path+"/"+header.Filename, data, 0666)
+		err = os.Chown(path, 0, 20)
+		if err != nil {
+			return
+		}
+		err = ioutil.WriteFile(path+"/"+header.Filename, data, 0440)
 		if err != nil {
 			fmt.Fprintf(w, "%v", err)
 			return
@@ -134,11 +141,15 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		path := os.TempDir() + "/dotori/preview"
-		err = os.MkdirAll(path, 0766)
+		err = os.MkdirAll(path, 0770)
 		if err != nil {
 			return
 		}
-		err = ioutil.WriteFile(path+"/"+header.Filename, data, 0666)
+		err = os.Chown(path, 0, 20)
+		if err != nil {
+			return
+		}
+		err = ioutil.WriteFile(path+"/"+header.Filename, data, 0440)
 		if err != nil {
 			fmt.Fprintf(w, "%v", err)
 			return
@@ -152,11 +163,15 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			path := os.TempDir() + "/dotori"
-			err = os.MkdirAll(path, 0766)
+			err = os.MkdirAll(path, 0770)
 			if err != nil {
 				return
 			}
-			err = ioutil.WriteFile(path+"/"+header.Filename, data, 0666) // 악성 코드가 들어올 수 있으므로 실행권한은 주지 않는다.
+			err = os.Chown(path, 0, 20)
+			if err != nil {
+				return
+			}
+			err = ioutil.WriteFile(path+"/"+header.Filename, data, 0440) // 악성 코드가 들어올 수 있으므로 실행권한은 주지 않는다.
 			if err != nil {
 				fmt.Fprintf(w, "%v", err)
 				return
@@ -169,11 +184,15 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		path := os.TempDir() + "/dotori"
-		err = os.MkdirAll(path, 0766)
+		err = os.MkdirAll(path, 0770)
 		if err != nil {
 			return
 		}
-		err = ioutil.WriteFile(path+"/"+header.Filename, data, 0666)
+		err = os.Chown(path, 0, 20)
+		if err != nil {
+			return
+		}
+		err = ioutil.WriteFile(path+"/"+header.Filename, data, 0440)
 		if err != nil {
 			fmt.Fprintf(w, "%v", err)
 			return
