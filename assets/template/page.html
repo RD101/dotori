@@ -4,7 +4,7 @@
         <nav aria-label="Page navigation">
             <ul class="pagination">
                 <li class="page-item">
-                    <a class="page-link btn-darkmode" href="#" aria-label="Previous">
+                    <a class="page-link btn-darkmode" href="/search?itemtype={{$.ItemType}}&searchword={{$.Searchword}}&page={{PreviousPage .CurrentPage .TotalPage}}" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                         <span class="sr-only">Previous</span>
                     </a>
@@ -18,7 +18,7 @@
                 {{end}}
                 
                 <li class="page-item">
-                    <a class="page-link btn-darkmode" href="#" aria-label="Next">
+                    <a class="page-link btn-darkmode" href="/search?itemtype={{$.ItemType}}&searchword={{$.Searchword}}&page={{NextPage .CurrentPage .TotalPage}}" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                         <span class="sr-only">Next</span>
                     </a>

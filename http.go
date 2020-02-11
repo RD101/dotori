@@ -18,8 +18,10 @@ func LoadTemplates() (*template.Template, error) {
 }
 
 var funcMap = template.FuncMap{
-	"Tags2str": Tags2str,
-	"add":      add,
+	"Tags2str":     Tags2str,
+	"add":          add,
+	"PreviousPage": PreviousPage,
+	"NextPage":     NextPage,
 }
 
 func webserver() {
@@ -89,6 +91,7 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 		ItemType    string
 		TotalNum    int
 		CurrentPage int
+		TotalPage   int
 		Pages       []int
 	}
 	rcp := recipe{}
@@ -101,15 +104,16 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 	}
 	defer session.Close()
 	rcp.CurrentPage = PageToInt(page)
-	totalPageNum, totalNum, items, err := SearchPage(session, itemType, searchword, rcp.CurrentPage, *flagPagenum)
+	totalPage, totalNum, items, err := SearchPage(session, itemType, searchword, rcp.CurrentPage, *flagPagenum)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	rcp.Items = items
 	rcp.TotalNum = totalNum
+	rcp.TotalPage = totalPage
 	// Pages를 설정한다.
-	rcp.Pages = make([]int, totalPageNum) // page에 필요한 메모리를 미리 설정한다.
+	rcp.Pages = make([]int, totalPage) // page에 필요한 메모리를 미리 설정한다.
 	for i := range rcp.Pages {
 		rcp.Pages[i] = i + 1
 	}

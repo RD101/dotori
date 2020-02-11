@@ -30,3 +30,22 @@ func PageToString(page string) string {
 	}
 	return page
 }
+
+// PreviousPage 함수는 이전 페이지를 반환한다.
+func PreviousPage(current, maxnum int) int {
+	if maxnum < current {
+		return maxnum
+	}
+	if current == 1 {
+		return 1
+	}
+	return current - 1
+}
+
+// NextPage 함수는 다음 페이지를 반환한다.
+func NextPage(current, maxnum int) int {
+	if maxnum <= current {
+		return maxnum
+	}
+	return current + 1
+}
