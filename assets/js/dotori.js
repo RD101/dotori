@@ -22,7 +22,7 @@ function addAttribute() {
 }
 
 // Hotkey: http://gcctech.org/csc/javascript/javascript_keycodes.htm
-document.onkeyup = function(e) {
+document.onkeydown = function(e) {
     if (e.which == 37) { // arrow left
         document.getElementById("previous").click();
     } else if (e.which == 39) { // arrow right
