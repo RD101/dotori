@@ -11,14 +11,14 @@
                 </li>
                 {{range .Pages}}
                     <li class="page-item">
-                        <a class="{{if eq $.CurrentPage .}}text-white {{end}}page-link btn-darkmode" href="/search?itemtype={{$.ItemType}}&searchword={{$.Searchword}}&page={{.}}">
+                        <a id="previous" class="{{if eq $.CurrentPage .}}text-white {{end}}page-link btn-darkmode" href="/search?itemtype={{$.ItemType}}&searchword={{$.Searchword}}&page={{.}}">
                             {{.}}
                         </a>
                     </li>
                 {{end}}
                 
                 <li class="page-item">
-                    <a class="page-link btn-darkmode" href="/search?itemtype={{$.ItemType}}&searchword={{$.Searchword}}&page={{NextPage .CurrentPage .TotalPage}}" aria-label="Next">
+                    <a id="next" class="page-link btn-darkmode" href="/search?itemtype={{$.ItemType}}&searchword={{$.Searchword}}&page={{NextPage .CurrentPage .TotalPage}}" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                         <span class="sr-only">Next</span>
                     </a>
