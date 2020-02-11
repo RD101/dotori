@@ -55,9 +55,13 @@ func webserver() {
 	http.HandleFunc("/addhoudini-process", handleAddHoudiniProcess)
 	http.HandleFunc("/upload-houdini", handleUploadHoudini)
 
+	// ABC
+	http.HandleFunc("/addabc", handleAddABC)
+	http.HandleFunc("/addabc-process", handleAddABCProcess)
+	http.HandleFunc("/upload-abc", handleUploadABC)
+
 	// 앞으로 정리할 것
 	http.HandleFunc("/addblender", handleAddBlender)
-	http.HandleFunc("/addabc", handleAddABC)
 	http.HandleFunc("/addusd", handleAddUSD)
 	// Admin
 	http.HandleFunc("/setlibrarypath", handleSetLibraryPath)
