@@ -20,3 +20,12 @@ function addAttribute() {
     // 최종 생성된 Attributes 갯수를 attributeNum에 저장한다.
     document.getElementById("attributesNum").value = document.getElementById("attributes").childElementCount;
 }
+
+// Hotkey: http://gcctech.org/csc/javascript/javascript_keycodes.htm
+document.onkeyup = function(e) {
+    if (e.which == 37) { // arrow left
+        document.getElementById("previous").click();
+    } else if (e.which == 39) { // arrow right
+        document.getElementById("next").click();
+    }
+};
