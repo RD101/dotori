@@ -217,11 +217,11 @@ func handleUploadNuke(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		path := os.TempDir() + "/dotori/thumbnail"
-		err = os.MkdirAll(path, 0766)
+		err = os.MkdirAll(path, 0770)
 		if err != nil {
 			return
 		}
-		err = ioutil.WriteFile(path+"/"+header.Filename, data, 0666)
+		err = ioutil.WriteFile(path+"/"+header.Filename, data, 0440)
 		if err != nil {
 			fmt.Fprintf(w, "%v", err)
 			return
@@ -233,11 +233,11 @@ func handleUploadNuke(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		path := os.TempDir() + "/dotori/preview"
-		err = os.MkdirAll(path, 0766)
+		err = os.MkdirAll(path, 0770)
 		if err != nil {
 			return
 		}
-		err = ioutil.WriteFile(path+"/"+header.Filename, data, 0666)
+		err = ioutil.WriteFile(path+"/"+header.Filename, data, 0440)
 		if err != nil {
 			fmt.Fprintf(w, "%v", err)
 			return
@@ -251,11 +251,11 @@ func handleUploadNuke(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			path := os.TempDir() + "/dotori"
-			err = os.MkdirAll(path, 0766)
+			err = os.MkdirAll(path, 0770)
 			if err != nil {
 				return
 			}
-			err = ioutil.WriteFile(path+"/"+header.Filename, data, 0666) // 악성 코드가 들어올 수 있으므로 실행권한은 주지 않는다.
+			err = ioutil.WriteFile(path+"/"+header.Filename, data, 0440)
 			if err != nil {
 				fmt.Fprintf(w, "%v", err)
 				return
@@ -268,11 +268,11 @@ func handleUploadNuke(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		path := os.TempDir() + "/dotori"
-		err = os.MkdirAll(path, 0766)
+		err = os.MkdirAll(path, 0770)
 		if err != nil {
 			return
 		}
-		err = ioutil.WriteFile(path+"/"+header.Filename, data, 0666)
+		err = ioutil.WriteFile(path+"/"+header.Filename, data, 0440)
 		if err != nil {
 			fmt.Fprintf(w, "%v", err)
 			return
