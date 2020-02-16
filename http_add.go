@@ -208,6 +208,7 @@ func handleUploadNuke(w http.ResponseWriter, r *http.Request) {
 	}
 
 	defer file.Close()
+	unix.Umask(0)
 	mimeType := header.Header.Get("Content-Type")
 	switch mimeType {
 	case "image/jpeg", "image/png":
@@ -287,6 +288,7 @@ func handleUploadHoudini(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 	defer file.Close()
+	unix.Umask(0)
 	mimeType := header.Header.Get("Content-Type")
 	switch mimeType {
 	case "image/jpeg", "image/png":
