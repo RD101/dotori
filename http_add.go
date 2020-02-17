@@ -7,8 +7,12 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
+	"time"
 
 	"golang.org/x/sys/unix"
+	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 )
 
 // handleAddMaya 함수는 Maya 파일을 추가하는 페이지 이다.
@@ -197,6 +201,52 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
+}
+
+func handleUploadMayaOnDB(w http.ResponseWriter, r *http.Request) {
+	item := Item{}
+	item.ID = bson.NewObjectId()
+	item.Author = r.FormValue("author")
+	item.Description = r.FormValue("description")
+	tags := SplitBySpace(r.FormValue("tag"))
+	item.Tags = tags
+	item.ItemType = "maya"
+	attr := make(map[string]string)
+	attrNum, err := strconv.Atoi(r.FormValue("attributesNum"))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	for i := 0; i < attrNum; i++ {
+		key := r.FormValue(fmt.Sprintf("key%d", i))
+		value := r.FormValue(fmt.Sprintf("value%d", i))
+		attr[key] = value
+	}
+	item.Attributes = attr
+	item.Thumbimg = "/tmp/dotori/thumbnail"
+	item.Thumbmov = "/tmp/dotori/preview"
+	item.Inputpath = "/tmp/dotori"
+	outputpath, err := idToPath(item.ID.Hex())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	item.Outputpath = outputpath + "/dotori"
+	item.Status = "ready"
+	time := time.Now()
+	item.CreateTime = time.Format("2006-01-02 15:04:05")
+	session, err := mgo.Dial(*flagDBIP)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer session.Close()
+	err = AddItem(session, item)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
 // handleUploadMaya 함수는 Nuke파일을 DB에 업로드하는 페이지를 연다.
