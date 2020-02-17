@@ -114,6 +114,10 @@ func SearchPage(session *mgo.Session, itemType string, words string, page, limit
 		//"tag:"가 앞에 붙어있으면 태그에서 검색한다.
 		if strings.HasPrefix(word, "tag:") {
 			querys = append(querys, bson.M{"tags": strings.TrimPrefix(word, "tag:")})
+		} else if strings.Contains(word, ":") {
+			key := strings.Split(word, ":")[0]
+			value := strings.Split(word, ":")[1]
+			querys = append(querys, bson.M{"attributes." + key: &bson.RegEx{Pattern: value, Options: "i"}})
 		} else {
 			querys = append(querys, bson.M{"author": &bson.RegEx{Pattern: word, Options: "i"}})
 			querys = append(querys, bson.M{"tags": &bson.RegEx{Pattern: word, Options: "i"}})
@@ -123,7 +127,6 @@ func SearchPage(session *mgo.Session, itemType string, words string, page, limit
 			querys = append(querys, bson.M{"outputpath": &bson.RegEx{Pattern: word, Options: "i"}})
 			querys = append(querys, bson.M{"createtime": &bson.RegEx{Pattern: word, Options: "i"}})
 			querys = append(querys, bson.M{"updatetime": &bson.RegEx{Pattern: word, Options: "i"}})
-			querys = append(querys, bson.M{"attributes.*": word})
 		}
 		wordsQueries = append(wordsQueries, bson.M{"$or": querys})
 	}
