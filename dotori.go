@@ -14,11 +14,12 @@ var (
 	// TEMPLATES 는 kalena에서 사용하는 템플릿 글로벌 변수이다.
 	TEMPLATES = template.New("")
 
-	flagAdd      = flag.Bool("add", false, "add mode")
-	flagRm       = flag.Bool("remove", false, "remove mode")
-	flagSeek     = flag.Bool("seek", false, "seek mode")    // 해당 폴더를 탐색할 때 사용합니다.
-	flagSearch   = flag.String("search", "", "search mode") // DB를 검색할 때 사용합니다.
-	flagSearchID = flag.Bool("searchid", false, "search a item by its id")
+	flagAdd        = flag.Bool("add", false, "add mode")
+	flagRm         = flag.Bool("remove", false, "remove mode")
+	flagSeek       = flag.Bool("seek", false, "seek mode") // 해당 폴더를 탐색할 때 사용합니다.
+	flagSearch     = flag.Bool("search", false, "search mode")
+	flagSearchWord = flag.String("searchword", "", "search word") // DB를 검색할 때 사용합니다.
+	flagSearchID   = flag.Bool("searchid", false, "search a item by its id")
 
 	flagAuthor      = flag.String("author", "", "author")
 	flagTag         = flag.String("tag", "", "tag")
@@ -48,13 +49,16 @@ func main() {
 		}
 		fmt.Println(items)
 		os.Exit(0)
-	} else if *flagSearch != "" {
+	} else if *flagSearch {
 		session, err := mgo.Dial(*flagDBIP)
 		if err != nil {
 			log.Fatal(err)
 		}
 		defer session.Close()
-		items, err := Search(session, *flagItemType, *flagSearch)
+		if *flagItemType == "" {
+			log.Fatal("itemtype이 빈 문자열입니다")
+		}
+		items, err := Search(session, *flagItemType, *flagSearchWord)
 		if err != nil {
 			log.Fatal(err)
 		}
