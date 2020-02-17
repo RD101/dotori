@@ -67,6 +67,7 @@ func webserver() {
 	http.HandleFunc("/addusd", handleAddUSD)
 	// Admin
 	http.HandleFunc("/adminsetting", handleAdminSetting)
+	http.HandleFunc("/adminsetting-submit", handleAdminSettingSubmit)
 	// Help
 	http.HandleFunc("/help", handleHelp)
 

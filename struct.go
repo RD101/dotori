@@ -7,6 +7,7 @@ import (
 
 // Adminsetting 자료구조
 type Adminsetting struct {
+	ID                  string `json:"id" bson:"id"`                                   // DB에서 값을 가지고 오기 위한 id
 	Rootpath            string `json:"rootpath" bson:"rootpath"`                       // 에셋 라이브러러리 물리경로
 	LinuxProtocolPath   string `json:"linuxprotocolpath" bson:"linuxprotocolpath"`     // 웹에서 클릭시 사용하는 Linux 경로
 	WindowsProtocolPath string `json:"windowsprotocolpath" bson:"windowsprotocolpath"` // 웹에서 클릭시 사용하는 Windows 경로
