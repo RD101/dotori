@@ -29,3 +29,13 @@ document.onkeydown = function(e) {
         document.getElementById("next").click();
     }
 };
+
+// copyButton 은 아이디값을 받아서, 클립보드로 복사하는 기능이다.
+function copyButton(elementId) {
+    let id = document.createElement("input");   // input요소를 만듬
+    id.setAttribute("value", elementId);        // input요소에 값을 추가
+    document.body.appendChild(id);              // body에 요소 추가
+    id.select();                                // input요소를 선택
+    document.execCommand("copy");               // 복사기능 실행
+    document.body.removeChild(id);              // body에 요소 삭제
+}
