@@ -374,7 +374,7 @@ func handleUploadHoudini(w http.ResponseWriter, r *http.Request) {
 		}
 	case "application/octet-stream":
 		ext := filepath.Ext(header.Filename)
-		if ext == ".mb" || ext == ".ma" {
+		if ext == ".hip" || ext == ".hda" {
 			data, err := ioutil.ReadAll(file)
 			if err != nil {
 				fmt.Fprintf(w, "%v", err)
