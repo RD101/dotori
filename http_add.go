@@ -52,9 +52,9 @@ func handleAddBlender(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func handleAddABC(w http.ResponseWriter, r *http.Request) {
+func handleAddAlembic(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	err := TEMPLATES.ExecuteTemplate(w, "addabc", nil)
+	err := TEMPLATES.ExecuteTemplate(w, "addalembic", nil)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -98,9 +98,9 @@ func handleAddHoudiniProcess(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func handleAddABCProcess(w http.ResponseWriter, r *http.Request) {
+func handleAddAlembicProcess(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	err := TEMPLATES.ExecuteTemplate(w, "addabc-process", nil)
+	err := TEMPLATES.ExecuteTemplate(w, "addalembic-process", nil)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -410,8 +410,8 @@ func handleUploadHoudini(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// handleUploadABC 함수는 ABC 파일을 처리하는 페이지 이다.
-func handleUploadABC(w http.ResponseWriter, r *http.Request) {
+// handleUploadAlembic 함수는 Alembic 파일을 처리하는 페이지 이다.
+func handleUploadAlembic(w http.ResponseWriter, r *http.Request) {
 	file, header, err := r.FormFile("file")
 	if err != nil {
 		log.Println(err)
