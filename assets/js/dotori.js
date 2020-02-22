@@ -23,6 +23,10 @@ function addAttribute() {
 
 // Hotkey: http://gcctech.org/csc/javascript/javascript_keycodes.htm
 document.onkeydown = function(e) {
+    // 인풋창에서는 화살표를 움직였을 때 페이지가 이동되면 안된다.
+    if (event.target.tagName === "INPUT") {
+        return
+    }
     if (e.which == 37) { // arrow left
         document.getElementById("previous").click();
     } else if (e.which == 39) { // arrow right
