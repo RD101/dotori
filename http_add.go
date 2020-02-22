@@ -115,6 +115,11 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 	}
 	defer file.Close()
 	unix.Umask(0)
+	ip, err := serviceIP()
+	if err != nil {
+		log.Println(err)
+		return
+	}
 	mimeType := header.Header.Get("Content-Type")
 	switch mimeType {
 	case "image/jpeg", "image/png":
@@ -123,7 +128,7 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, "%v", err)
 			return
 		}
-		path := os.TempDir() + "/dotori/thumbnail"
+		path := os.TempDir() + "/dotori" + "/" + ip + "/thumbnail"
 		err = os.MkdirAll(path, 0770)
 		if err != nil {
 			return
@@ -143,7 +148,7 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, "%v", err)
 			return
 		}
-		path := os.TempDir() + "/dotori/preview"
+		path := os.TempDir() + "/dotori" + "/" + ip + "/preview"
 		err = os.MkdirAll(path, 0770)
 		if err != nil {
 			return
@@ -165,7 +170,7 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 				fmt.Fprintf(w, "%v", err)
 				return
 			}
-			path := os.TempDir() + "/dotori"
+			path := os.TempDir() + "/dotori" + "/" + ip
 			err = os.MkdirAll(path, 0770)
 			if err != nil {
 				return
@@ -186,7 +191,7 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, "%v", err)
 			return
 		}
-		path := os.TempDir() + "/dotori"
+		path := os.TempDir() + "/dotori" + "/" + ip
 		err = os.MkdirAll(path, 0770)
 		if err != nil {
 			return
