@@ -70,6 +70,8 @@ func webserver() {
 	http.HandleFunc("/adminsetting", handleAdminSetting)
 	http.HandleFunc("/adminsetting-submit", handleAdminSettingSubmit)
 	http.HandleFunc("/adminsetting-success", handleAdminSettingSuccess)
+	// Process
+	http.HandleFunc("/item-process", handleItemProcess)
 	// Help
 	http.HandleFunc("/help", handleHelp)
 
@@ -141,6 +143,15 @@ func handleSearchSubmit(w http.ResponseWriter, r *http.Request) {
 func handleHelp(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
 	err := TEMPLATES.ExecuteTemplate(w, "help", nil)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func handleItemProcess(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html")
+	err := TEMPLATES.ExecuteTemplate(w, "item-process", nil)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
