@@ -53,5 +53,14 @@ func handleAdminSettingSubmit(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	http.Redirect(w, r, "/adminsetting", http.StatusSeeOther)
+	http.Redirect(w, r, "/adminsetting-success", http.StatusSeeOther)
+}
+
+func handleAdminSettingSuccess(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html")
+	err := TEMPLATES.ExecuteTemplate(w, "adminsetting-success", nil)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
