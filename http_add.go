@@ -232,7 +232,7 @@ func handleUploadMayaOnDB(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	item.Outputpath = outputpath + "/dotori"
-	item.Status = "ready"
+	item.Status = Ready
 	time := time.Now()
 	item.CreateTime = time.Format("2006-01-02 15:04:05")
 	session, err := mgo.Dial(*flagDBIP)
