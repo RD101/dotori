@@ -63,6 +63,9 @@ func (i Item) CheckError() error {
 	i.CreateTime = "2019-09-09T14:43:34+09:00"
 	i.Updatetime = "2019-09-09T14:43:34+09:00"
 
+	if i.ItemType == "" {
+		return errors.New("itemtype을 입력해주세요")
+	}
 	if !regexRFC3339Time.MatchString(i.CreateTime) {
 		return errors.New("생성시간이 2019-09-09T14:43:34+09:00 형식의 문자열이 아닙니다")
 	}
