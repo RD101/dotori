@@ -30,6 +30,9 @@ $ brew install mongodb-community
 $ brew services start mongodb-community
 ```
 
+## 기타 library 및 명령어 설치
+- [Library 설치](documents/setlibrary.md)
+
 ## Dotori 실행
 
 ```bash
