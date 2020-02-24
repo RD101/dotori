@@ -199,3 +199,25 @@ func GetAdminSetting(session *mgo.Session) Adminsetting {
 	}
 	return result
 }
+
+// GetOngoingProcess 는 처리 중인 아이템을 가져온다.
+func GetOngoingProcess(session *mgo.Session) ([]Item, error) {
+	session.SetMode(mgo.Monotonic, true)
+	var results []Item
+	//콜렉션 리스트를 가져온다.
+	collections, err := session.DB(*flagDBName).CollectionNames()
+	if err != nil {
+		return results, err
+	}
+	// 콜렉션마다 돌면서 Status가 Done이 아닌 아이템을 가져온다.
+	for _, c := range collections {
+		if c == "system.indexs" { //mongodb의 기본 컬렉션. 제외한다.
+			continue
+		}
+		err = session.DB(*flagDBName).C(c).Find(bson.M{"Status": bson.M{"$ne": "Done"}}).All(&results)
+		if err != nil {
+			return results, err
+		}
+	}
+	return results, nil
+}
