@@ -6,6 +6,29 @@
     <div class="col-lg-6 col-md-8 col-sm-12 mx-auto">
         <h2 class="text-muted">Item Process</h2>
     </div>
+    <div class="text-muted">
+        {{$index := 1}}
+        {{range .Items}}
+        <div class="row">
+            <div class="col-1">
+                {{$index}}
+            </div>
+            <div class="col-1">
+                {{.ItemType}}
+            </div>
+            <div class="col-1">
+                {{.Author}}
+            </div>
+            <div class="col-5">
+                {{.ID}}
+            </div>
+            <div class="col-1">
+                {{.Status}}
+            </div>
+        </div>
+        {{$index = add $index 1}}
+        {{end}}
+    </div>
 </div>
 </body>
 <!--add javascript-->

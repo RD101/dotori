@@ -161,6 +161,7 @@ func handleItemProcess(w http.ResponseWriter, r *http.Request) {
 	}
 	defer session.Close()
 	rcp := recipe{}
+	// 완료되지 않은 아이템을 가져온다
 	rcp.Items, err = GetOngoingProcess(session)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
