@@ -2,21 +2,21 @@
     <div class="row mx-auto mb-5">
         {{range .Items}}
             {{$itemtype := .ItemType}}
-            <div class="col-sm-4">
+            <div class="col-sm-4 text-center">
                 <div class="thumbnail">
                     <img src="/assets/img/noimage.svg">
                 </div>
                 <div class="info mb-3">
-                    <span class="text-muted">ID: {{.ID.Hex}}</span><br>
-                    <span class="text-muted">Author: {{.Author}}</span><br>
-                    <div class="row ml-0 text-muted">Tags:
+                    <div>
+                        <span class="text-muted">ID: {{.ID.Hex}}</span><br>
+                        <span class="text-muted">Author: {{.Author}}</span>
+                    </div>
+                    <div class="text-muted">
+                        Tags:
                         {{range .Tags}}
-                            <div class="ml-1">
-                                <a href="/search?itemtype={{$itemtype}}&searchword=tag:{{.}}" class="badge badge-outline-darkmode">{{.}}</a>
-                            </div>
+                            <a href="/search?itemtype={{$itemtype}}&searchword=tag:{{.}}" class="badge badge-outline-darkmode">{{.}}</a>
                         {{end}}
                     </div>
-
                     <div class="ml-1">
                         <a href="/edit{{.ItemType}}?itemtype={{.ItemType}}&id={{.ID.Hex}}" class="badge badge-outline-darkmode">Edit</a>
                         <button class="finger badge badge-outline-darkmode" onclick="copyButton(this.value)" value="{{.ID.Hex}}">Copy Path</button>
