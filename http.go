@@ -8,6 +8,7 @@ import (
 
 	"github.com/shurcooL/httpfs/html/vfstemplate"
 	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 )
 
 // LoadTemplates 함수는 템플릿을 로딩합니다.
@@ -151,7 +152,34 @@ func handleHelp(w http.ResponseWriter, r *http.Request) {
 
 func handleItemProcess(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	err := TEMPLATES.ExecuteTemplate(w, "item-process", nil)
+	type recipe struct {
+		Items []Item
+	}
+	session, err := mgo.Dial(*flagDBIP)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer session.Close()
+	rcp := recipe{}
+	//콜렉션 리스트를 가져온다.
+	collections, err := session.DB(*flagDBName).CollectionNames()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	// 콜렉션마다 돌면서 Status가 Done이 아닌 아이템을 가져온다.
+	for _, c := range collections {
+		if c == "system.indexs" { //mongodb의 기본 컬렉션. 제외한다.
+			continue
+		}
+		err = session.DB(*flagDBName).C(c).Find(bson.M{"Status": bson.M{"$ne": "Done"}}).All(&rcp.Items)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+	err = TEMPLATES.ExecuteTemplate(w, "item-process", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
