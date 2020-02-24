@@ -211,13 +211,15 @@ func GetOngoingProcess(session *mgo.Session) ([]Item, error) {
 	}
 	// 콜렉션마다 돌면서 Status가 Done이 아닌 아이템을 가져온다.
 	for _, c := range collections {
+		var items []Item
 		if c == "system.indexs" { //mongodb의 기본 컬렉션. 제외한다.
 			continue
 		}
-		err = session.DB(*flagDBName).C(c).Find(bson.M{"Status": bson.M{"$ne": "Done"}}).All(&results)
+		err = session.DB(*flagDBName).C(c).Find(bson.M{"Status": bson.M{"$ne": "Done"}}).All(&items)
 		if err != nil {
 			return results, err
 		}
+		results = append(results, items...)
 	}
 	return results, nil
 }
