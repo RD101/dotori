@@ -14,12 +14,13 @@ var (
 	// TEMPLATES 는 kalena에서 사용하는 템플릿 글로벌 변수이다.
 	TEMPLATES = template.New("")
 
-	flagAdd        = flag.Bool("add", false, "add mode")
-	flagRm         = flag.Bool("remove", false, "remove mode")
-	flagSeek       = flag.Bool("seek", false, "seek mode") // 해당 폴더를 탐색할 때 사용합니다.
-	flagSearch     = flag.Bool("search", false, "search mode")
-	flagSearchWord = flag.String("searchword", "", "search word") // DB를 검색할 때 사용합니다.
-	flagSearchID   = flag.Bool("searchid", false, "search a item by its id")
+	flagAdd               = flag.Bool("add", false, "add mode")
+	flagRm                = flag.Bool("remove", false, "remove mode")
+	flagSeek              = flag.Bool("seek", false, "seek mode") // 해당 폴더를 탐색할 때 사용합니다.
+	flagSearch            = flag.Bool("search", false, "search mode")
+	flagSearchWord        = flag.String("searchword", "", "search word") // DB를 검색할 때 사용합니다.
+	flagSearchID          = flag.Bool("searchid", false, "search a item by its id")
+	flagGetOngoingProcess = flag.Bool("getongoingprocess", false, "get ongoing process") // 완료되지 않은 프로세스를 가져옵니다.
 
 	flagAuthor      = flag.String("author", "", "author")
 	flagTag         = flag.String("tag", "", "tag")
@@ -135,6 +136,14 @@ func main() {
 			log.Print(err)
 		}
 		fmt.Println(item)
+	} else if *flagGetOngoingProcess {
+		session, err := mgo.Dial(*flagDBIP)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer session.Close()
+		items, err := GetOngoingProcess(session)
+		fmt.Println(items)
 	} else {
 		flag.PrintDefaults()
 		os.Exit(1)

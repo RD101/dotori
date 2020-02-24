@@ -22,6 +22,7 @@ var funcMap = template.FuncMap{
 	"add":          add,
 	"PreviousPage": PreviousPage,
 	"NextPage":     NextPage,
+	"Int2Status":   Int2Status,
 }
 
 func webserver() {
@@ -151,7 +152,23 @@ func handleHelp(w http.ResponseWriter, r *http.Request) {
 
 func handleItemProcess(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	err := TEMPLATES.ExecuteTemplate(w, "item-process", nil)
+	type recipe struct {
+		Items []Item
+	}
+	session, err := mgo.Dial(*flagDBIP)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer session.Close()
+	rcp := recipe{}
+	// 완료되지 않은 아이템을 가져온다
+	rcp.Items, err = GetOngoingProcess(session)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	err = TEMPLATES.ExecuteTemplate(w, "item-process", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
