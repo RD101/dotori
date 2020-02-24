@@ -21,6 +21,7 @@ var (
 	flagSearchWord        = flag.String("searchword", "", "search word") // DB를 검색할 때 사용합니다.
 	flagSearchID          = flag.Bool("searchid", false, "search a item by its id")
 	flagGetOngoingProcess = flag.Bool("getongoingprocess", false, "get ongoing process") // 완료되지 않은 프로세스를 가져옵니다.
+	flagGetReadyItem      = flag.Bool("getreadyitem", false, "get a ready status item")  //ready상태인 아이템을 하나 가져온다.
 
 	flagAuthor      = flag.String("author", "", "author")
 	flagTag         = flag.String("tag", "", "tag")
@@ -144,6 +145,14 @@ func main() {
 		defer session.Close()
 		items, err := GetOngoingProcess(session)
 		fmt.Println(items)
+	} else if *flagGetReadyItem {
+		session, err := mgo.Dial(*flagDBIP)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer session.Close()
+		item, err := GetReadyItem(session)
+		fmt.Println(item)
 	} else {
 		flag.PrintDefaults()
 		os.Exit(1)

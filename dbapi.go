@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"strings"
 
 	"gopkg.in/mgo.v2"
@@ -222,4 +223,31 @@ func GetOngoingProcess(session *mgo.Session) ([]Item, error) {
 		results = append(results, items...)
 	}
 	return results, nil
+}
+
+// GetReadyItem 은 DB에서 ready상태인 Item을 하나 가져온다.
+func GetReadyItem(session *mgo.Session) (Item, error) {
+	session.SetMode(mgo.Monotonic, true)
+	var result Item
+	collections, err := session.DB(*flagDBName).CollectionNames()
+	if err != nil {
+		return result, err
+	}
+	for _, c := range collections {
+		// 해당 컬렉션에 ready상태인 Item이 없으면 다음 컬렉션을 체크한다
+		num, err := session.DB(*flagDBName).C(c).Find(bson.M{"status": Ready}).Count()
+		if err != nil {
+			return result, err
+		}
+		if num == 0 {
+			continue
+		}
+		// ready상태인 Item이 있으면 하나를 반환하고 끝낸다.
+		err = session.DB(*flagDBName).C(c).Find(bson.M{"status": Ready}).One(&result)
+		if err != nil {
+			return result, err
+		}
+		return result, nil
+	}
+	return result, errors.New("ready상태인 Item이 없습니다")
 }
