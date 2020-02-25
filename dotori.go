@@ -23,6 +23,10 @@ var (
 	flagGetOngoingProcess = flag.Bool("getongoingprocess", false, "get ongoing process") // 완료되지 않은 프로세스를 가져옵니다.
 	flagGetReadyItem      = flag.Bool("getreadyitem", false, "get a ready status item")  //ready상태인 아이템을 하나 가져온다.
 
+	flagCopy = flag.Bool("copy", false, "copy file from src to dst")
+	flagSrc  = flag.String("src", "", "source path")
+	flagDst  = flag.String("dst", "", "destination path")
+
 	flagAuthor      = flag.String("author", "", "author")
 	flagTag         = flag.String("tag", "", "tag")
 	flagDescription = flag.String("description", "", "description")
@@ -153,6 +157,18 @@ func main() {
 		defer session.Close()
 		item, err := GetReadyItem(session)
 		fmt.Println(item)
+	} else if *flagCopy {
+		if *flagSrc == "" {
+			log.Fatal("src가 빈문자열 입니다")
+		}
+		if *flagDst == "" {
+			log.Fatal("dst가 빈문자열 입니다")
+		}
+		err := copyFile(*flagDst, *flagSrc)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("복사 완료.")
 	} else {
 		flag.PrintDefaults()
 		os.Exit(1)
