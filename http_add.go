@@ -117,33 +117,13 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 	unix.Umask(0)
 	mimeType := header.Header.Get("Content-Type")
 	switch mimeType {
-	case "image/jpeg", "image/png":
+	case "image/jpeg", "image/png", "video/quicktime", "video/mp4", "video/ogg", "application/ogg":
 		data, err := ioutil.ReadAll(file)
 		if err != nil {
 			fmt.Fprintf(w, "%v", err)
 			return
 		}
-		path := os.TempDir() + "/dotori/thumbnail"
-		err = os.MkdirAll(path, 0770)
-		if err != nil {
-			return
-		}
-		err = os.Chown(path, 0, 20)
-		if err != nil {
-			return
-		}
-		err = ioutil.WriteFile(path+"/"+header.Filename, data, 0440)
-		if err != nil {
-			fmt.Fprintf(w, "%v", err)
-			return
-		}
-	case "video/quicktime", "video/mp4", "video/ogg", "application/ogg":
-		data, err := ioutil.ReadAll(file)
-		if err != nil {
-			fmt.Fprintf(w, "%v", err)
-			return
-		}
-		path := os.TempDir() + "/dotori/preview"
+		path := os.TempDir() + "/dotori"
 		err = os.MkdirAll(path, 0770)
 		if err != nil {
 			return
@@ -179,27 +159,14 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 				fmt.Fprintf(w, "%v", err)
 				return
 			}
+		} else { // .ma .mb 외에는 허용하지 않는다.
+			http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
+			return
 		}
 	default:
-		data, err := ioutil.ReadAll(file)
-		if err != nil {
-			fmt.Fprintf(w, "%v", err)
-			return
-		}
-		path := os.TempDir() + "/dotori"
-		err = os.MkdirAll(path, 0770)
-		if err != nil {
-			return
-		}
-		err = os.Chown(path, 0, 20)
-		if err != nil {
-			return
-		}
-		err = ioutil.WriteFile(path+"/"+header.Filename, data, 0440)
-		if err != nil {
-			fmt.Fprintf(w, "%v", err)
-			return
-		}
+		//허용하지 않는 파일 포맷입니다.
+		http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
+		return
 	}
 }
 
