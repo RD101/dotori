@@ -189,16 +189,16 @@ func SetAdminSetting(session *mgo.Session, a Adminsetting) error {
 }
 
 // GetAdminSetting 은 관리자 셋팅값을 가지고 온다.
-func GetAdminSetting(session *mgo.Session) Adminsetting {
+func GetAdminSetting(session *mgo.Session) (Adminsetting, error) {
 	session.SetMode(mgo.Monotonic, true)
 	c := session.DB(*flagDBName).C("setting.admin")
 	var result Adminsetting
 	err := c.Find(bson.M{"id": "setting.admin"}).One(&result)
 	if err != nil {
 		// 찾지 못했을 경우에는 빈 Adminsetting 자료구조를 반환한다.
-		return Adminsetting{}
+		return Adminsetting{}, err
 	}
-	return result
+	return result, nil
 }
 
 // GetOngoingProcess 는 처리 중인 아이템을 가져온다.

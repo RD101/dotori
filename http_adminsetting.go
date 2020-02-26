@@ -14,7 +14,7 @@ func handleAdminSetting(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer session.Close()
-	setting := GetAdminSetting(session)
+	setting, err := GetAdminSetting(session)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -40,7 +40,7 @@ func handleAdminSettingSubmit(w http.ResponseWriter, r *http.Request) {
 	a.UID = r.FormValue("uid")
 	a.GID = r.FormValue("gid")
 	a.FFmpeg = r.FormValue("ffmpeg")
-	a.OpenColorIO = r.FormValue("opencolorio")
+	a.OCIOConfig = r.FormValue("ocioconfig")
 	a.OpenImageIO = r.FormValue("openimageio")
 	session, err := mgo.Dial(*flagDBIP)
 	if err != nil {
