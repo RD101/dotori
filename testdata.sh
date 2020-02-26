@@ -1,5 +1,10 @@
 #!/bin/sh
 #DB에 아이템 추가 테스트를 위한 명령어를 모아둔 파일
+#copyFile함수 테스트용 데이터
+dotori -add -author bae -itemtype maya -inputpath /tmp/dotori/ -outputpath /Users/seoyoungbae/dotoriDB/ -description "copying folder test1" -tag "copy test"
+dotori -add -author bae -itemtype maya -inputpath /tmp/dotori -outputpath /Users/seoyoungbae/dotoriDB -description "copying folder test2" -tag "copy test"
+dotori -add -author bae -itemtype nuke -inputpath /tmp/dotori -outputpath /Users/seoyoungbae/dotoriDB -description "copying folder test3" -tag "copy test"
+#
 dotori -add -author bae -itemtype nuke -inputpath /library/asset -outputpath /library/asset
 dotori -add -author liah -itemtype houdini -inputpath /library/asset -outputpath /library/asset
 dotori -add -author woong -itemtype maya -inputpath /library/asset/01 -outputpath /library/asset -description "description1 about some details" -tag "나무 낙엽 item1"
