@@ -216,7 +216,7 @@ func GetOngoingProcess(session *mgo.Session) ([]Item, error) {
 		if c == "system.indexs" { //mongodb의 기본 컬렉션. 제외한다.
 			continue
 		}
-		err = session.DB(*flagDBName).C(c).Find(bson.M{"Status": bson.M{"$ne": "Done"}}).All(&items)
+		err = session.DB(*flagDBName).C(c).Find(bson.M{"status": bson.M{"$ne": Done}}).All(&items)
 		if err != nil {
 			return results, err
 		}
