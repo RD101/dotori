@@ -21,7 +21,7 @@ var (
 	flagSearchWord        = flag.String("searchword", "", "search word") // DB를 검색할 때 사용합니다.
 	flagSearchID          = flag.Bool("searchid", false, "search a item by its id")
 	flagGetOngoingProcess = flag.Bool("getongoingprocess", false, "get ongoing process") // 완료되지 않은 프로세스를 가져옵니다.
-	flagProcess           = flag.Bool("process", false, "start processing item")         //ready상태인 아이템을 하나 가져온다.
+	flagProcess           = flag.Bool("process", false, "start processing item")         // 프로세스를 실행시킨다
 
 	flagAuthor      = flag.String("author", "", "author")
 	flagTag         = flag.String("tag", "", "tag")
