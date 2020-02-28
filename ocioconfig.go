@@ -4,23 +4,22 @@ import (
 	"io/ioutil"
 	"os"
 
-	"gopkg.in/mgo.v2"
 	"gopkg.in/yaml.v2"
 )
 
-// Colorspace 자료구조는 OCIO Color 자료구조이다.
+// Colorspace 자료구조는 ocio.config 파일내 colorspaces: 자료구조이다.
 type Colorspace struct {
 	Name     string `yaml:"name"`
 	Family   string `yaml:"family"`
 	Bitdepth string `yaml:"bitdepth"`
 }
 
-// Displays 자료구조는 OCIO Display 자료구조이다.
+// Displays 자료구조는 ocio.config 파일내 displays: ACES: 자료구조이다.
 type Displays struct {
 	ACES []View `yaml:"ACES"`
 }
 
-// View 자료구조는 OCIO Display > ACES: 자료구조이다.
+// View 자료구조는 ocio.config 파일내 displays: ACES: view 자료구조이다.
 type View struct {
 	Name       string `yaml:"name"`
 	Colorspace string `yaml:"colorspace"`
@@ -34,35 +33,22 @@ type OCIOConfig struct {
 	Roles              map[string]string `yaml:"roles"`
 }
 
-func loadOCIOConfig(session *mgo.Session) ([]string, error) {
-	var results []string
-	s, err := GetAdminSetting(session)
-	if err != nil {
-		return nil, err
-	}
-
-	if s.OCIOConfig == "" {
-		return results, nil
-	}
+func loadOCIOConfig(configPath string) (OCIOConfig, error) {
+	var oc OCIOConfig
 	// 파일이 존재하는지 체크한다.
-	_, err = os.Stat(s.OCIOConfig)
+	_, err := os.Stat(configPath)
 	if err != nil {
-		return nil, err
+		return oc, err
 	}
 	// OCIO.config 파일을 불러온다.
-	dat, err := ioutil.ReadFile(s.OCIOConfig)
+	data, err := ioutil.ReadFile(configPath)
 	if err != nil {
-		return nil, err
+		return oc, err
 	}
 	// 존재하면, 해당파일을 파싱한다.
-	var oc OCIOConfig
-	err = yaml.Unmarshal(dat, &oc)
+	err = yaml.Unmarshal(data, &oc)
 	if err != nil {
-		return nil, err
+		return oc, err
 	}
-	// color 리스트만 results에 넣는다.
-	for _, c := range oc.Colorspaces {
-		results = append(results, c.Name)
-	}
-	return results, nil
+	return oc, nil
 }
