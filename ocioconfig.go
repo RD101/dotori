@@ -33,6 +33,7 @@ type OCIOConfig struct {
 	Roles              map[string]string `yaml:"roles"`
 }
 
+// loadOCIOConfig 함수는 OpenColorIO ocio.config 파일을 분석하여 OCIOConfig 자료구조를 반환한다.
 func loadOCIOConfig(configPath string) (OCIOConfig, error) {
 	var oc OCIOConfig
 	// 파일이 존재하는지 체크한다.
