@@ -19,7 +19,7 @@ type Adminsetting struct {
 	UID                 string `json:"uid" bson:"uid"`                                 // 유저 ID
 	GID                 string `json:"gid" bson:"gid"`                                 // 그룹 ID
 	FFmpeg              string `json:"ffmpeg" bson:"ffmpeg"`                           // FFmpeg 명령어 경로
-	OpenColorIO         string `json:"opencolorio" bson:"opencolorio"`                 // OpenColorIO 명령어 경로
+	OCIOConfig          string `json:"ocioconfig" bson:"ocioconfig"`                   // ocio.config 경로
 	OpenImageIO         string `json:"openimageio" bson:"openimageio"`                 // OpenImageIO 명령어 경로
 }
 
