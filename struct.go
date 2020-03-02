@@ -19,7 +19,7 @@ type Adminsetting struct {
 	UID                 string `json:"uid" bson:"uid"`                                 // 유저 ID
 	GID                 string `json:"gid" bson:"gid"`                                 // 그룹 ID
 	FFmpeg              string `json:"ffmpeg" bson:"ffmpeg"`                           // FFmpeg 명령어 경로
-	OpenColorIO         string `json:"opencolorio" bson:"opencolorio"`                 // OpenColorIO 명령어 경로
+	OCIOConfig          string `json:"ocioconfig" bson:"ocioconfig"`                   // ocio.config 경로
 	OpenImageIO         string `json:"openimageio" bson:"openimageio"`                 // OpenImageIO 명령어 경로
 }
 
@@ -80,6 +80,14 @@ func (i Item) CheckError() error {
 	}
 	if !regexLower.MatchString(i.ItemType) {
 		return errors.New("type이 소문자가 아닙니다")
+	}
+	for _, tag := range i.Tags {
+		if !regexTag.MatchString(tag) {
+			return errors.New("tag에는 특수문자를 사용할 수 없습니다")
+		}
+		if len(tag) == 1 {
+			return errors.New("tag에는 한자리의 단어를 사용할 수 없습니다")
+		}
 	}
 	return nil
 }
