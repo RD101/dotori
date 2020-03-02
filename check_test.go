@@ -277,3 +277,37 @@ func Test_Attributes(t *testing.T) {
 		}
 	}
 }
+
+// tag를 테스트하기위한 함수
+func Test_Tag(t *testing.T) {
+	cases := []struct {
+		Tag  string
+		want bool
+	}{{
+		Tag:  "tag", // 영문만 있는 경우
+		want: true,
+	}, {
+		Tag:  "태그", // 한글만 있는 경우
+		want: true,
+	}, {
+		Tag:  "tag태그", // 영문, 한글이 포함된 경우
+		want: true,
+	}, {
+		Tag:  "tag2", // 숫자가 포함된 경우
+		want: true,
+	}, {
+		Tag:  "tag@", // 특수문자가 포함된 경우
+		want: false,
+	}, {
+		Tag:  ",tag", // 특수문자로 시작하는 경우
+		want: false,
+	},
+	}
+
+	for _, c := range cases {
+		b := regexTag.MatchString(c.Tag)
+		if c.want != b {
+			t.Fatalf("Test_Tag(): 입력 값: %v, 원하는 값: %v, 얻은 값: %v\n", c.Tag, c.want, b)
+		}
+	}
+}

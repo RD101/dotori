@@ -81,5 +81,13 @@ func (i Item) CheckError() error {
 	if !regexLower.MatchString(i.ItemType) {
 		return errors.New("type이 소문자가 아닙니다")
 	}
+	for _, tag := range i.Tags {
+		if !regexTag.MatchString(tag) {
+			return errors.New("tag에는 특수문자를 사용할 수 없습니다")
+		}
+		if len(tag) == 1 {
+			return errors.New("tag에는 한자리의 단어를 사용할 수 없습니다")
+		}
+	}
 	return nil
 }
