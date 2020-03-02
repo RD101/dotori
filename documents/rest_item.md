@@ -2,7 +2,7 @@
 
 ## Python 예제
 
-### 에셋 검색
+### 에셋 검색하기
 ```python
 #coding:utf8
 import json
@@ -18,6 +18,3 @@ if "error" in data:
     print(data["error"])
 print(data["data"])
 ```
-
-
-### id
