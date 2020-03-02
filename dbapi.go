@@ -19,6 +19,18 @@ func AddItem(session *mgo.Session, i Item) error {
 	return nil
 }
 
+// GetItem 은 데이터베이스에 Item을 가지고 오는 함수이다.
+func GetItem(session *mgo.Session, itemType, id string) (Item, error) {
+	session.SetMode(mgo.Monotonic, true)
+	c := session.DB(*flagDBName).C(itemType)
+	var result Item
+	err := c.Find(bson.M{"_id": bson.ObjectIdHex(id)}).One(&result)
+	if err != nil {
+		return result, err
+	}
+	return result, nil
+}
+
 // RmItem 는 컬렉션 이름과 id를 받아서, 해당 컬렉션에서 id가 일치하는 Item을 삭제한다.
 func RmItem(session *mgo.Session, itemType, id string) error {
 	session.SetMode(mgo.Monotonic, true)

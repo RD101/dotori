@@ -105,6 +105,38 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write(data)
 		return
+	} else if r.Method == http.MethodGet {
+		q := r.URL.Query()
+		itemtype := q.Get("itemtype")
+		id := q.Get("id")
+		if itemtype == "" {
+			http.Error(w, "URL에 itemtype을 입력해주세요", http.StatusBadRequest)
+			return
+		}
+		if id == "" {
+			http.Error(w, "URL에 id를 입력해주세요", http.StatusBadRequest)
+			return
+		}
+		session, err := mgo.Dial(*flagDBIP)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		defer session.Close()
+		i, err := GetItem(session, itemtype, id)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		data, err := json.Marshal(i)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(http.StatusOK)
+		w.Write(data)
+		return
 	} else {
 		http.Error(w, "Not Supported Method", http.StatusMethodNotAllowed)
 		return
