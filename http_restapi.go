@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"gopkg.in/mgo.v2"
@@ -147,20 +146,40 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 
 //handleAPISearch는 id를 검색해주는 함수입니다.
 func handleAPISearch(w http.ResponseWriter, r *http.Request) {
-	defer r.Body.Close()
 	if r.Method != http.MethodPost {
 		http.Error(w, "Post Only", http.StatusMethodNotAllowed)
 		return
 	}
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	q := r.URL.Query()
+	itemtype := q.Get("itemtype")
+	id := q.Get("id")
+	if itemtype == "" {
+		http.Error(w, "URL에 itemtype을 입력해주세요.", http.StatusBadRequest)
+		return
+	}
+	if id == "" {
+		http.Error(w, "URL에 id를 입력해주세요", http.StatusBadRequest)
+		return
+	}
 	session, err := mgo.Dial(*flagDBIP)
 	if err != nil {
-		fmt.Fprintf(w, "{\"error\":\"%v\"\n", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	defer session.Close()
-	r.ParseForm() // 받은 문자를 파싱한다. 파싱되면 map이 된다.
-	// var searchword string
-	args := r.PostForm
-	fmt.Println(args)
+
+	item, err := SearchItem(session, itemtype, id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	data, err := json.Marshal(item)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	w.Write(data)
+	return
 }
