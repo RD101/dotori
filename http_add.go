@@ -150,28 +150,27 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 				}
 			case "application/octet-stream":
 				ext := filepath.Ext(f.Filename)
-				if ext == ".mb" || ext == ".ma" {
-					data, err := ioutil.ReadAll(file)
-					if err != nil {
-						fmt.Fprintf(w, "%v", err)
-						return
-					}
-					path := os.TempDir() + "/dotori" + "/" + prefixPath
-					err = os.MkdirAll(path, 0770)
-					if err != nil {
-						return
-					}
-					err = os.Chown(path, 0, 20)
-					if err != nil {
-						return
-					}
-					err = ioutil.WriteFile(path+"/"+f.Filename, data, 0440)
-					if err != nil {
-						fmt.Fprintf(w, "%v", err)
-						return
-					}
-				} else { // .ma .mb 외에는 허용하지 않는다.
+				if ext != ".mb" && ext != ".ma" { // .ma .mb 외에는 허용하지 않는다.
 					http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
+					return
+				}
+				data, err := ioutil.ReadAll(file)
+				if err != nil {
+					fmt.Fprintf(w, "%v", err)
+					return
+				}
+				path := os.TempDir() + "/dotori" + "/" + prefixPath
+				err = os.MkdirAll(path, 0770)
+				if err != nil {
+					return
+				}
+				err = os.Chown(path, 0, 20)
+				if err != nil {
+					return
+				}
+				err = ioutil.WriteFile(path+"/"+f.Filename, data, 0440)
+				if err != nil {
+					fmt.Fprintf(w, "%v", err)
 					return
 				}
 			default:
