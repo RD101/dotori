@@ -13,7 +13,7 @@
 
 
 ## Python example
-- ```/api/item```
+### asset item 검색 
 
 ```python
 #!/usr/bin/python
@@ -30,7 +30,7 @@ except:
 print(data)
 ```
 
-- ```/api/search```
+### id 검색
 ```python
 #!/usr/bin/python
 #coding:utf-8
