@@ -109,64 +109,79 @@ func handleAddAlembicProcess(w http.ResponseWriter, r *http.Request) {
 
 // handleUploadMaya 함수는 Maya파일을 DB에 업로드하는 페이지를 연다.
 func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
-	file, header, err := r.FormFile("file")
+	err := r.ParseMultipartForm(200000) // grab the multipart form, 데이터 크기 토의 필요.
 	if err != nil {
-		log.Println(err)
-	}
-	defer file.Close()
-	unix.Umask(0)
-	mimeType := header.Header.Get("Content-Type")
-	switch mimeType {
-	case "image/jpeg", "image/png", "video/quicktime", "video/mp4", "video/ogg", "application/ogg":
-		data, err := ioutil.ReadAll(file)
-		if err != nil {
-			fmt.Fprintf(w, "%v", err)
-			return
-		}
-		path := os.TempDir() + "/dotori"
-		err = os.MkdirAll(path, 0770)
-		if err != nil {
-			return
-		}
-		err = os.Chown(path, 0, 20)
-		if err != nil {
-			return
-		}
-		err = ioutil.WriteFile(path+"/"+header.Filename, data, 0440)
-		if err != nil {
-			fmt.Fprintf(w, "%v", err)
-			return
-		}
-	case "application/octet-stream":
-		ext := filepath.Ext(header.Filename)
-		if ext == ".mb" || ext == ".ma" {
-			data, err := ioutil.ReadAll(file)
-			if err != nil {
-				fmt.Fprintf(w, "%v", err)
-				return
-			}
-			path := os.TempDir() + "/dotori"
-			err = os.MkdirAll(path, 0770)
-			if err != nil {
-				return
-			}
-			err = os.Chown(path, 0, 20)
-			if err != nil {
-				return
-			}
-			err = ioutil.WriteFile(path+"/"+header.Filename, data, 0440)
-			if err != nil {
-				fmt.Fprintf(w, "%v", err)
-				return
-			}
-		} else { // .ma .mb 외에는 허용하지 않는다.
-			http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
-			return
-		}
-	default:
-		//허용하지 않는 파일 포맷입니다.
-		http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
+		fmt.Fprintf(w, "%v", err)
 		return
+	}
+	// /tmp/dotori 하위에 mongoDB objectID를 이용해 생성할 폴더
+	prefixPath := bson.NewObjectId().Hex()
+	for _, files := range r.MultipartForm.File {
+		for _, f := range files {
+			file, err := f.Open()
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				continue
+			}
+			defer file.Close()
+			unix.Umask(0)
+			mimeType := f.Header.Get("Content-Type")
+			switch mimeType {
+			case "image/jpeg", "image/png", "video/quicktime", "video/mp4", "video/ogg", "application/ogg":
+				data, err := ioutil.ReadAll(file)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				path := os.TempDir() + "/dotori" + "/" + prefixPath
+				err = os.MkdirAll(path, 0770)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				err = os.Chown(path, 0, 20)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				err = ioutil.WriteFile(path+"/"+f.Filename, data, 0440)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+			case "application/octet-stream":
+				ext := filepath.Ext(f.Filename)
+				if ext != ".mb" && ext != ".ma" { // .ma .mb 외에는 허용하지 않는다.
+					http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
+					return
+				}
+				data, err := ioutil.ReadAll(file)
+				if err != nil {
+					fmt.Fprintf(w, "%v", err)
+					return
+				}
+				path := os.TempDir() + "/dotori" + "/" + prefixPath
+				err = os.MkdirAll(path, 0770)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				err = os.Chown(path, 0, 20)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				err = ioutil.WriteFile(path+"/"+f.Filename, data, 0440)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+			default:
+				//허용하지 않는 파일 포맷입니다.
+				http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
+				return
+			}
+		}
 	}
 }
 
