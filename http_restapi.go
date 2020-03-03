@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"gopkg.in/mgo.v2"
@@ -142,4 +143,24 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+}
+
+//handleAPISearch는 id를 검색해주는 함수입니다.
+func handleAPISearch(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+	if r.Method != http.MethodPost {
+		http.Error(w, "Post Only", http.StatusMethodNotAllowed)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	session, err := mgo.Dial(*flagDBIP)
+	if err != nil {
+		fmt.Fprintf(w, "{\"error\":\"%v\"\n", err)
+		return
+	}
+	defer session.Close()
+	r.ParseForm() // 받은 문자를 파싱한다. 파싱되면 map이 된다.
+	// var searchword string
+	args := r.PostForm
+	fmt.Println(args)
 }
