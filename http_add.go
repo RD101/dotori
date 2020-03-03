@@ -120,7 +120,7 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 		for _, f := range files {
 			file, err := f.Open()
 			if err != nil {
-				fmt.Fprintf(w, "%v", err)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
 				continue
 			}
 			defer file.Close()
@@ -130,21 +130,23 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 			case "image/jpeg", "image/png", "video/quicktime", "video/mp4", "video/ogg", "application/ogg":
 				data, err := ioutil.ReadAll(file)
 				if err != nil {
-					fmt.Fprintf(w, "%v", err)
+					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return
 				}
 				path := os.TempDir() + "/dotori" + "/" + prefixPath
 				err = os.MkdirAll(path, 0770)
 				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return
 				}
 				err = os.Chown(path, 0, 20)
 				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return
 				}
 				err = ioutil.WriteFile(path+"/"+f.Filename, data, 0440)
 				if err != nil {
-					fmt.Fprintf(w, "%v", err)
+					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return
 				}
 			case "application/octet-stream":
@@ -161,15 +163,17 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 				path := os.TempDir() + "/dotori" + "/" + prefixPath
 				err = os.MkdirAll(path, 0770)
 				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return
 				}
 				err = os.Chown(path, 0, 20)
 				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return
 				}
 				err = ioutil.WriteFile(path+"/"+f.Filename, data, 0440)
 				if err != nil {
-					fmt.Fprintf(w, "%v", err)
+					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return
 				}
 			default:
