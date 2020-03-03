@@ -114,10 +114,9 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "%v", err)
 		return
 	}
-	formdata := r.MultipartForm
 	// /tmp/dotori 하위에 mongoDB objectID를 이용해 생성할 폴더
 	prefixPath := bson.NewObjectId().Hex()
-	for _, files := range formdata.File {
+	for _, files := range r.MultipartForm.File {
 		for _, f := range files {
 			file, err := f.Open()
 			if err != nil {
