@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"strconv"
 
 	"gopkg.in/mgo.v2"
 )
@@ -42,6 +43,12 @@ func handleAdminSettingSubmit(w http.ResponseWriter, r *http.Request) {
 	a.FFmpeg = r.FormValue("ffmpeg")
 	a.OCIOConfig = r.FormValue("ocioconfig")
 	a.OpenImageIO = r.FormValue("openimageio")
+	bsize, err := strconv.Atoi(r.FormValue("multipartformbuffersize"))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	a.MultipartFormBufferSize = bsize
 	session, err := mgo.Dial(*flagDBIP)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
