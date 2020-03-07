@@ -30,7 +30,7 @@ except:
 print(data)
 ```
 
-### 검색
+### 검색하기
 ```python
 #!/usr/bin/python
 #coding:utf-8

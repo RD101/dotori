@@ -150,16 +150,24 @@ func handleAPISearch(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Post Only", http.StatusMethodNotAllowed)
 		return
 	}
-	q := r.URL.Query()
-	itemtype := q.Get("itemtype")
-	id := q.Get("id")
-	if itemtype == "" {
-		http.Error(w, "URL에 itemtype을 입력해주세요.", http.StatusBadRequest)
-		return
-	}
-	if id == "" {
-		http.Error(w, "URL에 id를 입력해주세요", http.StatusBadRequest)
-		return
+	r.ParseForm()
+	var itemtype string
+	var searchword string
+	for key, values := range r.PostForm {
+		switch key {
+		case "itemtype":
+			if len(values) != 1 {
+				http.Error(w, "itemtype을 설정해 주세요", http.StatusBadRequest)
+				return
+			}
+			itemtype = values[0]
+		case "searchword":
+			if len(values) != 1 {
+				http.Error(w, "searchword를 설정해주세요", http.StatusBadRequest)
+				return
+			}
+			searchword = values[0]
+		}
 	}
 	session, err := mgo.Dial(*flagDBIP)
 	if err != nil {
@@ -167,8 +175,7 @@ func handleAPISearch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer session.Close()
-
-	item, err := SearchItem(session, itemtype, id)
+	item, err := Search(session, itemtype, searchword)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
