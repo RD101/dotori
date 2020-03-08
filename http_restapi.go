@@ -157,7 +157,7 @@ func handleAPISearch(w http.ResponseWriter, r *http.Request) {
 		switch key {
 		case "itemtype":
 			if len(values) != 1 {
-				http.Error(w, "itemtype을 설정해 주세요", http.StatusBadRequest)
+				http.Error(w, "itemtype을 설정해주세요", http.StatusBadRequest)
 				return
 			}
 			itemtype = values[0]
