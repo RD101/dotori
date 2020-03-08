@@ -7,8 +7,13 @@
 
 
 ## Post
+| URI | Description | Attributes | Curl Example |
+| --- | --- | --- | --- |
+| /api/search | 검색하기 | itemtype, searchword | `$ curl -X POST -d "itemtype=maya&searchword=나무" http://192.168.219.104/api/search` |
+
 
 ## Python example
+### asset 가지고 오기 
 
 ```python
 #!/usr/bin/python
@@ -23,4 +28,22 @@ except:
     print("RestAPI에 연결할 수 없습니다.")
     # 이후 에러처리 할 것
 print(data)
+```
+
+### 검색하기
+```python
+#!/usr/bin/python
+#coding:utf-8
+import urllib2
+import urllib
+import json
+try:
+    data = {"itemtype":"maya","searchword":"나무"}
+    data = urllib.urlencode(data)
+    request = urllib2.Request("http://192.168.219.104/api/search",data)
+    result = urllib2.urlopen(request)
+    data = json.load(result)
+except:
+    print("RestAPI에 연결할 수 없습니다.")
+print data
 ```

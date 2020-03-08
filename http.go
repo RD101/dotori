@@ -78,6 +78,8 @@ func webserver() {
 
 	// REST API
 	http.HandleFunc("/api/item", handleAPIItem)
+	http.HandleFunc("/api/search", handleAPISearch)
+
 	// 웹서버 실행
 	err = http.ListenAndServe(*flagHTTPPort, nil)
 	if err != nil {
