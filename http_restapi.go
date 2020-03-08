@@ -151,23 +151,15 @@ func handleAPISearch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	r.ParseForm()
-	var itemtype string
-	var searchword string
-	for key, values := range r.PostForm {
-		switch key {
-		case "itemtype":
-			if len(values) != 1 {
-				http.Error(w, "itemtype을 설정해주세요", http.StatusBadRequest)
-				return
-			}
-			itemtype = values[0]
-		case "searchword":
-			if len(values) != 1 {
-				http.Error(w, "searchword를 설정해주세요", http.StatusBadRequest)
-				return
-			}
-			searchword = values[0]
-		}
+	itemtype := r.FormValue("itemtype")
+	if itemtype == "" {
+		http.Error(w, "itemtype을 설정해주세요", http.StatusBadRequest)
+		return
+	}
+	searchword := r.FormValue("searchword")
+	if searchword == "" {
+		http.Error(w, "searchword를 설정해주세요", http.StatusBadRequest)
+		return
 	}
 	session, err := mgo.Dial(*flagDBIP)
 	if err != nil {

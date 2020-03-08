@@ -20,13 +20,10 @@
 #coding:utf-8
 import urllib2
 import json
-try:
-    request = urllib2.Request("http://192.168.219.104/api/item?itemtype=maya&id=5e24742f901da0498519f7a7")
-    result = urllib2.urlopen(request)
-    data = json.load(result)
-except:
-    print("RestAPI에 연결할 수 없습니다.")
-    # 이후 에러처리 할 것
+
+request = urllib2.Request("http://192.168.219.104/api/item?itemtype=maya&id=5e24742f901da0498519f7a7")
+result = urllib2.urlopen(request)
+data = json.load(result)
 print(data)
 ```
 
@@ -37,13 +34,10 @@ print(data)
 import urllib2
 import urllib
 import json
-try:
-    data = {"itemtype":"maya","searchword":"나무"}
-    data = urllib.urlencode(data)
-    request = urllib2.Request("http://192.168.219.104/api/search",data)
-    result = urllib2.urlopen(request)
-    data = json.load(result)
-except:
-    print("RestAPI에 연결할 수 없습니다.")
-print data
+
+data = urllib.urlencode({"itemtype":"maya","searchword":"나무"}) # 쿼리스트링 파라미터를 Encoding
+request = urllib2.Request("http://192.168.0.9/api/search",data) 
+result = urllib2.urlopen(request)
+data = json.load(result)
+print(data)
 ```
