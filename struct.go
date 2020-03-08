@@ -23,6 +23,14 @@ type Adminsetting struct {
 	OpenImageIO         string `json:"openimageio" bson:"openimageio"`                 // OpenImageIO 명령어 경로
 }
 
+// User 자료구조는 사용자 자료구조이다.
+type User struct {
+	ID          string `json:"id" bson:"id"`                   // 사용자 ID
+	Password    string `json:"password" bson:"password"`       // 암호화된 암호
+	Token       string `json:"token" bson:"token"`             // JWT 토큰
+	AccessLevel string `json:"accesslevel" bson:"accesslevel"` // admin, manager, user
+}
+
 // Item 은 라이브러리의 에셋 자료구조이다.
 type Item struct {
 	ID          bson.ObjectId     `json:"id" bson:"_id,omitempty"`        // ID
