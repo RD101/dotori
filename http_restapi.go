@@ -144,7 +144,7 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 
 }
 
-//handleAPISearch는 id를 검색해주는 함수입니다.
+// handleAPISearch 는 아이템을 검색하는 함수입니다.
 func handleAPISearch(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Post Only", http.StatusMethodNotAllowed)
