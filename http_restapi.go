@@ -143,3 +143,50 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
+
+// handleAPISearch 는 아이템을 검색하는 함수입니다.
+func handleAPISearch(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Post Only", http.StatusMethodNotAllowed)
+		return
+	}
+	r.ParseForm()
+	var itemtype string
+	var searchword string
+	for key, values := range r.PostForm {
+		switch key {
+		case "itemtype":
+			if len(values) != 1 {
+				http.Error(w, "itemtype을 설정해주세요", http.StatusBadRequest)
+				return
+			}
+			itemtype = values[0]
+		case "searchword":
+			if len(values) != 1 {
+				http.Error(w, "searchword를 설정해주세요", http.StatusBadRequest)
+				return
+			}
+			searchword = values[0]
+		}
+	}
+	session, err := mgo.Dial(*flagDBIP)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer session.Close()
+	item, err := Search(session, itemtype, searchword)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	data, err := json.Marshal(item)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	w.Write(data)
+	return
+}
