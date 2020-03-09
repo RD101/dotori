@@ -28,6 +28,7 @@ var (
 	flagDescription = flag.String("description", "", "description")
 	flagThumbimg    = flag.String("thumbimg", "", "path of thumbnail image")
 	flagInputpath   = flag.String("inputpath", "", "input path")
+	flagOutputpath  = flag.String("outputpath", "", "outout path")
 	flagItemType    = flag.String("itemtype", "", "type of asset")
 	flagAttributes  = flag.String("attributes", "", "detail info of file") // "key:value,key:value"
 
@@ -72,6 +73,7 @@ func main() {
 		i.Tags = SplitBySpace(*flagTag)
 		i.Description = *flagDescription
 		i.Thumbimg = *flagThumbimg
+		i.Outputpath = *flagOutputpath
 		i.ItemType = *flagItemType
 		i.Attributes = StringToMap(*flagAttributes)
 
