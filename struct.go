@@ -8,19 +8,20 @@ import (
 
 // Adminsetting 자료구조
 type Adminsetting struct {
-	ID                  string `json:"id" bson:"id"`                                   // DB에서 값을 가지고 오기 위한 id
-	Rootpath            string `json:"rootpath" bson:"rootpath"`                       // 에셋 라이브러러리 물리경로
-	LinuxProtocolPath   string `json:"linuxprotocolpath" bson:"linuxprotocolpath"`     // 웹에서 클릭시 사용하는 Linux 경로
-	WindowsProtocolPath string `json:"windowsprotocolpath" bson:"windowsprotocolpath"` // 웹에서 클릭시 사용하는 Windows 경로
-	MacosProtocolPath   string `json:"macosprotocolpath" bson:"macosprotocolpath"`     // 웹에서 클릭시 사용하는 macOS 경로
-	Umask               string `json:"umask" bson:"umask"`                             // Umask 값
-	FolderPermission    string `json:"folderpermission" bson:"folderpermission"`       // 폴더 생성시 사용하는 권한
-	FilePermission      string `json:"filepermission" bson:"filepermission"`           // 파일 생성시 사용하는 권한
-	UID                 string `json:"uid" bson:"uid"`                                 // 유저 ID
-	GID                 string `json:"gid" bson:"gid"`                                 // 그룹 ID
-	FFmpeg              string `json:"ffmpeg" bson:"ffmpeg"`                           // FFmpeg 명령어 경로
-	OCIOConfig          string `json:"ocioconfig" bson:"ocioconfig"`                   // ocio.config 경로
-	OpenImageIO         string `json:"openimageio" bson:"openimageio"`                 // OpenImageIO 명령어 경로
+	ID                      string `json:"id" bson:"id"`                                           // DB에서 값을 가지고 오기 위한 id
+	Rootpath                string `json:"rootpath" bson:"rootpath"`                               // 에셋 라이브러러리 물리경로
+	LinuxProtocolPath       string `json:"linuxprotocolpath" bson:"linuxprotocolpath"`             // 웹에서 클릭시 사용하는 Linux 경로
+	WindowsProtocolPath     string `json:"windowsprotocolpath" bson:"windowsprotocolpath"`         // 웹에서 클릭시 사용하는 Windows 경로
+	MacosProtocolPath       string `json:"macosprotocolpath" bson:"macosprotocolpath"`             // 웹에서 클릭시 사용하는 macOS 경로
+	Umask                   string `json:"umask" bson:"umask"`                                     // Umask 값
+	FolderPermission        string `json:"folderpermission" bson:"folderpermission"`               // 폴더 생성시 사용하는 권한
+	FilePermission          string `json:"filepermission" bson:"filepermission"`                   // 파일 생성시 사용하는 권한
+	UID                     string `json:"uid" bson:"uid"`                                         // 유저 ID
+	GID                     string `json:"gid" bson:"gid"`                                         // 그룹 ID
+	FFmpeg                  string `json:"ffmpeg" bson:"ffmpeg"`                                   // FFmpeg 명령어 경로
+	OCIOConfig              string `json:"ocioconfig" bson:"ocioconfig"`                           // ocio.config 경로
+	OpenImageIO             string `json:"openimageio" bson:"openimageio"`                         // OpenImageIO 명령어 경로
+	MultipartFormBufferSize int    `json:"multipartformbuffersize" bson:"multipartformbuffersize"` // MultipartForm Buffersize
 }
 
 // Item 은 라이브러리의 에셋 자료구조이다.

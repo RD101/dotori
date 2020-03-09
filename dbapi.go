@@ -207,7 +207,9 @@ func GetAdminSetting(session *mgo.Session) (Adminsetting, error) {
 	var result Adminsetting
 	err := c.Find(bson.M{"id": "setting.admin"}).One(&result)
 	if err != nil {
-		// 찾지 못했을 경우에는 빈 Adminsetting 자료구조를 반환한다.
+		if err == mgo.ErrNotFound {
+			return Adminsetting{}, nil
+		}
 		return Adminsetting{}, err
 	}
 	return result, nil
