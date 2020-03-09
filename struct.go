@@ -23,7 +23,7 @@ type Adminsetting struct {
 	OpenImageIO         string `json:"openimageio" bson:"openimageio"`                 // OpenImageIO 명령어 경로
 }
 
-// User 자료구조는 사용자 자료구조이다.
+// User 는 사용자 자료구조이다.
 type User struct {
 	ID          string `json:"id" bson:"id"`                   // 사용자 ID
 	Password    string `json:"password" bson:"password"`       // 암호화된 암호
