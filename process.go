@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
@@ -19,14 +20,7 @@ func processingItem() error {
 	if err != nil {
 		return err
 	}
-	// Status : 복사중
-	item.Status = Copying
-	src := item.Inputpath
-	dst := item.Outputpath
-	err = copyDir(src, dst)
-	if err != nil {
-		return err
-	}
+	fmt.Println(item)
 	return nil
 }
 

@@ -32,23 +32,30 @@ type User struct {
 	AccessLevel string `json:"accesslevel" bson:"accesslevel"` // admin, manager, user
 }
 
+// ThumbMedia 는 썸네일 영상에 쓰이는 파일 포맷 자료구조이다.
+type ThumbMedia struct {
+	Ogg string `json:"ogg" bson:"ogg"`
+	Mp4 string `json:"mp4" bson:"mp4"`
+	Mov string `json:"mov" bson:"mov"`
+}
+
 // Item 은 라이브러리의 에셋 자료구조이다.
 type Item struct {
-	ID          bson.ObjectId     `json:"id" bson:"_id,omitempty"`        // ID
-	Author      string            `json:"author" bson:"author"`           // 에셋을 제작한 사람
-	Tags        []string          `json:"tags" bson:"tags"`               // 태그리스트
-	Description string            `json:"description" bson:"description"` // 에셋에 대한 추가 정보. 에셋의 제약, 사용전 알아야 할 특징
-	Thumbimg    string            `json:"thumbimg" bson:"thumbimg"`       // 썸네일 이미지 주소
-	Thumbmov    string            `json:"thumbmov" bson:"thumbmov"`       // 썸네일 영상 주소
-	Inputpath   string            `json:"inputpath" bson:"inputpath"`     // 최초 등록되는 경로
-	Outputpath  string            `json:"outputpath" bson:"outputpath"`   // 저장되는 경로
-	ItemType    string            `json:"itemtype" bson:"itemtype"`       // maya, source, houdini, blender, nuke ..  같은 형태인가.
-	Status      ItemStatus        `json:"status" bson:"status"`           // 상태(에러, done, wip)
-	Log         string            `json:"log" bson:"log"`                 // 데이터를 처리할 때 생성되는 로그
-	CreateTime  string            `json:"createtime" bson:"createtime"`   // Item 생성 시간
-	Updatetime  string            `json:"updatetime" bson:"updatetime"`   // UTC 타임으로 들어가도록 하기.
-	UsingRate   int64             `json:"usingrate" bson:"usingrate"`     // 사용 빈도 수
-	Attributes  map[string]string `json:"attributes" bson:"attributes"`   // 해상도, 속성, 메타데이터 등의 파일정보
+	ID          bson.ObjectId `json:"id" bson:"_id,omitempty"`        // ID
+	Author      string        `json:"author" bson:"author"`           // 에셋을 제작한 사람
+	Tags        []string      `json:"tags" bson:"tags"`               // 태그리스트
+	Description string        `json:"description" bson:"description"` // 에셋에 대한 추가 정보. 에셋의 제약, 사용전 알아야 할 특징
+	Thumbimg    string        `json:"thumbimg" bson:"thumbimg"`       // 썸네일 이미지 주소
+
+	Outputpath string                                `json:"outputpath" bson:"outputpath"` // 저장되는 경로
+	ItemType   string                                `json:"itemtype" bson:"itemtype"`     // maya, source, houdini, blender, nuke ..  같은 형태인가.
+	Status     ItemStatus                            `json:"status" bson:"status"`         // 상태(에러, done, wip)
+	Log        string                                `json:"log" bson:"log"`               // 데이터를 처리할 때 생성되는 로그
+	CreateTime string                                `json:"createtime" bson:"createtime"` // Item 생성 시간
+	Updatetime string                                `json:"updatetime" bson:"updatetime"` // UTC 타임으로 들어가도록 하기.
+	UsingRate  int64                                 `json:"usingrate" bson:"usingrate"`   // 사용 빈도 수
+	Attributes map[string]string                     `json:"attributes" bson:"attributes"` // 해상도, 속성, 메타데이터 등의 파일정보
+	ThumbMedia `json:"thumbmedia" bson:"thumbmedia"` // .mp4, .mov, .ogg 같은 데이터를 담을 때 사용한다.
 }
 
 // ItemStatus 는 숫자이다.
@@ -80,9 +87,6 @@ func (i Item) CheckError() error {
 	}
 	if !regexRFC3339Time.MatchString(i.Updatetime) {
 		return errors.New("업데이트 시간이 2019-09-09T14:43:34+09:00 형식의 문자열이 아닙니다")
-	}
-	if !regexPath.MatchString(i.Inputpath) {
-		return errors.New("최초 등록 경로가 /test/test 형식의 문자열이 아닙니다")
 	}
 	if !regexPath.MatchString(i.Outputpath) {
 		return errors.New("asset 저장 경로가 /test/test 형식의 문자열이 아닙니다")
