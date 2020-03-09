@@ -28,7 +28,7 @@ var (
 	flagDescription = flag.String("description", "", "description")
 	flagThumbimg    = flag.String("thumbimg", "", "path of thumbnail image")
 	flagInputpath   = flag.String("inputpath", "", "input path")
-	flagOutputpath  = flag.String("outputpath", "", "outout path")
+	flagOutputpath  = flag.String("outputpath", "", "output path")
 	flagItemType    = flag.String("itemtype", "", "type of asset")
 	flagAttributes  = flag.String("attributes", "", "detail info of file") // "key:value,key:value"
 
