@@ -4,6 +4,7 @@
         {{template "navbar"}}
         <div class="container p-5">
             <div class="cal-lg-6 cal-md-8 col-sm-12 mx-auto" >
+            <form method="post" action="/signup-submit" >
                 <div class="pt-3 pb-3">
                     <h2 class="section-heading text-center text-muted">Sign Up</h2>
                 </div>
@@ -24,7 +25,13 @@
                             <input type="password" name="Password" id="Password" class="form-control" placeholder="Password">
                             <small class="form-text text-muted">다시 한 번 패스워드를 입력해주세요.</small>
                         </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-darkmode mt-5">SIGN UP/ 가입</button>
+                        </div>
                     </div>
+                </div>
+            </form>
+            </div>
         </div>
     {{template "footer"}}
 </body>
