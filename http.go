@@ -75,6 +75,8 @@ func webserver() {
 	http.HandleFunc("/item-process", handleItemProcess)
 	// Help
 	http.HandleFunc("/help", handleHelp)
+	// User
+	http.HandleFunc("/signup", handleSignup)
 
 	// REST API
 	http.HandleFunc("/api/item", handleAPIItem)
@@ -176,3 +178,14 @@ func handleItemProcess(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+func handleSignup( w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html")
+	err := TEMPLATES.ExecuteTemplate(w, "signup", nil)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+
