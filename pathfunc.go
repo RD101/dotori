@@ -113,7 +113,7 @@ func idToPath(id string) (string, error) {
 
 	// 영문 소문자와 숫자만 허용
 	if !regexObjectID.MatchString(id) {
-		return id, errors.New("정규 표현식이 잘못되었습니다")
+		return id, errors.New("MongoDB ID 형식이 아닙니다")
 	}
 
 	// 형식에 맞게 "/" 추가 (2/2/2/2/6/4/2/2/2)
