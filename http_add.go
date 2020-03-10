@@ -107,7 +107,7 @@ func handleAddAlembicProcess(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// handleUploadMaya 함수는 Maya파일을 DB에 업로드하는 페이지를 연다.
+// handleUploadMaya 함수는 Maya파일을 DB에 업로드하는 페이지를 연다. dropzone에 파일을 올릴 경우 실행된다.
 func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseMultipartForm(200000) // grab the multipart form, 데이터 크기 토의 필요.
 	if err != nil {
@@ -229,7 +229,16 @@ func handleUploadMayaOnDB(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/addmaya?objectid=%s", item.ID.Hex()), http.StatusSeeOther)
+}
+
+func handleAddMayaSuccess(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html")
+	err := TEMPLATES.ExecuteTemplate(w, "addmaya-success", nil)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
 
 // handleUploadMaya 함수는 Nuke파일을 DB에 업로드하는 페이지를 연다.
