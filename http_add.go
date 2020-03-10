@@ -229,7 +229,16 @@ func handleUploadMayaOnDB(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/addmaya?objectid=%s", item.ID.Hex()), http.StatusSeeOther)
+}
+
+func handleAddMayaSuccess(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html")
+	err := TEMPLATES.ExecuteTemplate(w, "addmaya-success", nil)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
 
 // handleUploadMaya 함수는 Nuke파일을 DB에 업로드하는 페이지를 연다.
