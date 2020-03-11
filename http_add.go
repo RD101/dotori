@@ -111,11 +111,22 @@ func handleAddAlembicProcess(w http.ResponseWriter, r *http.Request) {
 func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseMultipartForm(200000) // grab the multipart form, 데이터 크기 토의 필요.
 	if err != nil {
-		fmt.Fprintf(w, "%v", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	// /tmp/dotori 하위에 mongoDB objectID를 이용해 생성할 폴더
-	prefixPath := bson.NewObjectId().Hex()
+	objectID, err := GetObjectIDfromRequestHeader(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	fmt.Println(objectID)
+
+	// mongoDB objectID를 이용해서 경로 생성
+	objectIDpath, err := idToPath(objectID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 	for _, files := range r.MultipartForm.File {
 		for _, f := range files {
 			file, err := f.Open()
@@ -133,7 +144,7 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return
 				}
-				path := os.TempDir() + "/dotori" + "/" + prefixPath
+				path := "/dotori/" + objectIDpath
 				err = os.MkdirAll(path, 0770)
 				if err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -160,7 +171,7 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 					fmt.Fprintf(w, "%v", err)
 					return
 				}
-				path := os.TempDir() + "/dotori" + "/" + prefixPath
+				path := "/dotori/" + objectIDpath
 				err = os.MkdirAll(path, 0770)
 				if err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
