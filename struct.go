@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 
+	jwt "github.com/dgrijalva/jwt-go"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -24,12 +25,19 @@ type Adminsetting struct {
 	MultipartFormBufferSize int    `json:"multipartformbuffersize" bson:"multipartformbuffersize"` // MultipartForm Buffersize
 }
 
+// Token 자료구조. JWT 방식을 사용한다.
+type Token struct {
+	ID          string `json:"id" bson:"id"`                   // 사용자 ID
+	AccessLevel string `json:"accesslevel" bson:"accesslevel"` // admin, manager, default
+	jwt.StandardClaims
+}
+
 // User 는 사용자 자료구조이다.
 type User struct {
 	ID          string `json:"id" bson:"id"`                   // 사용자 ID
 	Password    string `json:"password" bson:"password"`       // 암호화된 암호
 	Token       string `json:"token" bson:"token"`             // JWT 토큰
-	AccessLevel string `json:"accesslevel" bson:"accesslevel"` // admin, manager, user
+	AccessLevel string `json:"accesslevel" bson:"accesslevel"` // admin, manager, default
 }
 
 // ThumbMedia 는 썸네일 영상에 쓰이는 파일 포맷 자료구조이다.
@@ -102,5 +110,29 @@ func (i Item) CheckError() error {
 			return errors.New("tag에는 한자리의 단어를 사용할 수 없습니다")
 		}
 	}
+	return nil
+}
+
+// CreateToken 메소드는 토큰을 생성합니다.
+func (u *User) CreateToken() error {
+	if u.ID == "" {
+		return errors.New("ID is an empty string")
+	}
+	if u.Password == "" {
+		return errors.New("Password is an empty string")
+	}
+	if u.AccessLevel == "" {
+		return errors.New("AccessLevel is an empty string")
+	}
+	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), &Token{
+		ID:          u.ID,
+		AccessLevel: u.AccessLevel,
+	})
+	// 암호화된 패스워드를 토큰의 사인키로 사용합니다.
+	tokenString, err := token.SignedString([]byte(u.Password))
+	if err != nil {
+		return err
+	}
+	u.Token = tokenString
 	return nil
 }
