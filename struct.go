@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"os"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"gopkg.in/mgo.v2/bson"
@@ -128,8 +129,12 @@ func (u *User) CreateToken() error {
 		ID:          u.ID,
 		AccessLevel: u.AccessLevel,
 	})
-	// 암호화된 패스워드를 토큰의 사인키로 사용합니다.
-	tokenString, err := token.SignedString([]byte(u.Password))
+	signKey := u.Password
+	// TOKEN_SIGN_KEY 가 환경변수로 잡혀있다면, 해당 문자열을 토큰 암호화를 위한 사인키로 사용합니다.
+	if os.Getenv("TOKEN_SIGN_KEY") != "" {
+		signKey = os.Getenv("TOKEN_SIGN_KEY")
+	}
+	tokenString, err := token.SignedString([]byte(signKey))
 	if err != nil {
 		return err
 	}
