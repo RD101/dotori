@@ -119,7 +119,18 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	fmt.Println(objectID)
+	//adminSetting에서 rootpath를 가져온다.
+	session, err := mgo.Dial(*flagDBIP)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	adminsetting, err := GetAdminSetting(session)
+	rootpath := adminsetting.Rootpath
+	// '/'로 끝나지 않으면 끝에 슬래시를 붙여준다.
+	if rootpath[len(rootpath)-1] != '/' {
+		rootpath = rootpath + "/"
+	}
 
 	// mongoDB objectID를 이용해서 경로 생성
 	objectIDpath, err := idToPath(objectID)
@@ -144,7 +155,7 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return
 				}
-				path := "/dotori/" + objectIDpath
+				path := rootpath + objectIDpath
 				err = os.MkdirAll(path, 0770)
 				if err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -171,7 +182,7 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 					fmt.Fprintf(w, "%v", err)
 					return
 				}
-				path := "/dotori/" + objectIDpath
+				path := rootpath + objectIDpath
 				err = os.MkdirAll(path, 0770)
 				if err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
