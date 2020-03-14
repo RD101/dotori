@@ -26,7 +26,7 @@ type Adminsetting struct {
 	MultipartFormBufferSize int    `json:"multipartformbuffersize" bson:"multipartformbuffersize"` // MultipartForm Buffersize
 }
 
-// Token 자료구조. JWT 방식을 사용한다.
+// Token 자료구조. JWT 방식을 사용한다. restAPI 사용시 보안체크를 위해 http 헤더에 들어간다.
 type Token struct {
 	ID          string `json:"id" bson:"id"`                   // 사용자 ID
 	AccessLevel string `json:"accesslevel" bson:"accesslevel"` // admin, manager, default
