@@ -130,7 +130,10 @@ func (u *User) CreateToken() error {
 		AccessLevel: u.AccessLevel,
 	})
 	signKey := u.Password
-	// TOKEN_SIGN_KEY 가 환경변수로 잡혀있다면, 해당 문자열을 토큰 암호화를 위한 사인키로 사용합니다.
+	// TOKEN_SIGN_KEY 가 환경변수로 잡혀있다면, 해당 문자열을 토큰 암호화를 위한 사인키로 사용한다.
+	// TOKEN_SIGN_KEY는 블랙박스 형식의 알고리즘을 사용하기 위해 필요하다.
+	// 보안적으로는 화이트박스 형식보다 뛰어나지 않지만, 간혹 관리 편의성 또는 보안규약에 명시된 알고리즘(예) AES256 + 블랙박스형식)을 사용해야 할 때를 염두하고 설계한다.
+	// 참고: https://m.blog.naver.com/PostView.nhn?blogId=choijo2&logNo=60169379130&proxyReferer=https%3A%2F%2Fwww.google.co.kr%2F
 	if os.Getenv("TOKEN_SIGN_KEY") != "" {
 		signKey = os.Getenv("TOKEN_SIGN_KEY")
 	}
