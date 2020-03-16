@@ -2,7 +2,7 @@
     {{template "head"}}
     <body>
         {{template "navbar"}}
-
+        <!--dropzone-->
         <div class="container p-5">
             <div class="col-lg-6 col-md-8 col-sm-12 mx-auto">
                 <div class="pt-3 pb-3">
@@ -17,10 +17,78 @@
                     <small class="form-text text-muted">업로드할 마야파일, 썸네일, 동영상을 Drag & Drop 해주세요.</small>
                 </div>
             </div>
-            <div class="text-center pt-5">
-                <a href="/addmaya-success" class="btn btn-outline-warning">NEXT</a>
-            </div>
         </div>
+        <!--maya information-->
+        <form action="/upload-maya-ondb" method="post">
+            <div class="container p-5">
+                <div class="col-lg-6 col-md-8 col-sm-12 mx-auto">
+                    <div class="pt-3 pb-3">
+                        <h2 class="section-heading text-muted">Add Maya Asset</h2>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <div class="form-group">
+                                <label class="text-muted">Author</label>
+                                <input type="text" name="author" class="form-control" placeholder="에셋 제작자 이름">
+                                <small class="form-text text-muted">에셋 제작자 이름을 적어주세요.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <div class="form-group">
+                                <label class="text-muted">Description</label>
+                                <textarea name="description" class="form-control" rows="5"></textarea>
+                                <small class="form-text text-muted">에셋 사용시 참고해야할 사항</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <div class="form-group">
+                                <label class="text-muted">Tag</label>
+                                <input type="text" name="tag" class="form-control" placeholder="자동차 하늘">
+                                <small class="form-text text-muted">태그를 입력하세요. 태그는 띄어쓰기로 구분합니다.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <div class="form-group">
+                                <label class="text-muted">Attributes</label>
+                                <div id="attributes">
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group p-0 m-0">
+                                                <input type="text" class="form-control" placeholder="key" value="" id="key0" name="key0">
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group p-0 m-0">
+                                                <input type="text" class="form-control" placeholder="value" value="" id="value0" name="value0">
+                                            </div>			
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <input type="hidden" id="attributesNum" name="attributesNum" value="1">
+                                    <div class="col">
+                                        <small class="form-text text-muted float-right">필요시 속성을 추가해 주세요.</small>
+                                        <br>
+                                        <span class="add float-right" onclick="addAttribute();">+</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="text-center pt-5">
+                    <button type="submit" class="btn btn-outline-warning">등록</button>
+                </div>
+            </div>
+        </form>
         
         {{template "footer"}}
     </body>
