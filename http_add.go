@@ -127,7 +127,12 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 	}
 	adminsetting, err := GetAdminSetting(session)
 	rootpath := adminsetting.Rootpath
-	// '/'로 끝나지 않으면 끝에 슬래시를 붙여준다.
+	// rootpath가 빈문자열이면
+	if rootpath == "" {
+		http.Error(w, "admin setting에서 rootpath를 설정해주세요", http.StatusBadRequest)
+		return
+	}
+	// rootpath가 '/'로 끝나지 않으면 끝에 슬래시를 붙여준다.
 	if rootpath[len(rootpath)-1] != '/' {
 		rootpath = rootpath + "/"
 	}
