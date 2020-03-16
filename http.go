@@ -42,7 +42,7 @@ func webserver() {
 
 	// Maya
 	http.HandleFunc("/addmaya", handleAddMaya)
-	http.HandleFunc("/addmaya-process", handleAddMayaProcess)
+	http.HandleFunc("/addmaya-submit", handleAddMayaSubmit)
 	http.HandleFunc("/upload-maya", handleUploadMaya)
 	http.HandleFunc("/upload-maya-ondb", handleUploadMayaOnDB)
 	http.HandleFunc("/addmaya-success", handleAddMayaSuccess)

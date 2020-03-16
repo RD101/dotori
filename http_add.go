@@ -25,6 +25,12 @@ func handleAddMaya(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// handleAddMayaSubmit 함수는 URL에 objectID를 붙여서 /addmaya 페이지로 redirect한다.
+func handleAddMayaSubmit(w http.ResponseWriter, r *http.Request) {
+	objectID := bson.NewObjectId().Hex()
+	http.Redirect(w, r, fmt.Sprintf("/addmaya?objectid=%s", objectID), http.StatusSeeOther)
+}
+
 func handleAddNuke(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
 	err := TEMPLATES.ExecuteTemplate(w, "addnuke", nil)
@@ -70,16 +76,6 @@ func handleAddUSD(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// handleAddMayaProcess 함수는 Maya 파일을 처리하는 페이지 이다.
-func handleAddMayaProcess(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html")
-	err := TEMPLATES.ExecuteTemplate(w, "addmaya-process", nil)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-}
-
 func handleAddNukeProcess(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
 	err := TEMPLATES.ExecuteTemplate(w, "addnuke-process", nil)
@@ -119,8 +115,7 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	fmt.Println(objectID)
-
+	fmt.Println(fmt.Sprintf("uploadMaya: %s", objectID))
 	// mongoDB objectID를 이용해서 경로 생성
 	objectIDpath, err := idToPath(objectID)
 	if err != nil {
@@ -198,7 +193,13 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 
 func handleUploadMayaOnDB(w http.ResponseWriter, r *http.Request) {
 	item := Item{}
-	item.ID = bson.NewObjectId()
+	objectID, err := GetObjectIDfromRequestHeader(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	fmt.Println(fmt.Sprintf("uploadMayaOnDB: %s", objectID))
+	item.ID = bson.ObjectIdHex(objectID)
 	item.Author = r.FormValue("author")
 	item.Description = r.FormValue("description")
 	tags := SplitBySpace(r.FormValue("tag"))
@@ -240,7 +241,7 @@ func handleUploadMayaOnDB(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	http.Redirect(w, r, fmt.Sprintf("/addmaya?objectid=%s", item.ID.Hex()), http.StatusSeeOther)
+	http.Redirect(w, r, "/addmaya-success", http.StatusSeeOther)
 }
 
 func handleAddMayaSuccess(w http.ResponseWriter, r *http.Request) {
