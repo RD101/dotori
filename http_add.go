@@ -115,7 +115,6 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	fmt.Println(fmt.Sprintf("uploadMaya: %s", objectID))
 	// mongoDB objectID를 이용해서 경로 생성
 	objectIDpath, err := idToPath(objectID)
 	if err != nil {
@@ -198,7 +197,6 @@ func handleUploadMayaOnDB(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	fmt.Println(fmt.Sprintf("uploadMayaOnDB: %s", objectID))
 	item.ID = bson.ObjectIdHex(objectID)
 	item.Author = r.FormValue("author")
 	item.Description = r.FormValue("description")
