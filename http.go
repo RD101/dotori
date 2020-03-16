@@ -85,6 +85,7 @@ func webserver() {
 	http.HandleFunc("/signup-submit", handleSignupSubmit)
 	http.HandleFunc("/signup-success", handleSignupSuccess)
 	http.HandleFunc("/signin", handleSignin)
+	http.HandleFunc("/signin-submit", handleSigninSubmit)
 
 	// REST API
 	http.HandleFunc("/api/item", handleAPIItem)

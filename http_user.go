@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"time"
 
+	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/mgo.v2"
 )
 
@@ -88,11 +89,6 @@ func handleSigninSubmit(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Password 값이 빈 문자열 입니다", http.StatusBadRequest)
 		return
 	}
-	encryptedPW, err := Encrypt(pw)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
 	// DB에서 id로 사용자를 가지고 와서 Password를 비교한다.
 	session, err := mgo.Dial(*flagDBIP)
 	if err != nil {
@@ -105,8 +101,9 @@ func handleSigninSubmit(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	if u.Password != encryptedPW {
-		http.Error(w, "사용자의 패스워드가 다릅니다", http.StatusInternalServerError)
+	err = bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(pw))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
 	// Token을 쿠키에 저장한다.
