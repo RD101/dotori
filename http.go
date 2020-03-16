@@ -68,16 +68,22 @@ func webserver() {
 	// 앞으로 정리할 것
 	http.HandleFunc("/addblender", handleAddBlender)
 	http.HandleFunc("/addusd", handleAddUSD)
+
 	// Admin
 	http.HandleFunc("/adminsetting", handleAdminSetting)
 	http.HandleFunc("/adminsetting-submit", handleAdminSettingSubmit)
 	http.HandleFunc("/adminsetting-success", handleAdminSettingSuccess)
+
 	// Process
 	http.HandleFunc("/item-process", handleItemProcess)
+
 	// Help
 	http.HandleFunc("/help", handleHelp)
+
 	// User
 	http.HandleFunc("/signup", handleSignup)
+	http.HandleFunc("/signup-submit", handleSignupSubmit)
+	http.HandleFunc("/signup-success", handleSignupSuccess)
 	http.HandleFunc("/signin", handleSignin)
 
 	// REST API
@@ -175,24 +181,6 @@ func handleItemProcess(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	err = TEMPLATES.ExecuteTemplate(w, "item-process", rcp)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-}
-
-func handleSignup(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html")
-	err := TEMPLATES.ExecuteTemplate(w, "signup", nil)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-}
-
-func handleSignin(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html")
-	err := TEMPLATES.ExecuteTemplate(w, "signin", nil)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
