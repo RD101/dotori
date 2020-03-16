@@ -2,7 +2,9 @@ package main
 
 import (
 	"errors"
+	"os"
 
+	jwt "github.com/dgrijalva/jwt-go"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -24,12 +26,19 @@ type Adminsetting struct {
 	MultipartFormBufferSize int    `json:"multipartformbuffersize" bson:"multipartformbuffersize"` // MultipartForm Buffersize
 }
 
+// Token 자료구조. JWT 방식을 사용한다. restAPI 사용시 보안체크를 위해 http 헤더에 들어간다.
+type Token struct {
+	ID          string `json:"id" bson:"id"`                   // 사용자 ID
+	AccessLevel string `json:"accesslevel" bson:"accesslevel"` // admin, manager, default
+	jwt.StandardClaims
+}
+
 // User 는 사용자 자료구조이다.
 type User struct {
 	ID          string `json:"id" bson:"id"`                   // 사용자 ID
 	Password    string `json:"password" bson:"password"`       // 암호화된 암호
 	Token       string `json:"token" bson:"token"`             // JWT 토큰
-	AccessLevel string `json:"accesslevel" bson:"accesslevel"` // admin, manager, user
+	AccessLevel string `json:"accesslevel" bson:"accesslevel"` // admin, manager, default
 }
 
 // ThumbMedia 는 썸네일 영상에 쓰이는 파일 포맷 자료구조이다.
@@ -102,5 +111,36 @@ func (i Item) CheckError() error {
 			return errors.New("tag에는 한자리의 단어를 사용할 수 없습니다")
 		}
 	}
+	return nil
+}
+
+// CreateToken 메소드는 토큰을 생성합니다.
+func (u *User) CreateToken() error {
+	if u.ID == "" {
+		return errors.New("ID is an empty string")
+	}
+	if u.Password == "" {
+		return errors.New("Password is an empty string")
+	}
+	if u.AccessLevel == "" {
+		return errors.New("AccessLevel is an empty string")
+	}
+	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), &Token{
+		ID:          u.ID,
+		AccessLevel: u.AccessLevel,
+	})
+	signKey := u.Password
+	// TOKEN_SIGN_KEY 가 환경변수로 잡혀있다면, 해당 문자열을 토큰 암호화를 위한 사인키로 사용한다.
+	// TOKEN_SIGN_KEY는 블랙박스 형식의 알고리즘을 사용하기 위해 필요하다.
+	// 보안적으로는 화이트박스 형식보다 뛰어나지 않지만, 간혹 관리 편의성 또는 보안규약에 명시된 알고리즘(예) AES256 + 블랙박스형식)을 사용해야 할 때를 염두하고 설계한다.
+	// 참고: https://m.blog.naver.com/PostView.nhn?blogId=choijo2&logNo=60169379130&proxyReferer=https%3A%2F%2Fwww.google.co.kr%2F
+	if os.Getenv("TOKEN_SIGN_KEY") != "" {
+		signKey = os.Getenv("TOKEN_SIGN_KEY")
+	}
+	tokenString, err := token.SignedString([]byte(signKey))
+	if err != nil {
+		return err
+	}
+	u.Token = tokenString
 	return nil
 }
