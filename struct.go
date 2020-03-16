@@ -72,14 +72,13 @@ type ItemStatus int
 
 // item의 상태
 const (
-	Ready             = ItemStatus(iota) // 0 복사전
-	Copying                              // 1 복사중
-	Copied                               // 2 복사 완료
-	CreatingThumbnail                    // 3 썸네일 생성중
-	CreatedThumbnail                     // 4 썸네일 생성완료
-	CreatingContainer                    // 5 썸네일 동영상 생성중
-	CreatedContainer                     // 6 썸네일 동영상 생성완료
-	Done                                 // 7 등록 완료
+	Ready             = ItemStatus(iota) // 복사전
+	StartProcessing                      // 처리 시작
+	CreatingThumbnail                    // 썸네일 생성중
+	CreatedThumbnail                     // 썸네일 생성완료
+	CreatingContainer                    // 썸네일 동영상 생성중
+	CreatedContainer                     // 썸네일 동영상 생성완료
+	Done                                 // 등록 완료
 )
 
 // CheckError 는 Item 자료구조에 값이 정확히 들어갔는지 확인하는 메소드이다.
