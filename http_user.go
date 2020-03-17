@@ -78,6 +78,16 @@ func handleSignin(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func handleSignOut(w http.ResponseWriter, r *http.Request) {
+	c := http.Cookie{
+		Name:   "SessionToken",
+		Value:  "",
+		MaxAge: -1,
+	}
+	http.SetCookie(w, &c)
+	http.Redirect(w, r, "/signin", http.StatusSeeOther)
+}
+
 func handleSigninSubmit(w http.ResponseWriter, r *http.Request) {
 	id := r.FormValue("ID")
 	if id == "" {
