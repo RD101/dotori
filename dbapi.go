@@ -283,7 +283,14 @@ func GetReadyItem(session *mgo.Session) (Item, error) {
 func AddUser(session *mgo.Session, u User) error {
 	session.SetMode(mgo.Monotonic, true)
 	c := session.DB(*flagDBName).C("users")
-	err := c.Insert(u)
+	n, err := c.Find(bson.M{"id": u.ID}).Count()
+	if err != nil {
+		return err
+	}
+	if n != 0 {
+		return errors.New("already exists user ID")
+	}
+	err = c.Insert(u)
 	if err != nil {
 		return err
 	}
@@ -317,4 +324,16 @@ func SetUser(session *mgo.Session, u User) error {
 		return err
 	}
 	return nil
+}
+
+// GetUser 함수는 id를 입력받아서 사용자 정보를 반환한다.
+func GetUser(session *mgo.Session, id string) (User, error) {
+	session.SetMode(mgo.Monotonic, true)
+	c := session.DB(*flagDBName).C("users")
+	u := User{}
+	err := c.Find(bson.M{"id": id}).One(&u)
+	if err != nil {
+		return u, err
+	}
+	return u, nil
 }

@@ -33,10 +33,11 @@ var (
 	flagAttributes  = flag.String("attributes", "", "detail info of file") // "key:value,key:value"
 
 	// 서비스에 필요한 인수
-	flagDBIP     = flag.String("dbip", "", "DB IP")
-	flagDBName   = flag.String("dbname", "dotori", "DB name")
-	flagHTTPPort = flag.String("http", "", "Web Service Port Number")
-	flagPagenum  = flag.Int("pagenum", 9, "maximum number of items in a page")
+	flagDBIP      = flag.String("dbip", "", "DB IP")
+	flagDBName    = flag.String("dbname", "dotori", "DB name")
+	flagHTTPPort  = flag.String("http", "", "Web Service Port Number")
+	flagPagenum   = flag.Int("pagenum", 9, "maximum number of items in a page")
+	flagCookieAge = flag.Int("cookieage", 4, "cookie age (hour)") // MPAA 기준 4시간이다.
 
 	flagItemID = flag.String("itemid", "", "bson ObjectID assigned by mongodb")
 )
