@@ -252,6 +252,9 @@ func GetReadyItem(session *mgo.Session) (Item, error) {
 		if c == "setting.admin" { // setting.admin 컬렉션은 제외한다.
 			continue
 		}
+		if c == "system.indexs" { //mongodb의 기본 컬렉션. 제외한다.
+			continue
+		}
 		cur := session.DB(*flagDBName).C(c)
 		// 해당 컬렉션에 ready상태인 Item이 없으면 다음 컬렉션을 체크한다
 		num, err := cur.Find(bson.M{"status": Ready}).Count()
