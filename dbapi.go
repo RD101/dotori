@@ -252,8 +252,9 @@ func GetReadyItem(session *mgo.Session) (Item, error) {
 		if c == "setting.admin" { // setting.admin 컬렉션은 제외한다.
 			continue
 		}
+		cur := session.DB(*flagDBName).C(c)
 		// 해당 컬렉션에 ready상태인 Item이 없으면 다음 컬렉션을 체크한다
-		num, err := session.DB(*flagDBName).C(c).Find(bson.M{"status": Ready}).Count()
+		num, err := cur.Find(bson.M{"status": Ready}).Count()
 		if err != nil {
 			return result, err
 		}
@@ -261,12 +262,11 @@ func GetReadyItem(session *mgo.Session) (Item, error) {
 			continue
 		}
 		// ready상태인 Item이 있다면 가져와서 Status를 업데이트 한다.
-		err = session.DB(*flagDBName).C(c).Find(bson.M{"status": Ready}).One(&result)
+		err = cur.Find(bson.M{"status": Ready}).One(&result)
 		if err != nil {
 			return result, err
 		}
-		result.Status = StartProcessing
-		err = session.DB(*flagDBName).C(c).Update(bson.M{"_id": result.ID}, result)
+		err = cur.Update(bson.M{"_id": result.ID}, bson.M{"$set": bson.M{"status": StartProcessing}})
 		if err != nil {
 			return result, err
 		}
