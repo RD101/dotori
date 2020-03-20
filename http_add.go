@@ -169,7 +169,6 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	path := rootpath + objectIDpath
 	for _, files := range r.MultipartForm.File {
 		for _, f := range files {
 			file, err := f.Open()
@@ -181,12 +180,35 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 			unix.Umask(umask)
 			mimeType := f.Header.Get("Content-Type")
 			switch mimeType {
-			case "image/jpeg", "image/png", "video/quicktime", "video/mp4", "video/ogg", "application/ogg":
+			case "image/jpeg", "image/png":
 				data, err := ioutil.ReadAll(file)
 				if err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return
 				}
+				path := rootpath + objectIDpath + "/originalthumbimg"
+				err = os.MkdirAll(path, os.FileMode(folderPerm))
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				err = os.Chown(path, uid, gid)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				err = ioutil.WriteFile(path+"/"+f.Filename, data, os.FileMode(filePerm))
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+			case "video/quicktime", "video/mp4", "video/ogg", "application/ogg":
+				data, err := ioutil.ReadAll(file)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				path := rootpath + objectIDpath + "/originalthumbmov"
 				err = os.MkdirAll(path, os.FileMode(folderPerm))
 				if err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -213,6 +235,7 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 					fmt.Fprintf(w, "%v", err)
 					return
 				}
+				path := rootpath + objectIDpath
 				err = os.MkdirAll(path, os.FileMode(folderPerm))
 				if err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
