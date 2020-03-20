@@ -169,6 +169,7 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	path := rootpath + objectIDpath
 	for _, files := range r.MultipartForm.File {
 		for _, f := range files {
 			file, err := f.Open()
@@ -186,7 +187,6 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return
 				}
-				path := rootpath + objectIDpath
 				err = os.MkdirAll(path, os.FileMode(folderPerm))
 				if err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -213,7 +213,6 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 					fmt.Fprintf(w, "%v", err)
 					return
 				}
-				path := rootpath + objectIDpath
 				err = os.MkdirAll(path, os.FileMode(folderPerm))
 				if err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
