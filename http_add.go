@@ -132,6 +132,37 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 	if rootpath[len(rootpath)-1] != '/' {
 		rootpath = rootpath + "/"
 	}
+	//admin setting에서 폴더권한에 관련된 옵션값을 가져온다
+	um := adminsetting.Umask
+	umask, err := strconv.Atoi(um)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	folderP := adminsetting.FolderPermission
+	folderPerm, err := strconv.ParseInt(folderP, 8, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	fileP := adminsetting.FilePermission
+	filePerm, err := strconv.ParseInt(fileP, 8, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	u := adminsetting.UID
+	uid, err := strconv.Atoi(u)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	g := adminsetting.GID
+	gid, err := strconv.Atoi(g)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	// mongoDB objectID를 이용해서 경로 생성
 	objectIDpath, err := idToPath(objectID)
 	if err != nil {
@@ -146,7 +177,7 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 				continue
 			}
 			defer file.Close()
-			unix.Umask(0)
+			unix.Umask(umask)
 			mimeType := f.Header.Get("Content-Type")
 			switch mimeType {
 			case "image/jpeg", "image/png", "video/quicktime", "video/mp4", "video/ogg", "application/ogg":
@@ -156,17 +187,17 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 					return
 				}
 				path := rootpath + objectIDpath
-				err = os.MkdirAll(path, 0770)
+				err = os.MkdirAll(path, os.FileMode(folderPerm))
 				if err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return
 				}
-				err = os.Chown(path, 0, 20)
+				err = os.Chown(path, uid, gid)
 				if err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return
 				}
-				err = ioutil.WriteFile(path+"/"+f.Filename, data, 0440)
+				err = ioutil.WriteFile(path+"/"+f.Filename, data, os.FileMode(filePerm))
 				if err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return
@@ -183,17 +214,17 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 					return
 				}
 				path := rootpath + objectIDpath
-				err = os.MkdirAll(path, 0770)
+				err = os.MkdirAll(path, os.FileMode(folderPerm))
 				if err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return
 				}
-				err = os.Chown(path, 0, 20)
+				err = os.Chown(path, uid, gid)
 				if err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return
 				}
-				err = ioutil.WriteFile(path+"/"+f.Filename, data, 0440)
+				err = ioutil.WriteFile(path+"/"+f.Filename, data, os.FileMode(filePerm))
 				if err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return
