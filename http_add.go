@@ -290,15 +290,33 @@ func handleUploadMayaOnDB(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	item.Thumbimg = objIDpath
-	item.ThumbMedia.Ogg = objIDpath
-	item.ThumbMedia.Mp4 = objIDpath
-	item.ThumbMedia.Mov = objIDpath
+	//adminSetting에서 rootpath를 가져온다.
+	session, err := mgo.Dial(*flagDBIP)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	adminsetting, err := GetAdminSetting(session)
+	rootpath := adminsetting.Rootpath
+	// rootpath가 빈문자열이면
+	if rootpath == "" {
+		http.Error(w, "admin setting에서 rootpath를 설정해주세요", http.StatusBadRequest)
+		return
+	}
+	// rootpath가 '/'로 끝나지 않으면 끝에 슬래시를 붙여준다.
+	if rootpath[len(rootpath)-1] != '/' {
+		rootpath = rootpath + "/"
+	}
+	path := rootpath + objIDpath
+	item.Thumbimg = path + "/originalthumbimg"
+	item.ThumbMedia.Ogg = path + "/originalthumbmov"
+	item.ThumbMedia.Mp4 = path + "/originalthumbmov"
+	item.ThumbMedia.Mov = path + "/originalthumbmov"
 	item.Outputpath = objIDpath
 	item.Status = Ready
 	time := time.Now()
 	item.CreateTime = time.Format("2006-01-02 15:04:05")
-	session, err := mgo.Dial(*flagDBIP)
+	session, err = mgo.Dial(*flagDBIP)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
