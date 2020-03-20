@@ -79,12 +79,18 @@ func handleSignin(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleSignOut(w http.ResponseWriter, r *http.Request) {
-	c := http.Cookie{
+	tokenKey := http.Cookie{
 		Name:   "SessionToken",
 		Value:  "",
 		MaxAge: -1,
 	}
-	http.SetCookie(w, &c)
+	http.SetCookie(w, &tokenKey)
+	signKey := http.Cookie{
+		Name:   "SessionSignKey",
+		Value:  "",
+		MaxAge: -1,
+	}
+	http.SetCookie(w, &signKey)
 	http.Redirect(w, r, "/signin", http.StatusSeeOther)
 }
 
@@ -117,12 +123,18 @@ func handleSigninSubmit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Token을 쿠키에 저장한다.
-	c := http.Cookie{
+	cookieToken := http.Cookie{
 		Name:    "SessionToken",
 		Value:   u.Token,
 		Expires: time.Now().Add(time.Duration(*flagCookieAge) * time.Hour),
 	}
-	http.SetCookie(w, &c)
-	// / 로 리다이렉션 한다.
+	http.SetCookie(w, &cookieToken)
+	signKey := http.Cookie{
+		Name:    "SessionSignKey",
+		Value:   u.SignKey,
+		Expires: time.Now().Add(time.Duration(*flagCookieAge) * time.Hour),
+	}
+	http.SetCookie(w, &signKey)
+	// "/" 로 리다이렉션 한다.
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
