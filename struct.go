@@ -41,30 +41,27 @@ type User struct {
 	AccessLevel string `json:"accesslevel" bson:"accesslevel"` // admin, manager, default
 }
 
-// ThumbMedia 는 썸네일 영상에 쓰이는 파일 포맷 자료구조이다.
-type ThumbMedia struct {
-	Ogg string `json:"ogg" bson:"ogg"`
-	Mp4 string `json:"mp4" bson:"mp4"`
-	Mov string `json:"mov" bson:"mov"`
-}
-
 // Item 은 라이브러리의 에셋 자료구조이다.
 type Item struct {
-	ID          bson.ObjectId `json:"id" bson:"_id,omitempty"`        // ID
-	Author      string        `json:"author" bson:"author"`           // 에셋을 제작한 사람
-	Tags        []string      `json:"tags" bson:"tags"`               // 태그리스트
-	Description string        `json:"description" bson:"description"` // 에셋에 대한 추가 정보. 에셋의 제약, 사용전 알아야 할 특징
-	Thumbimg    string        `json:"thumbimg" bson:"thumbimg"`       // 썸네일 이미지 주소
+	ID          bson.ObjectId     `json:"id" bson:"_id,omitempty"`        // ID
+	Author      string            `json:"author" bson:"author"`           // 에셋을 제작한 사람
+	Tags        []string          `json:"tags" bson:"tags"`               // 태그리스트
+	Description string            `json:"description" bson:"description"` // 에셋에 대한 추가 정보. 에셋의 제약, 사용전 알아야 할 특징
+	ItemType    string            `json:"itemtype" bson:"itemtype"`       // maya, source, houdini, blender, nuke ..  같은 형태인가.
+	Status      ItemStatus        `json:"status" bson:"status"`           // 상태(에러, done, wip)
+	Log         string            `json:"log" bson:"log"`                 // 데이터를 처리할 때 생성되는 로그
+	CreateTime  string            `json:"createtime" bson:"createtime"`   // Item 생성 시간
+	Updatetime  string            `json:"updatetime" bson:"updatetime"`   // UTC 타임으로 들어가도록 하기.
+	UsingRate   int64             `json:"usingrate" bson:"usingrate"`     // 사용 빈도 수
+	Attributes  map[string]string `json:"attributes" bson:"attributes"`   // 해상도, 속성, 메타데이터 등의 파일정보
 
-	Outputpath string                                `json:"outputpath" bson:"outputpath"` // 저장되는 경로
-	ItemType   string                                `json:"itemtype" bson:"itemtype"`     // maya, source, houdini, blender, nuke ..  같은 형태인가.
-	Status     ItemStatus                            `json:"status" bson:"status"`         // 상태(에러, done, wip)
-	Log        string                                `json:"log" bson:"log"`               // 데이터를 처리할 때 생성되는 로그
-	CreateTime string                                `json:"createtime" bson:"createtime"` // Item 생성 시간
-	Updatetime string                                `json:"updatetime" bson:"updatetime"` // UTC 타임으로 들어가도록 하기.
-	UsingRate  int64                                 `json:"usingrate" bson:"usingrate"`   // 사용 빈도 수
-	Attributes map[string]string                     `json:"attributes" bson:"attributes"` // 해상도, 속성, 메타데이터 등의 파일정보
-	ThumbMedia `json:"thumbmedia" bson:"thumbmedia"` // .mp4, .mov, .ogg 같은 데이터를 담을 때 사용한다.
+	InputThumbnailImgPath  string `json:"inputthumbnailimgpath" bson:"inputthumbnailimgpath"`   // 사용자가 업로드한 썸네일 이미지의 업로드 경로
+	InputThumbnailClipPath string `json:"inputthumbnailclippath" bson:"inputthumbnailclippath"` // 사용자가 업로드한 클립 파일의 업로드 경로
+	OutputThumbnailPngPath string `json:"outputthumbnailpngpath" bson:"outputthumbnailpngpath"` // 생성된 썸네일 이미지를 저장하는 경로
+	OutputThumbnailMp4Path string `json:"outputthumbnailmp4path" bson:"outputthumbnailmp4path"` // 생성된 mp4형식의 썸네일 클립을 저장하는 경로
+	OutputThumbnailOggPath string `json:"outputthumbnailoggpath" bson:"outputthumbnailoggpath"` // 생성된 ogg형식의 썸네일 클립을 저장하는 경로
+	OutputThumbnailMovPath string `json:"outputthumbnailmovpath" bson:"outputthumbnailmovpath"` // 생성된 mov형식의 썸네일 클립을 저장하는 경로
+	OutputDataPath         string `json:"outputdatapath" bson:"outputdatapath"`                 // 사용자가 업로드한 파일 중 썸네일 이미지와 클립을 제외한 나머지 파일을 저장하는 경로
 }
 
 // ItemStatus 는 숫자이다.
