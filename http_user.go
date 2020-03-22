@@ -10,7 +10,7 @@ import (
 )
 
 func handleProfile(w http.ResponseWriter, r *http.Request) {
-	// Token을 열기위해서 헤더>쿠기에서 필요한 정보를 불러온다.
+	// Token을 열기위해서 헤더 쿠키에서 필요한 정보를 불러온다.
 	sessionToken := ""
 	sessionSignkey := ""
 	for _, cookie := range r.Cookies() {
