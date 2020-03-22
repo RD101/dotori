@@ -105,7 +105,7 @@ func handleAddAlembicProcess(w http.ResponseWriter, r *http.Request) {
 
 // handleUploadMaya 함수는 Maya파일을 DB에 업로드하는 페이지를 연다. dropzone에 파일을 올릴 경우 실행된다.
 func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
-	err := r.ParseMultipartForm(200000) // grab the multipart form, 데이터 크기 토의 필요.
+	err := r.ParseMultipartForm(200000) // grab the multipart form
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -115,23 +115,22 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	//adminSetting에서 rootpath를 가져온다.
 	session, err := mgo.Dial(*flagDBIP)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	adminsetting, err := GetAdminSetting(session)
-	rootpath := adminsetting.Rootpath
-	// rootpath가 빈문자열이면
-	if rootpath == "" {
-		http.Error(w, "admin setting에서 rootpath를 설정해주세요", http.StatusBadRequest)
+	rootpath, err := GetRootPath(session)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	// rootpath가 '/'로 끝나지 않으면 끝에 슬래시를 붙여준다.
-	if rootpath[len(rootpath)-1] != '/' {
-		rootpath = rootpath + "/"
+	adminsetting, err := GetAdminSetting(session)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
+	session.Close()
 	//admin setting에서 폴더권한에 관련된 옵션값을 가져온다
 	um := adminsetting.Umask
 	umask, err := strconv.Atoi(um)
