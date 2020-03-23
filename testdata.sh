@@ -21,6 +21,6 @@ dotori -add -author woong -itemtype maya -outputpath /library/asset -description
 dotori -add -author woong -itemtype maya -outputpath /library/asset -description "description17 about some details" -tag "나무 낙엽 item17"
 
 #REST API
-curl -X POST -d "author=bae&itemtype=nuke&inputpath=/library/asset&outputpath=/library/asset&thumbimg=/library/asset&thumbmov=/library/asset" http://127.0.0.1/api/item
+curl -X POST -d "author=bae&itemtype=maya" http://127.0.0.1/api/item
 #DELETE는 실행 전에 직접 id를 넣어준 후 테스트한다.
 #curl -X DELETE "http://127.0.0.1/api/item?type=nuke&id="
