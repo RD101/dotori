@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"os"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"gopkg.in/mgo.v2/bson"
@@ -38,6 +37,7 @@ type User struct {
 	ID          string `json:"id" bson:"id"`                   // 사용자 ID
 	Password    string `json:"password" bson:"password"`       // 암호화된 암호
 	Token       string `json:"token" bson:"token"`             // JWT 토큰
+	SignKey     string `json:"signkey" bson:"signkey"`         // JWT 토큰을 만들 때 사용하는 SignKey
 	AccessLevel string `json:"accesslevel" bson:"accesslevel"` // admin, manager, default
 }
 
@@ -143,14 +143,11 @@ func (u *User) CreateToken() error {
 		ID:          u.ID,
 		AccessLevel: u.AccessLevel,
 	})
-	signKey := u.Password
-	// TOKEN_SIGN_KEY 가 환경변수로 잡혀있다면, 해당 문자열을 토큰 암호화를 위한 사인키로 사용한다.
-	// TOKEN_SIGN_KEY는 블랙박스 형식의 알고리즘을 사용하기 위해 필요하다.
-	// 보안적으로는 화이트박스 형식보다 뛰어나지 않지만, 간혹 관리 편의성 또는 보안규약에 명시된 알고리즘(예) AES256 + 블랙박스형식)을 사용해야 할 때를 염두하고 설계한다.
-	// 참고: https://m.blog.naver.com/PostView.nhn?blogId=choijo2&logNo=60169379130&proxyReferer=https%3A%2F%2Fwww.google.co.kr%2F
-	if os.Getenv("TOKEN_SIGN_KEY") != "" {
-		signKey = os.Getenv("TOKEN_SIGN_KEY")
+	signKey, err := Encrypt(u.Password)
+	if err != nil {
+		return err
 	}
+	u.SignKey = signKey
 	tokenString, err := token.SignedString([]byte(signKey))
 	if err != nil {
 		return err

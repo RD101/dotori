@@ -8,6 +8,8 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+
+	"gopkg.in/mgo.v2"
 )
 
 // searchSeq 함수는 탐색할 경로를 입력받고 dpx, exr, mov 정보를 수집 반환한다.
@@ -119,4 +121,24 @@ func idToPath(id string) (string, error) {
 	// 형식에 맞게 "/" 추가 (2/2/2/2/6/4/2/2/2)
 	result := fmt.Sprintf("%s/%s/%s/%s/%s/%s/%s/%s/%s", id[0:2], id[2:4], id[4:6], id[6:8], id[8:14], id[14:18], id[18:20], id[20:22], id[22:24])
 	return result, nil
+}
+
+// GetRootPath 함수는 Admin setting에서 설정한 Rootpath를 가져온다
+func GetRootPath(session *mgo.Session) (string, error) {
+	rootpath := ""
+	//adminSetting에서 rootpath를 가져온다.
+	adminsetting, err := GetAdminSetting(session)
+	if err != nil {
+		return rootpath, err
+	}
+	rootpath = adminsetting.Rootpath
+	// rootpath가 빈문자열이면
+	if rootpath == "" {
+		return rootpath, errors.New("admin setting에서 rootpath를 설정해주세요")
+	}
+	// rootpath가 '/'로 끝나지 않으면 끝에 슬래시를 붙여준다.
+	if rootpath[len(rootpath)-1] != '/' {
+		rootpath = rootpath + "/"
+	}
+	return rootpath, nil
 }
