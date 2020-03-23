@@ -26,18 +26,6 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 					return
 				}
 				i.Author = values[0]
-			case "outputpath":
-				if len(values) != 1 {
-					http.Error(w, "outputpath를 설정해 주세요", http.StatusBadRequest)
-					return
-				}
-				i.Outputpath = values[0]
-			case "thumbimg":
-				if len(values) != 1 {
-					http.Error(w, "thumbnail image의 경로를 설정해 주세요", http.StatusBadRequest)
-					return
-				}
-				i.Thumbimg = values[0]
 			}
 		}
 		err := i.CheckError()

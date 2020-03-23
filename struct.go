@@ -93,7 +93,25 @@ func (i Item) CheckError() error {
 	if !regexRFC3339Time.MatchString(i.Updatetime) {
 		return errors.New("업데이트 시간이 2019-09-09T14:43:34+09:00 형식의 문자열이 아닙니다")
 	}
-	if !regexPath.MatchString(i.Outputpath) {
+	if !regexPath.MatchString(i.InputThumbnailImgPath) {
+		return errors.New("asset 저장 경로가 /test/test 형식의 문자열이 아닙니다")
+	}
+	if !regexPath.MatchString(i.InputThumbnailClipPath) {
+		return errors.New("asset 저장 경로가 /test/test 형식의 문자열이 아닙니다")
+	}
+	if !regexPath.MatchString(i.OutputThumbnailPngPath) {
+		return errors.New("asset 저장 경로가 /test/test 형식의 문자열이 아닙니다")
+	}
+	if !regexPath.MatchString(i.OutputThumbnailMp4Path) {
+		return errors.New("asset 저장 경로가 /test/test 형식의 문자열이 아닙니다")
+	}
+	if !regexPath.MatchString(i.OutputThumbnailOggPath) {
+		return errors.New("asset 저장 경로가 /test/test 형식의 문자열이 아닙니다")
+	}
+	if !regexPath.MatchString(i.OutputThumbnailMovPath) {
+		return errors.New("asset 저장 경로가 /test/test 형식의 문자열이 아닙니다")
+	}
+	if !regexPath.MatchString(i.OutputDataPath) {
 		return errors.New("asset 저장 경로가 /test/test 형식의 문자열이 아닙니다")
 	}
 	if !regexLower.MatchString(i.ItemType) {

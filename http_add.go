@@ -290,11 +290,13 @@ func handleUploadMayaOnDB(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	item.Thumbimg = objIDpath
-	item.ThumbMedia.Ogg = objIDpath
-	item.ThumbMedia.Mp4 = objIDpath
-	item.ThumbMedia.Mov = objIDpath
-	item.Outputpath = objIDpath
+	item.InputThumbnailImgPath = objIDpath
+	item.InputThumbnailClipPath = objIDpath
+	item.OutputThumbnailPngPath = objIDpath
+	item.OutputThumbnailMp4Path = objIDpath
+	item.OutputThumbnailOggPath = objIDpath
+	item.OutputThumbnailMovPath = objIDpath
+	item.OutputDataPath = objIDpath
 	item.Status = Ready
 	time := time.Now()
 	item.CreateTime = time.Format("2006-01-02 15:04:05")
