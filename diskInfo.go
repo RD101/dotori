@@ -48,6 +48,7 @@ func DiskCheck(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if len(rootpath) == 0 {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
