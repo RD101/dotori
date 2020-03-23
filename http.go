@@ -81,6 +81,7 @@ func webserver() {
 	http.HandleFunc("/help", handleHelp)
 
 	// User
+	http.HandleFunc("/profile", handleProfile)
 	http.HandleFunc("/signup", handleSignup)
 	http.HandleFunc("/signup-submit", handleSignupSubmit)
 	http.HandleFunc("/signup-success", handleSignupSuccess)
