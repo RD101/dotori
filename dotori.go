@@ -95,10 +95,10 @@ func main() {
 		}
 		i.InputThumbnailImgPath = rootpath + objIDpath + "/originalthumbimg/"
 		i.InputThumbnailClipPath = rootpath + objIDpath + "/originalthumbmov/"
-		i.OutputThumbnailPngPath = rootpath + objIDpath + "/thumbnail/"
-		i.OutputThumbnailMp4Path = rootpath + objIDpath + "/thumbnail/"
-		i.OutputThumbnailOggPath = rootpath + objIDpath + "/thumbnail/"
-		i.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/"
+		i.OutputThumbnailPngPath = rootpath + objIDpath + "/thumbnail/thumbnail.png"
+		i.OutputThumbnailMp4Path = rootpath + objIDpath + "/thumbnail/thumbnail.mp4"
+		i.OutputThumbnailOggPath = rootpath + objIDpath + "/thumbnail/thumbnail.ogg"
+		i.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/thumbnail.mov"
 		i.OutputDataPath = rootpath + objIDpath + "/data/"
 
 		err = i.CheckError()

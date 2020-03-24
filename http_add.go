@@ -306,10 +306,10 @@ func handleUploadMayaOnDB(w http.ResponseWriter, r *http.Request) {
 	}
 	item.InputThumbnailImgPath = rootpath + objIDpath + "/originalthumbimg/"
 	item.InputThumbnailClipPath = rootpath + objIDpath + "/originalthumbmov/"
-	item.OutputThumbnailPngPath = rootpath + objIDpath + "/thumbnail/"
-	item.OutputThumbnailMp4Path = rootpath + objIDpath + "/thumbnail/"
-	item.OutputThumbnailOggPath = rootpath + objIDpath + "/thumbnail/"
-	item.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/"
+	item.OutputThumbnailPngPath = rootpath + objIDpath + "/thumbnail/thumbnail.png"
+	item.OutputThumbnailMp4Path = rootpath + objIDpath + "/thumbnail/thumbnail.mp4"
+	item.OutputThumbnailOggPath = rootpath + objIDpath + "/thumbnail/thumbnail.ogg"
+	item.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/thumbnail.mov"
 	item.OutputDataPath = rootpath + objIDpath + "/data/"
 	err = item.CheckError()
 	if err != nil {
