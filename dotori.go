@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 )
 
 var (
@@ -26,9 +27,7 @@ var (
 	flagAuthor      = flag.String("author", "", "author")
 	flagTag         = flag.String("tag", "", "tag")
 	flagDescription = flag.String("description", "", "description")
-	flagThumbimg    = flag.String("thumbimg", "", "path of thumbnail image")
 	flagInputpath   = flag.String("inputpath", "", "input path")
-	flagOutputpath  = flag.String("outputpath", "", "output path")
 	flagItemType    = flag.String("itemtype", "", "type of asset")
 	flagAttributes  = flag.String("attributes", "", "detail info of file") // "key:value,key:value"
 
@@ -68,17 +67,41 @@ func main() {
 			fmt.Println(item)
 		}
 	} else if *flagAdd {
-		i := Item{}
+		if *flagItemType == "" {
+			log.Fatal("itemtype이 빈 문자열입니다")
+		}
 
+		i := Item{}
+		i.ID = bson.NewObjectId()
 		i.Author = *flagAuthor
 		i.Tags = SplitBySpace(*flagTag)
 		i.Description = *flagDescription
-		i.Thumbimg = *flagThumbimg
-		i.Outputpath = *flagOutputpath
 		i.ItemType = *flagItemType
 		i.Attributes = StringToMap(*flagAttributes)
 
-		err := i.CheckError()
+		session, err := mgo.Dial(*flagDBIP)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer session.Close()
+		// admin settin에서 rootpath를 가져와서 경로를 생성한다.
+		rootpath, err := GetRootPath(session)
+		if err != nil {
+			log.Fatal(err)
+		}
+		objIDpath, err := idToPath(i.ID.Hex())
+		if err != nil {
+			log.Fatal(err)
+		}
+		i.InputThumbnailImgPath = rootpath + objIDpath + "/originalthumbimg/"
+		i.InputThumbnailClipPath = rootpath + objIDpath + "/originalthumbmov/"
+		i.OutputThumbnailPngPath = rootpath + objIDpath + "/thumbnail/thumbnail.png"
+		i.OutputThumbnailMp4Path = rootpath + objIDpath + "/thumbnail/thumbnail.mp4"
+		i.OutputThumbnailOggPath = rootpath + objIDpath + "/thumbnail/thumbnail.ogg"
+		i.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/thumbnail.mov"
+		i.OutputDataPath = rootpath + objIDpath + "/data/"
+
+		err = i.CheckError()
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -87,11 +110,6 @@ func main() {
 				log.Fatal(err)
 			}
 		}
-		session, err := mgo.Dial(*flagDBIP)
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer session.Close()
 		if *flagDBName != "" {
 			if !regexLower.MatchString(*flagDBName) { // 입력받은 dbname이 소문자인지 확인
 				log.Fatal(err)

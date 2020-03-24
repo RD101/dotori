@@ -284,16 +284,6 @@ func handleUploadMayaOnDB(w http.ResponseWriter, r *http.Request) {
 		attr[key] = value
 	}
 	item.Attributes = attr
-	objIDpath, err := idToPath(item.ID.Hex())
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	item.Thumbimg = objIDpath
-	item.ThumbMedia.Ogg = objIDpath
-	item.ThumbMedia.Mp4 = objIDpath
-	item.ThumbMedia.Mov = objIDpath
-	item.Outputpath = objIDpath
 	item.Status = Ready
 	time := time.Now()
 	item.CreateTime = time.Format("2006-01-02 15:04:05")
@@ -303,6 +293,29 @@ func handleUploadMayaOnDB(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer session.Close()
+	// admin settin에서 rootpath를 가져와서 경로를 생성한다.
+	rootpath, err := GetRootPath(session)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	objIDpath, err := idToPath(item.ID.Hex())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	item.InputThumbnailImgPath = rootpath + objIDpath + "/originalthumbimg/"
+	item.InputThumbnailClipPath = rootpath + objIDpath + "/originalthumbmov/"
+	item.OutputThumbnailPngPath = rootpath + objIDpath + "/thumbnail/thumbnail.png"
+	item.OutputThumbnailMp4Path = rootpath + objIDpath + "/thumbnail/thumbnail.mp4"
+	item.OutputThumbnailOggPath = rootpath + objIDpath + "/thumbnail/thumbnail.ogg"
+	item.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/thumbnail.mov"
+	item.OutputDataPath = rootpath + objIDpath + "/data/"
+	err = item.CheckError()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 	err = AddItem(session, item)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

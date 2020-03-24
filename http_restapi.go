@@ -5,52 +5,62 @@ import (
 	"net/http"
 
 	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 )
 
 func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		i := Item{}
+		i.ID = bson.NewObjectId()
 		//ParseForm parses the raw query from the URL and updates r.Form.
 		r.ParseForm()
 		for key, values := range r.PostForm {
 			switch key {
-			case "type":
+			case "itemtype":
 				if len(values) != 1 {
-					http.Error(w, "type을 설정해 주세요", http.StatusBadRequest)
+					http.Error(w, "URL에 itemtype을 입력해주세요", http.StatusBadRequest)
 					return
 				}
 				i.ItemType = values[0]
 			case "author":
 				if len(values) != 1 {
-					http.Error(w, "author를 설정해 주세요", http.StatusBadRequest)
+					http.Error(w, "URL에 author를 입력해주세요", http.StatusBadRequest)
 					return
 				}
 				i.Author = values[0]
-			case "outputpath":
-				if len(values) != 1 {
-					http.Error(w, "outputpath를 설정해 주세요", http.StatusBadRequest)
-					return
-				}
-				i.Outputpath = values[0]
-			case "thumbimg":
-				if len(values) != 1 {
-					http.Error(w, "thumbnail image의 경로를 설정해 주세요", http.StatusBadRequest)
-					return
-				}
-				i.Thumbimg = values[0]
 			}
 		}
-		err := i.CheckError()
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
+
 		session, err := mgo.Dial(*flagDBIP)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		defer session.Close()
+		// admin settin에서 rootpath를 가져와서 경로를 생성한다.
+		rootpath, err := GetRootPath(session)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		objIDpath, err := idToPath(i.ID.Hex())
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		i.InputThumbnailImgPath = rootpath + objIDpath + "/originalthumbimg/"
+		i.InputThumbnailClipPath = rootpath + objIDpath + "/originalthumbmov/"
+		i.OutputThumbnailPngPath = rootpath + objIDpath + "/thumbnail/thumbnail.png"
+		i.OutputThumbnailMp4Path = rootpath + objIDpath + "/thumbnail/thumbnail.mp4"
+		i.OutputThumbnailOggPath = rootpath + objIDpath + "/thumbnail/thumbnail.ogg"
+		i.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/thumbnail.mov"
+		i.OutputDataPath = rootpath + objIDpath + "/data/"
+
+		err = i.CheckError()
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
 		err = AddItem(session, i)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
