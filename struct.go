@@ -128,6 +128,20 @@ func (i Item) CheckError() error {
 	return nil
 }
 
+// CheckError 는 Adminsetting 자료구조에 값이 정확히 들어갔는지 확인하는 메소드이다.
+func (a Adminsetting) CheckError() error {
+	if !regexPermission.MatchString(a.FolderPermission) {
+		return errors.New("FolderPermission이 형식에 맞지 않습니다")
+	}
+	if !regexPermission.MatchString(a.FilePermission) {
+		return errors.New("FilePermission이 형식에 맞지 않습니다")
+	}
+	if !regexPermission.MatchString(a.Umask) {
+		return errors.New("Umask가 형식에 맞지 않습니다")
+	}
+	return nil
+}
+
 // CreateToken 메소드는 토큰을 생성합니다.
 func (u *User) CreateToken() error {
 	if u.ID == "" {
