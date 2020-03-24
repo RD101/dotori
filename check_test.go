@@ -330,7 +330,7 @@ func Test_Permission(t *testing.T) {
 		Perm: "07가7", //수가 아닌 문자가 포함된 경우 / 한글
 		want: false,
 	}, {
-		Perm: "3777", // 첫번째 자리에 1이나 0이 아닌 다른 수가 오는 경우
+		Perm: "3777", // 첫번째 자리에 0이 아닌 다른 수가 오는 경우
 		want: false,
 	}, {
 		Perm: "07777", // 4자리를 넘는 경우
