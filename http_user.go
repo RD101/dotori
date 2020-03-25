@@ -4,35 +4,13 @@ import (
 	"net/http"
 	"time"
 
-	jwt "github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/mgo.v2"
 )
 
 func handleProfile(w http.ResponseWriter, r *http.Request) {
-	// Token을 열기위해서 헤더 쿠키에서 필요한 정보를 불러온다.
-	sessionToken := ""
-	sessionSignkey := ""
-	for _, cookie := range r.Cookies() {
-		if cookie.Name == "SessionToken" {
-			sessionToken = cookie.Value
-			continue
-		}
-		if cookie.Name == "SessionSignKey" {
-			sessionSignkey = cookie.Value
-			continue
-		}
-	}
-	tk := Token{}
-	// Singkey로 Token 정보를 연다.
-	token, err := jwt.ParseWithClaims(sessionToken, &tk, func(token *jwt.Token) (interface{}, error) {
-		return []byte(sessionSignkey), nil
-	})
+	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	if !token.Valid {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
 		return
 	}
@@ -43,7 +21,7 @@ func handleProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer session.Close()
-	user, err := GetUser(session, tk.ID)
+	user, err := GetUser(session, token.ID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
