@@ -330,7 +330,7 @@ func handleUploadMayaOnDB(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	http.Redirect(w, r, "/addmaya", http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/addmaya?objectid=%s", objectID), http.StatusSeeOther)
 }
 
 func handleAddMayaSuccess(w http.ResponseWriter, r *http.Request) {
