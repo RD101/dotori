@@ -15,10 +15,10 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-// handleAddMaya 함수는 Maya 파일을 추가하는 페이지 이다.
-func handleAddMaya(w http.ResponseWriter, r *http.Request) {
+// handleAddMayaFile 함수는 Maya 파일을 추가하는 페이지 이다.
+func handleAddMayaFile(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	err := TEMPLATES.ExecuteTemplate(w, "addmaya", nil)
+	err := TEMPLATES.ExecuteTemplate(w, "addmaya-file", nil)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -34,7 +34,7 @@ func handleAddMayaItem(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// handleAddMayaSubmit 함수는 URL에 objectID를 붙여서 /addmaya 페이지로 redirect한다.
+// handleAddMayaSubmit 함수는 URL에 objectID를 붙여서 /addmaya-item 페이지로 redirect한다.
 func handleAddMayaSubmit(w http.ResponseWriter, r *http.Request) {
 	objectID := bson.NewObjectId().Hex()
 	http.Redirect(w, r, fmt.Sprintf("/addmaya-item?objectid=%s", objectID), http.StatusSeeOther)
@@ -113,7 +113,7 @@ func handleAddAlembicProcess(w http.ResponseWriter, r *http.Request) {
 }
 
 // handleUploadMaya 함수는 Maya파일을 DB에 업로드하는 페이지를 연다. dropzone에 파일을 올릴 경우 실행된다.
-func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
+func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseMultipartForm(200000) // grab the multipart form
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -268,7 +268,7 @@ func handleUploadMaya(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func handleUploadMayaOnDB(w http.ResponseWriter, r *http.Request) {
+func handleUploadMayaItem(w http.ResponseWriter, r *http.Request) {
 	item := Item{}
 	objectID, err := GetObjectIDfromRequestHeader(r)
 	if err != nil {
@@ -330,7 +330,7 @@ func handleUploadMayaOnDB(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	http.Redirect(w, r, fmt.Sprintf("/addmaya?objectid=%s", objectID), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/addmaya-file?objectid=%s", objectID), http.StatusSeeOther)
 }
 
 func handleAddMayaSuccess(w http.ResponseWriter, r *http.Request) {

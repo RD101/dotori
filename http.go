@@ -41,11 +41,11 @@ func webserver() {
 	http.HandleFunc("/search-submit", handleSearchSubmit)
 
 	// Maya
-	http.HandleFunc("/addmaya", handleAddMaya)
-	http.HandleFunc("/addmaya-item", handleAddMayaItem)
 	http.HandleFunc("/addmaya-submit", handleAddMayaSubmit)
-	http.HandleFunc("/upload-maya", handleUploadMaya)
-	http.HandleFunc("/upload-maya-ondb", handleUploadMayaOnDB)
+	http.HandleFunc("/addmaya-item", handleAddMayaItem)
+	http.HandleFunc("/addmaya-file", handleAddMayaFile)
+	http.HandleFunc("/uploadmaya-item", handleUploadMayaItem)
+	http.HandleFunc("/uploadmaya-file", handleUploadMayaFile)
 	http.HandleFunc("/addmaya-success", handleAddMayaSuccess)
 	http.HandleFunc("/editmaya", handleEditMaya)
 	http.HandleFunc("/editmaya-submit", handleEditMayaSubmit)
