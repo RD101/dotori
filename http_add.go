@@ -25,10 +25,19 @@ func handleAddMaya(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func handleAddMayaItem(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html")
+	err := TEMPLATES.ExecuteTemplate(w, "addmaya-item", nil)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
 // handleAddMayaSubmit 함수는 URL에 objectID를 붙여서 /addmaya 페이지로 redirect한다.
 func handleAddMayaSubmit(w http.ResponseWriter, r *http.Request) {
 	objectID := bson.NewObjectId().Hex()
-	http.Redirect(w, r, fmt.Sprintf("/addmaya?objectid=%s", objectID), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/addmaya-item?objectid=%s", objectID), http.StatusSeeOther)
 }
 
 func handleAddNuke(w http.ResponseWriter, r *http.Request) {
@@ -321,7 +330,7 @@ func handleUploadMayaOnDB(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	http.Redirect(w, r, "/addmaya-success", http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/addmaya?objectid=%s", objectID), http.StatusSeeOther)
 }
 
 func handleAddMayaSuccess(w http.ResponseWriter, r *http.Request) {
