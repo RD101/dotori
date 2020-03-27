@@ -112,162 +112,6 @@ func handleAddAlembicProcess(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// handleUploadMaya 함수는 Maya파일을 DB에 업로드하는 페이지를 연다. dropzone에 파일을 올릴 경우 실행된다.
-func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
-	err := r.ParseMultipartForm(200000) // grab the multipart form
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	objectID, err := GetObjectIDfromRequestHeader(r)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-	session, err := mgo.Dial(*flagDBIP)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	rootpath, err := GetRootPath(session)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	adminsetting, err := GetAdminSetting(session)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	session.Close()
-	//admin setting에서 폴더권한에 관련된 옵션값을 가져온다
-	um := adminsetting.Umask
-	umask, err := strconv.Atoi(um)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	folderP := adminsetting.FolderPermission
-	folderPerm, err := strconv.ParseInt(folderP, 8, 64)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	fileP := adminsetting.FilePermission
-	filePerm, err := strconv.ParseInt(fileP, 8, 64)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	u := adminsetting.UID
-	uid, err := strconv.Atoi(u)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	g := adminsetting.GID
-	gid, err := strconv.Atoi(g)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	// mongoDB objectID를 이용해서 경로 생성
-	objectIDpath, err := idToPath(objectID)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-	for _, files := range r.MultipartForm.File {
-		for _, f := range files {
-			file, err := f.Open()
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				continue
-			}
-			defer file.Close()
-			unix.Umask(umask)
-			mimeType := f.Header.Get("Content-Type")
-			switch mimeType {
-			case "image/jpeg", "image/png":
-				data, err := ioutil.ReadAll(file)
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				path := rootpath + objectIDpath + "/originalthumbimg"
-				err = os.MkdirAll(path, os.FileMode(folderPerm))
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				err = os.Chown(path, uid, gid)
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				err = ioutil.WriteFile(path+"/"+f.Filename, data, os.FileMode(filePerm))
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-			case "video/quicktime", "video/mp4", "video/ogg", "application/ogg":
-				data, err := ioutil.ReadAll(file)
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				path := rootpath + objectIDpath + "/originalthumbmov"
-				err = os.MkdirAll(path, os.FileMode(folderPerm))
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				err = os.Chown(path, uid, gid)
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				err = ioutil.WriteFile(path+"/"+f.Filename, data, os.FileMode(filePerm))
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-			case "application/octet-stream":
-				ext := filepath.Ext(f.Filename)
-				if ext != ".mb" && ext != ".ma" { // .ma .mb 외에는 허용하지 않는다.
-					http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
-					return
-				}
-				data, err := ioutil.ReadAll(file)
-				if err != nil {
-					fmt.Fprintf(w, "%v", err)
-					return
-				}
-				path := rootpath + objectIDpath
-				err = os.MkdirAll(path, os.FileMode(folderPerm))
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				err = os.Chown(path, uid, gid)
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				err = ioutil.WriteFile(path+"/"+f.Filename, data, os.FileMode(filePerm))
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-			default:
-				//허용하지 않는 파일 포맷입니다.
-				http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
-				return
-			}
-		}
-	}
-}
-
 func handleUploadMayaItem(w http.ResponseWriter, r *http.Request) {
 	item := Item{}
 	objectID, err := GetObjectIDfromRequestHeader(r)
@@ -331,6 +175,156 @@ func handleUploadMayaItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	http.Redirect(w, r, fmt.Sprintf("/addmaya-file?objectid=%s", objectID), http.StatusSeeOther)
+}
+
+// handleUploadMaya 함수는 Maya파일을 DB에 업로드하는 페이지를 연다. dropzone에 파일을 올릴 경우 실행된다.
+func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseMultipartForm(200000) // grab the multipart form
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	objectID, err := GetObjectIDfromRequestHeader(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	session, err := mgo.Dial(*flagDBIP)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	item, err := GetItem(session, "maya", objectID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	adminsetting, err := GetAdminSetting(session)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	session.Close()
+	//admin setting에서 폴더권한에 관련된 옵션값을 가져온다
+	um := adminsetting.Umask
+	umask, err := strconv.Atoi(um)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	folderP := adminsetting.FolderPermission
+	folderPerm, err := strconv.ParseInt(folderP, 8, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	fileP := adminsetting.FilePermission
+	filePerm, err := strconv.ParseInt(fileP, 8, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	u := adminsetting.UID
+	uid, err := strconv.Atoi(u)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	g := adminsetting.GID
+	gid, err := strconv.Atoi(g)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	for _, files := range r.MultipartForm.File {
+		for _, f := range files {
+			file, err := f.Open()
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				continue
+			}
+			defer file.Close()
+			unix.Umask(umask)
+			mimeType := f.Header.Get("Content-Type")
+			switch mimeType {
+			case "image/jpeg", "image/png":
+				data, err := ioutil.ReadAll(file)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				path := item.InputThumbnailImgPath
+				err = os.MkdirAll(path, os.FileMode(folderPerm))
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				err = os.Chown(path, uid, gid)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				err = ioutil.WriteFile(path+"/"+f.Filename, data, os.FileMode(filePerm))
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+			case "video/quicktime", "video/mp4", "video/ogg", "application/ogg":
+				data, err := ioutil.ReadAll(file)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				path := item.InputThumbnailClipPath
+				err = os.MkdirAll(path, os.FileMode(folderPerm))
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				err = os.Chown(path, uid, gid)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				err = ioutil.WriteFile(path+"/"+f.Filename, data, os.FileMode(filePerm))
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+			case "application/octet-stream":
+				ext := filepath.Ext(f.Filename)
+				if ext != ".mb" && ext != ".ma" { // .ma .mb 외에는 허용하지 않는다.
+					http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
+					return
+				}
+				data, err := ioutil.ReadAll(file)
+				if err != nil {
+					fmt.Fprintf(w, "%v", err)
+					return
+				}
+				path := item.OutputDataPath
+				err = os.MkdirAll(path, os.FileMode(folderPerm))
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				err = os.Chown(path, uid, gid)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				err = ioutil.WriteFile(path+"/"+f.Filename, data, os.FileMode(filePerm))
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+			default:
+				//허용하지 않는 파일 포맷입니다.
+				http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
+				return
+			}
+		}
+	}
 }
 
 func handleAddMayaSuccess(w http.ResponseWriter, r *http.Request) {
