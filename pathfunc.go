@@ -119,7 +119,7 @@ func idToPath(id string) (string, error) {
 	}
 
 	// 형식에 맞게 "/" 추가 (2/2/2/2/6/4/2/2/2)
-	result := fmt.Sprintf("%s/%s/%s/%s/%s/%s/%s/%s/%s", id[0:2], id[2:4], id[4:6], id[6:8], id[8:14], id[14:18], id[18:20], id[20:22], id[22:24])
+	result := fmt.Sprintf("/%s/%s/%s/%s/%s/%s/%s/%s/%s", id[0:2], id[2:4], id[4:6], id[6:8], id[8:14], id[14:18], id[18:20], id[20:22], id[22:24])
 	return result, nil
 }
 
@@ -136,9 +136,10 @@ func GetRootPath(session *mgo.Session) (string, error) {
 	if rootpath == "" {
 		return rootpath, errors.New("admin setting에서 rootpath를 설정해주세요")
 	}
-	// rootpath가 '/'로 끝나지 않으면 끝에 슬래시를 붙여준다.
-	if rootpath[len(rootpath)-1] != '/' {
-		rootpath = rootpath + "/"
+	// rootpath가 '/'로 시작하지 않으면 앞에 슬래시를 붙여준다.
+	if rootpath[0] != '/' {
+		rootpath = "/" + rootpath
 	}
+	fmt.Println(rootpath)
 	return rootpath, nil
 }
