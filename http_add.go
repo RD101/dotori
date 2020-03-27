@@ -140,6 +140,9 @@ func handleUploadMayaItem(w http.ResponseWriter, r *http.Request) {
 	item.Status = Ready
 	time := time.Now()
 	item.CreateTime = time.Format("2006-01-02 15:04:05")
+	item.ThumbImgUploaded = false
+	item.ThumbClipUploaded = false
+	item.DataUploaded = false
 	session, err := mgo.Dial(*flagDBIP)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -269,6 +272,7 @@ func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return
 				}
+				item.ThumbImgUploaded = true
 			case "video/quicktime", "video/mp4", "video/ogg", "application/ogg":
 				data, err := ioutil.ReadAll(file)
 				if err != nil {
@@ -291,6 +295,7 @@ func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return
 				}
+				item.ThumbClipUploaded = true
 			case "application/octet-stream":
 				ext := filepath.Ext(f.Filename)
 				if ext != ".mb" && ext != ".ma" { // .ma .mb 외에는 허용하지 않는다.
@@ -318,6 +323,7 @@ func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return
 				}
+				item.DataUploaded = true
 			default:
 				//허용하지 않는 파일 포맷입니다.
 				http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
