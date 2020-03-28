@@ -17,8 +17,13 @@ import (
 
 // handleAddMayaFile 함수는 Maya 파일을 추가하는 페이지 이다.
 func handleAddMayaFile(w http.ResponseWriter, r *http.Request) {
+	token, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
-	err := TEMPLATES.ExecuteTemplate(w, "addmaya-file", nil)
+	err = TEMPLATES.ExecuteTemplate(w, "addmaya-file", token)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -26,8 +31,13 @@ func handleAddMayaFile(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleAddMayaItem(w http.ResponseWriter, r *http.Request) {
+	token, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
-	err := TEMPLATES.ExecuteTemplate(w, "addmaya-item", nil)
+	err = TEMPLATES.ExecuteTemplate(w, "addmaya-item", token)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -36,13 +46,23 @@ func handleAddMayaItem(w http.ResponseWriter, r *http.Request) {
 
 // handleAddMayaSubmit 함수는 URL에 objectID를 붙여서 /addmaya-item 페이지로 redirect한다.
 func handleAddMayaSubmit(w http.ResponseWriter, r *http.Request) {
+	_, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
 	objectID := bson.NewObjectId().Hex()
 	http.Redirect(w, r, fmt.Sprintf("/addmaya-item?objectid=%s", objectID), http.StatusSeeOther)
 }
 
 func handleAddNuke(w http.ResponseWriter, r *http.Request) {
+	token, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
-	err := TEMPLATES.ExecuteTemplate(w, "addnuke", nil)
+	err = TEMPLATES.ExecuteTemplate(w, "addnuke", token)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -50,8 +70,13 @@ func handleAddNuke(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleAddHoudini(w http.ResponseWriter, r *http.Request) {
+	token, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
-	err := TEMPLATES.ExecuteTemplate(w, "addhoudini", nil)
+	err = TEMPLATES.ExecuteTemplate(w, "addhoudini", token)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -59,8 +84,13 @@ func handleAddHoudini(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleAddBlender(w http.ResponseWriter, r *http.Request) {
+	token, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
-	err := TEMPLATES.ExecuteTemplate(w, "addblender", nil)
+	err = TEMPLATES.ExecuteTemplate(w, "addblender", token)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -68,8 +98,13 @@ func handleAddBlender(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleAddAlembic(w http.ResponseWriter, r *http.Request) {
+	token, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
-	err := TEMPLATES.ExecuteTemplate(w, "addalembic", nil)
+	err = TEMPLATES.ExecuteTemplate(w, "addalembic", token)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -77,8 +112,13 @@ func handleAddAlembic(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleAddUSD(w http.ResponseWriter, r *http.Request) {
+	token, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
-	err := TEMPLATES.ExecuteTemplate(w, "addusd", nil)
+	err = TEMPLATES.ExecuteTemplate(w, "addusd", token)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -86,8 +126,13 @@ func handleAddUSD(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleAddNukeProcess(w http.ResponseWriter, r *http.Request) {
+	token, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
-	err := TEMPLATES.ExecuteTemplate(w, "addnuke-process", nil)
+	err = TEMPLATES.ExecuteTemplate(w, "addnuke-process", token)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -95,8 +140,13 @@ func handleAddNukeProcess(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleAddHoudiniProcess(w http.ResponseWriter, r *http.Request) {
+	token, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
-	err := TEMPLATES.ExecuteTemplate(w, "addhoudini-process", nil)
+	err = TEMPLATES.ExecuteTemplate(w, "addhoudini-process", token)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -104,8 +154,13 @@ func handleAddHoudiniProcess(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleAddAlembicProcess(w http.ResponseWriter, r *http.Request) {
+	token, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
-	err := TEMPLATES.ExecuteTemplate(w, "addalembic-process", nil)
+	err = TEMPLATES.ExecuteTemplate(w, "addalembic-process", token)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -113,6 +168,11 @@ func handleAddAlembicProcess(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleUploadMayaItem(w http.ResponseWriter, r *http.Request) {
+	_, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
 	item := Item{}
 	objectID, err := GetObjectIDfromRequestHeader(r)
 	if err != nil {
@@ -182,7 +242,12 @@ func handleUploadMayaItem(w http.ResponseWriter, r *http.Request) {
 
 // handleUploadMaya 함수는 Maya파일을 DB에 업로드하는 페이지를 연다. dropzone에 파일을 올릴 경우 실행된다.
 func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
-	err := r.ParseMultipartForm(200000) // grab the multipart form
+	_, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
+	err = r.ParseMultipartForm(200000) // grab the multipart form
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -334,8 +399,13 @@ func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleAddMayaSuccess(w http.ResponseWriter, r *http.Request) {
+	token, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
-	err := TEMPLATES.ExecuteTemplate(w, "addmaya-success", nil)
+	err = TEMPLATES.ExecuteTemplate(w, "addmaya-success", token)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -344,6 +414,11 @@ func handleAddMayaSuccess(w http.ResponseWriter, r *http.Request) {
 
 // handleUploadMaya 함수는 Nuke파일을 DB에 업로드하는 페이지를 연다.
 func handleUploadNuke(w http.ResponseWriter, r *http.Request) {
+	_, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
 	file, header, err := r.FormFile("file")
 	if err != nil {
 		log.Println(err)
@@ -425,6 +500,11 @@ func handleUploadNuke(w http.ResponseWriter, r *http.Request) {
 
 // handleAddHoudiniProcess 함수는 Houdini 파일을 처리하는 페이지 이다.
 func handleUploadHoudini(w http.ResponseWriter, r *http.Request) {
+	_, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
 	file, header, err := r.FormFile("file")
 	if err != nil {
 		log.Println(err)
@@ -505,6 +585,11 @@ func handleUploadHoudini(w http.ResponseWriter, r *http.Request) {
 
 // handleUploadAlembic 함수는 Alembic 파일을 처리하는 페이지 이다.
 func handleUploadAlembic(w http.ResponseWriter, r *http.Request) {
+	_, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
 	file, header, err := r.FormFile("file")
 	if err != nil {
 		log.Println(err)
