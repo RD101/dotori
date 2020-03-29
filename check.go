@@ -9,4 +9,6 @@ var (
 	regexLower       = regexp.MustCompile(`[a-z]+$`)                                                                                                                   // Itemtype, Dbname (maya, nuke, dotori..)
 	regexObjectID    = regexp.MustCompile(`^[a-z0-9]*$`)                                                                                                               // "54759eb3c090d83494e2d804"
 	regexMap         = regexp.MustCompile(`^([a-zA-Z0-9]+:[a-zA-Z0-9.-_]+)(,?([a-zA-Z0-9]+:[a-zA-Z0-9.-_]+))*$`)                                                       // key:value,key:value
+	regexTag         = regexp.MustCompile(`^[가-힣a-zA-Z0-9]+$`)                                                                                                         // 태그, tag, tag1
+	regexPermission  = regexp.MustCompile(`^[0][0-7][0-7][0-7]$`)                                                                                                      //0775, 0440 (권한은 0000~7777까지 가능하지만 보안상 0000~0777까지만 허용한다)
 )

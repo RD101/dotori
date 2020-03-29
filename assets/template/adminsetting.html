@@ -12,7 +12,7 @@
                     <div class="col-sm">
                         <div class="form-group">
                             <label class="text-muted">Rootpath</label>
-                            <input type="text" name="rootpath" class="form-control" placeholder="/rootpath" value="{{.Rootpath}}">
+                            <input type="text" name="rootpath" class="form-control" placeholder="/rootpath" value="{{.Adminsetting.Rootpath}}">
                             <small class="form-text text-warning">에셋 라이브러리 위치를 설정해주세요.</small>
                         </div>
                     </div>
@@ -21,7 +21,7 @@
                     <div class="col-sm">
                         <div class="form-group">
                             <label class="text-muted">Linux Protocol Path</label>
-                            <input type="text" name="linuxprotocolpath" class="form-control" placeholder="/linux/path" value="{{.LinuxProtocolPath}}">
+                            <input type="text" name="linuxprotocolpath" class="form-control" placeholder="/linux/path" value="{{.Adminsetting.LinuxProtocolPath}}">
                             <small class="form-text text-muted">Linux 클라이언트가 사용하는 라이브러리 위치를 설정해주세요.</small>
                         </div>
                     </div>
@@ -30,7 +30,7 @@
                     <div class="col-sm">
                         <div class="form-group">
                             <label class="text-muted">Windows Protocol Path</label>
-                            <input type="text" name="windowsprotocolpath" class="form-control" placeholder="/windows/path" value="{{.WindowsProtocolPath}}">
+                            <input type="text" name="windowsprotocolpath" class="form-control" placeholder="/windows/path" value="{{.Adminsetting.WindowsProtocolPath}}">
                             <small class="form-text text-muted">Windows 클라이언트가 사용하는 라이브러리 위치를 설정해주세요.</small>
                         </div>
                     </div>
@@ -39,7 +39,7 @@
                     <div class="col-sm">
                         <div class="form-group">
                             <label class="text-muted">macOS Protocol Path</label>
-                            <input type="text" name="macosprotocolpath" class="form-control" placeholder="/macos/path" value="{{.MacosProtocolPath}}">
+                            <input type="text" name="macosprotocolpath" class="form-control" placeholder="/macos/path" value="{{.Adminsetting.MacosProtocolPath}}">
                             <small class="form-text text-muted">macOS 클라이언트가 사용하는 라이브러리 경로를 설정해주세요.</small>
                         </div>
                     </div>
@@ -48,21 +48,21 @@
                     <div class="col-sm">
                         <div class="form-group">
                             <label class="text-muted">Umask</label>
-                            <input type="text" name="umask" class="form-control" placeholder="0000" value="{{.Umask}}">
+                            <input type="text" name="umask" class="form-control" placeholder="0000" value="{{.Adminsetting.Umask}}">
                             <small class="form-text text-muted">Umask 값을 설정해주세요.</small>
                         </div>
                     </div>
                     <div class="col-sm">
                         <div class="form-group">
                             <label class="text-muted">Folder Permission</label>
-                            <input type="text" name="folderpermission" class="form-control" placeholder="0775" value="{{.FolderPermission}}">
+                            <input type="text" name="folderpermission" class="form-control" placeholder="0775" value="{{.Adminsetting.FolderPermission}}">
                             <small class="form-text text-muted">폴더 권한을 설정해주세요.</small>
                         </div>
                     </div>
                     <div class="col-sm">
                         <div class="form-group">
                             <label class="text-muted">File Permission</label>
-                            <input type="text" name="filepermission" class="form-control" placeholder="0440" value="{{.FilePermission}}">
+                            <input type="text" name="filepermission" class="form-control" placeholder="0440" value="{{.Adminsetting.FilePermission}}">
                             <small class="form-text text-muted">파일 권한을 설정해주세요.</small>
                         </div>
                     </div>
@@ -71,14 +71,14 @@
                     <div class="col-sm">
                         <div class="form-group">
                             <label class="text-muted">UID</label>
-                            <input type="text" name="uid" class="form-control" placeholder="501" value="{{.UID}}">
+                            <input type="text" name="uid" class="form-control" placeholder="501" value="{{.Adminsetting.UID}}">
                             <small class="form-text text-muted">User ID를 설정해주세요.</small>
                         </div>
                     </div>
                     <div class="col-sm">
                         <div class="form-group">
                             <label class="text-muted">GID</label>
-                            <input type="text" name="gid" class="form-control" placeholder="20" value="{{.GID}}">
+                            <input type="text" name="gid" class="form-control" placeholder="20" value="{{.Adminsetting.GID}}">
                             <small class="form-text text-muted">Group ID를 설정해주세요.</small>
                         </div>
                     </div>
@@ -87,7 +87,7 @@
                     <div class="col-sm">
                         <div class="form-group">
                             <label class="text-muted">FFmpeg</label>
-                            <input type="text" name="ffmpeg" class="form-control" placeholder="/path/ffmpeg" value="{{.FFmpeg}}">
+                            <input type="text" name="ffmpeg" class="form-control" placeholder="/path/ffmpeg" value="{{.Adminsetting.FFmpeg}}">
                             <small class="form-text text-muted">동영상 변환을 위한 FFmpeg 명령어 위치를 설정해주세요.</small>
                         </div>
                     </div>
@@ -95,8 +95,8 @@
                 <div class="row">
                     <div class="col-sm">
                         <div class="form-group">
-                            <label class="text-muted">OpenColorIO</label>
-                            <input type="text" name="opencolorio" class="form-control" placeholder="/path/ocio.config" value="{{.OpenColorIO}}">
+                            <label class="text-muted">OCIO Config</label>
+                            <input type="text" name="ocioconfig" class="form-control" placeholder="/path/ocio.config" value="{{.Adminsetting.OCIOConfig}}">
                             <small class="form-text text-muted">컬러메니징을 위한 OpenColorIO ocio.config의 위치를 설정해 주세요.</small>
                         </div>
                     </div>
@@ -105,8 +105,17 @@
                     <div class="col-sm">
                         <div class="form-group">
                             <label class="text-muted">OpenImageIO</label>
-                            <input type="text" name="openimageio" class="form-control" placeholder="/path/oiio" value="{{.OpenImageIO}}">
+                            <input type="text" name="openimageio" class="form-control" placeholder="/path/oiio" value="{{.Adminsetting.OpenImageIO}}">
                             <small class="form-text text-muted">이미지 변환을 위한 OpenImageIO 명령어 위치를 설정해 주세요.</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm">
+                        <div class="form-group">
+                            <label class="text-muted">MultipartForm Buffer Size</label>
+                            <input type="number" name="multipartformbuffersize" class="form-control" placeholder="200000" value="{{.Adminsetting.MultipartFormBufferSize}}">
+                            <small class="form-text text-muted">MultipartForm Buffersize</small>
                         </div>
                     </div>
                 </div>

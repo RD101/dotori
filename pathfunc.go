@@ -3,12 +3,13 @@ package main
 import (
 	"errors"
 	"fmt"
-	"io"
 	"os"
 	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
+
+	"gopkg.in/mgo.v2"
 )
 
 // searchSeq 함수는 탐색할 경로를 입력받고 dpx, exr, mov 정보를 수집 반환한다.
@@ -106,7 +107,7 @@ func Seqnum2Sharp(filename string) (string, int, error) {
 // idToPath 함수는 MongoDB ID를 받아서 정한 형식에 맞게 ID를 변경시켜준다.
 // 용도 : 몽고디비에서 생성되는 고유아이디로 폴더구조를 생성하여 각 유저마다 해당 에셋에 대한 데이터를 쌓아주기 위함이다.
 // 나누는 이유 : 폴더에 저장할 수 있는 파일의 개수는 한정적이기 때문에 파일이 몰리지 않도록 분산해주기 위함이다.
-// "54759eb3c090d83494e2d804" -> “54/75/9e/b3/c090d8/3494/e2/d8/04”
+// "54759eb3c090d83494e2d804" -> “/54/75/9e/b3/c090d8/3494/e2/d8/04”
 func idToPath(id string) (string, error) {
 	if len(id) != 24 {
 		return id, errors.New("MongoDB ID 형식이 아닙니다")
@@ -114,33 +115,31 @@ func idToPath(id string) (string, error) {
 
 	// 영문 소문자와 숫자만 허용
 	if !regexObjectID.MatchString(id) {
-		return id, errors.New("정규 표현식이 잘못되었습니다")
+		return id, errors.New("MongoDB ID 형식이 아닙니다")
 	}
 
 	// 형식에 맞게 "/" 추가 (2/2/2/2/6/4/2/2/2)
-	result := fmt.Sprintf("%s/%s/%s/%s/%s/%s/%s/%s/%s", id[0:2], id[2:4], id[4:6], id[6:8], id[8:14], id[14:18], id[18:20], id[20:22], id[22:24])
+	result := fmt.Sprintf("/%s/%s/%s/%s/%s/%s/%s/%s/%s", id[0:2], id[2:4], id[4:6], id[6:8], id[8:14], id[14:18], id[18:20], id[20:22], id[22:24])
 	return result, nil
 }
 
-func copyFile(dst, src string) (err error) {
-	in, err := os.Open(src)
+// GetRootPath 함수는 Admin setting에서 설정한 Rootpath를 가져온다
+func GetRootPath(session *mgo.Session) (string, error) {
+	rootpath := ""
+	//adminSetting에서 rootpath를 가져온다.
+	adminsetting, err := GetAdminSetting(session)
 	if err != nil {
-		return
+		return rootpath, err
 	}
-	defer in.Close()
-	out, err := os.Create(dst)
-	if err != nil {
-		return
+	rootpath = adminsetting.Rootpath
+	// rootpath가 빈문자열이면
+	if rootpath == "" {
+		return rootpath, errors.New("admin setting에서 rootpath를 설정해주세요")
 	}
-	defer func() {
-		cerr := out.Close()
-		if err == nil {
-			err = cerr
-		}
-	}()
-	if _, err = io.Copy(out, in); err != nil {
-		return
+	// rootpath가 '/'로 시작하지 않으면 앞에 슬래시를 붙여준다.
+	if rootpath[0] != '/' {
+		rootpath = "/" + rootpath
 	}
-	err = out.Sync()
-	return
+	fmt.Println(rootpath)
+	return rootpath, nil
 }

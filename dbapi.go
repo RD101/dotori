@@ -19,6 +19,18 @@ func AddItem(session *mgo.Session, i Item) error {
 	return nil
 }
 
+// GetItem 은 데이터베이스에 Item을 가지고 오는 함수이다.
+func GetItem(session *mgo.Session, itemType, id string) (Item, error) {
+	session.SetMode(mgo.Monotonic, true)
+	c := session.DB(*flagDBName).C(itemType)
+	var result Item
+	err := c.Find(bson.M{"_id": bson.ObjectIdHex(id)}).One(&result)
+	if err != nil {
+		return result, err
+	}
+	return result, nil
+}
+
 // RmItem 는 컬렉션 이름과 id를 받아서, 해당 컬렉션에서 id가 일치하는 Item을 삭제한다.
 func RmItem(session *mgo.Session, itemType, id string) error {
 	session.SetMode(mgo.Monotonic, true)
@@ -189,16 +201,18 @@ func SetAdminSetting(session *mgo.Session, a Adminsetting) error {
 }
 
 // GetAdminSetting 은 관리자 셋팅값을 가지고 온다.
-func GetAdminSetting(session *mgo.Session) Adminsetting {
+func GetAdminSetting(session *mgo.Session) (Adminsetting, error) {
 	session.SetMode(mgo.Monotonic, true)
 	c := session.DB(*flagDBName).C("setting.admin")
 	var result Adminsetting
 	err := c.Find(bson.M{"id": "setting.admin"}).One(&result)
 	if err != nil {
-		// 찾지 못했을 경우에는 빈 Adminsetting 자료구조를 반환한다.
-		return Adminsetting{}
+		if err == mgo.ErrNotFound {
+			return Adminsetting{}, nil
+		}
+		return Adminsetting{}, err
 	}
-	return result
+	return result, nil
 }
 
 // GetOngoingProcess 는 처리 중인 아이템을 가져온다.
@@ -214,6 +228,9 @@ func GetOngoingProcess(session *mgo.Session) ([]Item, error) {
 	for _, c := range collections {
 		var items []Item
 		if c == "system.indexs" { //mongodb의 기본 컬렉션. 제외한다.
+			continue
+		}
+		if c == "setting.admin" { //admin setting값을 저장하는 컬렉션. 제외한다.
 			continue
 		}
 		err = session.DB(*flagDBName).C(c).Find(bson.M{"status": bson.M{"$ne": Done}}).All(&items)
@@ -233,21 +250,93 @@ func GetReadyItem(session *mgo.Session) (Item, error) {
 	if err != nil {
 		return result, err
 	}
+	// 컬렉션을 for문 돌면서 Ready 상태인 Item을 찾는다.
 	for _, c := range collections {
+		if c == "setting.admin" { // setting.admin 컬렉션은 제외한다.
+			continue
+		}
+		if c == "system.indexs" { //mongodb의 기본 컬렉션. 제외한다.
+			continue
+		}
+		cur := session.DB(*flagDBName).C(c)
 		// 해당 컬렉션에 ready상태인 Item이 없으면 다음 컬렉션을 체크한다
-		num, err := session.DB(*flagDBName).C(c).Find(bson.M{"status": Ready}).Count()
+		num, err := cur.Find(bson.M{"status": Ready}).Count()
 		if err != nil {
 			return result, err
 		}
 		if num == 0 {
 			continue
 		}
-		// ready상태인 Item이 있으면 하나를 반환하고 끝낸다.
-		err = session.DB(*flagDBName).C(c).Find(bson.M{"status": Ready}).One(&result)
+		// ready상태인 Item이 있다면 가져와서 Status를 업데이트 한다.
+		err = cur.Find(bson.M{"status": Ready}).One(&result)
 		if err != nil {
 			return result, err
 		}
+		err = cur.Update(bson.M{"_id": result.ID}, bson.M{"$set": bson.M{"status": StartProcessing}})
+		if err != nil {
+			return result, err
+		}
+		// 해당 Item을 반환한다.
 		return result, nil
 	}
 	return result, errors.New("ready상태인 Item이 없습니다")
+}
+
+// AddUser 는 데이터베이스에 User를 넣는 함수이다.
+func AddUser(session *mgo.Session, u User) error {
+	session.SetMode(mgo.Monotonic, true)
+	c := session.DB(*flagDBName).C("users")
+	n, err := c.Find(bson.M{"id": u.ID}).Count()
+	if err != nil {
+		return err
+	}
+	if n != 0 {
+		return errors.New("already exists user ID")
+	}
+	err = c.Insert(u)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// RmUser 는 데이터베이스에 User를 삭제하는 함수이다.
+func RmUser(session *mgo.Session, id string) error {
+	session.SetMode(mgo.Monotonic, true)
+	c := session.DB(*flagDBName).C("users")
+	err := c.Remove(bson.M{"id": id})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// SetUser 함수는 사용자 정보를 업데이트하는 함수이다.
+func SetUser(session *mgo.Session, u User) error {
+	session.SetMode(mgo.Monotonic, true)
+	c := session.DB(*flagDBName).C("users")
+	num, err := c.Find(bson.M{"id": u.ID}).Count()
+	if err != nil {
+		return err
+	}
+	if num != 1 {
+		return errors.New("해당 유저가 존재하지 않습니다")
+	}
+	err = c.Update(bson.M{"id": u.ID}, u)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// GetUser 함수는 id를 입력받아서 사용자 정보를 반환한다.
+func GetUser(session *mgo.Session, id string) (User, error) {
+	session.SetMode(mgo.Monotonic, true)
+	c := session.DB(*flagDBName).C("users")
+	u := User{}
+	err := c.Find(bson.M{"id": id}).One(&u)
+	if err != nil {
+		return u, err
+	}
+	return u, nil
 }

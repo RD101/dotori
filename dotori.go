@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 )
 
 var (
@@ -21,23 +22,21 @@ var (
 	flagSearchWord        = flag.String("searchword", "", "search word") // DB를 검색할 때 사용합니다.
 	flagSearchID          = flag.Bool("searchid", false, "search a item by its id")
 	flagGetOngoingProcess = flag.Bool("getongoingprocess", false, "get ongoing process") // 완료되지 않은 프로세스를 가져옵니다.
-	flagGetReadyItem      = flag.Bool("getreadyitem", false, "get a ready status item")  //ready상태인 아이템을 하나 가져온다.
+	flagProcess           = flag.Bool("process", false, "start processing item")         // 프로세스를 실행시킨다
 
 	flagAuthor      = flag.String("author", "", "author")
 	flagTag         = flag.String("tag", "", "tag")
 	flagDescription = flag.String("description", "", "description")
-	flagThumbimg    = flag.String("thumbimg", "", "path of thumbnail image")
-	flagThumbmov    = flag.String("thumbmov", "", "path of thumbnail mov")
 	flagInputpath   = flag.String("inputpath", "", "input path")
-	flagOutputpath  = flag.String("outputpath", "", "output path")
 	flagItemType    = flag.String("itemtype", "", "type of asset")
 	flagAttributes  = flag.String("attributes", "", "detail info of file") // "key:value,key:value"
 
 	// 서비스에 필요한 인수
-	flagDBIP     = flag.String("dbip", "", "DB IP")
-	flagDBName   = flag.String("dbname", "dotori", "DB name")
-	flagHTTPPort = flag.String("http", "", "Web Service Port Number")
-	flagPagenum  = flag.Int("pagenum", 9, "maximum number of items in a page")
+	flagDBIP      = flag.String("dbip", "", "DB IP")
+	flagDBName    = flag.String("dbname", "dotori", "DB name")
+	flagHTTPPort  = flag.String("http", "", "Web Service Port Number")
+	flagPagenum   = flag.Int("pagenum", 9, "maximum number of items in a page")
+	flagCookieAge = flag.Int("cookieage", 4, "cookie age (hour)") // MPAA 기준 4시간이다.
 
 	flagItemID = flag.String("itemid", "", "bson ObjectID assigned by mongodb")
 )
@@ -68,19 +67,41 @@ func main() {
 			fmt.Println(item)
 		}
 	} else if *flagAdd {
-		i := Item{}
+		if *flagItemType == "" {
+			log.Fatal("itemtype이 빈 문자열입니다")
+		}
 
+		i := Item{}
+		i.ID = bson.NewObjectId()
 		i.Author = *flagAuthor
 		i.Tags = SplitBySpace(*flagTag)
 		i.Description = *flagDescription
-		i.Thumbimg = *flagThumbimg
-		i.Thumbmov = *flagThumbmov
-		i.Inputpath = *flagInputpath
-		i.Outputpath = *flagOutputpath
 		i.ItemType = *flagItemType
 		i.Attributes = StringToMap(*flagAttributes)
 
-		err := i.CheckError()
+		session, err := mgo.Dial(*flagDBIP)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer session.Close()
+		// admin settin에서 rootpath를 가져와서 경로를 생성한다.
+		rootpath, err := GetRootPath(session)
+		if err != nil {
+			log.Fatal(err)
+		}
+		objIDpath, err := idToPath(i.ID.Hex())
+		if err != nil {
+			log.Fatal(err)
+		}
+		i.InputThumbnailImgPath = rootpath + objIDpath + "/originalthumbimg/"
+		i.InputThumbnailClipPath = rootpath + objIDpath + "/originalthumbmov/"
+		i.OutputThumbnailPngPath = rootpath + objIDpath + "/thumbnail/thumbnail.png"
+		i.OutputThumbnailMp4Path = rootpath + objIDpath + "/thumbnail/thumbnail.mp4"
+		i.OutputThumbnailOggPath = rootpath + objIDpath + "/thumbnail/thumbnail.ogg"
+		i.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/thumbnail.mov"
+		i.OutputDataPath = rootpath + objIDpath + "/data/"
+
+		err = i.CheckError()
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -89,11 +110,6 @@ func main() {
 				log.Fatal(err)
 			}
 		}
-		session, err := mgo.Dial(*flagDBIP)
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer session.Close()
 		if *flagDBName != "" {
 			if !regexLower.MatchString(*flagDBName) { // 입력받은 dbname이 소문자인지 확인
 				log.Fatal(err)
@@ -145,14 +161,12 @@ func main() {
 		defer session.Close()
 		items, err := GetOngoingProcess(session)
 		fmt.Println(items)
-	} else if *flagGetReadyItem {
-		session, err := mgo.Dial(*flagDBIP)
+	} else if *flagProcess {
+		err := processingItem()
 		if err != nil {
 			log.Fatal(err)
 		}
-		defer session.Close()
-		item, err := GetReadyItem(session)
-		fmt.Println(item)
+		fmt.Println("done")
 	} else {
 		flag.PrintDefaults()
 		os.Exit(1)

@@ -41,10 +41,12 @@ func webserver() {
 	http.HandleFunc("/search-submit", handleSearchSubmit)
 
 	// Maya
-	http.HandleFunc("/addmaya", handleAddMaya)
-	http.HandleFunc("/addmaya-process", handleAddMayaProcess)
-	http.HandleFunc("/upload-maya", handleUploadMaya)
-	http.HandleFunc("/upload-maya-ondb", handleUploadMayaOnDB)
+	http.HandleFunc("/addmaya-submit", handleAddMayaSubmit)
+	http.HandleFunc("/addmaya-item", handleAddMayaItem)
+	http.HandleFunc("/addmaya-file", handleAddMayaFile)
+	http.HandleFunc("/uploadmaya-item", handleUploadMayaItem)
+	http.HandleFunc("/uploadmaya-file", handleUploadMayaFile)
+	http.HandleFunc("/addmaya-success", handleAddMayaSuccess)
 	http.HandleFunc("/editmaya", handleEditMaya)
 	http.HandleFunc("/editmaya-submit", handleEditMayaSubmit)
 	http.HandleFunc("/editmaya-success", handleEditMayaSuccess)
@@ -67,17 +69,31 @@ func webserver() {
 	// 앞으로 정리할 것
 	http.HandleFunc("/addblender", handleAddBlender)
 	http.HandleFunc("/addusd", handleAddUSD)
+
 	// Admin
 	http.HandleFunc("/adminsetting", handleAdminSetting)
 	http.HandleFunc("/adminsetting-submit", handleAdminSettingSubmit)
 	http.HandleFunc("/adminsetting-success", handleAdminSettingSuccess)
+
 	// Process
 	http.HandleFunc("/item-process", handleItemProcess)
+
 	// Help
 	http.HandleFunc("/help", handleHelp)
 
+	// User
+	http.HandleFunc("/profile", handleProfile)
+	http.HandleFunc("/signup", handleSignup)
+	http.HandleFunc("/signup-submit", handleSignupSubmit)
+	http.HandleFunc("/signup-success", handleSignupSuccess)
+	http.HandleFunc("/signin", handleSignin)
+	http.HandleFunc("/signin-submit", handleSigninSubmit)
+	http.HandleFunc("/signout", handleSignOut)
+
 	// REST API
 	http.HandleFunc("/api/item", handleAPIItem)
+	http.HandleFunc("/api/search", handleAPISearch)
+
 	// 웹서버 실행
 	err = http.ListenAndServe(*flagHTTPPort, nil)
 	if err != nil {
@@ -88,6 +104,11 @@ func webserver() {
 
 // handleSearch는 URL을 통해 query를 할 수 있게 해주는 함수입니다.
 func handleSearch(w http.ResponseWriter, r *http.Request) {
+	token, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
 	q := r.URL.Query()
 	itemType := q.Get("itemtype")
 	searchword := q.Get("searchword")
@@ -103,10 +124,12 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 		CurrentPage int
 		TotalPage   int
 		Pages       []int
+		Token
 	}
 	rcp := recipe{}
 	rcp.Searchword = searchword
 	rcp.ItemType = itemType
+	rcp.Token = token
 	session, err := mgo.Dial(*flagDBIP)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -135,6 +158,11 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleSearchSubmit(w http.ResponseWriter, r *http.Request) {
+	_, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
 	itemType := r.FormValue("itemtype")
 	searchword := r.FormValue("searchword")
 	page := PageToString(r.FormValue("page"))
@@ -142,8 +170,13 @@ func handleSearchSubmit(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleHelp(w http.ResponseWriter, r *http.Request) {
+	token, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
-	err := TEMPLATES.ExecuteTemplate(w, "help", nil)
+	err = TEMPLATES.ExecuteTemplate(w, "help", token)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -151,9 +184,15 @@ func handleHelp(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleItemProcess(w http.ResponseWriter, r *http.Request) {
+	token, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
 	type recipe struct {
 		Items []Item
+		Token
 	}
 	session, err := mgo.Dial(*flagDBIP)
 	if err != nil {
@@ -168,6 +207,7 @@ func handleItemProcess(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	rcp.Token = token
 	err = TEMPLATES.ExecuteTemplate(w, "item-process", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
