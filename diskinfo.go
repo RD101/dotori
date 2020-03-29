@@ -21,7 +21,7 @@ type DiskStatus struct {
 	Free uint64 `json:"free"`
 }
 
-// DiskUsage함수는 인자로 넣은 path의 디스크 용량을 확인 하는 함수이다. (syscall 패키지는 linux/unix에만 가능, window 빌드 불가능)
+// DiskUsage함수는 인자로 넣은 path의 디스크 용량을 확인 하는 함수이다.(syscall 패키지는 linux/unix에만 가능, window 빌드 불가능)
 func DiskUsage(path string) (disk DiskStatus) {
 	fs := syscall.Statfs_t{}
 	err := syscall.Statfs(path, &fs)
