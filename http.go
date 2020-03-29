@@ -104,6 +104,11 @@ func webserver() {
 
 // handleSearch는 URL을 통해 query를 할 수 있게 해주는 함수입니다.
 func handleSearch(w http.ResponseWriter, r *http.Request) {
+	token, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
 	q := r.URL.Query()
 	itemType := q.Get("itemtype")
 	searchword := q.Get("searchword")
@@ -119,10 +124,12 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 		CurrentPage int
 		TotalPage   int
 		Pages       []int
+		Token
 	}
 	rcp := recipe{}
 	rcp.Searchword = searchword
 	rcp.ItemType = itemType
+	rcp.Token = token
 	session, err := mgo.Dial(*flagDBIP)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -151,6 +158,11 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleSearchSubmit(w http.ResponseWriter, r *http.Request) {
+	_, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
 	itemType := r.FormValue("itemtype")
 	searchword := r.FormValue("searchword")
 	page := PageToString(r.FormValue("page"))
@@ -158,8 +170,13 @@ func handleSearchSubmit(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleHelp(w http.ResponseWriter, r *http.Request) {
+	token, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
-	err := TEMPLATES.ExecuteTemplate(w, "help", nil)
+	err = TEMPLATES.ExecuteTemplate(w, "help", token)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -167,9 +184,15 @@ func handleHelp(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleItemProcess(w http.ResponseWriter, r *http.Request) {
+	token, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
 	type recipe struct {
 		Items []Item
+		Token
 	}
 	session, err := mgo.Dial(*flagDBIP)
 	if err != nil {
@@ -184,6 +207,7 @@ func handleItemProcess(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	rcp.Token = token
 	err = TEMPLATES.ExecuteTemplate(w, "item-process", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

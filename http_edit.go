@@ -10,6 +10,11 @@ import (
 )
 
 func handleEditMaya(w http.ResponseWriter, r *http.Request) {
+	token, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
 	type recipe struct {
 		ID          bson.ObjectId     `json:"id" bson:"id"`
@@ -18,6 +23,7 @@ func handleEditMaya(w http.ResponseWriter, r *http.Request) {
 		Description string            `json:"description" bson:"description"`
 		Tags        []string          `json:"tags" bson:"tags"`
 		Attributes  map[string]string `json:"attributes" bson:"attributes"`
+		Token
 	}
 	q := r.URL.Query()
 	itemtype := q.Get("itemtype")
@@ -46,6 +52,7 @@ func handleEditMaya(w http.ResponseWriter, r *http.Request) {
 		Description: item.Description,
 		Tags:        item.Tags,
 		Attributes:  item.Attributes,
+		Token:       token,
 	}
 
 	err = TEMPLATES.ExecuteTemplate(w, "editmaya", rcp)
@@ -56,6 +63,11 @@ func handleEditMaya(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleEditMayaSubmit(w http.ResponseWriter, r *http.Request) {
+	_, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
 	id := r.FormValue("id")
 	itemtype := r.FormValue("itemtype")
 	attrNum, err := strconv.Atoi(r.FormValue("attributesNum"))
@@ -93,8 +105,13 @@ func handleEditMayaSubmit(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleEditMayaSuccess(w http.ResponseWriter, r *http.Request) {
+	token, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
-	err := TEMPLATES.ExecuteTemplate(w, "editmaya-success", nil)
+	err = TEMPLATES.ExecuteTemplate(w, "editmaya-success", token)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
