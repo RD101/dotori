@@ -8,7 +8,6 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
-	"strings"
 	"time"
 
 	"golang.org/x/sys/unix"
@@ -394,15 +393,6 @@ func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
 				//허용하지 않는 파일 포맷입니다.
 				http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
 				return
-			}
-			fileName := strings.TrimSuffix(f.Filename, filepath.Ext(f.Filename))
-			tags, err := SplitBySign(fileName)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusBadRequest)
-				return
-			}
-			for _, t := range tags {
-				item.Tags = append(item.Tags, t)
 			}
 		}
 	}
