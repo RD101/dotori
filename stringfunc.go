@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"log"
 	"regexp"
 	"strings"
@@ -61,6 +60,5 @@ func SplitBySign(str string) ([]string, error) {
 		return result, errors.New("정규 표현식이 잘못되었습니다")
 	}
 	result = re.FindAllString(str, -1)
-	fmt.Println(result)
 	return result, nil
 }
