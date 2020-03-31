@@ -1,9 +1,7 @@
 package main
 
 import (
-	"errors"
 	"log"
-	"regexp"
 	"strings"
 )
 
@@ -55,10 +53,10 @@ func StringToMap(str string) map[string]string {
 // SplitBySign 는 string 문자열을 특수문자 기준으로 split하여 리스트를 반환하는 함수이다.
 func SplitBySign(str string) ([]string, error) {
 	var result []string
-	re, err := regexp.Compile(`[가-힣a-zA-Z0-9]+`)
-	if err != nil {
-		return result, errors.New("정규 표현식이 잘못되었습니다")
+	result = regexSplitbySign.FindAllString(str, -1)
+	if len(result) <= 0 {
+		log.Fatal("빈 리스트를 반환했습니다")
+		return result, nil
 	}
-	result = re.FindAllString(str, -1)
 	return result, nil
 }

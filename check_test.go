@@ -1,6 +1,7 @@
 package main
 
 import (
+	"reflect"
 	"testing"
 )
 
@@ -341,6 +342,24 @@ func Test_Permission(t *testing.T) {
 		b := regexPermission.MatchString(c.Perm)
 		if c.want != b {
 			t.Fatalf("Test_Permission(): 입력 값: %v, 원하는 값: %v, 얻은 값: %v\n", c.Perm, c.want, b)
+		}
+	}
+}
+
+//특수문자 기준으로 split하는 함수 SplitbySign이 잘 작동하는지 테스트하는 함수
+func Test_SplitbySign(t *testing.T) {
+	cases := []struct {
+		in   string
+		want []string
+	}{{
+		in:   "s0010_c0010_ani_v001",
+		want: []string{"s0010", "c0010", "ani", "v001"},
+	},
+	}
+	for _, c := range cases {
+		b, _ := SplitBySign(c.in)
+		if !reflect.DeepEqual(b, c.want) {
+			t.Fatalf("Test_SplitbySign(): 입력 값: %v, 원하는 값: %v, 얻은 값: %v\n", c.in, c.want, b)
 		}
 	}
 }
