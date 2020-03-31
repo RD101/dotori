@@ -11,5 +11,5 @@ var (
 	regexMap         = regexp.MustCompile(`^([a-zA-Z0-9]+:[a-zA-Z0-9.-_]+)(,?([a-zA-Z0-9]+:[a-zA-Z0-9.-_]+))*$`)                                                       // key:value,key:value
 	regexTag         = regexp.MustCompile(`^[가-힣a-zA-Z0-9]+$`)                                                                                                         // 태그, tag, tag1
 	regexPermission  = regexp.MustCompile(`^[0][0-7][0-7][0-7]$`)                                                                                                      //0775, 0440 (권한은 0000~7777까지 가능하지만 보안상 0000~0777까지만 허용한다)
-	regexSplitbySign = regexp.MustCompile(`[가-힣a-zA-Z0-9一-龥ぁ-ゔァ-ヾ]+`)
+	regexSplitBySign = regexp.MustCompile(`[가-힣a-zA-Z0-9一-龥ぁ-ゔァ-ヾ]+`)
 )
