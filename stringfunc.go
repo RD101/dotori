@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"strings"
 )
@@ -54,7 +55,8 @@ func StringToMap(str string) map[string]string {
 func SplitBySign(str string) ([]string, error) {
 	var result []string
 	result = regexSplitbySign.FindAllString(str, -1)
-	if len(result) <= 0 {
+	if len(result) == 0 {
+		fmt.Println(str)
 		log.Fatal("빈 리스트를 반환했습니다")
 		return result, nil
 	}
