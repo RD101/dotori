@@ -360,7 +360,7 @@ func Test_SplitBySign(t *testing.T) {
 		in:   "model geo", // 공백 포함
 		want: true,
 	}, {
-		in:   "pr/test/rigged", // 공백 포함
+		in:   "pr/test/rigged", // / 포함
 		want: true,
 	}, {
 		in:   "lightingtest.mb", // . 포함
