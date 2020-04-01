@@ -20,7 +20,7 @@ func Test_SplitbySign(t *testing.T) {
 		in:   "rigging,shader", // , 포함 경우
 		want: []string{"rigging", "shader"},
 	}, {
-		in:   "split by sign", // , 포함 경우
+		in:   "split by sign", // 공백 포함 경우
 		want: []string{"split", "by", "sign"},
 	}, {
 		in:   "test", // 특수문자 포함 안한 경우
