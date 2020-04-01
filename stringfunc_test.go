@@ -11,20 +11,20 @@ func Test_SplitbySign(t *testing.T) {
 		in   string
 		want []string
 	}{{
-		in:   "s0010_c0010_ani_v001", // _만 포함된 경우
+		in:   "s0010_c0010_ani_v001", // _ 포함된 경우
 		want: []string{"s0010", "c0010", "ani", "v001"},
 	}, {
-		in:   "maya_thumbnail.test_check", // _, . 포함 경우
-		want: []string{"maya", "thumbnail", "test", "check"},
+		in:   "ani/v001/test", // / 포함 경우
+		want: []string{"ani", "v001", "test"},
 	}, {
-		in:   "アニメ/_の_ん_テスト", // 일본어, '/' 포함된 경우, 특수문자가 연속으로 있을 경우
-		want: []string{"アニメ", "の", "ん", "テスト"},
+		in:   "rigging,shader", // , 포함 경우
+		want: []string{"rigging", "shader"},
 	}, {
-		in:   "挿絵_test_v002.mb", // 한자 포함된 경우
-		want: []string{"挿絵", "test", "v002", "mb"},
+		in:   "split by sign", // , 포함 경우
+		want: []string{"split", "by", "sign"},
 	}, {
-		in:   "SS0010_RIG_2.mb", // 대문자, 숫자 포함된 경우
-		want: []string{"SS0010", "RIG", "2", "mb"},
+		in:   "test", // 특수문자 포함 안한 경우
+		want: []string{"test"},
 	},
 	}
 	for _, c := range cases {

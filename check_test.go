@@ -312,35 +312,35 @@ func Test_Tag(t *testing.T) {
 	}
 }
 
-//permission을 테스트하기 위한 함수
-func Test_Permission(t *testing.T) {
+//SpliBySign 정규표현식을 테스트하기 위한 함수
+func Test_SplitBySign(t *testing.T) {
 	cases := []struct {
-		Perm string
+		in   string
 		want bool
 	}{{
-		Perm: "0777",
+		in:   "s0010_c0010_fx_v021.mb", // _ 포함
 		want: true,
 	}, {
-		Perm: "0778", //permission의 범위를 넘어가는 수가 포함된 경우
+		in:   "test,code,split", // , 포함
+		want: true,
+	}, {
+		in:   "model geo", // 공백 포함
+		want: true,
+	}, {
+		in:   "pr/test/rigged", // 공백 포함
+		want: true,
+	}, {
+		in:   "lightingtest.mb", // . 포함
 		want: false,
 	}, {
-		Perm: "07a7", //수가 아닌 문자가 포함된 경우 / 영문
-		want: false,
-	}, {
-		Perm: "07가7", //수가 아닌 문자가 포함된 경우 / 한글
-		want: false,
-	}, {
-		Perm: "3777", // 첫번째 자리에 0이 아닌 다른 수가 오는 경우
-		want: false,
-	}, {
-		Perm: "07777", // 4자리를 넘는 경우
+		in:   "lightingte<stmb", // < 포함
 		want: false,
 	},
 	}
 	for _, c := range cases {
-		b := regexPermission.MatchString(c.Perm)
+		b := regexSplitBySign.MatchString(c.in)
 		if c.want != b {
-			t.Fatalf("Test_Permission(): 입력 값: %v, 원하는 값: %v, 얻은 값: %v\n", c.Perm, c.want, b)
+			t.Fatalf("Test_SplitBySign(): 입력 값: %v, 원하는 값: %v, 얻은 값: %v\n", c.in, c.want, b)
 		}
 	}
 }
