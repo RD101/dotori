@@ -207,8 +207,8 @@ func handleUploadMayaItem(w http.ResponseWriter, r *http.Request) {
 	}
 	item.Attributes = attr
 	item.Status = Ready
-	time := time.Now()
-	item.CreateTime = time.Format("2006-01-02 15:04:05")
+	currentTime := time.Now()
+	item.CreateTime = currentTime.Format("2006-01-02 15:04:05")
 	item.ThumbImgUploaded = false
 	item.ThumbClipUploaded = false
 	item.DataUploaded = false
