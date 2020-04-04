@@ -32,7 +32,8 @@ func GetItem(client *mongo.Client, itemType, id string) (Item, error) {
 	err = collection.FindOne(ctx, bson.M{"_id": objID}).Decode(&result)
 	if err != nil {
 		return result, err
-  }
+	}
+	return result, nil
 }
 
 // GetAdminSetting 은 관리자 셋팅값을 가지고 온다.
