@@ -32,15 +32,15 @@ import (
 // }
 
 // RmItem 는 컬렉션 이름과 id를 받아서, 해당 컬렉션에서 id가 일치하는 Item을 삭제한다.
-func RmItem(session *mgo.Session, itemType, id string) error {
-	session.SetMode(mgo.Monotonic, true)
-	c := session.DB(*flagDBName).C(itemType)
-	err := c.RemoveId(bson.ObjectIdHex(id))
-	if err != nil {
-		return err
-	}
-	return nil
-}
+// func RmItem(session *mgo.Session, itemType, id string) error {
+// 	session.SetMode(mgo.Monotonic, true)
+// 	c := session.DB(*flagDBName).C(itemType)
+// 	err := c.RemoveId(bson.ObjectIdHex(id))
+// 	if err != nil {
+// 		return err
+// 	}
+// 	return nil
+// }
 
 // UpdateItem 은 컬렉션 이름과 Item을 받아서, Item을 업데이트한다.
 func UpdateItem(session *mgo.Session, itemType string, item Item) error {

@@ -142,12 +142,23 @@ func main() {
 		if *flagItemID == "" {
 			log.Fatal("id가 빈 문자열 입니다")
 		}
-		session, err := mgo.Dial(*flagDBIP)
+		//mongoDB client 연결
+		client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
 		if err != nil {
 			log.Fatal(err)
 		}
-		defer session.Close()
-		err = RmItem(session, *flagItemType, *flagItemID)
+		ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+		defer client.Disconnect(ctx)
+		err = client.Connect(ctx)
+		if err != nil {
+			log.Fatal(err)
+		}
+		ctx, _ = context.WithTimeout(context.Background(), 2*time.Second)
+		err = client.Ping(ctx, readpref.Primary())
+		if err != nil {
+			log.Fatal(err)
+		}
+		err = RmItem(client, *flagItemType, *flagItemID)
 		if err != nil {
 			log.Print(err)
 		}
