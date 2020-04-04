@@ -232,23 +232,23 @@ func handleUploadMayaItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// admin settin에서 rootpath를 가져와서 경로를 생성한다.
-	// rootpath, err := GetRootPath(session)
-	// if err != nil {
-	// 	http.Error(w, err.Error(), http.StatusInternalServerError)
-	// 	return
-	// }
-	// objIDpath, err := idToPath(item.ID.Hex())
-	// if err != nil {
-	// 	http.Error(w, err.Error(), http.StatusInternalServerError)
-	// 	return
-	// }
-	// item.InputThumbnailImgPath = rootpath + objIDpath + "/originalthumbimg/"
-	// item.InputThumbnailClipPath = rootpath + objIDpath + "/originalthumbmov/"
-	// item.OutputThumbnailPngPath = rootpath + objIDpath + "/thumbnail/thumbnail.png"
-	// item.OutputThumbnailMp4Path = rootpath + objIDpath + "/thumbnail/thumbnail.mp4"
-	// item.OutputThumbnailOggPath = rootpath + objIDpath + "/thumbnail/thumbnail.ogg"
-	// item.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/thumbnail.mov"
-	// item.OutputDataPath = rootpath + objIDpath + "/data/"
+	rootpath, err := GetRootPath(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	objIDpath, err := idToPath(item.ID.Hex())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	item.InputThumbnailImgPath = rootpath + objIDpath + "/originalthumbimg/"
+	item.InputThumbnailClipPath = rootpath + objIDpath + "/originalthumbmov/"
+	item.OutputThumbnailPngPath = rootpath + objIDpath + "/thumbnail/thumbnail.png"
+	item.OutputThumbnailMp4Path = rootpath + objIDpath + "/thumbnail/thumbnail.mp4"
+	item.OutputThumbnailOggPath = rootpath + objIDpath + "/thumbnail/thumbnail.ogg"
+	item.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/thumbnail.mov"
+	item.OutputDataPath = rootpath + objIDpath + "/data/"
 	err = item.CheckError()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -289,13 +289,13 @@ func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
 	defer client.Disconnect(ctx)
 	err = client.Connect(ctx)
 	if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	ctx, _ = context.WithTimeout(context.Background(), 2*time.Second)
 	err = client.Ping(ctx, readpref.Primary())
 	if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	ctx, _ = context.WithTimeout(context.Background(), 2*time.Second)

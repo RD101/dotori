@@ -53,23 +53,23 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 			log.Fatal(err)
 		}
 		// admin settin에서 rootpath를 가져와서 경로를 생성한다.
-		// rootpath, err := GetRootPath(session)
-		// if err != nil {
-		// 	http.Error(w, err.Error(), http.StatusInternalServerError)
-		// 	return
-		// }
-		// objIDpath, err := idToPath(i.ID.Hex())
-		// if err != nil {
-		// 	http.Error(w, err.Error(), http.StatusInternalServerError)
-		// 	return
-		// }
-		// i.InputThumbnailImgPath = rootpath + objIDpath + "/originalthumbimg/"
-		// i.InputThumbnailClipPath = rootpath + objIDpath + "/originalthumbmov/"
-		// i.OutputThumbnailPngPath = rootpath + objIDpath + "/thumbnail/thumbnail.png"
-		// i.OutputThumbnailMp4Path = rootpath + objIDpath + "/thumbnail/thumbnail.mp4"
-		// i.OutputThumbnailOggPath = rootpath + objIDpath + "/thumbnail/thumbnail.ogg"
-		// i.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/thumbnail.mov"
-		// i.OutputDataPath = rootpath + objIDpath + "/data/"
+		rootpath, err := GetRootPath(client)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		objIDpath, err := idToPath(i.ID.Hex())
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		i.InputThumbnailImgPath = rootpath + objIDpath + "/originalthumbimg/"
+		i.InputThumbnailClipPath = rootpath + objIDpath + "/originalthumbmov/"
+		i.OutputThumbnailPngPath = rootpath + objIDpath + "/thumbnail/thumbnail.png"
+		i.OutputThumbnailMp4Path = rootpath + objIDpath + "/thumbnail/thumbnail.mp4"
+		i.OutputThumbnailOggPath = rootpath + objIDpath + "/thumbnail/thumbnail.ogg"
+		i.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/thumbnail.mov"
+		i.OutputDataPath = rootpath + objIDpath + "/data/"
 
 		err = i.CheckError()
 		if err != nil {
