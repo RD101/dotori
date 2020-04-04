@@ -1,14 +1,19 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"html/template"
 	"log"
 	"os"
+	"time"
 
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
 )
 
 var (
@@ -72,34 +77,45 @@ func main() {
 		}
 
 		i := Item{}
-		i.ID = bson.NewObjectId()
+		i.ID = primitive.NewObjectID()
 		i.Author = *flagAuthor
 		i.Tags = SplitBySpace(*flagTag)
 		i.Description = *flagDescription
 		i.ItemType = *flagItemType
 		i.Attributes = StringToMap(*flagAttributes)
 
-		session, err := mgo.Dial(*flagDBIP)
+		//mongoDB client 연결
+		client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
 		if err != nil {
 			log.Fatal(err)
 		}
-		defer session.Close()
+		ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+		defer client.Disconnect(ctx)
+		err = client.Connect(ctx)
+		if err != nil {
+			log.Fatal(err)
+		}
+		ctx, _ = context.WithTimeout(context.Background(), 2*time.Second)
+		err = client.Ping(ctx, readpref.Primary())
+		if err != nil {
+			log.Fatal(err)
+		}
 		// admin settin에서 rootpath를 가져와서 경로를 생성한다.
-		rootpath, err := GetRootPath(session)
-		if err != nil {
-			log.Fatal(err)
-		}
-		objIDpath, err := idToPath(i.ID.Hex())
-		if err != nil {
-			log.Fatal(err)
-		}
-		i.InputThumbnailImgPath = rootpath + objIDpath + "/originalthumbimg/"
-		i.InputThumbnailClipPath = rootpath + objIDpath + "/originalthumbmov/"
-		i.OutputThumbnailPngPath = rootpath + objIDpath + "/thumbnail/thumbnail.png"
-		i.OutputThumbnailMp4Path = rootpath + objIDpath + "/thumbnail/thumbnail.mp4"
-		i.OutputThumbnailOggPath = rootpath + objIDpath + "/thumbnail/thumbnail.ogg"
-		i.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/thumbnail.mov"
-		i.OutputDataPath = rootpath + objIDpath + "/data/"
+		// rootpath, err := GetRootPath(session)
+		// if err != nil {
+		// 	log.Fatal(err)
+		// }
+		// objIDpath, err := idToPath(i.ID.Hex())
+		// if err != nil {
+		// 	log.Fatal(err)
+		// }
+		// i.InputThumbnailImgPath = rootpath + objIDpath + "/originalthumbimg/"
+		// i.InputThumbnailClipPath = rootpath + objIDpath + "/originalthumbmov/"
+		// i.OutputThumbnailPngPath = rootpath + objIDpath + "/thumbnail/thumbnail.png"
+		// i.OutputThumbnailMp4Path = rootpath + objIDpath + "/thumbnail/thumbnail.mp4"
+		// i.OutputThumbnailOggPath = rootpath + objIDpath + "/thumbnail/thumbnail.ogg"
+		// i.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/thumbnail.mov"
+		// i.OutputDataPath = rootpath + objIDpath + "/data/"
 
 		err = i.CheckError()
 		if err != nil {
@@ -115,7 +131,7 @@ func main() {
 				log.Fatal(err)
 			}
 		}
-		err = AddItem(session, i)
+		err = AddItem(client, i)
 		if err != nil {
 			log.Print(err)
 		}

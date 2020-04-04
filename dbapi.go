@@ -9,15 +9,15 @@ import (
 )
 
 // AddItem 은 데이터베이스에 Item을 넣는 함수이다.
-func AddItem(session *mgo.Session, i Item) error {
-	session.SetMode(mgo.Monotonic, true)
-	c := session.DB(*flagDBName).C(i.ItemType)
-	err := c.Insert(i)
-	if err != nil {
-		return err
-	}
-	return nil
-}
+// func AddItem(session *mgo.Session, i Item) error {
+// 	session.SetMode(mgo.Monotonic, true)
+// 	c := session.DB(*flagDBName).C(i.ItemType)
+// 	err := c.Insert(i)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	return nil
+// }
 
 // GetItem 은 데이터베이스에 Item을 가지고 오는 함수이다.
 func GetItem(session *mgo.Session, itemType, id string) (Item, error) {
