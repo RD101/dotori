@@ -1,9 +1,14 @@
 package main
 
 import (
+	"context"
 	"net/http"
 	"strconv"
+	"time"
 
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 	"gopkg.in/mgo.v2"
 )
 
@@ -14,18 +19,31 @@ func handleAdminSetting(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
 		return
 	}
-	session, err := mgo.Dial(*flagDBIP)
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	defer session.Close()
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	defer client.Disconnect(ctx)
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ctx, _ = context.WithTimeout(context.Background(), 2*time.Second)
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	type recipe struct {
 		Adminsetting
 		Token Token
 	}
 	rcp := recipe{}
-	setting, err := GetAdminSetting(session)
+	setting, err := GetAdminSetting(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

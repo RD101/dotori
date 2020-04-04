@@ -289,7 +289,13 @@ func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
 	defer client.Disconnect(ctx)
 	err = client.Connect(ctx)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ctx, _ = context.WithTimeout(context.Background(), 2*time.Second)
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	ctx, _ = context.WithTimeout(context.Background(), 2*time.Second)
@@ -303,7 +309,7 @@ func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	adminsetting, err := GetAdminSetting(session)
+	adminsetting, err := GetAdminSetting(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
