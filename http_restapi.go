@@ -1,17 +1,23 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
+	"log"
 	"net/http"
+	"time"
 
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
 )
 
 func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		i := Item{}
-		i.ID = bson.NewObjectId()
+		i.ID = primitive.NewObjectID()
 		//ParseForm parses the raw query from the URL and updates r.Form.
 		r.ParseForm()
 		for key, values := range r.PostForm {
@@ -31,37 +37,46 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-		session, err := mgo.Dial(*flagDBIP)
+		client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
+			log.Fatal(err)
 		}
-		defer session.Close()
+		ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+		defer client.Disconnect(ctx)
+		err = client.Connect(ctx)
+		if err != nil {
+			log.Fatal(err)
+		}
+		ctx, _ = context.WithTimeout(context.Background(), 2*time.Second)
+		err = client.Ping(ctx, readpref.Primary())
+		if err != nil {
+			log.Fatal(err)
+		}
 		// admin settin에서 rootpath를 가져와서 경로를 생성한다.
-		rootpath, err := GetRootPath(session)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		objIDpath, err := idToPath(i.ID.Hex())
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		i.InputThumbnailImgPath = rootpath + objIDpath + "/originalthumbimg/"
-		i.InputThumbnailClipPath = rootpath + objIDpath + "/originalthumbmov/"
-		i.OutputThumbnailPngPath = rootpath + objIDpath + "/thumbnail/thumbnail.png"
-		i.OutputThumbnailMp4Path = rootpath + objIDpath + "/thumbnail/thumbnail.mp4"
-		i.OutputThumbnailOggPath = rootpath + objIDpath + "/thumbnail/thumbnail.ogg"
-		i.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/thumbnail.mov"
-		i.OutputDataPath = rootpath + objIDpath + "/data/"
+		// rootpath, err := GetRootPath(session)
+		// if err != nil {
+		// 	http.Error(w, err.Error(), http.StatusInternalServerError)
+		// 	return
+		// }
+		// objIDpath, err := idToPath(i.ID.Hex())
+		// if err != nil {
+		// 	http.Error(w, err.Error(), http.StatusInternalServerError)
+		// 	return
+		// }
+		// i.InputThumbnailImgPath = rootpath + objIDpath + "/originalthumbimg/"
+		// i.InputThumbnailClipPath = rootpath + objIDpath + "/originalthumbmov/"
+		// i.OutputThumbnailPngPath = rootpath + objIDpath + "/thumbnail/thumbnail.png"
+		// i.OutputThumbnailMp4Path = rootpath + objIDpath + "/thumbnail/thumbnail.mp4"
+		// i.OutputThumbnailOggPath = rootpath + objIDpath + "/thumbnail/thumbnail.ogg"
+		// i.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/thumbnail.mov"
+		// i.OutputDataPath = rootpath + objIDpath + "/data/"
 
 		err = i.CheckError()
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		err = AddItem(session, i)
+		err = AddItem(client, i)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return

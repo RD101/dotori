@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
 )
 
 func handleEditMaya(w http.ResponseWriter, r *http.Request) {
@@ -17,12 +17,12 @@ func handleEditMaya(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "text/html")
 	type recipe struct {
-		ID          bson.ObjectId     `json:"id" bson:"id"`
-		ItemType    string            `json:"itemtype" bson:"itemtype"`
-		Author      string            `json:"author" bson:"author"`
-		Description string            `json:"description" bson:"description"`
-		Tags        []string          `json:"tags" bson:"tags"`
-		Attributes  map[string]string `json:"attributes" bson:"attributes"`
+		ID          primitive.ObjectID `json:"id" bson:"id"`
+		ItemType    string             `json:"itemtype" bson:"itemtype"`
+		Author      string             `json:"author" bson:"author"`
+		Description string             `json:"description" bson:"description"`
+		Tags        []string           `json:"tags" bson:"tags"`
+		Attributes  map[string]string  `json:"attributes" bson:"attributes"`
 		Token
 	}
 	q := r.URL.Query()

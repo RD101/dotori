@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -10,6 +11,10 @@ import (
 	"strconv"
 	"time"
 
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 	"golang.org/x/sys/unix"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -179,7 +184,11 @@ func handleUploadMayaItem(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	item.ID = bson.ObjectIdHex(objectID)
+	item.ID, err = primitive.ObjectIDFromHex(objectID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	item.Author = r.FormValue("author")
 	item.Description = r.FormValue("description")
 	tags := SplitBySpace(r.FormValue("tag"))
@@ -203,36 +212,47 @@ func handleUploadMayaItem(w http.ResponseWriter, r *http.Request) {
 	item.ThumbImgUploaded = false
 	item.ThumbClipUploaded = false
 	item.DataUploaded = false
-	session, err := mgo.Dial(*flagDBIP)
+
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		log.Fatal(err)
 	}
-	defer session.Close()
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	defer client.Disconnect(ctx)
+	err = client.Connect(ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
+	ctx, _ = context.WithTimeout(context.Background(), 2*time.Second)
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		log.Fatal(err)
+	}
 	// admin settin에서 rootpath를 가져와서 경로를 생성한다.
-	rootpath, err := GetRootPath(session)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	objIDpath, err := idToPath(item.ID.Hex())
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	item.InputThumbnailImgPath = rootpath + objIDpath + "/originalthumbimg/"
-	item.InputThumbnailClipPath = rootpath + objIDpath + "/originalthumbmov/"
-	item.OutputThumbnailPngPath = rootpath + objIDpath + "/thumbnail/thumbnail.png"
-	item.OutputThumbnailMp4Path = rootpath + objIDpath + "/thumbnail/thumbnail.mp4"
-	item.OutputThumbnailOggPath = rootpath + objIDpath + "/thumbnail/thumbnail.ogg"
-	item.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/thumbnail.mov"
-	item.OutputDataPath = rootpath + objIDpath + "/data/"
+	// rootpath, err := GetRootPath(session)
+	// if err != nil {
+	// 	http.Error(w, err.Error(), http.StatusInternalServerError)
+	// 	return
+	// }
+	// objIDpath, err := idToPath(item.ID.Hex())
+	// if err != nil {
+	// 	http.Error(w, err.Error(), http.StatusInternalServerError)
+	// 	return
+	// }
+	// item.InputThumbnailImgPath = rootpath + objIDpath + "/originalthumbimg/"
+	// item.InputThumbnailClipPath = rootpath + objIDpath + "/originalthumbmov/"
+	// item.OutputThumbnailPngPath = rootpath + objIDpath + "/thumbnail/thumbnail.png"
+	// item.OutputThumbnailMp4Path = rootpath + objIDpath + "/thumbnail/thumbnail.mp4"
+	// item.OutputThumbnailOggPath = rootpath + objIDpath + "/thumbnail/thumbnail.ogg"
+	// item.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/thumbnail.mov"
+	// item.OutputDataPath = rootpath + objIDpath + "/data/"
 	err = item.CheckError()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	err = AddItem(session, item)
+	err = AddItem(client, item)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
