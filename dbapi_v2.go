@@ -52,3 +52,18 @@ func GetAdminSetting(client *mongo.Client) (Adminsetting, error) {
 	}
 	return result, nil
 }
+
+// RmItem 는 컬렉션 이름과 id를 받아서, 해당 컬렉션에서 id가 일치하는 Item을 삭제한다.
+func RmItem(client *mongo.Client, itemType, id string) error {
+	collection := client.Database(*flagDBName).Collection(itemType)
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	objID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return err
+	}
+	_, err = collection.DeleteOne(ctx, bson.M{"_id": objID})
+	if err != nil {
+		return err
+	}
+	return nil
+}

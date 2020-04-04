@@ -98,13 +98,26 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "URL에 id를 입력해주세요", http.StatusBadRequest)
 			return
 		}
-		session, err := mgo.Dial(*flagDBIP)
+		//mongoDB client 연결
+		client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		defer session.Close()
-		err = RmItem(session, itemtype, id)
+		ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+		defer client.Disconnect(ctx)
+		err = client.Connect(ctx)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		ctx, _ = context.WithTimeout(context.Background(), 2*time.Second)
+		err = client.Ping(ctx, readpref.Primary())
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		err = RmItem(client, itemtype, id)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
