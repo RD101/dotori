@@ -140,6 +140,5 @@ func GetRootPath(client *mongo.Client) (string, error) {
 	if rootpath[0] != '/' {
 		rootpath = "/" + rootpath
 	}
-	fmt.Println(rootpath)
 	return rootpath, nil
 }
