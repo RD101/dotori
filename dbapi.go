@@ -217,31 +217,31 @@ import (
 // }
 
 // GetOngoingProcess 는 처리 중인 아이템을 가져온다.
-func GetOngoingProcess(session *mgo.Session) ([]Item, error) {
-	session.SetMode(mgo.Monotonic, true)
-	var results []Item
-	//콜렉션 리스트를 가져온다.
-	collections, err := session.DB(*flagDBName).CollectionNames()
-	if err != nil {
-		return results, err
-	}
-	// 콜렉션마다 돌면서 Status가 Done이 아닌 아이템을 가져온다.
-	for _, c := range collections {
-		var items []Item
-		if c == "system.indexs" { //mongodb의 기본 컬렉션. 제외한다.
-			continue
-		}
-		if c == "setting.admin" { //admin setting값을 저장하는 컬렉션. 제외한다.
-			continue
-		}
-		err = session.DB(*flagDBName).C(c).Find(bson.M{"status": bson.M{"$ne": Done}}).All(&items)
-		if err != nil {
-			return results, err
-		}
-		results = append(results, items...)
-	}
-	return results, nil
-}
+// func GetOngoingProcess(session *mgo.Session) ([]Item, error) {
+// 	session.SetMode(mgo.Monotonic, true)
+// 	var results []Item
+// 	//콜렉션 리스트를 가져온다.
+// 	collections, err := session.DB(*flagDBName).CollectionNames()
+// 	if err != nil {
+// 		return results, err
+// 	}
+// 	// 콜렉션마다 돌면서 Status가 Done이 아닌 아이템을 가져온다.
+// 	for _, c := range collections {
+// 		var items []Item
+// 		if c == "system.indexs" { //mongodb의 기본 컬렉션. 제외한다.
+// 			continue
+// 		}
+// 		if c == "setting.admin" { //admin setting값을 저장하는 컬렉션. 제외한다.
+// 			continue
+// 		}
+// 		err = session.DB(*flagDBName).C(c).Find(bson.M{"status": bson.M{"$ne": Done}}).All(&items)
+// 		if err != nil {
+// 			return results, err
+// 		}
+// 		results = append(results, items...)
+// 	}
+// 	return results, nil
+// }
 
 // GetReadyItem 은 DB에서 ready상태인 Item을 하나 가져온다.
 func GetReadyItem(session *mgo.Session) (Item, error) {

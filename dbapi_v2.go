@@ -320,3 +320,34 @@ func SetAdminSetting(client *mongo.Client, a Adminsetting) error {
 	}
 	return nil
 }
+
+// GetOngoingProcess 는 처리 중인 아이템을 가져온다.
+func GetOngoingProcess(client *mongo.Client) ([]Item, error) {
+	var results []Item
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	//콜렉션 리스트를 가져온다.
+	collections, err := client.Database(*flagDBName).ListCollectionNames(ctx, bson.M{})
+	if err != nil {
+		return results, err
+	}
+	// 콜렉션마다 돌면서 Status가 Done이 아닌 아이템을 가져온다.
+	for _, c := range collections {
+		var items []Item
+		if c == "system.indexs" { //mongodb의 기본 컬렉션. 제외한다.
+			continue
+		}
+		if c == "setting.admin" { //admin setting값을 저장하는 컬렉션. 제외한다.
+			continue
+		}
+		cursor, err := client.Database(*flagDBName).Collection(c).Find(ctx, bson.M{"status": bson.M{"$ne": Done}})
+		if err != nil {
+			return results, err
+		}
+		err = cursor.All(ctx, &results)
+		if err != nil {
+			return results, err
+		}
+		results = append(results, items...)
+	}
+	return results, nil
+}

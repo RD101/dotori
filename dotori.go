@@ -13,7 +13,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
-	"gopkg.in/mgo.v2"
 )
 
 var (
@@ -203,12 +202,23 @@ func main() {
 		}
 		fmt.Println(item)
 	} else if *flagGetOngoingProcess {
-		session, err := mgo.Dial(*flagDBIP)
+		//mongoDB client 연결
+		client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
 		if err != nil {
 			log.Fatal(err)
 		}
-		defer session.Close()
-		items, err := GetOngoingProcess(session)
+		ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+		defer client.Disconnect(ctx)
+		err = client.Connect(ctx)
+		if err != nil {
+			log.Fatal(err)
+		}
+		ctx, _ = context.WithTimeout(context.Background(), 2*time.Second)
+		err = client.Ping(ctx, readpref.Primary())
+		if err != nil {
+			log.Fatal(err)
+		}
+		items, err := GetOngoingProcess(client)
 		fmt.Println(items)
 	} else if *flagProcess {
 		err := processingItem()
