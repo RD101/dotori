@@ -1,8 +1,7 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
+	"log"
 	"syscall"
 
 	"gopkg.in/mgo.v2"
@@ -21,37 +20,31 @@ type DiskStatus struct {
 	Free uint64 `json:"free"`
 }
 
-// DiskUsage함수는 인자로 넣은 path의 디스크 용량을 확인 하는 함수이다.(syscall 패키지는 linux/unix에만 가능, window 빌드 불가능)
-func DiskUsage(path string) (disk DiskStatus) {
-	fs := syscall.Statfs_t{}
-	err := syscall.Statfs(path, &fs)
-	if err != nil {
-		return
-	}
-	disk.All = fs.Blocks * uint64(fs.Bsize)
-	disk.Free = fs.Bfree * uint64(fs.Bsize)
-	disk.Used = disk.All - disk.Free
-	return
-}
-
 // DiskCheck함수는 rootPath의 디스크용량을 확인하는 함수이다.
-func DiskCheck(w http.ResponseWriter, r *http.Request) {
+func DiskCheck() (DiskStatus, error) {
+
 	session, err := mgo.Dial(*flagDBIP)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		log.Fatal(err)
 	}
+	defer session.Close()
+	// admin settin에서 rootpath를 가져와서 경로를 생성한다.
 	rootpath, err := GetRootPath(session)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		log.Fatal(err)
 	}
 
-	if len(rootpath) == 0 {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+	var ds DiskStatus
+
+	// rootpath경로의 디스크 용량을 확인한다.
+	fs := syscall.Statfs_t{}
+	err = syscall.Statfs(rootpath, &fs)
+	if err != nil {
+		return ds, err
 	}
 
-	disk := DiskUsage(rootpath)
-	return disk
+	ds.All = fs.Blocks * uint64(fs.Bsize)
+	ds.Free = fs.Bfree * uint64(fs.Bsize)
+	ds.Used = ds.All - ds.Free
+	return ds, nil
 }
