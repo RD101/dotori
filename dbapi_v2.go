@@ -15,7 +15,8 @@ import (
 // AddItem 은 데이터베이스에 Item을 넣는 함수이다.
 func AddItem(client *mongo.Client, i Item) error {
 	collection := client.Database(*flagDBName).Collection(i.ItemType)
-	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 	_, err := collection.InsertOne(ctx, i)
 	if err != nil {
 		return err
@@ -26,7 +27,8 @@ func AddItem(client *mongo.Client, i Item) error {
 // GetItem 은 데이터베이스에 Item을 가지고 오는 함수이다.
 func GetItem(client *mongo.Client, itemType, id string) (Item, error) {
 	collection := client.Database(*flagDBName).Collection(itemType)
-	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 	var result Item
 	objID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
@@ -45,7 +47,8 @@ func GetAdminSetting(client *mongo.Client) (Adminsetting, error) {
 	//session.SetMode(mgo.Monotonic, true)
 	collection := client.Database(*flagDBName).Collection("setting.admin")
 	var result Adminsetting
-	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 	err := collection.FindOne(ctx, bson.M{"id": "setting.admin"}).Decode(&result)
 	if err != nil {
 		if err == mongo.ErrNilDocument { // document가 존재하지 않는 경우, 즉 adminsetting이 없는 경우
@@ -59,7 +62,8 @@ func GetAdminSetting(client *mongo.Client) (Adminsetting, error) {
 // RmItem 는 컬렉션 이름과 id를 받아서, 해당 컬렉션에서 id가 일치하는 Item을 삭제한다.
 func RmItem(client *mongo.Client, itemType, id string) error {
 	collection := client.Database(*flagDBName).Collection(itemType)
-	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 	objID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return err
@@ -74,7 +78,8 @@ func RmItem(client *mongo.Client, itemType, id string) error {
 // AllItems 는 DB에서 전체 아이템 정보를 가져오는 함수입니다.
 func AllItems(client *mongo.Client, itemType string) ([]Item, error) {
 	collection := client.Database(*flagDBName).Collection(itemType)
-	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 	var results []Item
 	cursor, err := collection.Find(ctx, bson.D{})
 	if err != nil {
@@ -90,7 +95,8 @@ func AllItems(client *mongo.Client, itemType string) ([]Item, error) {
 // UpdateItem 은 컬렉션 이름과 Item을 받아서, Item을 업데이트한다.
 func UpdateItem(client *mongo.Client, itemType string, item Item) error {
 	collection := client.Database(*flagDBName).Collection(itemType)
-	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 	_, err := collection.UpdateOne(
 		ctx,
 		bson.M{"_id": item.ID},
@@ -111,8 +117,8 @@ func Search(client *mongo.Client, itemType string, words string) ([]Item, error)
 		return results, nil
 	}
 	collection := client.Database(*flagDBName).Collection(itemType)
-	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
-
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 	wordsQueries := []bson.M{}
 	for _, word := range strings.Split(words, " ") {
 		if word == "" {
@@ -163,8 +169,8 @@ func SearchPage(client *mongo.Client, itemType string, words string, page, limit
 		return 0, 0, results, nil
 	}
 	collection := client.Database(*flagDBName).Collection(itemType)
-	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
-
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 	wordsQueries := []bson.M{}
 	for _, word := range strings.Split(words, " ") {
 		if word == "" {
@@ -219,7 +225,8 @@ func SearchItem(client *mongo.Client, itemType, id string) (Item, error) {
 	if err != nil {
 		return result, err
 	}
-	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 	err = collection.FindOne(ctx, bson.M{"_id": objID}).Decode(&result)
 	if err != nil {
 		return result, err
@@ -230,7 +237,8 @@ func SearchItem(client *mongo.Client, itemType, id string) (Item, error) {
 // SearchTags 는 itemType, tag를 입력받아 tag의 값이 일치하면 반환하는 함수입니다.
 func SearchTags(client *mongo.Client, itemType string, tag string) ([]Item, error) {
 	collection := client.Database(*flagDBName).Collection(itemType)
-	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 	var results []Item
 	cursor, err := collection.Find(ctx, bson.M{"tags": tag})
 	if err != nil {
@@ -246,7 +254,8 @@ func SearchTags(client *mongo.Client, itemType string, tag string) ([]Item, erro
 // AddUser 는 데이터베이스에 User를 넣는 함수이다.
 func AddUser(client *mongo.Client, u User) error {
 	collection := client.Database(*flagDBName).Collection("users")
-	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 	n, err := collection.CountDocuments(ctx, bson.M{"id": u.ID})
 	if err != nil {
 		return err
@@ -264,7 +273,8 @@ func AddUser(client *mongo.Client, u User) error {
 // RmUser 는 데이터베이스에 User를 삭제하는 함수이다.
 func RmUser(client *mongo.Client, id string) error {
 	collection := client.Database(*flagDBName).Collection("users")
-	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 	_, err := collection.DeleteOne(ctx, bson.M{"id": id})
 	if err != nil {
 		return err
@@ -275,7 +285,8 @@ func RmUser(client *mongo.Client, id string) error {
 // SetUser 함수는 사용자 정보를 업데이트하는 함수이다.
 func SetUser(client *mongo.Client, u User) error {
 	collection := client.Database(*flagDBName).Collection("users")
-	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 	n, err := collection.CountDocuments(ctx, bson.M{"id": u.ID})
 	if err != nil {
 		return err
@@ -297,7 +308,8 @@ func SetUser(client *mongo.Client, u User) error {
 // GetUser 함수는 id를 입력받아서 사용자 정보를 반환한다.
 func GetUser(client *mongo.Client, id string) (User, error) {
 	collection := client.Database(*flagDBName).Collection("users")
-	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 	u := User{}
 	err := collection.FindOne(ctx, bson.M{"id": id}).Decode(&u)
 	if err != nil {
@@ -309,7 +321,8 @@ func GetUser(client *mongo.Client, id string) (User, error) {
 // SetAdminSetting 은 입력받은 어드민셋팅으로 업데이트한다.
 func SetAdminSetting(client *mongo.Client, a Adminsetting) error {
 	collection := client.Database(*flagDBName).Collection("setting.admin")
-	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 	n, err := collection.CountDocuments(ctx, bson.M{"id": "setting.admin"})
 	if err != nil {
 		return err
@@ -336,7 +349,8 @@ func SetAdminSetting(client *mongo.Client, a Adminsetting) error {
 // GetReadyItem 은 DB에서 ready상태인 Item을 하나 가져온다.
 func GetReadyItem(client *mongo.Client) (Item, error) {
 	var result Item
-	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 	collections, err := client.Database(*flagDBName).ListCollectionNames(ctx, bson.D{})
 	if err != nil {
 		return result, err
@@ -350,7 +364,6 @@ func GetReadyItem(client *mongo.Client) (Item, error) {
 			continue
 		}
 		collection := client.Database(*flagDBName).Collection(c)
-		ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 		n, err := collection.CountDocuments(ctx, bson.M{"status": Ready})
 		if err != nil {
 			return result, err
@@ -376,7 +389,8 @@ func GetReadyItem(client *mongo.Client) (Item, error) {
 // GetOngoingProcess 는 처리 중인 아이템을 가져온다.
 func GetOngoingProcess(client *mongo.Client) ([]Item, error) {
 	var results []Item
-	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 	//콜렉션 리스트를 가져온다.
 	collections, err := client.Database(*flagDBName).ListCollectionNames(ctx, bson.M{})
 	if err != nil {
