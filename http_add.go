@@ -16,7 +16,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 	"golang.org/x/sys/unix"
-	"gopkg.in/mgo.v2/bson"
 )
 
 // handleAddMayaFile 함수는 Maya 파일을 추가하는 페이지 이다.
@@ -55,7 +54,7 @@ func handleAddMayaSubmit(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
 		return
 	}
-	objectID := bson.NewObjectId().Hex()
+	objectID := primitive.NewObjectID().Hex()
 	http.Redirect(w, r, fmt.Sprintf("/addmaya-item?objectid=%s", objectID), http.StatusSeeOther)
 }
 
