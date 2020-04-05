@@ -1,9 +1,13 @@
 package main
 
 import (
+	"context"
 	"syscall"
+	"time"
 
-	"gopkg.in/mgo.v2"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
 const (
@@ -24,13 +28,25 @@ func DiskCheck() (DiskStatus, error) {
 
 	var ds DiskStatus
 
-	session, err := mgo.Dial(*flagDBIP)
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
 	if err != nil {
 		return ds, err
 	}
-	defer session.Close()
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	defer client.Disconnect(ctx)
+	err = client.Connect(ctx)
+	if err != nil {
+		return ds, err
+	}
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		return ds, err
+	}
+
 	// admin settin에서 rootpath를 가져와서 경로를 생성한다.
-	rootpath, err := GetRootPath(session)
+	rootpath, err := GetRootPath(client)
 	if err != nil {
 		return ds, err
 	}
