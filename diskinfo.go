@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"syscall"
 
 	"gopkg.in/mgo.v2"
@@ -23,18 +22,18 @@ type DiskStatus struct {
 // DiskCheck함수는 rootPath의 디스크용량을 확인하는 함수이다.
 func DiskCheck() (DiskStatus, error) {
 
+	var ds DiskStatus
+
 	session, err := mgo.Dial(*flagDBIP)
 	if err != nil {
-		log.Fatal(err)
+		return ds, err
 	}
 	defer session.Close()
 	// admin settin에서 rootpath를 가져와서 경로를 생성한다.
 	rootpath, err := GetRootPath(session)
 	if err != nil {
-		log.Fatal(err)
+		return ds, err
 	}
-
-	var ds DiskStatus
 
 	// rootpath경로의 디스크 용량을 확인한다.
 	fs := syscall.Statfs_t{}
