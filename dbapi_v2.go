@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"strings"
 	"errors"
+	"strings"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -98,7 +98,6 @@ func UpdateItem(client *mongo.Client, itemType string, item Item) error {
 	return nil
 }
 
-
 // SearchPage 는 itemType, words, 해당 page를 입력받아 해당 아이템을 검색한다. 검색된 아이템과 그 개수를 반환한다.
 // http.go에서 사용중
 func SearchPage(client *mongo.Client, itemType string, words string, page, limitnum int64) (int64, int64, []Item, error) {
@@ -153,8 +152,8 @@ func SearchPage(client *mongo.Client, itemType string, words string, page, limit
 	if err != nil {
 		return 0, 0, nil, err
 	}
-
 	return TotalPage(totalNum, limitnum), totalNum, results, nil
+}
 
 // SearchItem 은 컬렉션 이름(itemType)과 id를 받아서, 해당 컬렉션에서 id가 일치하는 item을 검색, 반환한다.
 func SearchItem(client *mongo.Client, itemType, id string) (Item, error) {
