@@ -83,3 +83,14 @@ func AllItems(client *mongo.Client, itemType string) ([]Item, error) {
 	}
 	return results, nil
 }
+
+// UpdateItem 은 컬렉션 이름과 Item을 받아서, Item을 업데이트한다.
+func UpdateItem(client *mongo.Client, itemType string, item Item) error {
+	collection := client.Database(*flagDBName).Collection(itemType)
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	_, err := collection.UpdateOne(ctx, bson.M{"_id": item.ID}, item)
+	if err != nil {
+		return err
+	}
+	return nil
+}
