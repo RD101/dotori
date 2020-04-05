@@ -3,7 +3,7 @@ package main
 import "strconv"
 
 // TotalPage 함수는 아이템의 갯수를 입력받아 필요한 총 페이지 수를 구한다.
-func TotalPage(itemNum, limitnum int) int {
+func TotalPage(itemNum, limitnum int64) int64 {
 	page := itemNum / limitnum
 	if itemNum%limitnum != 0 {
 		page++
@@ -12,8 +12,8 @@ func TotalPage(itemNum, limitnum int) int {
 }
 
 // PageToInt 함수는 페이지 문자를 받아서 Int형 페이지수를 반환한다.
-func PageToInt(page string) int {
-	n, err := strconv.Atoi(page)
+func PageToInt(page string) int64 {
+	n, err := strconv.ParseInt(page, 10, 64)
 	if err != nil {
 		return 1 // 변환할 수 없는 문자라면, 1페이지를 반환한다.
 	}

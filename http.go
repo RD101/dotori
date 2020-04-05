@@ -1,12 +1,17 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"html/template"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/shurcooL/httpfs/html/vfstemplate"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 	"gopkg.in/mgo.v2"
 )
 
@@ -120,9 +125,9 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 		Items       []Item
 		Searchword  string
 		ItemType    string
-		TotalNum    int
-		CurrentPage int
-		TotalPage   int
+		TotalNum    int64
+		CurrentPage int64
+		TotalPage   int64
 		Pages       []int
 		Token
 	}
@@ -130,14 +135,27 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 	rcp.Searchword = searchword
 	rcp.ItemType = itemType
 	rcp.Token = token
-	session, err := mgo.Dial(*flagDBIP)
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	defer session.Close()
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	defer client.Disconnect(ctx)
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ctx, _ = context.WithTimeout(context.Background(), 2*time.Second)
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	rcp.CurrentPage = PageToInt(page)
-	totalPage, totalNum, items, err := SearchPage(session, itemType, searchword, rcp.CurrentPage, *flagPagenum)
+	totalPage, totalNum, items, err := SearchPage(client, itemType, searchword, rcp.CurrentPage, *flagPagenum)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
