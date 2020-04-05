@@ -68,6 +68,22 @@ func RmItem(client *mongo.Client, itemType, id string) error {
 	return nil
 }
 
+// AllItems 는 DB에서 전체 아이템 정보를 가져오는 함수입니다.
+func AllItems(client *mongo.Client, itemType string) ([]Item, error) {
+	collection := client.Database(*flagDBName).Collection(itemType)
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	var results []Item
+	cursor, err := collection.Find(ctx, bson.D{})
+	if err != nil {
+		return results, err
+	}
+	err = cursor.All(ctx, &results)
+	if err != nil {
+		return results, err
+	}
+	return results, nil
+}
+
 // UpdateItem 은 컬렉션 이름과 Item을 받아서, Item을 업데이트한다.
 func UpdateItem(client *mongo.Client, itemType string, item Item) error {
 	collection := client.Database(*flagDBName).Collection(itemType)
