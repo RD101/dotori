@@ -127,7 +127,7 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 		TotalNum    int64
 		CurrentPage int64
 		TotalPage   int64
-		Pages       []int
+		Pages       []int64
 		Token
 	}
 	rcp := recipe{}
@@ -163,9 +163,9 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 	rcp.TotalNum = totalNum
 	rcp.TotalPage = totalPage
 	// Pages를 설정한다.
-	rcp.Pages = make([]int, totalPage) // page에 필요한 메모리를 미리 설정한다.
+	rcp.Pages = make([]int64, totalPage) // page에 필요한 메모리를 미리 설정한다.
 	for i := range rcp.Pages {
-		rcp.Pages[i] = i + 1
+		rcp.Pages[i] = int64(i) + 1
 	}
 	err = TEMPLATES.ExecuteTemplate(w, "index", rcp)
 	if err != nil {
