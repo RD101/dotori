@@ -91,7 +91,11 @@ func AllItems(client *mongo.Client, itemType string) ([]Item, error) {
 func UpdateItem(client *mongo.Client, itemType string, item Item) error {
 	collection := client.Database(*flagDBName).Collection(itemType)
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
-	_, err := collection.UpdateOne(ctx, bson.M{"_id": item.ID}, item)
+	_, err := collection.UpdateOne(
+		ctx,
+		bson.M{"_id": item.ID},
+		bson.D{{Key: "$set", Value: item}},
+	)
 	if err != nil {
 		return err
 	}
@@ -279,7 +283,11 @@ func SetUser(client *mongo.Client, u User) error {
 	if n != 0 {
 		return errors.New("already exists user ID")
 	}
-	_, err = collection.UpdateOne(ctx, bson.M{"id": u.ID}, u)
+	_, err = collection.UpdateOne(
+		ctx,
+		bson.M{"id": u.ID},
+		bson.D{{Key: "$set", Value: u}},
+	)
 	if err != nil {
 		return err
 	}
@@ -314,7 +322,11 @@ func SetAdminSetting(client *mongo.Client, a Adminsetting) error {
 		}
 		return nil
 	}
-	_, err = collection.UpdateOne(ctx, bson.M{"id": "setting.admin"}, a)
+	_, err = collection.UpdateOne(
+		ctx,
+		bson.M{"id": "setting.admin"},
+		bson.D{{Key: "$set", Value: a}},
+	)
 	if err != nil {
 		return err
 	}
