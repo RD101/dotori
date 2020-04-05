@@ -383,7 +383,7 @@ func GetOngoingProcess(client *mongo.Client) ([]Item, error) {
 		if err != nil {
 			return results, err
 		}
-		err = cursor.All(ctx, &results)
+		err = cursor.All(ctx, &items)
 		if err != nil {
 			return results, err
 		}
