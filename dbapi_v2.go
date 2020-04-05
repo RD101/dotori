@@ -379,6 +379,9 @@ func GetOngoingProcess(client *mongo.Client) ([]Item, error) {
 		if c == "setting.admin" { //admin setting값을 저장하는 컬렉션. 제외한다.
 			continue
 		}
+		if c == "users" { // 사용자 컬렉션을 제외한다.
+			continue
+		}
 		cursor, err := client.Database(*flagDBName).Collection(c).Find(ctx, bson.M{"status": bson.M{"$ne": Done}})
 		if err != nil {
 			return results, err
