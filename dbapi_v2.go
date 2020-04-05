@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -109,4 +110,22 @@ func SearchItem(client *mongo.Client, itemType, id string) (Item, error) {
 		return result, err
 	}
 	return result, nil
+}
+
+// AddUser 는 데이터베이스에 User를 넣는 함수이다.
+func AddUser(client *mongo.Client, u User) error {
+	collection := client.Database(*flagDBName).Collection("users")
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	n, err := collection.CountDocuments(ctx, bson.M{"id": u.ID})
+	if err != nil {
+		return err
+	}
+	if n != 0 {
+		return errors.New("already exists user ID")
+	}
+	_, err = collection.InsertOne(ctx, u)
+	if err != nil {
+		return err
+	}
+	return nil
 }

@@ -283,22 +283,22 @@ func GetReadyItem(session *mgo.Session) (Item, error) {
 }
 
 // AddUser 는 데이터베이스에 User를 넣는 함수이다.
-func AddUser(session *mgo.Session, u User) error {
-	session.SetMode(mgo.Monotonic, true)
-	c := session.DB(*flagDBName).C("users")
-	n, err := c.Find(bson.M{"id": u.ID}).Count()
-	if err != nil {
-		return err
-	}
-	if n != 0 {
-		return errors.New("already exists user ID")
-	}
-	err = c.Insert(u)
-	if err != nil {
-		return err
-	}
-	return nil
-}
+// func AddUser(session *mgo.Session, u User) error {
+// 	session.SetMode(mgo.Monotonic, true)
+// 	c := session.DB(*flagDBName).C("users")
+// 	n, err := c.Find(bson.M{"id": u.ID}).Count()
+// 	if err != nil {
+// 		return err
+// 	}
+// 	if n != 0 {
+// 		return errors.New("already exists user ID")
+// 	}
+// 	err = c.Insert(u)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	return nil
+// }
 
 // RmUser 는 데이터베이스에 User를 삭제하는 함수이다.
 func RmUser(session *mgo.Session, id string) error {
