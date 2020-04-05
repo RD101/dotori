@@ -148,7 +148,7 @@ func Search(client *mongo.Client, itemType string, words string) ([]Item, error)
 	// 사용률이 많은 소스가 위로 출력되도록 한다.
 	q := bson.M{"$and": wordsQueries} // 최종 쿼리는 BSON type 오브젝트가 되어야 한다.
 	opts := options.Find()
-	opts.SetSort(bson.D{{"usingrate", -1}})
+	opts.SetSort(bson.M{"usingrate": -1})
 	cursor, err := collection.Find(ctx, q, opts)
 	if err != nil {
 		return nil, err
@@ -199,7 +199,7 @@ func SearchPage(client *mongo.Client, itemType string, words string, page, limit
 	// 사용률이 많은 소스가 위로 출력되도록 한다.
 	q := bson.M{"$and": wordsQueries} // 최종 쿼리는 BSON type 오브젝트가 되어야 한다.
 	opts := options.Find()
-	opts.SetSort(bson.D{{"usingrate", -1}})
+	opts.SetSort(bson.M{"usingrate": -1})
 	opts.SetSkip(int64((page - 1) * limitnum))
 	opts.SetLimit(int64(limitnum))
 	cursor, err := collection.Find(ctx, q, opts)
