@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"strings"
 
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -79,44 +78,44 @@ func SearchTags(session *mgo.Session, itemType string, tag string) ([]Item, erro
 
 // Search 는 itemType, words를 입력받아 해당 아이템을 검색한다.
 // http_restapi.go에서 사용중
-func Search(session *mgo.Session, itemType string, words string) ([]Item, error) {
-	session.SetMode(mgo.Monotonic, true)
-	c := session.DB(*flagDBName).C(itemType)
-	var results []Item
-	wordsQueries := []bson.M{}
-	for _, word := range strings.Split(words, " ") {
-		if word == "" {
-			continue
-		}
-		querys := []bson.M{}
-		//"tag:"가 앞에 붙어있으면 태그에서 검색한다.
-		if strings.HasPrefix(word, "tag:") {
-			querys = append(querys, bson.M{"tags": strings.TrimPrefix(word, "tag:")})
-		} else if strings.Contains(word, ":") {
-			key := strings.Split(word, ":")[0]
-			value := strings.Split(word, ":")[1]
-			querys = append(querys, bson.M{"attributes." + key: &bson.RegEx{Pattern: value, Options: "i"}})
-		} else {
-			querys = append(querys, bson.M{"author": &bson.RegEx{Pattern: word, Options: "i"}})
-			querys = append(querys, bson.M{"tags": &bson.RegEx{Pattern: word, Options: "i"}})
-			querys = append(querys, bson.M{"description": &bson.RegEx{Pattern: word, Options: "i"}})
-			querys = append(querys, bson.M{"type": &bson.RegEx{Pattern: word, Options: "i"}})
-			querys = append(querys, bson.M{"inputpath": &bson.RegEx{Pattern: word, Options: "i"}})
-			querys = append(querys, bson.M{"outputpath": &bson.RegEx{Pattern: word, Options: "i"}})
-			querys = append(querys, bson.M{"createtime": &bson.RegEx{Pattern: word, Options: "i"}})
-			querys = append(querys, bson.M{"updatetime": &bson.RegEx{Pattern: word, Options: "i"}})
-			querys = append(querys, bson.M{"attributes.*": word})
-		}
-		wordsQueries = append(wordsQueries, bson.M{"$or": querys})
-	}
-	// 사용률이 많은 소스가 위로 출력되도록 한다.
-	q := bson.M{"$and": wordsQueries} // 최종 쿼리는 BSON type 오브젝트가 되어야 한다.
-	err := c.Find(q).Sort("-usingrate").All(&results)
-	if err != nil {
-		return nil, err
-	}
-	return results, nil
-}
+// func Search(session *mgo.Session, itemType string, words string) ([]Item, error) {
+// 	session.SetMode(mgo.Monotonic, true)
+// 	c := session.DB(*flagDBName).C(itemType)
+// 	var results []Item
+// 	wordsQueries := []bson.M{}
+// 	for _, word := range strings.Split(words, " ") {
+// 		if word == "" {
+// 			continue
+// 		}
+// 		querys := []bson.M{}
+// 		//"tag:"가 앞에 붙어있으면 태그에서 검색한다.
+// 		if strings.HasPrefix(word, "tag:") {
+// 			querys = append(querys, bson.M{"tags": strings.TrimPrefix(word, "tag:")})
+// 		} else if strings.Contains(word, ":") {
+// 			key := strings.Split(word, ":")[0]
+// 			value := strings.Split(word, ":")[1]
+// 			querys = append(querys, bson.M{"attributes." + key: &bson.RegEx{Pattern: value, Options: "i"}})
+// 		} else {
+// 			querys = append(querys, bson.M{"author": &bson.RegEx{Pattern: word, Options: "i"}})
+// 			querys = append(querys, bson.M{"tags": &bson.RegEx{Pattern: word, Options: "i"}})
+// 			querys = append(querys, bson.M{"description": &bson.RegEx{Pattern: word, Options: "i"}})
+// 			querys = append(querys, bson.M{"type": &bson.RegEx{Pattern: word, Options: "i"}})
+// 			querys = append(querys, bson.M{"inputpath": &bson.RegEx{Pattern: word, Options: "i"}})
+// 			querys = append(querys, bson.M{"outputpath": &bson.RegEx{Pattern: word, Options: "i"}})
+// 			querys = append(querys, bson.M{"createtime": &bson.RegEx{Pattern: word, Options: "i"}})
+// 			querys = append(querys, bson.M{"updatetime": &bson.RegEx{Pattern: word, Options: "i"}})
+// 			querys = append(querys, bson.M{"attributes.*": word})
+// 		}
+// 		wordsQueries = append(wordsQueries, bson.M{"$or": querys})
+// 	}
+// 	// 사용률이 많은 소스가 위로 출력되도록 한다.
+// 	q := bson.M{"$and": wordsQueries} // 최종 쿼리는 BSON type 오브젝트가 되어야 한다.
+// 	err := c.Find(q).Sort("-usingrate").All(&results)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	return results, nil
+// }
 
 // SearchPage 는 itemType, words, 해당 page를 입력받아 해당 아이템을 검색한다. 검색된 아이템과 그 개수를 반환한다.
 // http.go에서 사용중
