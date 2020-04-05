@@ -229,3 +229,26 @@ func GetUser(client *mongo.Client, id string) (User, error) {
 	}
 	return u, nil
 }
+
+// SetAdminSetting 은 입력받은 어드민셋팅으로 업데이트한다.
+func SetAdminSetting(client *mongo.Client, a Adminsetting) error {
+	collection := client.Database(*flagDBName).Collection("setting.admin")
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	n, err := collection.CountDocuments(ctx, bson.M{"id": "setting.admin"})
+	if err != nil {
+		return err
+	}
+	a.ID = "setting.admin"
+	if n == 0 {
+		_, err = collection.InsertOne(ctx, a)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+	_, err = collection.UpdateOne(ctx, bson.M{"id": "setting.admin"}, a)
+	if err != nil {
+		return err
+	}
+	return nil
+}

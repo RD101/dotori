@@ -180,27 +180,27 @@ func Search(session *mgo.Session, itemType string, words string) ([]Item, error)
 // }
 
 // SetAdminSetting 은 입력받은 어드민셋팅으로 업데이트한다.
-func SetAdminSetting(session *mgo.Session, a Adminsetting) error {
-	session.SetMode(mgo.Monotonic, true)
-	c := session.DB(*flagDBName).C("setting.admin")
-	num, err := c.Find(bson.M{"id": "setting.admin"}).Count()
-	if err != nil {
-		return err
-	}
-	a.ID = "setting.admin"
-	if num == 0 {
-		err = c.Insert(a)
-		if err != nil {
-			return err
-		}
-		return nil
-	}
-	err = c.Update(bson.M{"id": "setting.admin"}, a)
-	if err != nil {
-		return err
-	}
-	return nil
-}
+// func SetAdminSetting(session *mgo.Session, a Adminsetting) error {
+// 	session.SetMode(mgo.Monotonic, true)
+// 	c := session.DB(*flagDBName).C("setting.admin")
+// 	num, err := c.Find(bson.M{"id": "setting.admin"}).Count()
+// 	if err != nil {
+// 		return err
+// 	}
+// 	a.ID = "setting.admin"
+// 	if num == 0 {
+// 		err = c.Insert(a)
+// 		if err != nil {
+// 			return err
+// 		}
+// 		return nil
+// 	}
+// 	err = c.Update(bson.M{"id": "setting.admin"}, a)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	return nil
+// }
 
 // GetAdminSetting 은 관리자 셋팅값을 가지고 온다.
 // func GetAdminSetting(session *mgo.Session) (Adminsetting, error) {
