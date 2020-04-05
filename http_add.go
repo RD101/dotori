@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -10,9 +11,11 @@ import (
 	"strconv"
 	"time"
 
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 	"golang.org/x/sys/unix"
-	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
 )
 
 // handleAddMayaFile 함수는 Maya 파일을 추가하는 페이지 이다.
@@ -51,7 +54,7 @@ func handleAddMayaSubmit(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
 		return
 	}
-	objectID := bson.NewObjectId().Hex()
+	objectID := primitive.NewObjectID().Hex()
 	http.Redirect(w, r, fmt.Sprintf("/addmaya-item?objectid=%s", objectID), http.StatusSeeOther)
 }
 
@@ -179,7 +182,11 @@ func handleUploadMayaItem(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	item.ID = bson.ObjectIdHex(objectID)
+	item.ID, err = primitive.ObjectIDFromHex(objectID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	item.Author = r.FormValue("author")
 	item.Description = r.FormValue("description")
 	tags := SplitBySpace(r.FormValue("tag"))
@@ -198,19 +205,33 @@ func handleUploadMayaItem(w http.ResponseWriter, r *http.Request) {
 	}
 	item.Attributes = attr
 	item.Status = Ready
-	time := time.Now()
-	item.CreateTime = time.Format("2006-01-02 15:04:05")
+	currentTime := time.Now()
+	item.CreateTime = currentTime.Format("2006-01-02 15:04:05")
 	item.ThumbImgUploaded = false
 	item.ThumbClipUploaded = false
 	item.DataUploaded = false
-	session, err := mgo.Dial(*flagDBIP)
+
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	defer session.Close()
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	defer client.Disconnect(ctx)
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	// admin settin에서 rootpath를 가져와서 경로를 생성한다.
-	rootpath, err := GetRootPath(session)
+	rootpath, err := GetRootPath(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -232,7 +253,7 @@ func handleUploadMayaItem(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	err = AddItem(session, item)
+	err = AddItem(client, item)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -257,22 +278,41 @@ func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	session, err := mgo.Dial(*flagDBIP)
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	item, err := GetItem(session, "maya", objectID)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	defer client.Disconnect(ctx)
+	err = client.Connect(ctx)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	adminsetting, err := GetAdminSetting(session)
+	err = client.Ping(ctx, readpref.Primary())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	session.Close()
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	item, err := GetItem(client, "maya", objectID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	adminsetting, err := GetAdminSetting(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	//admin setting에서 폴더권한에 관련된 옵션값을 가져온다
 	um := adminsetting.Umask
 	umask, err := strconv.Atoi(um)

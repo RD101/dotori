@@ -344,3 +344,36 @@ func Test_Permission(t *testing.T) {
 		}
 	}
 }
+
+//SpliBySign 정규표현식을 테스트하기 위한 함수
+func Test_SplitBySign(t *testing.T) {
+	cases := []struct {
+		in   string
+		want bool
+	}{{
+		in:   "s0010_c0010_fx_v021.mb", // _ 포함
+		want: true,
+	}, {
+		in:   "test,code,split", // , 포함
+		want: true,
+	}, {
+		in:   "model geo", // 공백 포함
+		want: true,
+	}, {
+		in:   "pr/test/rigged", // / 포함
+		want: true,
+	}, {
+		in:   "lightingtest.mb", // . 포함
+		want: false,
+	}, {
+		in:   "lightingte<stmb", // < 포함
+		want: false,
+	},
+	}
+	for _, c := range cases {
+		b := regexSplitBySign.MatchString(c.in)
+		if c.want != b {
+			t.Fatalf("Test_SplitBySign(): 입력 값: %v, 원하는 값: %v, 얻은 값: %v\n", c.in, c.want, b)
+		}
+	}
+}

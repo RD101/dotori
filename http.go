@@ -1,13 +1,17 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"html/template"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/shurcooL/httpfs/html/vfstemplate"
-	"gopkg.in/mgo.v2"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
 // LoadTemplates 함수는 템플릿을 로딩합니다.
@@ -120,24 +124,37 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 		Items       []Item
 		Searchword  string
 		ItemType    string
-		TotalNum    int
-		CurrentPage int
-		TotalPage   int
-		Pages       []int
+		TotalNum    int64
+		CurrentPage int64
+		TotalPage   int64
+		Pages       []int64
 		Token
 	}
 	rcp := recipe{}
 	rcp.Searchword = searchword
 	rcp.ItemType = itemType
 	rcp.Token = token
-	session, err := mgo.Dial(*flagDBIP)
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	defer session.Close()
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	defer client.Disconnect(ctx)
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	rcp.CurrentPage = PageToInt(page)
-	totalPage, totalNum, items, err := SearchPage(session, itemType, searchword, rcp.CurrentPage, *flagPagenum)
+	totalPage, totalNum, items, err := SearchPage(client, itemType, searchword, rcp.CurrentPage, *flagPagenum)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -146,9 +163,9 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 	rcp.TotalNum = totalNum
 	rcp.TotalPage = totalPage
 	// Pages를 설정한다.
-	rcp.Pages = make([]int, totalPage) // page에 필요한 메모리를 미리 설정한다.
+	rcp.Pages = make([]int64, totalPage) // page에 필요한 메모리를 미리 설정한다.
 	for i := range rcp.Pages {
-		rcp.Pages[i] = i + 1
+		rcp.Pages[i] = int64(i) + 1
 	}
 	err = TEMPLATES.ExecuteTemplate(w, "index", rcp)
 	if err != nil {
@@ -194,15 +211,28 @@ func handleItemProcess(w http.ResponseWriter, r *http.Request) {
 		Items []Item
 		Token
 	}
-	session, err := mgo.Dial(*flagDBIP)
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	defer session.Close()
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	defer client.Disconnect(ctx)
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	rcp := recipe{}
 	// 완료되지 않은 아이템을 가져온다
-	rcp.Items, err = GetOngoingProcess(session)
+	rcp.Items, err = GetOngoingProcess(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

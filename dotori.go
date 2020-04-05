@@ -1,14 +1,18 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"html/template"
 	"log"
 	"os"
+	"time"
 
-	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
 var (
@@ -35,7 +39,7 @@ var (
 	flagDBIP      = flag.String("dbip", "", "DB IP")
 	flagDBName    = flag.String("dbname", "dotori", "DB name")
 	flagHTTPPort  = flag.String("http", "", "Web Service Port Number")
-	flagPagenum   = flag.Int("pagenum", 9, "maximum number of items in a page")
+	flagPagenum   = flag.Int64("pagenum", 9, "maximum number of items in a page")
 	flagCookieAge = flag.Int("cookieage", 4, "cookie age (hour)") // MPAA 기준 4시간이다.
 
 	flagItemID = flag.String("itemid", "", "bson ObjectID assigned by mongodb")
@@ -51,15 +55,26 @@ func main() {
 		fmt.Println(items)
 		os.Exit(0)
 	} else if *flagSearch {
-		session, err := mgo.Dial(*flagDBIP)
+		//mongoDB client 연결
+		client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
 		if err != nil {
 			log.Fatal(err)
 		}
-		defer session.Close()
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		defer client.Disconnect(ctx)
+		err = client.Connect(ctx)
+		if err != nil {
+			log.Fatal(err)
+		}
+		err = client.Ping(ctx, readpref.Primary())
+		if err != nil {
+			log.Fatal(err)
+		}
 		if *flagItemType == "" {
 			log.Fatal("itemtype이 빈 문자열입니다")
 		}
-		items, err := Search(session, *flagItemType, *flagSearchWord)
+		items, err := Search(client, *flagItemType, *flagSearchWord)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -72,20 +87,31 @@ func main() {
 		}
 
 		i := Item{}
-		i.ID = bson.NewObjectId()
+		i.ID = primitive.NewObjectID()
 		i.Author = *flagAuthor
 		i.Tags = SplitBySpace(*flagTag)
 		i.Description = *flagDescription
 		i.ItemType = *flagItemType
 		i.Attributes = StringToMap(*flagAttributes)
 
-		session, err := mgo.Dial(*flagDBIP)
+		//mongoDB client 연결
+		client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
 		if err != nil {
 			log.Fatal(err)
 		}
-		defer session.Close()
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		defer client.Disconnect(ctx)
+		err = client.Connect(ctx)
+		if err != nil {
+			log.Fatal(err)
+		}
+		err = client.Ping(ctx, readpref.Primary())
+		if err != nil {
+			log.Fatal(err)
+		}
 		// admin settin에서 rootpath를 가져와서 경로를 생성한다.
-		rootpath, err := GetRootPath(session)
+		rootpath, err := GetRootPath(client)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -115,7 +141,7 @@ func main() {
 				log.Fatal(err)
 			}
 		}
-		err = AddItem(session, i)
+		err = AddItem(client, i)
 		if err != nil {
 			log.Print(err)
 		}
@@ -126,12 +152,23 @@ func main() {
 		if *flagItemID == "" {
 			log.Fatal("id가 빈 문자열 입니다")
 		}
-		session, err := mgo.Dial(*flagDBIP)
+		//mongoDB client 연결
+		client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
 		if err != nil {
 			log.Fatal(err)
 		}
-		defer session.Close()
-		err = RmItem(session, *flagItemType, *flagItemID)
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		defer client.Disconnect(ctx)
+		err = client.Connect(ctx)
+		if err != nil {
+			log.Fatal(err)
+		}
+		err = client.Ping(ctx, readpref.Primary())
+		if err != nil {
+			log.Fatal(err)
+		}
+		err = RmItem(client, *flagItemType, *flagItemID)
 		if err != nil {
 			log.Print(err)
 		}
@@ -143,23 +180,45 @@ func main() {
 		fmt.Printf("Service start: http://%s\n", ip)
 		webserver()
 	} else if *flagSearchID {
-		session, err := mgo.Dial(*flagDBIP)
+		//mongoDB client 연결
+		client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
 		if err != nil {
 			log.Fatal(err)
 		}
-		defer session.Close()
-		item, err := SearchItem(session, *flagItemType, *flagItemID)
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		defer client.Disconnect(ctx)
+		err = client.Connect(ctx)
+		if err != nil {
+			log.Fatal(err)
+		}
+		err = client.Ping(ctx, readpref.Primary())
+		if err != nil {
+			log.Fatal(err)
+		}
+		item, err := SearchItem(client, *flagItemType, *flagItemID)
 		if err != nil {
 			log.Print(err)
 		}
 		fmt.Println(item)
 	} else if *flagGetOngoingProcess {
-		session, err := mgo.Dial(*flagDBIP)
+		//mongoDB client 연결
+		client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
 		if err != nil {
 			log.Fatal(err)
 		}
-		defer session.Close()
-		items, err := GetOngoingProcess(session)
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		defer client.Disconnect(ctx)
+		err = client.Connect(ctx)
+		if err != nil {
+			log.Fatal(err)
+		}
+		err = client.Ping(ctx, readpref.Primary())
+		if err != nil {
+			log.Fatal(err)
+		}
+		items, err := GetOngoingProcess(client)
 		fmt.Println(items)
 	} else if *flagProcess {
 		err := processingItem()

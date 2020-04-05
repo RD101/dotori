@@ -1,24 +1,15 @@
 #!/bin/sh
 #DB에 아이템 추가 테스트를 위한 명령어를 모아둔 파일
-dotori -add -author bae -itemtype nuke -outputpath /library/asset
-dotori -add -author liah -itemtype houdini -outputpath /library/asset
-dotori -add -author woong -itemtype maya -outputpath /library/asset -description "description1 about some details" -tag "나무 낙엽 item1"
-dotori -add -author woong -itemtype maya -outputpath /library/asset -description "description2 about some details" -tag "나무 낙엽 item2"
-dotori -add -author woong -itemtype maya -outputpath /library/asset -description "description3 about some details" -tag "나무 낙엽 item3"
-dotori -add -author woong -itemtype maya -outputpath /library/asset -description "description4 about some details" -tag "나무 낙엽 item4"
-dotori -add -author woong -itemtype maya -outputpath /library/asset -description "description5 about some details" -tag "나무 낙엽 item5"
-dotori -add -author woong -itemtype maya -outputpath /library/asset -description "description6 about some details" -tag "나무 낙엽 item6"
-dotori -add -author woong -itemtype maya -outputpath /library/asset -description "description7 about some details" -tag "나무 낙엽 item7"
-dotori -add -author woong -itemtype maya -outputpath /library/asset -description "description8 about some details" -tag "나무 낙엽 item8"
-dotori -add -author woong -itemtype maya -outputpath /library/asset -description "description9 about some details" -tag "나무 낙엽 item9"
-dotori -add -author woong -itemtype maya -outputpath /library/asset -description "description10 about some details" -tag "나무 낙엽 item10"
-dotori -add -author woong -itemtype maya -outputpath /library/asset -description "description11 about some details" -tag "나무 낙엽 item11"
-dotori -add -author woong -itemtype maya -outputpath /library/asset -description "description12 about some details" -tag "나무 낙엽 item12"
-dotori -add -author woong -itemtype maya -outputpath /library/asset -description "description13 about some details" -tag "나무 낙엽 item13"
-dotori -add -author woong -itemtype maya -outputpath /library/asset -description "description14 about some details" -tag "나무 낙엽 item14"
-dotori -add -author woong -itemtype maya -outputpath /library/asset -description "description15 about some details" -tag "나무 낙엽 item15"
-dotori -add -author woong -itemtype maya -outputpath /library/asset -description "description16 about some details" -tag "나무 낙엽 item16"
-dotori -add -author woong -itemtype maya -outputpath /library/asset -description "description17 about some details" -tag "나무 낙엽 item17"
+dotori -add -author woong -itemtype maya -description "description1 about some details" -tag "나무 낙엽 item1"
+dotori -add -author woong -itemtype maya -description "description2 about some details" -tag "나무 낙엽 item2"
+dotori -add -author woong -itemtype maya -description "description3 about some details" -tag "나무 낙엽 item3"
+dotori -add -author woong -itemtype maya -description "description4 about some details" -tag "자동차 트럭"
+dotori -add -author bailey -itemtype maya -description "description5 about some details" -tag "자동차 SUV"
+dotori -add -author bailey -itemtype maya -description "description6 about some details" -tag "하늘 노을"
+dotori -add -author bailey -itemtype maya -description "description7 about some details" -tag "하늘 밤"
+dotori -add -author bailey -itemtype maya -description "description8 about some details" -tag "하늘 아침"
+dotori -add -author bailey -itemtype maya -description "description9 about some details" -tag "기차 KTX"
+dotori -add -author bailey -itemtype maya -description "description10 about some details" -tag "기차 무궁화호"
 
 #REST API
 curl -X POST -d "author=bae&itemtype=maya" http://127.0.0.1/api/item

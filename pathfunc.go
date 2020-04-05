@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"strings"
 
-	"gopkg.in/mgo.v2"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 // searchSeq 함수는 탐색할 경로를 입력받고 dpx, exr, mov 정보를 수집 반환한다.
@@ -124,10 +124,10 @@ func idToPath(id string) (string, error) {
 }
 
 // GetRootPath 함수는 Admin setting에서 설정한 Rootpath를 가져온다
-func GetRootPath(session *mgo.Session) (string, error) {
+func GetRootPath(client *mongo.Client) (string, error) {
 	rootpath := ""
 	//adminSetting에서 rootpath를 가져온다.
-	adminsetting, err := GetAdminSetting(session)
+	adminsetting, err := GetAdminSetting(client)
 	if err != nil {
 		return rootpath, err
 	}
@@ -140,6 +140,5 @@ func GetRootPath(session *mgo.Session) (string, error) {
 	if rootpath[0] != '/' {
 		rootpath = "/" + rootpath
 	}
-	fmt.Println(rootpath)
 	return rootpath, nil
 }

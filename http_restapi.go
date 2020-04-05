@@ -1,17 +1,22 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
+	"log"
 	"net/http"
+	"time"
 
-	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
 func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		i := Item{}
-		i.ID = bson.NewObjectId()
+		i.ID = primitive.NewObjectID()
 		//ParseForm parses the raw query from the URL and updates r.Form.
 		r.ParseForm()
 		for key, values := range r.PostForm {
@@ -30,15 +35,24 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 				i.Author = values[0]
 			}
 		}
-
-		session, err := mgo.Dial(*flagDBIP)
+		//mongoDB client 연결
+		client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
+			log.Fatal(err)
 		}
-		defer session.Close()
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		defer client.Disconnect(ctx)
+		err = client.Connect(ctx)
+		if err != nil {
+			log.Fatal(err)
+		}
+		err = client.Ping(ctx, readpref.Primary())
+		if err != nil {
+			log.Fatal(err)
+		}
 		// admin settin에서 rootpath를 가져와서 경로를 생성한다.
-		rootpath, err := GetRootPath(session)
+		rootpath, err := GetRootPath(client)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -61,7 +75,7 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		err = AddItem(session, i)
+		err = AddItem(client, i)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -83,13 +97,26 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "URL에 id를 입력해주세요", http.StatusBadRequest)
 			return
 		}
-		session, err := mgo.Dial(*flagDBIP)
+		//mongoDB client 연결
+		client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		defer session.Close()
-		err = RmItem(session, itemtype, id)
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		defer client.Disconnect(ctx)
+		err = client.Connect(ctx)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		err = client.Ping(ctx, readpref.Primary())
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		err = RmItem(client, itemtype, id)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -115,13 +142,26 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "URL에 id를 입력해주세요", http.StatusBadRequest)
 			return
 		}
-		session, err := mgo.Dial(*flagDBIP)
+		//mongoDB client 연결
+		client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		defer session.Close()
-		i, err := GetItem(session, itemtype, id)
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		defer client.Disconnect(ctx)
+		err = client.Connect(ctx)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		err = client.Ping(ctx, readpref.Primary())
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		i, err := GetItem(client, itemtype, id)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -159,13 +199,26 @@ func handleAPISearch(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "searchword를 설정해주세요", http.StatusBadRequest)
 		return
 	}
-	session, err := mgo.Dial(*flagDBIP)
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	defer session.Close()
-	item, err := Search(session, itemtype, searchword)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	defer client.Disconnect(ctx)
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	item, err := Search(client, itemtype, searchword)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

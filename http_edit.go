@@ -1,12 +1,16 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"strconv"
+	"time"
 
-	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
 func handleEditMaya(w http.ResponseWriter, r *http.Request) {
@@ -17,12 +21,12 @@ func handleEditMaya(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "text/html")
 	type recipe struct {
-		ID          bson.ObjectId     `json:"id" bson:"id"`
-		ItemType    string            `json:"itemtype" bson:"itemtype"`
-		Author      string            `json:"author" bson:"author"`
-		Description string            `json:"description" bson:"description"`
-		Tags        []string          `json:"tags" bson:"tags"`
-		Attributes  map[string]string `json:"attributes" bson:"attributes"`
+		ID          primitive.ObjectID `json:"id" bson:"id"`
+		ItemType    string             `json:"itemtype" bson:"itemtype"`
+		Author      string             `json:"author" bson:"author"`
+		Description string             `json:"description" bson:"description"`
+		Tags        []string           `json:"tags" bson:"tags"`
+		Attributes  map[string]string  `json:"attributes" bson:"attributes"`
 		Token
 	}
 	q := r.URL.Query()
@@ -36,14 +40,27 @@ func handleEditMaya(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "URL에 id를 입력해주세요", http.StatusBadRequest)
 		return
 	}
-	session, err := mgo.Dial(*flagDBIP)
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	defer session.Close()
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	defer client.Disconnect(ctx)
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
-	item, err := SearchItem(session, itemtype, id)
+	item, err := SearchItem(client, itemtype, id)
 
 	rcp := recipe{
 		ID:          item.ID,
@@ -62,6 +79,7 @@ func handleEditMaya(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+//handleEditMayaSubmit 함수는 maya아이템을 수정하는 페이지에서 UPDATE버튼을 누르면 작동하는 함수다.
 func handleEditMayaSubmit(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
@@ -81,13 +99,26 @@ func handleEditMayaSubmit(w http.ResponseWriter, r *http.Request) {
 		value := r.FormValue(fmt.Sprintf("value%d", i))
 		attr[key] = value
 	}
-	session, err := mgo.Dial(*flagDBIP)
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	defer session.Close()
-	item, err := SearchItem(session, itemtype, id)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	defer client.Disconnect(ctx)
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	item, err := SearchItem(client, itemtype, id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -96,7 +127,7 @@ func handleEditMayaSubmit(w http.ResponseWriter, r *http.Request) {
 	item.Description = r.FormValue("description")
 	item.Tags = SplitBySpace(r.FormValue("tags"))
 	item.Attributes = attr
-	err = UpdateItem(session, itemtype, item)
+	err = UpdateItem(client, itemtype, item)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

@@ -50,7 +50,7 @@ $ sudo dotori -http :80
 
 #### Item 추가
 ```bash
-$ dotori -add -inputpath /project/path -outputpath /library/backup/path -author woong -tag asset,3D -description 설명 -type maya
+$ dotori -add -inputpath /project/path -author woong -tag asset,3D -description 설명 -type maya
 ```
 
 #### Item 삭제
