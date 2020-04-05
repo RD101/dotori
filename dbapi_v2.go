@@ -321,6 +321,46 @@ func SetAdminSetting(client *mongo.Client, a Adminsetting) error {
 	return nil
 }
 
+
+// GetReadyItem 은 DB에서 ready상태인 Item을 하나 가져온다.
+func GetReadyItem(client *mongo.Client) (Item, error) {
+	var result Item
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	collections, err := client.Database(*flagDBName).ListCollectionNames(ctx, bson.D{})
+	if err != nil {
+		return result, err
+	}
+	// 컬렉션을 for문 돌면서 Ready 상태인 Item을 찾는다.
+	for _, c := range collections {
+		if c == "setting.admin" { // setting.admin 컬렉션은 제외한다.
+			continue
+		}
+		if c == "system.indexs" { //mongodb의 기본 컬렉션. 제외한다.
+			continue
+		}
+		collection := client.Database(*flagDBName).Collection(c)
+		ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+		n, err := collection.CountDocuments(ctx, bson.M{"status": Ready})
+		if err != nil {
+			return result, err
+		}
+		if n == 0 {
+			continue
+		}
+		// ready상태인 Item이 있다면 찾고, Status를 업데이트 한다.
+		filter := bson.M{"_id": result.ID}
+		update := bson.M{
+			"$set": bson.M{"status": StartProcessing},
+		}
+		err = collection.FindOneAndUpdate(ctx, filter, update).Decode(&result)
+		if err != nil {
+			return result, err
+		}
+		// 해당 Item을 반환한다.
+		return result, nil
+	}
+	return result, errors.New("ready상태인 Item이 없습니다")
+
 // GetOngoingProcess 는 처리 중인 아이템을 가져온다.
 func GetOngoingProcess(client *mongo.Client) ([]Item, error) {
 	var results []Item
