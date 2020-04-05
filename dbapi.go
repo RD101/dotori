@@ -1,8 +1,6 @@
 package main
 
 import (
-	"errors"
-
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -244,44 +242,44 @@ func GetOngoingProcess(session *mgo.Session) ([]Item, error) {
 }
 
 // GetReadyItem 은 DB에서 ready상태인 Item을 하나 가져온다.
-func GetReadyItem(session *mgo.Session) (Item, error) {
-	session.SetMode(mgo.Monotonic, true)
-	var result Item
-	collections, err := session.DB(*flagDBName).CollectionNames()
-	if err != nil {
-		return result, err
-	}
-	// 컬렉션을 for문 돌면서 Ready 상태인 Item을 찾는다.
-	for _, c := range collections {
-		if c == "setting.admin" { // setting.admin 컬렉션은 제외한다.
-			continue
-		}
-		if c == "system.indexs" { //mongodb의 기본 컬렉션. 제외한다.
-			continue
-		}
-		cur := session.DB(*flagDBName).C(c)
-		// 해당 컬렉션에 ready상태인 Item이 없으면 다음 컬렉션을 체크한다
-		num, err := cur.Find(bson.M{"status": Ready}).Count()
-		if err != nil {
-			return result, err
-		}
-		if num == 0 {
-			continue
-		}
-		// ready상태인 Item이 있다면 가져와서 Status를 업데이트 한다.
-		err = cur.Find(bson.M{"status": Ready}).One(&result)
-		if err != nil {
-			return result, err
-		}
-		err = cur.Update(bson.M{"_id": result.ID}, bson.M{"$set": bson.M{"status": StartProcessing}})
-		if err != nil {
-			return result, err
-		}
-		// 해당 Item을 반환한다.
-		return result, nil
-	}
-	return result, errors.New("ready상태인 Item이 없습니다")
-}
+// func GetReadyItem(session *mgo.Session) (Item, error) {
+// 	session.SetMode(mgo.Monotonic, true)
+// 	var result Item
+// 	collections, err := session.DB(*flagDBName).CollectionNames()
+// 	if err != nil {
+// 		return result, err
+// 	}
+// 	// 컬렉션을 for문 돌면서 Ready 상태인 Item을 찾는다.
+// 	for _, c := range collections {
+// 		if c == "setting.admin" { // setting.admin 컬렉션은 제외한다.
+// 			continue
+// 		}
+// 		if c == "system.indexs" { //mongodb의 기본 컬렉션. 제외한다.
+// 			continue
+// 		}
+// 		cur := session.DB(*flagDBName).C(c)
+// 		// 해당 컬렉션에 ready상태인 Item이 없으면 다음 컬렉션을 체크한다
+// 		num, err := cur.Find(bson.M{"status": Ready}).Count()
+// 		if err != nil {
+// 			return result, err
+// 		}
+// 		if num == 0 {
+// 			continue
+// 		}
+// 		// ready상태인 Item이 있다면 가져와서 Status를 업데이트 한다.
+// 		err = cur.Find(bson.M{"status": Ready}).One(&result)
+// 		if err != nil {
+// 			return result, err
+// 		}
+// 		err = cur.Update(bson.M{"_id": result.ID}, bson.M{"$set": bson.M{"status": StartProcessing}})
+// 		if err != nil {
+// 			return result, err
+// 		}
+// 		// 해당 Item을 반환한다.
+// 		return result, nil
+// 	}
+// 	return result, errors.New("ready상태인 Item이 없습니다")
+// }
 
 // AddUser 는 데이터베이스에 User를 넣는 함수이다.
 // func AddUser(session *mgo.Session, u User) error {

@@ -1,19 +1,34 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"time"
 
-	"gopkg.in/mgo.v2"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
 func processingItem() error {
-	session, err := mgo.Dial(*flagDBIP)
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
 	if err != nil {
 		return err
 	}
-	defer session.Close()
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	defer client.Disconnect(ctx)
+	err = client.Connect(ctx)
+	if err != nil {
+		return err
+	}
+	ctx, _ = context.WithTimeout(context.Background(), 2*time.Second)
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		return err
+	}
 	// Status가 Ready인 item을 가져온다.
-	item, err := GetReadyItem(session)
+	item, err := GetReadyItem(client)
 	if err != nil {
 		return err
 	}
