@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"strings"
+	"errors"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -169,4 +170,63 @@ func SearchItem(client *mongo.Client, itemType, id string) (Item, error) {
 		return result, err
 	}
 	return result, nil
+}
+
+// AddUser 는 데이터베이스에 User를 넣는 함수이다.
+func AddUser(client *mongo.Client, u User) error {
+	collection := client.Database(*flagDBName).Collection("users")
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	n, err := collection.CountDocuments(ctx, bson.M{"id": u.ID})
+	if err != nil {
+		return err
+	}
+	if n != 0 {
+		return errors.New("already exists user ID")
+	}
+	_, err = collection.InsertOne(ctx, u)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// RmUser 는 데이터베이스에 User를 삭제하는 함수이다.
+func RmUser(client *mongo.Client, id string) error {
+	collection := client.Database(*flagDBName).Collection("users")
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	_, err := collection.DeleteOne(ctx, bson.M{"id": id})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// SetUser 함수는 사용자 정보를 업데이트하는 함수이다.
+func SetUser(client *mongo.Client, u User) error {
+	collection := client.Database(*flagDBName).Collection("users")
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	n, err := collection.CountDocuments(ctx, bson.M{"id": u.ID})
+	if err != nil {
+		return err
+	}
+	if n != 0 {
+		return errors.New("already exists user ID")
+	}
+	_, err = collection.UpdateOne(ctx, bson.M{"id": u.ID}, u)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// GetUser 함수는 id를 입력받아서 사용자 정보를 반환한다.
+func GetUser(client *mongo.Client, id string) (User, error) {
+	collection := client.Database(*flagDBName).Collection("users")
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	u := User{}
+	err := collection.FindOne(ctx, bson.M{"id": id}).Decode(&u)
+	if err != nil {
+		return u, err
+	}
+	return u, nil
 }
