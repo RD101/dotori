@@ -94,3 +94,19 @@ func UpdateItem(client *mongo.Client, itemType string, item Item) error {
 	}
 	return nil
 }
+
+// SearchItem 은 컬렉션 이름(itemType)과 id를 받아서, 해당 컬렉션에서 id가 일치하는 item을 검색, 반환한다.
+func SearchItem(client *mongo.Client, itemType, id string) (Item, error) {
+	collection := client.Database(*flagDBName).Collection(itemType)
+	var result Item
+	objID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return result, err
+	}
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	err = collection.FindOne(ctx, bson.M{"_id": objID}).Decode(&result)
+	if err != nil {
+		return result, err
+	}
+	return result, nil
+}
