@@ -32,7 +32,7 @@ func PageToString(page string) string {
 }
 
 // PreviousPage 함수는 이전 페이지를 반환한다.
-func PreviousPage(current, maxnum int) int {
+func PreviousPage(current, maxnum int64) int64 {
 	if maxnum < current {
 		return maxnum
 	}
@@ -43,7 +43,7 @@ func PreviousPage(current, maxnum int) int {
 }
 
 // NextPage 함수는 다음 페이지를 반환한다.
-func NextPage(current, maxnum int) int {
+func NextPage(current, maxnum int64) int64 {
 	if maxnum <= current {
 		return maxnum
 	}
