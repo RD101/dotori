@@ -223,6 +223,22 @@ func SearchItem(client *mongo.Client, itemType, id string) (Item, error) {
 	return result, nil
 }
 
+// SearchTags 는 itemType, tag를 입력받아 tag의 값이 일치하면 반환하는 함수입니다.
+func SearchTags(client *mongo.Client, itemType string, tag string) ([]Item, error) {
+	collection := client.Database(*flagDBName).Collection(itemType)
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	var results []Item
+	cursor, err := collection.Find(ctx, bson.M{"tags": tag})
+	if err != nil {
+		return results, err
+	}
+	err = cursor.All(ctx, &results)
+	if err != nil {
+		return results, err
+	}
+	return results, nil
+}
+
 // AddUser 는 데이터베이스에 User를 넣는 함수이다.
 func AddUser(client *mongo.Client, u User) error {
 	collection := client.Database(*flagDBName).Collection("users")

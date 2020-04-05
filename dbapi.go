@@ -65,16 +65,16 @@ import (
 // }
 
 // SearchTags 는 itemType, tag를 입력받아 tag의 값이 일치하면 반환하는 함수입니다.
-func SearchTags(session *mgo.Session, itemType string, tag string) ([]Item, error) {
-	session.SetMode(mgo.Monotonic, true)
-	c := session.DB(*flagDBName).C(itemType)
-	var results []Item
-	err := c.Find(bson.M{"tags": tag}).All(&results)
-	if err != nil {
-		return nil, err
-	}
-	return results, nil
-}
+// func SearchTags(session *mgo.Session, itemType string, tag string) ([]Item, error) {
+// 	session.SetMode(mgo.Monotonic, true)
+// 	c := session.DB(*flagDBName).C(itemType)
+// 	var results []Item
+// 	err := c.Find(bson.M{"tags": tag}).All(&results)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	return results, nil
+// }
 
 // Search 는 itemType, words를 입력받아 해당 아이템을 검색한다.
 // http_restapi.go에서 사용중
