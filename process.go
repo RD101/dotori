@@ -16,13 +16,13 @@ func processingItem() error {
 	if err != nil {
 		return err
 	}
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 	defer client.Disconnect(ctx)
 	err = client.Connect(ctx)
 	if err != nil {
 		return err
 	}
-	ctx, _ = context.WithTimeout(context.Background(), 2*time.Second)
 	err = client.Ping(ctx, readpref.Primary())
 	if err != nil {
 		return err
