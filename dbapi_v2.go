@@ -140,3 +140,21 @@ func RmUser(client *mongo.Client, id string) error {
 	}
 	return nil
 }
+
+// SetUser 함수는 사용자 정보를 업데이트하는 함수이다.
+func SetUser(client *mongo.Client, u User) error {
+	collection := client.Database(*flagDBName).Collection("users")
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	n, err := collection.CountDocuments(ctx, bson.M{"id": u.ID})
+	if err != nil {
+		return err
+	}
+	if n != 0 {
+		return errors.New("already exists user ID")
+	}
+	_, err = collection.UpdateOne(ctx, bson.M{"id": u.ID}, u)
+	if err != nil {
+		return err
+	}
+	return nil
+}

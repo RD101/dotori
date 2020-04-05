@@ -312,22 +312,22 @@ func GetReadyItem(session *mgo.Session) (Item, error) {
 // }
 
 // SetUser 함수는 사용자 정보를 업데이트하는 함수이다.
-func SetUser(session *mgo.Session, u User) error {
-	session.SetMode(mgo.Monotonic, true)
-	c := session.DB(*flagDBName).C("users")
-	num, err := c.Find(bson.M{"id": u.ID}).Count()
-	if err != nil {
-		return err
-	}
-	if num != 1 {
-		return errors.New("해당 유저가 존재하지 않습니다")
-	}
-	err = c.Update(bson.M{"id": u.ID}, u)
-	if err != nil {
-		return err
-	}
-	return nil
-}
+// func SetUser(session *mgo.Session, u User) error {
+// 	session.SetMode(mgo.Monotonic, true)
+// 	c := session.DB(*flagDBName).C("users")
+// 	num, err := c.Find(bson.M{"id": u.ID}).Count()
+// 	if err != nil {
+// 		return err
+// 	}
+// 	if num != 1 {
+// 		return errors.New("해당 유저가 존재하지 않습니다")
+// 	}
+// 	err = c.Update(bson.M{"id": u.ID}, u)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	return nil
+// }
 
 // GetUser 함수는 id를 입력받아서 사용자 정보를 반환한다.
 func GetUser(session *mgo.Session, id string) (User, error) {
