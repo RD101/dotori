@@ -67,6 +67,7 @@ func handleEditMaya(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+//handleEditMayaSubmit 함수는 maya아이템을 수정하는 페이지에서 UPDATE버튼을 누르면 작동하는 함수다.
 func handleEditMayaSubmit(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
