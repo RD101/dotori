@@ -54,16 +54,16 @@ func UpdateItem(session *mgo.Session, itemType string, item Item) error {
 }
 
 // allItems는 DB에서 전체 아이템 정보를 가져오는 함수입니다.
-func allItems(session *mgo.Session, itemType string) ([]Item, error) {
-	session.SetMode(mgo.Monotonic, true)
-	c := session.DB(*flagDBName).C(itemType)
-	var result []Item
-	err := c.Find(bson.M{}).All(&result)
-	if err != nil {
-		return result, err
-	}
-	return result, nil
-}
+// func allItems(session *mgo.Session, itemType string) ([]Item, error) {
+// 	session.SetMode(mgo.Monotonic, true)
+// 	c := session.DB(*flagDBName).C(itemType)
+// 	var result []Item
+// 	err := c.Find(bson.M{}).All(&result)
+// 	if err != nil {
+// 		return result, err
+// 	}
+// 	return result, nil
+// }
 
 // SearchTags 는 itemType, tag를 입력받아 tag의 값이 일치하면 반환하는 함수입니다.
 func SearchTags(session *mgo.Session, itemType string, tag string) ([]Item, error) {
