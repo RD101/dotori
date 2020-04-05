@@ -1,10 +1,5 @@
 package main
 
-import (
-	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
-)
-
 // AddItem 은 데이터베이스에 Item을 넣는 함수이다.
 // func AddItem(session *mgo.Session, i Item) error {
 // 	session.SetMode(mgo.Monotonic, true)
