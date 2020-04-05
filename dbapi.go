@@ -166,16 +166,16 @@ func SearchPage(session *mgo.Session, itemType string, words string, page, limit
 }
 
 // SearchItem 은 컬렉션 이름(itemType)과 id를 받아서, 해당 컬렉션에서 id가 일치하는 item을 검색, 반환한다.
-func SearchItem(session *mgo.Session, itemType, id string) (Item, error) {
-	session.SetMode(mgo.Monotonic, true)
-	c := session.DB(*flagDBName).C(itemType)
-	var result Item
-	err := c.FindId(bson.ObjectIdHex(id)).One(&result)
-	if err != nil {
-		return result, err
-	}
-	return result, nil
-}
+// func SearchItem(session *mgo.Session, itemType, id string) (Item, error) {
+// 	session.SetMode(mgo.Monotonic, true)
+// 	c := session.DB(*flagDBName).C(itemType)
+// 	var result Item
+// 	err := c.FindId(bson.ObjectIdHex(id)).One(&result)
+// 	if err != nil {
+// 		return result, err
+// 	}
+// 	return result, nil
+// }
 
 // SetAdminSetting 은 입력받은 어드민셋팅으로 업데이트한다.
 func SetAdminSetting(session *mgo.Session, a Adminsetting) error {
