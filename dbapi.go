@@ -330,13 +330,13 @@ func GetReadyItem(session *mgo.Session) (Item, error) {
 // }
 
 // GetUser 함수는 id를 입력받아서 사용자 정보를 반환한다.
-func GetUser(session *mgo.Session, id string) (User, error) {
-	session.SetMode(mgo.Monotonic, true)
-	c := session.DB(*flagDBName).C("users")
-	u := User{}
-	err := c.Find(bson.M{"id": id}).One(&u)
-	if err != nil {
-		return u, err
-	}
-	return u, nil
-}
+// func GetUser(session *mgo.Session, id string) (User, error) {
+// 	session.SetMode(mgo.Monotonic, true)
+// 	c := session.DB(*flagDBName).C("users")
+// 	u := User{}
+// 	err := c.Find(bson.M{"id": id}).One(&u)
+// 	if err != nil {
+// 		return u, err
+// 	}
+// 	return u, nil
+// }

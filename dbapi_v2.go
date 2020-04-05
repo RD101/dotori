@@ -158,3 +158,15 @@ func SetUser(client *mongo.Client, u User) error {
 	}
 	return nil
 }
+
+// GetUser 함수는 id를 입력받아서 사용자 정보를 반환한다.
+func GetUser(client *mongo.Client, id string) (User, error) {
+	collection := client.Database(*flagDBName).Collection("users")
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	u := User{}
+	err := collection.FindOne(ctx, bson.M{"id": id}).Decode(&u)
+	if err != nil {
+		return u, err
+	}
+	return u, nil
+}
