@@ -135,7 +135,7 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 	rcp.ItemType = itemType
 	rcp.Token = token
 	//mongoDB client 연결
-	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -212,7 +212,7 @@ func handleItemProcess(w http.ResponseWriter, r *http.Request) {
 		Token
 	}
 	//mongoDB client 연결
-	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

@@ -36,11 +36,11 @@ var (
 	flagAttributes  = flag.String("attributes", "", "detail info of file") // "key:value,key:value"
 
 	// 서비스에 필요한 인수
-	flagDBIP      = flag.String("dbip", "", "DB IP")
-	flagDBName    = flag.String("dbname", "dotori", "DB name")
-	flagHTTPPort  = flag.String("http", "", "Web Service Port Number")
-	flagPagenum   = flag.Int64("pagenum", 9, "maximum number of items in a page")
-	flagCookieAge = flag.Int("cookieage", 4, "cookie age (hour)") // MPAA 기준 4시간이다.
+	flagMonogDBURI = flag.String("mongodburi", "mongodb://localhost:27017", "mongoDB URI ex)mongodb://localhost:27017")
+	flagDBName     = flag.String("dbname", "dotori", "DB name")
+	flagHTTPPort   = flag.String("http", "", "Web Service Port Number")
+	flagPagenum    = flag.Int64("pagenum", 9, "maximum number of items in a page")
+	flagCookieAge  = flag.Int("cookieage", 4, "cookie age (hour)") // MPAA 기준 4시간이다.
 
 	flagItemID = flag.String("itemid", "", "bson ObjectID assigned by mongodb")
 )
@@ -56,7 +56,7 @@ func main() {
 		os.Exit(0)
 	} else if *flagSearch {
 		//mongoDB client 연결
-		client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
+		client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -95,7 +95,7 @@ func main() {
 		i.Attributes = StringToMap(*flagAttributes)
 
 		//mongoDB client 연결
-		client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
+		client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -131,11 +131,6 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		if *flagDBIP != "" {
-			if !regexIPv4.MatchString(*flagDBIP) { // 입력받은 DB IP의 형식이 맞는지 확인
-				log.Fatal(err)
-			}
-		}
 		if *flagDBName != "" {
 			if !regexLower.MatchString(*flagDBName) { // 입력받은 dbname이 소문자인지 확인
 				log.Fatal(err)
@@ -153,7 +148,7 @@ func main() {
 			log.Fatal("id가 빈 문자열 입니다")
 		}
 		//mongoDB client 연결
-		client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
+		client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -181,7 +176,7 @@ func main() {
 		webserver()
 	} else if *flagSearchID {
 		//mongoDB client 연결
-		client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
+		client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -203,7 +198,7 @@ func main() {
 		fmt.Println(item)
 	} else if *flagGetOngoingProcess {
 		//mongoDB client 연결
-		client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
+		client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
 		if err != nil {
 			log.Fatal(err)
 		}

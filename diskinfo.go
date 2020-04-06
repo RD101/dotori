@@ -11,25 +11,30 @@ import (
 )
 
 const (
-	B  = 1
+	// B is Byte
+	B = 1
+	// KB is Kilobyte
 	KB = 1024 * B
+	// MB is Metabyte
 	MB = 1024 * KB
+	// GB is Gigabyte
 	GB = 1024 * MB
 )
 
+// DiskStatus 는 디스크용량 정보를 담는 자료구조이다.
 type DiskStatus struct {
 	All  uint64 `json:"all"`
 	Used uint64 `json:"used"`
 	Free uint64 `json:"free"`
 }
 
-// DiskCheck함수는 rootPath의 디스크용량을 확인하는 함수이다.
+// DiskCheck 함수는 rootPath의 디스크용량을 확인하는 함수이다.
 func DiskCheck() (DiskStatus, error) {
 
 	var ds DiskStatus
 
 	//mongoDB client 연결
-	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
 	if err != nil {
 		return ds, err
 	}
