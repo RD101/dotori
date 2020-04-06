@@ -41,7 +41,7 @@ func handleEditMaya(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//mongoDB client 연결
-	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -100,7 +100,7 @@ func handleEditMayaSubmit(w http.ResponseWriter, r *http.Request) {
 		attr[key] = value
 	}
 	//mongoDB client 연결
-	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

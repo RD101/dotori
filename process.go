@@ -12,7 +12,7 @@ import (
 
 func processingItem() error {
 	//mongoDB client 연결
-	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
 	if err != nil {
 		return err
 	}
