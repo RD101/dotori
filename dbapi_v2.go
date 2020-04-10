@@ -363,6 +363,9 @@ func GetReadyItem(client *mongo.Client) (Item, error) {
 		if c == "system.indexs" { //mongodb의 기본 컬렉션. 제외한다.
 			continue
 		}
+		if c == "users" { // 사용자 컬렉션을 제외한다.
+			continue
+		}
 		collection := client.Database(*flagDBName).Collection(c)
 		n, err := collection.CountDocuments(ctx, bson.M{"status": Ready})
 		if err != nil {
