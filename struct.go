@@ -74,7 +74,7 @@ type ItemStatus int
 
 // item의 상태
 const (
-	Ready                = ItemStatus(iota) // 복사전
+	Ready                = ItemStatus(iota) // 준비중
 	StartProcessing                         // 처리 시작
 	CreatingThumbnail                       // 썸네일 생성중
 	CreatedThumbnail                        // 썸네일 생성완료
