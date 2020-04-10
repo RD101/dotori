@@ -74,13 +74,22 @@ type ItemStatus int
 
 // item의 상태
 const (
-	Ready             = ItemStatus(iota) // 복사전
-	StartProcessing                      // 처리 시작
-	CreatingThumbnail                    // 썸네일 생성중
-	CreatedThumbnail                     // 썸네일 생성완료
-	CreatingContainer                    // 썸네일 동영상 생성중
-	CreatedContainer                     // 썸네일 동영상 생성완료
-	Done                                 // 등록 완료
+	Ready                = ItemStatus(iota) // 복사전
+	StartProcessing                         // 처리 시작
+	CreatingThumbnail                       // 썸네일 생성중
+	CreatedThumbnail                        // 썸네일 생성완료
+	StartContainers                         // 썸네일 동영상 프로세스 시작
+	StartOggContainer                       // 썸네일 .ogg 파일 생성시작
+	CreatingOggContainer                    // 썸네일 .ogg 파일 생성중
+	CreatedOggContainer                     // 썸네일 .ogg 파일 생성완료
+	StartMovContainer                       // 썸네일 .mov 파일 생성시작
+	CreatingMovContainer                    // 썸네일 .mov 파일 생성중
+	CreatedMovContainer                     // 썸네일 .mov 파일 생성완료
+	StartMp4Container                       // 썸네일 .mp4 파일 생성시작
+	CreatingMp4Container                    // 썸네일 .mp4 파일 생성중
+	CreatedMp4Container                     // 썸네일 .mp4 파일 생성완료
+	CreatedContainers                       // 썸네일 동영상 생성완료
+	Done                                    // 등록 완료
 )
 
 // CheckError 는 Item 자료구조에 값이 정확히 들어갔는지 확인하는 메소드이다.
