@@ -36,13 +36,17 @@ func processingItem() error {
 	if err != nil {
 		return err
 	}
-	fmt.Println("GetReadyItem 완료")
+	if *flagDebug {
+		fmt.Println("GetReadyItem 완료")
+	}
 	// 썸네일 이미지를 생성한다.
 	err = genThumbImage(item)
 	if err != nil {
 		return err
 	}
-	fmt.Println("genThumbImage 완료")
+	if *flagDebug {
+		fmt.Println("genThumbImage 완료")
+	}
 	return nil
 }
 
