@@ -375,7 +375,7 @@ func GetReadyItem(client *mongo.Client) (Item, error) {
 			continue
 		}
 		// ready상태인 Item이 있다면 찾고, Status를 업데이트 한다.
-		filter := bson.M{"_id": result.ID}
+		filter := bson.M{"status": Ready}
 		update := bson.M{
 			"$set": bson.M{"status": StartProcessing},
 		}
