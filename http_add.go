@@ -403,11 +403,12 @@ func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return
 				}
-				err = ioutil.WriteFile(path+"/"+f.Filename, data, os.FileMode(filePerm))
+				err = ioutil.WriteFile(path+f.Filename, data, os.FileMode(filePerm))
 				if err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return
 				}
+				item.InputThumbnailImgPath = path + f.Filename
 				item.ThumbImgUploaded = true
 			case "video/quicktime", "video/mp4", "video/ogg", "application/ogg":
 				data, err := ioutil.ReadAll(file)
@@ -426,11 +427,12 @@ func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return
 				}
-				err = ioutil.WriteFile(path+"/"+f.Filename, data, os.FileMode(filePerm))
+				err = ioutil.WriteFile(path+f.Filename, data, os.FileMode(filePerm))
 				if err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return
 				}
+				item.InputThumbnailClipPath = path + f.Filename
 				item.ThumbClipUploaded = true
 			case "application/octet-stream":
 				ext := filepath.Ext(f.Filename)
@@ -467,6 +469,7 @@ func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
+	UpdateItem(client, "maya", item)
 }
 
 func handleAddMayaSuccess(w http.ResponseWriter, r *http.Request) {
