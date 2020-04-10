@@ -27,6 +27,7 @@ var (
 	flagSearchID          = flag.Bool("searchid", false, "search a item by its id")
 	flagGetOngoingProcess = flag.Bool("getongoingprocess", false, "get ongoing process") // 완료되지 않은 프로세스를 가져옵니다.
 	flagProcess           = flag.Bool("process", false, "start processing item")         // 프로세스를 실행시킨다
+	flagDebug             = flag.Bool("debug", false, "debug mode")                      // debug모드
 
 	flagAuthor      = flag.String("author", "", "author")
 	flagTag         = flag.String("tag", "", "tag")
