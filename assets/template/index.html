@@ -1,7 +1,7 @@
 {{define "index"}}
     {{template "head"}}
     <body>
-        {{template "navbar"}}
+        {{template "navbar" .}}
         {{template "search" .}}
         {{template "items" .}}
         {{if .Items}}

@@ -1,12 +1,21 @@
 {{define "adminsetting"}}
 {{template "head"}}
 <body>
-    {{template "navbar"}}
+    {{template "navbar" .}}
     <div class="container p-5">
         <form action="/adminsetting-submit" method="POST">
             <div class="col-lg-6 col-md-8 col-sm-12 mx-auto">
                 <div class="pt-3 pb-3">
                     <h2 class="section-heading text-muted">Admin Setting</h2>
+                </div>
+                <div class="row">
+                    <div class="col-sm">
+                        <div class="form-group">
+                            <label class="text-muted">Appname</label>
+                            <input type="text" name="appname" class="form-control" placeholder="dotori" value="{{.Adminsetting.Appname}}">
+                            <small class="form-text text-muted">웹 어플리케이션 이름을 설정할 수 있습니다.</small>
+                        </div>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-sm">

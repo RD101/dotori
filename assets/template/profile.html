@@ -1,9 +1,9 @@
 {{define "profile"}}
 {{template "head"}}
 <body>
-    {{template "navbar"}}
+    {{template "navbar" .}}
     <div class="pt-5 pb-5">
-        <h2 class="text-center section-heading text-muted">Profile: {{.ID}}</h2>
+        <h2 class="text-center section-heading text-muted">Profile: {{.User.ID}}</h2>
     </div>
     
         <div class="col-lg-6 col-md-6 col-sm-12 mx-auto">
@@ -11,7 +11,7 @@
                 <div class="col">
                     <div class="form-group">
                         <label class="h4 text-muted">AccessLevel</label>
-                        <input type="text" class="form-control" value="{{.AccessLevel}}" disabled>
+                        <input type="text" class="form-control" value="{{.User.AccessLevel}}" disabled>
                         <small class="form-text text-muted">권한</small>
                     </div>
                 </div>
@@ -20,7 +20,7 @@
                 <div class="col">
                     <div class="form-group">
                         <label class="h4 text-muted">Token</label>
-                        <input type="text" class="form-control" value="{{.Token}}" disabled>
+                        <input type="text" class="form-control" value="{{.User.Token}}" disabled>
                         <small class="form-text text-muted">RestAPI에 접근할 수 있는 Token</small>
                     </div>
                 </div>

@@ -1,7 +1,7 @@
 {{define "editmaya"}}
 {{template "head"}}
 <body>
-{{template "navbar"}}
+{{template "navbar" .}}
 <form action="/editmaya-submit" method="post">
     <input type="hidden" id="id" name="id" value="{{.ID.Hex}}">
     <input type="hidden" id="itemtype" name="itemtype" value="{{.ItemType}}">
