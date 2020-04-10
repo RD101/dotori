@@ -128,6 +128,22 @@
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-sm">
+                        <div class="form-group">
+                            <label class="text-muted">썸네일 이미지 Width</label>
+                            <input type="text" name="thumbnailimagewidth" class="form-control" placeholder="320" value="{{if eq .Adminsetting.ThumbnailImageWidth 0}}320{{else}}{{.Adminsetting.ThumbnailImageWidth}}{{end}}">
+                            <small class="form-text text-muted">썸네일 이미지 가로 사이즈를 입력해주세요.</small>
+                        </div>
+                    </div>
+                    <div class="col-sm">
+                        <div class="form-group">
+                            <label class="text-muted">썸네일 이미지 Height</label>
+                            <input type="text" name="thumbnailimageheight" class="form-control" placeholder="180" value="{{if eq .Adminsetting.ThumbnailImageHeight 0}}180{{else}}{{.Adminsetting.ThumbnailImageHeight}}{{end}}">
+                            <small class="form-text text-muted">썸네일 이미지 세로 사이즈를 입력해주세요.</small>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="text-center pt-5">
                 <button type="submit" class="btn btn-outline-danger">UPDATE</button>
