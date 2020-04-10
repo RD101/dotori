@@ -129,6 +129,7 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 		TotalPage   int64
 		Pages       []int64
 		Token
+		Adminsetting Adminsetting
 	}
 	rcp := recipe{}
 	rcp.Searchword = searchword
@@ -167,6 +168,12 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 	for i := range rcp.Pages {
 		rcp.Pages[i] = int64(i) + 1
 	}
+	adminsetting, err := GetAdminSetting(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp.Adminsetting = adminsetting
 	err = TEMPLATES.ExecuteTemplate(w, "index", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -192,8 +199,39 @@ func handleHelp(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
 		return
 	}
+	type recipe struct {
+		Token
+		Adminsetting Adminsetting
+	}
+	rcp := recipe{}
+	rcp.Token = token
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	defer client.Disconnect(ctx)
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	adminsetting, err := GetAdminSetting(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp.Adminsetting = adminsetting
 	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "help", token)
+	err = TEMPLATES.ExecuteTemplate(w, "help", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -210,6 +248,7 @@ func handleItemProcess(w http.ResponseWriter, r *http.Request) {
 	type recipe struct {
 		Items []Item
 		Token
+		Adminsetting Adminsetting
 	}
 	//mongoDB client 연결
 	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
@@ -238,6 +277,12 @@ func handleItemProcess(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rcp.Token = token
+	adminsetting, err := GetAdminSetting(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp.Adminsetting = adminsetting
 	err = TEMPLATES.ExecuteTemplate(w, "item-process", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
