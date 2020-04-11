@@ -80,10 +80,22 @@ func handleAdminSettingSubmit(w http.ResponseWriter, r *http.Request) {
 	a.OpenImageIO = r.FormValue("openimageio")
 	bsize, err := strconv.Atoi(r.FormValue("multipartformbuffersize"))
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	a.MultipartFormBufferSize = bsize
+	width, err := strconv.Atoi(r.FormValue("thumbnailimagewidth"))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	a.ThumbnailImageWidth = width
+	height, err := strconv.Atoi(r.FormValue("thumbnailimageheight"))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	a.ThumbnailImageHeight = height
 	err = a.CheckError()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)

@@ -24,6 +24,8 @@ type Adminsetting struct {
 	OCIOConfig              string `json:"ocioconfig" bson:"ocioconfig"`                           // ocio.config 경로
 	OpenImageIO             string `json:"openimageio" bson:"openimageio"`                         // OpenImageIO 명령어 경로
 	MultipartFormBufferSize int    `json:"multipartformbuffersize" bson:"multipartformbuffersize"` // MultipartForm Buffersize
+	ThumbnailImageWidth     int    `json:"thumbnailimagewidth" bson:"thumbnailimagewidth"`         // 썸네일 이미지 가로 픽셀 사이즈
+	ThumbnailImageHeight    int    `json:"thumbnailimageheight" bson:"thumbnailimageheight"`       // 썸네일 이미지 세로 픽셀 사이즈
 }
 
 // Token 자료구조. JWT 방식을 사용한다. restAPI 사용시 보안체크를 위해 http 헤더에 들어간다.
