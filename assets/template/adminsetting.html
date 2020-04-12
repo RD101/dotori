@@ -144,6 +144,52 @@
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-sm">
+                        <div class="form-group">
+                            <label class="text-muted">썸네일 동영상 Width</label>
+                            <input type="text" name="thumbnailcontainerwidth" class="form-control" placeholder="1280" value="{{if eq .Adminsetting.ThumbnailContainerWidth 0}}1280{{else}}{{.Adminsetting.ThumbnailContainerWidth}}{{end}}">
+                            <small class="form-text text-muted">썸네일 동영상 가로 사이즈를 입력해주세요.</small>
+                        </div>
+                    </div>
+                    <div class="col-sm">
+                        <div class="form-group">
+                            <label class="text-muted">썸네일 동영상 Height</label>
+                            <input type="text" name="thumbnailcontainerheight" class="form-control" placeholder="720" value="{{if eq .Adminsetting.ThumbnailContainerHeight 0}}720{{else}}{{.Adminsetting.ThumbnailContainerHeight}}{{end}}">
+                            <small class="form-text text-muted">썸네일 동영상 세로 사이즈를 입력해주세요.</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm">
+                        <div class="form-group">
+                            <label class="text-muted">비디오 코덱</label>
+                            <select name="videocodec" class="form-control">
+								<option value="libx264" {{if eq .Adminsetting.VideoCodec "libx264" "" }}selected{{end}}>H.264(libx264)</option>
+                                <option value="hevc" {{if eq .Adminsetting.VideoCodec "hevc" }}selected{{end}}>H.265(hevc)</option>
+                                <option value="libaom-av1" {{if eq .Adminsetting.VideoCodec "libaom-av1" }}selected{{end}}>AV1(libaom-av1)</option>
+                                <option value="libvpx" {{if eq .Adminsetting.VideoCodec "libvpx" }}selected{{end}}>Google VP8(libvpx)</option>
+                                <option value="libvpx-vp9" {{if eq .Adminsetting.VideoCodec "libvpx-vp9" }}selected{{end}}>Google VP9(libvpx-vp9)</option>
+							</select>
+                            <small class="form-text text-muted">동영상 인코딩 코덱을 선택해주세요.</small>
+                        </div>
+                    </div>
+                    <div class="col-sm">
+                        <div class="form-group">
+                            <label class="text-muted">오디오 코덱</label>
+                            <select name="audiocodec" class="form-control">
+								<option value="nosound" {{if eq .Adminsetting.AudioCodec "nosound" "" }}selected{{end}}>No Sound</option>
+                                <option value="copy" {{if eq .Adminsetting.AudioCodec "copy" }}selected{{end}}>Copy</option>
+                                <option value="ac3" {{if eq .Adminsetting.AudioCodec "ac3" }}selected{{end}}>Audio Coding-3(ac3)</option>
+                                <option value="aac" {{if eq .Adminsetting.AudioCodec "aac" }}selected{{end}}>Advanced Adio Coding(aac)</option>
+                                <option value="mp3" {{if eq .Adminsetting.AudioCodec "mp3" }}selected{{end}}>MPEG-1 Audio Layer-3(mp3)</option>
+                                <option value="dtc" {{if eq .Adminsetting.AudioCodec "dca" }}selected{{end}}>DCA (DTS Coherent Acoustics)</option>
+                                <option value="flac" {{if eq .Adminsetting.AudioCodec "flac" }}selected{{end}}>Free Lossless Audio Codec(flac)</option>
+							</select>
+                            <small class="form-text text-muted">오디오 인코딩 코덱을 선택해주세요.</small>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="text-center pt-5">
                 <button type="submit" class="btn btn-outline-danger">UPDATE</button>

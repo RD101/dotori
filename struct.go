@@ -9,23 +9,27 @@ import (
 
 // Adminsetting 자료구조
 type Adminsetting struct {
-	ID                      string `json:"id" bson:"id"`                                           // DB에서 값을 가지고 오기 위한 id
-	Appname                 string `json:"appname" bson:"appname"`                                 // 어플리케이션 표기이름
-	Rootpath                string `json:"rootpath" bson:"rootpath"`                               // 에셋 라이브러러리 물리경로
-	LinuxProtocolPath       string `json:"linuxprotocolpath" bson:"linuxprotocolpath"`             // 웹에서 클릭시 사용하는 Linux 경로
-	WindowsProtocolPath     string `json:"windowsprotocolpath" bson:"windowsprotocolpath"`         // 웹에서 클릭시 사용하는 Windows 경로
-	MacosProtocolPath       string `json:"macosprotocolpath" bson:"macosprotocolpath"`             // 웹에서 클릭시 사용하는 macOS 경로
-	Umask                   string `json:"umask" bson:"umask"`                                     // Umask 값
-	FolderPermission        string `json:"folderpermission" bson:"folderpermission"`               // 폴더 생성시 사용하는 권한
-	FilePermission          string `json:"filepermission" bson:"filepermission"`                   // 파일 생성시 사용하는 권한
-	UID                     string `json:"uid" bson:"uid"`                                         // 유저 ID
-	GID                     string `json:"gid" bson:"gid"`                                         // 그룹 ID
-	FFmpeg                  string `json:"ffmpeg" bson:"ffmpeg"`                                   // FFmpeg 명령어 경로
-	OCIOConfig              string `json:"ocioconfig" bson:"ocioconfig"`                           // ocio.config 경로
-	OpenImageIO             string `json:"openimageio" bson:"openimageio"`                         // OpenImageIO 명령어 경로
-	MultipartFormBufferSize int    `json:"multipartformbuffersize" bson:"multipartformbuffersize"` // MultipartForm Buffersize
-	ThumbnailImageWidth     int    `json:"thumbnailimagewidth" bson:"thumbnailimagewidth"`         // 썸네일 이미지 가로 픽셀 사이즈
-	ThumbnailImageHeight    int    `json:"thumbnailimageheight" bson:"thumbnailimageheight"`       // 썸네일 이미지 세로 픽셀 사이즈
+	ID                       string `json:"id" bson:"id"`                                             // DB에서 값을 가지고 오기 위한 id
+	Appname                  string `json:"appname" bson:"appname"`                                   // 어플리케이션 표기이름
+	Rootpath                 string `json:"rootpath" bson:"rootpath"`                                 // 에셋 라이브러러리 물리경로
+	LinuxProtocolPath        string `json:"linuxprotocolpath" bson:"linuxprotocolpath"`               // 웹에서 클릭시 사용하는 Linux 경로
+	WindowsProtocolPath      string `json:"windowsprotocolpath" bson:"windowsprotocolpath"`           // 웹에서 클릭시 사용하는 Windows 경로
+	MacosProtocolPath        string `json:"macosprotocolpath" bson:"macosprotocolpath"`               // 웹에서 클릭시 사용하는 macOS 경로
+	Umask                    string `json:"umask" bson:"umask"`                                       // Umask 값
+	FolderPermission         string `json:"folderpermission" bson:"folderpermission"`                 // 폴더 생성시 사용하는 권한
+	FilePermission           string `json:"filepermission" bson:"filepermission"`                     // 파일 생성시 사용하는 권한
+	UID                      string `json:"uid" bson:"uid"`                                           // 유저 ID
+	GID                      string `json:"gid" bson:"gid"`                                           // 그룹 ID
+	FFmpeg                   string `json:"ffmpeg" bson:"ffmpeg"`                                     // FFmpeg 명령어 경로
+	OCIOConfig               string `json:"ocioconfig" bson:"ocioconfig"`                             // ocio.config 경로
+	OpenImageIO              string `json:"openimageio" bson:"openimageio"`                           // OpenImageIO 명령어 경로
+	MultipartFormBufferSize  int    `json:"multipartformbuffersize" bson:"multipartformbuffersize"`   // MultipartForm Buffersize
+	ThumbnailImageWidth      int    `json:"thumbnailimagewidth" bson:"thumbnailimagewidth"`           // 썸네일 이미지 가로 픽셀 사이즈
+	ThumbnailImageHeight     int    `json:"thumbnailimageheight" bson:"thumbnailimageheight"`         // 썸네일 이미지 세로 픽셀 사이즈
+	ThumbnailContainerWidth  int    `json:"thumbnailcontainerwidth" bson:"thumbnailcontainerwidth"`   // 썸네일 동영상 가로 픽셀 사이즈
+	ThumbnailContainerHeight int    `json:"thumbnailcontainerheight" bson:"thumbnailcontainerheight"` // 썸네일 동영상 세로 픽셀 사이즈
+	VideoCodec               string `json:"videocodec" bson:"videocodec"`                             // 비디오 코덱
+	AudioCodec               string `json:"audiocodec" bson:"audiocodec"`                             // 오디오 코덱
 }
 
 // Token 자료구조. JWT 방식을 사용한다. restAPI 사용시 보안체크를 위해 http 헤더에 들어간다.

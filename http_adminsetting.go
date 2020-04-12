@@ -84,23 +84,37 @@ func handleAdminSettingSubmit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	a.MultipartFormBufferSize = bsize
-	width, err := strconv.Atoi(r.FormValue("thumbnailimagewidth"))
+	imageWidth, err := strconv.Atoi(r.FormValue("thumbnailimagewidth"))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	a.ThumbnailImageWidth = width
-	height, err := strconv.Atoi(r.FormValue("thumbnailimageheight"))
+	a.ThumbnailImageWidth = imageWidth
+	imageHeight, err := strconv.Atoi(r.FormValue("thumbnailimageheight"))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	a.ThumbnailImageHeight = height
+	a.ThumbnailImageHeight = imageHeight
+	containerWidth, err := strconv.Atoi(r.FormValue("thumbnailcontainerwidth"))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	a.ThumbnailContainerWidth = containerWidth
+	containerHeight, err := strconv.Atoi(r.FormValue("thumbnailcontainerheight"))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	a.ThumbnailContainerHeight = containerHeight
 	err = a.CheckError()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	a.VideoCodec = r.FormValue("videocodec")
+	a.AudioCodec = r.FormValue("audiocodec")
 	//mongoDB client 연결
 	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
 	if err != nil {
