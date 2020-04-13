@@ -467,6 +467,11 @@ func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
 				http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
 				return
 			}
+			tags, err := PathToTags(f.Filename)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+			fmt.Println(tags)
 		}
 	}
 	UpdateItem(client, "maya", item)
