@@ -63,7 +63,7 @@ func PathToTags(path string) ([]string, error) {
 		}
 	}
 	if len(returnTags) == 0 {
-		return returnTags, errors.New("빈 리스트를 반환했습니다")
+		return returnTags, errors.New("태그리스트가 비어있습니다")
 	}
 	return returnTags, nil
 }
