@@ -54,22 +54,10 @@ func StringToMap(str string) map[string]string {
 
 // PathToTags 는 경로를 받아서 태그를 반환한다.
 func PathToTags(path string) ([]string, error) {
-	var returnTags []string
-	filename := strings.TrimSuffix(path, filepath.Ext(path))
+	filename := strings.TrimSuffix(path, filepath.Ext(path)) // 확장자 제거
 	tags := regexSplitBySign.Split(filename, -1)
-	for _, tag := range tags {
-		has := false // 겹치는 tag가 있다면 append하지 않는다.
-		for _, r := range returnTags {
-			if tag == r {
-				has = true
-			}
-		}
-		if !has {
-			returnTags = append(returnTags, tag)
-		}
+	if len(tags) == 0 {
+		return tags, errors.New("빈 리스트를 반환했습니다")
 	}
-	if len(returnTags) == 0 {
-		return returnTags, errors.New("빈 리스트를 반환했습니다")
-	}
-	return returnTags, nil
+	return tags, nil
 }

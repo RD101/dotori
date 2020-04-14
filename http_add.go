@@ -471,7 +471,17 @@ func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
-			fmt.Println(tags)
+			for _, tag := range tags {
+				has := false // 중복되는 tag가 있다면 append하지 않는다.
+				for _, t := range item.Tags {
+					if tag == t {
+						has = true
+					}
+				}
+				if !has {
+					item.Tags = append(item.Tags, tag)
+				}
+			}
 		}
 	}
 	UpdateItem(client, "maya", item)
