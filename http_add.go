@@ -299,11 +299,6 @@ func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
 		return
 	}
-	err = r.ParseMultipartForm(200000) // grab the multipart form
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
 	objectID, err := GetObjectIDfromRequestHeader(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -371,6 +366,12 @@ func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
 	}
 	g := adminsetting.GID
 	gid, err := strconv.Atoi(g)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	buffer := adminsetting.MultipartFormBufferSize
+	err = r.ParseMultipartForm(int64(buffer)) // grab the multipart form
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
