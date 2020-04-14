@@ -11,11 +11,14 @@ func Test_PathToTags(t *testing.T) {
 		in   string
 		want []string
 	}{{
-		in:   "s0010_c0010_ani_v001", // _ 포함된 경우
+		in:   "s0010_c0010_ani_v001", // _ 포함 경우
 		want: []string{"s0010", "c0010", "ani", "v001"},
 	}, {
-		in:   "s0010_c0010_ani_v001.mb", // 확장자 포함된 경우
+		in:   "s0010_c0010_ani_v001.mb", // 확장자 포함 경우
 		want: []string{"s0010", "c0010", "ani", "v001"},
+	}, {
+		in:   "test_thumbnail.mb", // thumbnail 포함 경우
+		want: []string{"test"},
 	}, {
 		in:   "ani/v001/test", // / 포함 경우
 		want: []string{"ani", "v001", "test"},
