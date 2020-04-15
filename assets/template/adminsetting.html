@@ -163,13 +163,40 @@
                 <div class="row">
                     <div class="col-sm">
                         <div class="form-group">
-                            <label class="text-muted">비디오 코덱</label>
-                            <select name="videocodec" class="form-control">
-								<option value="libx264" {{if eq .Adminsetting.VideoCodec "libx264" "" }}selected{{end}}>H.264(libx264)</option>
-                                <option value="hevc" {{if eq .Adminsetting.VideoCodec "hevc" }}selected{{end}}>H.265(hevc)</option>
-                                <option value="libaom-av1" {{if eq .Adminsetting.VideoCodec "libaom-av1" }}selected{{end}}>AV1(libaom-av1)</option>
-                                <option value="libvpx" {{if eq .Adminsetting.VideoCodec "libvpx" }}selected{{end}}>Google VP8(libvpx)</option>
-                                <option value="libvpx-vp9" {{if eq .Adminsetting.VideoCodec "libvpx-vp9" }}selected{{end}}>Google VP9(libvpx-vp9)</option>
+                            <label class="text-muted">Mov 비디오 코덱</label>
+                            <select name="videocodecmov" class="form-control">
+								<option value="libx264" {{if eq .Adminsetting.VideoCodecMov "libx264" "" }}selected{{end}}>H.264(libx264)</option>
+                                <option value="hevc" {{if eq .Adminsetting.VideoCodecMov "hevc" }}selected{{end}}>H.265(hevc)</option>
+                                <option value="libaom-av1" {{if eq .Adminsetting.VideoCodecMov "libaom-av1" }}selected{{end}}>AV1(libaom-av1)</option>
+                                <option value="libvpx" {{if eq .Adminsetting.VideoCodecMov "libvpx" }}selected{{end}}>Google VP8(libvpx)</option>
+                                <option value="libvpx-vp9" {{if eq .Adminsetting.VideoCodecMov "libvpx-vp9" }}selected{{end}}>Google VP9(libvpx-vp9)</option>
+							</select>
+                            <small class="form-text text-muted">동영상 인코딩 코덱을 선택해주세요.</small>
+                        </div>
+                    </div>
+                    <div class="col-sm">
+                        <div class="form-group">
+                            <label class="text-muted">Mp4 비디오 코덱</label>
+                            <select name="videocodecmp4" class="form-control">
+								<option value="libx264" {{if eq .Adminsetting.VideoCodecMp4 "libx264" "" }}selected{{end}}>H.264(libx264)</option>
+                                <option value="hevc" {{if eq .Adminsetting.VideoCodecMp4 "hevc" }}selected{{end}}>H.265(hevc)</option>
+                                <option value="libaom-av1" {{if eq .Adminsetting.VideoCodecMp4 "libaom-av1" }}selected{{end}}>AV1(libaom-av1)</option>
+                                <option value="libvpx" {{if eq .Adminsetting.VideoCodecMp4 "libvpx" }}selected{{end}}>Google VP8(libvpx)</option>
+                                <option value="libvpx-vp9" {{if eq .Adminsetting.VideoCodecMp4 "libvpx-vp9" }}selected{{end}}>Google VP9(libvpx-vp9)</option>
+							</select>
+                            <small class="form-text text-muted">오디오 인코딩 코덱을 선택해주세요.</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm">
+                        <div class="form-group">
+                            <label class="text-muted">Ogg 비디오 코덱</label>
+                            <select name="videocodecogg" class="form-control">
+								<option value="libtheora" {{if eq .Adminsetting.VideoCodecOgg "libtheora" "" }}selected{{end}}>LibTheora</option>
+                                <option value="libaom-av1" {{if eq .Adminsetting.VideoCodecOgg "libaom-av1" }}selected{{end}}>AV1(libaom-av1)</option>
+                                <option value="libvpx" {{if eq .Adminsetting.VideoCodecOgg "libvpx" }}selected{{end}}>Google VP8(libvpx)</option>
+                                <option value="libvpx-vp9" {{if eq .Adminsetting.VideoCodecOgg "libvpx-vp9" }}selected{{end}}>Google VP9(libvpx-vp9)</option>
 							</select>
                             <small class="form-text text-muted">동영상 인코딩 코덱을 선택해주세요.</small>
                         </div>

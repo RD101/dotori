@@ -25,8 +25,39 @@ func handleAddMayaFile(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
 		return
 	}
+	type recipe struct {
+		Token
+		Adminsetting Adminsetting
+	}
+	rcp := recipe{}
+	rcp.Token = token
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	defer client.Disconnect(ctx)
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	adminsetting, err := GetAdminSetting(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp.Adminsetting = adminsetting
 	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "addmaya-file", token)
+	err = TEMPLATES.ExecuteTemplate(w, "addmaya-file", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -299,11 +330,6 @@ func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
 		return
 	}
-	err = r.ParseMultipartForm(200000) // grab the multipart form
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
 	objectID, err := GetObjectIDfromRequestHeader(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -371,6 +397,12 @@ func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
 	}
 	g := adminsetting.GID
 	gid, err := strconv.Atoi(g)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	buffer := adminsetting.MultipartFormBufferSize
+	err = r.ParseMultipartForm(int64(buffer)) // grab the multipart form
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -485,6 +517,61 @@ func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	UpdateItem(client, "maya", item)
+}
+
+func handleUploadMayaCheckData(w http.ResponseWriter, r *http.Request) {
+	// objectID로 item을 가져온다.
+	objectID, err := GetObjectIDfromRequestHeader(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	defer client.Disconnect(ctx)
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	item, err := GetItem(client, "maya", objectID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	// 썸네일이미지가 있는지 체크
+	if !item.ThumbImgUploaded {
+		http.Error(w, "썸네일이미지를 업로드해주세요", http.StatusBadRequest)
+		return
+	}
+	// 썸네일클립이 있는지 체크
+	if !item.ThumbClipUploaded {
+		http.Error(w, "썸네일클립을 업로드해주세요", http.StatusBadRequest)
+		return
+	}
+	// 마야파일이 있는지 체크
+	if !item.DataUploaded {
+		http.Error(w, "마야 파일을 업로드해주세요", http.StatusBadRequest)
+		return
+	}
+	// addmaya-success 페이지로 연결
+	http.Redirect(w, r, "/addmaya-success", http.StatusSeeOther)
 }
 
 func handleAddMayaSuccess(w http.ResponseWriter, r *http.Request) {

@@ -28,7 +28,9 @@ type Adminsetting struct {
 	ThumbnailImageHeight     int    `json:"thumbnailimageheight" bson:"thumbnailimageheight"`         // 썸네일 이미지 세로 픽셀 사이즈
 	ThumbnailContainerWidth  int    `json:"thumbnailcontainerwidth" bson:"thumbnailcontainerwidth"`   // 썸네일 동영상 가로 픽셀 사이즈
 	ThumbnailContainerHeight int    `json:"thumbnailcontainerheight" bson:"thumbnailcontainerheight"` // 썸네일 동영상 세로 픽셀 사이즈
-	VideoCodec               string `json:"videocodec" bson:"videocodec"`                             // 비디오 코덱
+	VideoCodecOgg            string `json:"videocodecogg" bson:"videocodecogg"`                       // 비디오 코덱
+	VideoCodecMp4            string `json:"videocodecmp4" bson:"videocodecmp4"`                       // 비디오 코덱
+	VideoCodecMov            string `json:"videocodecmov" bson:"videocodecmov"`                       // 비디오 코덱
 	AudioCodec               string `json:"audiocodec" bson:"audiocodec"`                             // 오디오 코덱
 }
 
@@ -85,13 +87,10 @@ const (
 	CreatingThumbnail                       // 썸네일 생성중
 	CreatedThumbnail                        // 썸네일 생성완료
 	StartContainers                         // 썸네일 동영상 프로세스 시작
-	StartOggContainer                       // 썸네일 .ogg 파일 생성시작
 	CreatingOggContainer                    // 썸네일 .ogg 파일 생성중
 	CreatedOggContainer                     // 썸네일 .ogg 파일 생성완료
-	StartMovContainer                       // 썸네일 .mov 파일 생성시작
 	CreatingMovContainer                    // 썸네일 .mov 파일 생성중
 	CreatedMovContainer                     // 썸네일 .mov 파일 생성완료
-	StartMp4Container                       // 썸네일 .mp4 파일 생성시작
 	CreatingMp4Container                    // 썸네일 .mp4 파일 생성중
 	CreatedMp4Container                     // 썸네일 .mp4 파일 생성완료
 	CreatedContainers                       // 썸네일 동영상 생성완료
