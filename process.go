@@ -56,15 +56,24 @@ func processingItem() error {
 	if err != nil {
 		return err
 	}
+	if *flagDebug {
+		fmt.Println("genThumbOggContainer 완료")
+	}
 	// .mov 썸네일 동영상을 생성한다.
 	err = getThumbMovContainer(item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
 		return err
 	}
+	if *flagDebug {
+		fmt.Println("genThumbMovContainer 완료")
+	}
 	// .mp4 썸네일 동영상을 생성한다.
 	err = getThumbMp4Container(item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
 		return err
+	}
+	if *flagDebug {
+		fmt.Println("genThumbMp4Container 완료")
 	}
 	return nil
 }
