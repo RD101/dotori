@@ -89,6 +89,12 @@ func genThumbDir(item Item) error {
 	if err != nil {
 		return err
 	}
+	// Status를 CreatingThumbDir로 바꾼다.
+	collection := client.Database(*flagDBName).Collection(item.ItemType)
+	_, err = collection.UpdateOne(ctx, bson.M{"_id": item.ID}, bson.M{"$set": bson.M{"status": CreatingThumbnail}})
+	if err != nil {
+		return err
+	}
 	// 연산전에 Admin셋팅을 가지고 온다.
 	adminSetting, err := GetAdminSetting(client)
 	if err != nil {
@@ -106,6 +112,11 @@ func genThumbDir(item Item) error {
 	// 생성할 경로를 가져온다.
 	path := path.Dir(item.OutputThumbnailPngPath)
 	err = os.MkdirAll(path, os.FileMode(per))
+	if err != nil {
+		return err
+	}
+	// Status를 CreatedThumbDir로 바꾼다.
+	_, err = collection.UpdateOne(ctx, bson.M{"_id": item.ID}, bson.M{"$set": bson.M{"status": CreatingThumbnail}})
 	if err != nil {
 		return err
 	}
