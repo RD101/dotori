@@ -52,8 +52,8 @@ func StringToMap(str string) map[string]string {
 	return result
 }
 
-// PathToTags 는 경로를 받아서 태그를 반환한다.
-func PathToTags(path string) ([]string, error) {
+// FilenameToTags 는 경로를 받아서 태그를 반환한다.
+func FilenameToTags(path string) ([]string, error) {
 	var returnTags []string
 	filename := strings.TrimSuffix(path, filepath.Ext(path)) // 확장자 제거
 	tags := regexSplitBySign.Split(filename, -1)

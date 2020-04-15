@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-//PathToTags 함수가 잘 작동하는지 테스트하는 함수
-func Test_PathToTags(t *testing.T) {
+//FilenameToTags 함수가 잘 작동하는지 테스트하는 함수
+func Test_FilenameToTags(t *testing.T) {
 	cases := []struct {
 		in   string
 		want []string
@@ -34,7 +34,7 @@ func Test_PathToTags(t *testing.T) {
 	},
 	}
 	for _, c := range cases {
-		b, _ := PathToTags(c.in)
+		b, _ := FilenameToTags(c.in)
 		if !reflect.DeepEqual(b, c.want) {
 			t.Fatalf("Test_SplitbySign(): 입력 값: %v, 원하는 값: %v, 얻은 값: %v\n", c.in, c.want, b)
 		}
