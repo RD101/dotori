@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -43,6 +44,14 @@ func processingItem() error {
 	if *flagDebug {
 		fmt.Println("GetReadyItem 완료")
 	}
+	// thumbnail 폴더를 생성한다.
+	err = genThumbDir(item)
+	if err != nil {
+		return err
+	}
+	if *flagDebug {
+		fmt.Println("genThumbDir 완료")
+	}
 	// 썸네일 이미지를 생성한다.
 	err = genThumbImage(item)
 	if err != nil {
@@ -74,6 +83,58 @@ func processingItem() error {
 	}
 	if *flagDebug {
 		fmt.Println("genThumbMp4Container 완료")
+  }
+	return nil
+}
+
+//genThumbDir 은 인수로 받은 아이템의 경로에 thumbnail 폴더를 생성한다.
+func genThumbDir(item Item) error {
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
+	if err != nil {
+		return err
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	defer client.Disconnect(ctx)
+	err = client.Connect(ctx)
+	if err != nil {
+		return err
+	}
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		return err
+	}
+	// Status를 CreatingThumbDir로 바꾼다.
+	collection := client.Database(*flagDBName).Collection(item.ItemType)
+	_, err = collection.UpdateOne(ctx, bson.M{"_id": item.ID}, bson.M{"$set": bson.M{"status": CreatingThumbnail}})
+	if err != nil {
+		return err
+	}
+	// 연산전에 Admin셋팅을 가지고 온다.
+	adminSetting, err := GetAdminSetting(client)
+	if err != nil {
+		return err
+	}
+	umask, err := strconv.Atoi(adminSetting.Umask)
+	if err != nil {
+		return err
+	}
+	unix.Umask(umask)
+	per, err := strconv.ParseInt(adminSetting.FolderPermission, 8, 64)
+	if err != nil {
+		return err
+	}
+	// 생성할 경로를 가져온다.
+	path := path.Dir(item.OutputThumbnailPngPath)
+	err = os.MkdirAll(path, os.FileMode(per))
+	if err != nil {
+		return err
+	}
+	// Status를 CreatedThumbDir로 바꾼다.
+	_, err = collection.UpdateOne(ctx, bson.M{"_id": item.ID}, bson.M{"$set": bson.M{"status": CreatingThumbnail}})
+	if err != nil {
+		return err
 	}
 	return nil
 }
