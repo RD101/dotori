@@ -6,7 +6,6 @@ import (
 	"os"
 	"os/exec"
 	"path"
-	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -36,6 +35,11 @@ func processingItem() error {
 	if err != nil {
 		return err
 	}
+	// AdminSetting을 DB에서 가지고 온다.
+	adminSetting, err := GetAdminSetting(client)
+	if err != nil {
+		return err
+	}
 	// Status가 Ready인 item을 가져온다.
 	item, err := GetReadyItem(client)
 	if err != nil {
@@ -45,7 +49,7 @@ func processingItem() error {
 		fmt.Println("GetReadyItem 완료")
 	}
 	// thumbnail 폴더를 생성한다.
-	err = genThumbDir(item)
+	err = genThumbDir(adminSetting, item)
 	if err != nil {
 		return err
 	}
@@ -53,7 +57,7 @@ func processingItem() error {
 		fmt.Println("genThumbDir 완료")
 	}
 	// 썸네일 이미지를 생성한다.
-	err = genThumbImage(item)
+	err = genThumbImage(adminSetting, item)
 	if err != nil {
 		return err
 	}
@@ -61,7 +65,7 @@ func processingItem() error {
 		fmt.Println("genThumbImage 완료")
 	}
 	// .ogg 썸네일 동영상을 생성한다.
-	err = getThumbOggContainer(item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+	err = getThumbOggContainer(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
 		return err
 	}
@@ -69,7 +73,7 @@ func processingItem() error {
 		fmt.Println("genThumbOggContainer 완료")
 	}
 	// .mov 썸네일 동영상을 생성한다.
-	err = getThumbMovContainer(item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+	err = getThumbMovContainer(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
 		return err
 	}
@@ -77,18 +81,18 @@ func processingItem() error {
 		fmt.Println("genThumbMovContainer 완료")
 	}
 	// .mp4 썸네일 동영상을 생성한다.
-	err = getThumbMp4Container(item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+	err = getThumbMp4Container(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
 		return err
 	}
 	if *flagDebug {
 		fmt.Println("genThumbMp4Container 완료")
-  }
+	}
 	return nil
 }
 
 //genThumbDir 은 인수로 받은 아이템의 경로에 thumbnail 폴더를 생성한다.
-func genThumbDir(item Item) error {
+func genThumbDir(adminSetting Adminsetting, item Item) error {
 	//mongoDB client 연결
 	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
 	if err != nil {
@@ -108,11 +112,6 @@ func genThumbDir(item Item) error {
 	// Status를 CreatingThumbDir로 바꾼다.
 	collection := client.Database(*flagDBName).Collection(item.ItemType)
 	_, err = collection.UpdateOne(ctx, bson.M{"_id": item.ID}, bson.M{"$set": bson.M{"status": CreatingThumbnail}})
-	if err != nil {
-		return err
-	}
-	// 연산전에 Admin셋팅을 가지고 온다.
-	adminSetting, err := GetAdminSetting(client)
 	if err != nil {
 		return err
 	}
@@ -140,7 +139,7 @@ func genThumbDir(item Item) error {
 }
 
 // genThumbImage 함수는 인수로 받은 아이템의 썸네일 이미지를 만든다.
-func genThumbImage(item Item) error {
+func genThumbImage(adminSetting Adminsetting, item Item) error {
 	//mongoDB client 연결
 	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
 	if err != nil {
@@ -163,16 +162,6 @@ func genThumbImage(item Item) error {
 	if err != nil {
 		return err
 	}
-	// 연산전에 Admin셋팅을 가지고 온다.
-	adminSetting, err := GetAdminSetting(client)
-	if err != nil {
-		return err
-	}
-	umask, err := strconv.Atoi(adminSetting.Umask)
-	if err != nil {
-		return err
-	}
-	unix.Umask(umask)
 	// 변환할 이미지를 가져온다.
 	path := item.InputThumbnailImgPath
 	target, err := imaging.Open(path)
@@ -181,15 +170,6 @@ func genThumbImage(item Item) error {
 	}
 	// Resize the cropped image to width = 200px preserving the aspect ratio.
 	result := imaging.Fill(target, 320, 180, imaging.Center, imaging.Lanczos)
-	// 저장할 경로를 생성
-	per, err := strconv.ParseInt(adminSetting.FolderPermission, 8, 64)
-	if err != nil {
-		return err
-	}
-	err = os.MkdirAll(filepath.Dir(item.OutputThumbnailPngPath), os.FileMode(per))
-	if err != nil {
-		return err
-	}
 	//생성한 경로에 연산된 이미지 저장
 	err = imaging.Save(result, item.OutputThumbnailPngPath)
 	if err != nil {
@@ -204,28 +184,7 @@ func genThumbImage(item Item) error {
 }
 
 // getThumbOggContainer 함수는 인수로 받은 아이템의 .ogg 동영상을 만든다.
-func getThumbOggContainer(item Item) error {
-	//mongoDB client 연결
-	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
-	if err != nil {
-		return err
-	}
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-	defer client.Disconnect(ctx)
-	err = client.Connect(ctx)
-	if err != nil {
-		return err
-	}
-	err = client.Ping(ctx, readpref.Primary())
-	if err != nil {
-		return err
-	}
-	// 연산전에 Admin셋팅을 가지고 온다.
-	adminSetting, err := GetAdminSetting(client)
-	if err != nil {
-		return err
-	}
+func getThumbOggContainer(adminSetting Adminsetting, item Item) error {
 	args := []string{
 		"-i",
 		item.InputThumbnailClipPath,
@@ -248,7 +207,7 @@ func getThumbOggContainer(item Item) error {
 	if *flagDebug {
 		fmt.Println(adminSetting.FFmpeg, strings.Join(args, " "))
 	}
-	err = exec.Command(adminSetting.FFmpeg, args...).Run()
+	err := exec.Command(adminSetting.FFmpeg, args...).Run()
 	if err != nil {
 		return err
 	}
@@ -256,28 +215,7 @@ func getThumbOggContainer(item Item) error {
 }
 
 // getThumbMovContainer 함수는 인수로 받은 아이템의 .mov 동영상을 만든다.
-func getThumbMovContainer(item Item) error {
-	//mongoDB client 연결
-	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
-	if err != nil {
-		return err
-	}
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-	defer client.Disconnect(ctx)
-	err = client.Connect(ctx)
-	if err != nil {
-		return err
-	}
-	err = client.Ping(ctx, readpref.Primary())
-	if err != nil {
-		return err
-	}
-	// 연산전에 Admin셋팅을 가지고 온다.
-	adminSetting, err := GetAdminSetting(client)
-	if err != nil {
-		return err
-	}
+func getThumbMovContainer(adminSetting Adminsetting, item Item) error {
 	args := []string{
 		"-i",
 		item.InputThumbnailClipPath,
@@ -300,7 +238,7 @@ func getThumbMovContainer(item Item) error {
 	if *flagDebug {
 		fmt.Println(adminSetting.FFmpeg, strings.Join(args, " "))
 	}
-	err = exec.Command(adminSetting.FFmpeg, args...).Run()
+	err := exec.Command(adminSetting.FFmpeg, args...).Run()
 	if err != nil {
 		return err
 	}
@@ -308,28 +246,7 @@ func getThumbMovContainer(item Item) error {
 }
 
 // getThumbMp4Container 함수는 인수로 받은 아이템의 .mp4 동영상을 만든다.
-func getThumbMp4Container(item Item) error {
-	//mongoDB client 연결
-	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
-	if err != nil {
-		return err
-	}
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-	defer client.Disconnect(ctx)
-	err = client.Connect(ctx)
-	if err != nil {
-		return err
-	}
-	err = client.Ping(ctx, readpref.Primary())
-	if err != nil {
-		return err
-	}
-	// 연산전에 Admin셋팅을 가지고 온다.
-	adminSetting, err := GetAdminSetting(client)
-	if err != nil {
-		return err
-	}
+func getThumbMp4Container(adminSetting Adminsetting, item Item) error {
 	args := []string{
 		"-i",
 		item.InputThumbnailClipPath,
@@ -352,7 +269,7 @@ func getThumbMp4Container(item Item) error {
 	if *flagDebug {
 		fmt.Println(adminSetting.FFmpeg, strings.Join(args, " "))
 	}
-	err = exec.Command(adminSetting.FFmpeg, args...).Run()
+	err := exec.Command(adminSetting.FFmpeg, args...).Run()
 	if err != nil {
 		return err
 	}
