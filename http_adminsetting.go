@@ -113,7 +113,9 @@ func handleAdminSettingSubmit(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	a.VideoCodec = r.FormValue("videocodec")
+	a.VideoCodecOgg = r.FormValue("videocodecogg")
+	a.VideoCodecMp4 = r.FormValue("videocodecmp4")
+	a.VideoCodecMov = r.FormValue("videocodecmov")
 	a.AudioCodec = r.FormValue("audiocodec")
 	//mongoDB client 연결
 	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))

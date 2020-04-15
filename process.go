@@ -4,7 +4,10 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/disintegration/imaging"
@@ -12,6 +15,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
+	"golang.org/x/sys/unix"
 )
 
 func processingItem() error {
@@ -46,6 +50,11 @@ func processingItem() error {
 	}
 	if *flagDebug {
 		fmt.Println("genThumbImage 완료")
+	}
+	// 썸네일 동영상을 생성한다.
+	err = getThumbContainers(item)
+	if err != nil {
+		return err
 	}
 	return nil
 }
@@ -97,5 +106,89 @@ func genThumbImage(item Item) error {
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+// getThumbContainers 함수는 인수로 받은 아이템의 동영상을 만든다.
+func getThumbContainers(item Item) error {
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
+	if err != nil {
+		return err
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	defer client.Disconnect(ctx)
+	err = client.Connect(ctx)
+	if err != nil {
+		return err
+	}
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		return err
+	}
+	collection := client.Database(*flagDBName).Collection(item.ItemType)
+	// Status를 StartContainers로 바꾼다.
+	_, err = collection.UpdateOne(ctx, bson.M{"_id": item.ID}, bson.M{"$set": bson.M{"status": StartContainers}})
+	if err != nil {
+		return err
+	}
+	// 연산전에 Admin셋팅을 가지고 온다.
+	adminSetting, err := GetAdminSetting(client)
+	if err != nil {
+		return err
+	}
+	umask, err := strconv.Atoi(adminSetting.Umask)
+	if err != nil {
+		return err
+	}
+	unix.Umask(umask)
+	// ogg 생성
+	_, err = collection.UpdateOne(ctx, bson.M{"_id": item.ID}, bson.M{"$set": bson.M{"status": CreatingOggContainer}})
+	if err != nil {
+		return err
+	}
+	per, err := strconv.ParseInt(adminSetting.FolderPermission, 8, 64)
+	if err != nil {
+		return err
+	}
+	err = os.MkdirAll(filepath.Dir(item.OutputThumbnailOggPath), os.FileMode(per))
+	if err != nil {
+		return err
+	}
+	args := []string{
+		"-i",
+		item.InputThumbnailClipPath,
+		"-c:v",
+		adminSetting.VideoCodecOgg,
+		"-qscale:v",
+		"7",
+		"-s",
+		fmt.Sprintf("%dx%d", adminSetting.ThumbnailContainerWidth, adminSetting.ThumbnailContainerHeight),
+	}
+	if adminSetting.AudioCodec == "nosound" {
+		// nosound라면 사운드를 넣지 않는 옵션을 추가한다.
+		args = append(args, "-an")
+	} else {
+		// 다른 사운드 코덱이라면 사운드클 체크한다.
+		args = append(args, "-c:a")
+		args = append(args, adminSetting.AudioCodec)
+	}
+	args = append(args, item.OutputThumbnailOggPath)
+	if *flagDebug {
+		fmt.Println(adminSetting.FFmpeg, strings.Join(args, " "))
+	}
+	err = exec.Command(adminSetting.FFmpeg, args...).Run()
+	if err != nil {
+		return err
+	}
+	_, err = collection.UpdateOne(ctx, bson.M{"_id": item.ID}, bson.M{"$set": bson.M{"status": CreatedOggContainer}})
+	if err != nil {
+		return err
+	}
+	// mp4 생성
+	// mov 생성
+	// 종료상태로 변경
+
 	return nil
 }
