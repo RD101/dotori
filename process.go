@@ -83,8 +83,18 @@ func genThumbImage(item Item) error {
 	if err != nil {
 		return err
 	}
-	path := item.InputThumbnailImgPath
+	// 연산전에 Admin셋팅을 가지고 온다.
+	adminSetting, err := GetAdminSetting(client)
+	if err != nil {
+		return err
+	}
+	umask, err := strconv.Atoi(adminSetting.Umask)
+	if err != nil {
+		return err
+	}
+	unix.Umask(umask)
 	// 변환할 이미지를 가져온다.
+	path := item.InputThumbnailImgPath
 	target, err := imaging.Open(path)
 	if err != nil {
 		return err
@@ -92,7 +102,11 @@ func genThumbImage(item Item) error {
 	// Resize the cropped image to width = 200px preserving the aspect ratio.
 	result := imaging.Fill(target, 320, 180, imaging.Center, imaging.Lanczos)
 	// 저장할 경로를 생성
-	err = os.MkdirAll(filepath.Dir(item.OutputThumbnailPngPath), os.FileMode(0777))
+	per, err := strconv.ParseInt(adminSetting.FolderPermission, 8, 64)
+	if err != nil {
+		return err
+	}
+	err = os.MkdirAll(filepath.Dir(item.OutputThumbnailPngPath), os.FileMode(per))
 	if err != nil {
 		return err
 	}
