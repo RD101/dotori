@@ -156,7 +156,7 @@ func getThumbContainers(item Item) error {
 	if err != nil {
 		return err
 	}
-	args := []string{
+	argsOgg := []string{
 		"-i",
 		item.InputThumbnailClipPath,
 		"-c:v",
@@ -168,17 +168,17 @@ func getThumbContainers(item Item) error {
 	}
 	if adminSetting.AudioCodec == "nosound" {
 		// nosound라면 사운드를 넣지 않는 옵션을 추가한다.
-		args = append(args, "-an")
+		argsOgg = append(argsOgg, "-an")
 	} else {
 		// 다른 사운드 코덱이라면 사운드클 체크한다.
-		args = append(args, "-c:a")
-		args = append(args, adminSetting.AudioCodec)
+		argsOgg = append(argsOgg, "-c:a")
+		argsOgg = append(argsOgg, adminSetting.AudioCodec)
 	}
-	args = append(args, item.OutputThumbnailOggPath)
+	argsOgg = append(argsOgg, item.OutputThumbnailOggPath)
 	if *flagDebug {
-		fmt.Println(adminSetting.FFmpeg, strings.Join(args, " "))
+		fmt.Println(adminSetting.FFmpeg, strings.Join(argsOgg, " "))
 	}
-	err = exec.Command(adminSetting.FFmpeg, args...).Run()
+	err = exec.Command(adminSetting.FFmpeg, argsOgg...).Run()
 	if err != nil {
 		return err
 	}
@@ -186,9 +186,12 @@ func getThumbContainers(item Item) error {
 	if err != nil {
 		return err
 	}
-	// mp4 생성
-	// mov 생성
+	// mp4 생성 - 작성예정
+	// mov 생성 - 작성예정
 	// 종료상태로 변경
-
+	_, err = collection.UpdateOne(ctx, bson.M{"_id": item.ID}, bson.M{"$set": bson.M{"status": CreatedContainers}})
+	if err != nil {
+		return err
+	}
 	return nil
 }
