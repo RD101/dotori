@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
 	"strings"
 	"time"
 
@@ -422,4 +423,23 @@ func GetOngoingProcess(client *mongo.Client) ([]Item, error) {
 		results = append(results, items...)
 	}
 	return results, nil
+}
+
+//SetStatus 함수는 인수로 받은 item의 ItemStatus를 status로 바꾼다
+func SetStatus(client *mongo.Client, item Item, status ItemStatus) error {
+	fmt.Println(item.Status)
+	collection := client.Database(*flagDBName).Collection(item.ItemType)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	// item의 Status를 업데이트 한다.
+	filter := bson.M{"_id": item.ID}
+	update := bson.M{
+		"$set": bson.M{"status": status},
+	}
+	err := collection.FindOneAndUpdate(ctx, filter, update).Err()
+	if err != nil {
+		return err
+	}
+	fmt.Println(item.Status)
+	return nil
 }
