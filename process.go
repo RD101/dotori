@@ -144,8 +144,7 @@ func genThumbDir(adminSetting Adminsetting, item Item) error {
 	if err != nil {
 		return err
 	}
-	// Status를 CreatingThumbDir로 바꾼다.
-	collection := client.Database(*flagDBName).Collection(item.ItemType)
+	// umask, 권한 셋팅
 	umask, err := strconv.Atoi(adminSetting.Umask)
 	if err != nil {
 		return err
@@ -182,7 +181,6 @@ func genThumbImage(adminSetting Adminsetting, item Item) error {
 	if err != nil {
 		return err
 	}
-	collection := client.Database(*flagDBName).Collection(item.ItemType)
 	// 변환할 이미지를 가져온다.
 	path := item.InputThumbnailImgPath
 	target, err := imaging.Open(path)
