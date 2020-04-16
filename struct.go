@@ -83,6 +83,8 @@ type ItemStatus int
 // item의 상태
 const (
 	Ready                = ItemStatus(iota) // 준비중
+	CreatingThumbDir                        //thumbnail 폴더 생성중
+	CreatedThumbDir                         //thumbnail 폴더 생성완료
 	StartProcessing                         // 처리 시작
 	CreatingThumbnail                       // 썸네일 생성중
 	CreatedThumbnail                        // 썸네일 생성완료
