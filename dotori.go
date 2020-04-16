@@ -37,7 +37,7 @@ var (
 	flagAttributes  = flag.String("attributes", "", "detail info of file") // "key:value,key:value"
 
 	// 서비스에 필요한 인수
-	flagMonogDBURI = flag.String("mongodburi", "mongodb://localhost:27017", "mongoDB URI ex)mongodb://localhost:27017")
+	flagMongoDBURI = flag.String("mongodburi", "mongodb://localhost:27017", "mongoDB URI ex)mongodb://localhost:27017")
 	flagDBName     = flag.String("dbname", "dotori", "DB name")
 	flagHTTPPort   = flag.String("http", "", "Web Service Port Number")
 	flagPagenum    = flag.Int64("pagenum", 9, "maximum number of items in a page")
@@ -57,7 +57,7 @@ func main() {
 		os.Exit(0)
 	} else if *flagSearch {
 		//mongoDB client 연결
-		client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
+		client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -96,7 +96,7 @@ func main() {
 		i.Attributes = StringToMap(*flagAttributes)
 
 		//mongoDB client 연결
-		client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
+		client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -149,7 +149,7 @@ func main() {
 			log.Fatal("id가 빈 문자열 입니다")
 		}
 		//mongoDB client 연결
-		client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
+		client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -177,7 +177,7 @@ func main() {
 		webserver()
 	} else if *flagSearchID {
 		//mongoDB client 연결
-		client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
+		client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -199,7 +199,7 @@ func main() {
 		fmt.Println(item)
 	} else if *flagGetOngoingProcess {
 		//mongoDB client 연결
-		client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
+		client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 		if err != nil {
 			log.Fatal(err)
 		}

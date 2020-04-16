@@ -423,3 +423,20 @@ func GetOngoingProcess(client *mongo.Client) ([]Item, error) {
 	}
 	return results, nil
 }
+
+//SetStatus 함수는 인수로 받은 item의 Status를 status로 바꾼다
+func SetStatus(client *mongo.Client, item Item, status ItemStatus) error {
+	collection := client.Database(*flagDBName).Collection(item.ItemType)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	// item의 Status를 업데이트 한다.
+	filter := bson.M{"_id": item.ID}
+	update := bson.M{
+		"$set": bson.M{"status": status},
+	}
+	err := collection.FindOneAndUpdate(ctx, filter, update).Err()
+	if err != nil {
+		return err
+	}
+	return nil
+}
