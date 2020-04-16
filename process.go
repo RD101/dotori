@@ -91,6 +91,10 @@ func processingItem() error {
 	if *flagDebug {
 		fmt.Println("genThumbOggContainer 완료")
 	}
+	err = SetStatus(client, item, CreatedOggContainer)
+	if err != nil {
+		return err
+	}
 	// .mov 썸네일 동영상을 생성한다.
 	err = SetStatus(client, item, CreatingMovContainer)
 	if err != nil {
@@ -103,6 +107,10 @@ func processingItem() error {
 	if *flagDebug {
 		fmt.Println("genThumbMovContainer 완료")
 	}
+	err = SetStatus(client, item, CreatedMovContainer)
+	if err != nil {
+		return err
+	}
 	// .mp4 썸네일 동영상을 생성한다.
 	err = SetStatus(client, item, CreatingMp4Container)
 	if err != nil {
@@ -114,6 +122,10 @@ func processingItem() error {
 	}
 	if *flagDebug {
 		fmt.Println("genThumbMp4Container 완료")
+	}
+	err = SetStatus(client, item, CreatedMp4Container)
+	if err != nil {
+		return err
 	}
 	err = SetStatus(client, item, CreatedContainers)
 	if err != nil {
