@@ -19,7 +19,7 @@ func handleAdminSetting(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//mongoDB client 연결
-	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -118,7 +118,7 @@ func handleAdminSettingSubmit(w http.ResponseWriter, r *http.Request) {
 	a.VideoCodecMov = r.FormValue("videocodecmov")
 	a.AudioCodec = r.FormValue("audiocodec")
 	//mongoDB client 연결
-	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -157,7 +157,7 @@ func handleAdminSettingSuccess(w http.ResponseWriter, r *http.Request) {
 	rcp := recipe{}
 	rcp.Token = token
 	//mongoDB client 연결
-	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

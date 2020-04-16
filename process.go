@@ -19,7 +19,7 @@ import (
 
 func processingItem() error {
 	//mongoDB client 연결
-	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 	if err != nil {
 		return err
 	}
@@ -141,7 +141,7 @@ func processingItem() error {
 //genThumbDir 은 인수로 받은 아이템의 경로에 thumbnail 폴더를 생성한다.
 func genThumbDir(adminSetting Adminsetting, item Item) error {
 	//mongoDB client 연결
-	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 	if err != nil {
 		return err
 	}
@@ -178,7 +178,7 @@ func genThumbDir(adminSetting Adminsetting, item Item) error {
 // genThumbImage 함수는 인수로 받은 아이템의 썸네일 이미지를 만든다.
 func genThumbImage(adminSetting Adminsetting, item Item) error {
 	//mongoDB client 연결
-	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 	if err != nil {
 		return err
 	}
