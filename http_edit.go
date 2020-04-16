@@ -42,7 +42,7 @@ func handleEditMaya(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//mongoDB client 연결
-	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -110,7 +110,7 @@ func handleEditMayaSubmit(w http.ResponseWriter, r *http.Request) {
 		attr[key] = value
 	}
 	//mongoDB client 연결
-	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -158,7 +158,7 @@ func handleEditMayaSuccess(w http.ResponseWriter, r *http.Request) {
 	rcp := recipe{}
 	rcp.Token = token
 	//mongoDB client 연결
-	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

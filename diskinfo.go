@@ -34,7 +34,7 @@ func DiskCheck() (DiskStatus, error) {
 	var ds DiskStatus
 
 	//mongoDB client 연결
-	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 	if err != nil {
 		return ds, err
 	}

@@ -137,7 +137,7 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 	rcp.ItemType = itemType
 	rcp.Token = token
 	//mongoDB client 연결
-	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -207,7 +207,7 @@ func handleHelp(w http.ResponseWriter, r *http.Request) {
 	rcp := recipe{}
 	rcp.Token = token
 	//mongoDB client 연결
-	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -252,7 +252,7 @@ func handleItemProcess(w http.ResponseWriter, r *http.Request) {
 		Adminsetting Adminsetting
 	}
 	//mongoDB client 연결
-	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMonogDBURI))
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
