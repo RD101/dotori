@@ -499,6 +499,21 @@ func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
 				http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
 				return
 			}
+			tags, err := FilenameToTags(f.Filename)
+			if err != nil {
+				item.Log = item.Log + "\n'" + f.Filename + "'을 tag에 추가하지 못했습니다"
+			}
+			for _, tag := range tags {
+				has := false // 중복되는 tag가 있다면 append하지 않는다.
+				for _, t := range item.Tags {
+					if tag == t {
+						has = true
+					}
+				}
+				if !has {
+					item.Tags = append(item.Tags, tag)
+				}
+			}
 		}
 	}
 	UpdateItem(client, "maya", item)

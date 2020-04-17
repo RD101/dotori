@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"log"
+	"path/filepath"
 	"strings"
 )
 
@@ -51,12 +52,18 @@ func StringToMap(str string) map[string]string {
 	return result
 }
 
-// SplitBySign 는 string 문자열을 특수문자 기준으로 split하여 리스트를 반환하는 함수이다.
-func SplitBySign(str string) ([]string, error) {
-	var result []string
-	result = regexSplitBySign.Split(str, -1)
-	if len(result) == 0 {
-		return result, errors.New("빈 리스트를 반환했습니다")
+// FilenameToTags 는 경로를 받아서 태그를 반환한다.
+func FilenameToTags(path string) ([]string, error) {
+	var returnTags []string
+	filename := strings.TrimSuffix(path, filepath.Ext(path)) // 확장자 제거
+	tags := regexSplitBySign.Split(filename, -1)
+	for _, tag := range tags {
+		if tag != "thumbnail" {
+			returnTags = append(returnTags, tag)
+		}
 	}
-	return result, nil
+	if len(returnTags) == 0 {
+		return returnTags, errors.New("태그리스트가 비어있습니다")
+	}
+	return returnTags, nil
 }
