@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"os"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -159,6 +160,14 @@ func (a Adminsetting) CheckError() error {
 	}
 	if !regexPermission.MatchString(a.Umask) {
 		return errors.New("Umask가 형식에 맞지 않습니다")
+	}
+	if a.FFmpeg == "" {
+		return errors.New("FFmpeg 경로를 설정해주세요")
+	}
+	if a.FFmpeg != "" {
+		if _, err := os.Stat(a.FFmpeg); os.IsNotExist(err) {
+			return errors.New(a.FFmpeg + " 경로에 FFmpeg 명령어가 존재하지 않습니다")
+		}
 	}
 	return nil
 }
