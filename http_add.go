@@ -501,7 +501,7 @@ func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
 			}
 			tags, err := FilenameToTags(f.Filename)
 			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
+				item.Log = item.Log + "\n'" + f.Filename + "'을 tag에 추가하지 못했습니다"
 			}
 			for _, tag := range tags {
 				has := false // 중복되는 tag가 있다면 append하지 않는다.
