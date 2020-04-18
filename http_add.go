@@ -409,6 +409,10 @@ func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
 	}
 	for _, files := range r.MultipartForm.File {
 		for _, f := range files {
+			if f.Size == 0 {
+				http.Error(w, "파일사이즈가 0 바이트입니다", http.StatusInternalServerError)
+				return
+			}
 			file, err := f.Open()
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
