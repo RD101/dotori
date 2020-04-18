@@ -164,10 +164,8 @@ func (a Adminsetting) CheckError() error {
 	if a.FFmpeg == "" {
 		return errors.New("FFmpeg 경로를 설정해주세요")
 	}
-	if a.FFmpeg != "" {
-		if _, err := os.Stat(a.FFmpeg); os.IsNotExist(err) {
-			return errors.New(a.FFmpeg + " 경로에 FFmpeg 명령어가 존재하지 않습니다")
-		}
+	if _, err := os.Stat(a.FFmpeg); os.IsNotExist(err) {
+		return errors.New(a.FFmpeg + " 경로에 FFmpeg 명령어가 존재하지 않습니다")
 	}
 	return nil
 }
