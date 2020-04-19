@@ -51,7 +51,7 @@ func GetAdminSetting(client *mongo.Client) (Adminsetting, error) {
 	defer cancel()
 	err := collection.FindOne(ctx, bson.M{"id": "setting.admin"}).Decode(&result)
 	if err != nil {
-		if err == mongo.ErrNilDocument { // document가 존재하지 않는 경우, 즉 adminsetting이 없는 경우
+		if err == mongo.ErrNoDocuments { // document가 존재하지 않는 경우, 즉 adminsetting이 없는 경우
 			return Adminsetting{}, nil
 		}
 		return Adminsetting{}, err
