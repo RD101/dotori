@@ -440,3 +440,38 @@ func SetStatus(client *mongo.Client, item Item, status ItemStatus) error {
 	}
 	return nil
 }
+
+// GetProcessingItemNum 함수는 현재 연산 중인 아이템의 개수를 구한다.
+func GetProcessingItemNum(client *mongo.Client) (int64, error) {
+	var result int64
+	result = 0
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	filter := bson.M{"$ne": bson.M{"$or": []interface{}{
+		bson.M{"status": Ready},
+		bson.M{"status": Done},
+	}}}
+	collections, err := client.Database(*flagDBName).ListCollectionNames(ctx, bson.M{})
+	if err != nil {
+		return result, err
+	}
+	// 컬렉션을 for문 돌면서 Ready,Done 상태가 아닌 Item의 수를 구하여 result에 더한다.
+	for _, c := range collections {
+		if c == "setting.admin" { // setting.admin 컬렉션은 제외한다.
+			continue
+		}
+		if c == "system.indexs" { //mongodb의 기본 컬렉션. 제외한다.
+			continue
+		}
+		if c == "users" { // 사용자 컬렉션을 제외한다.
+			continue
+		}
+		collection := client.Database(*flagDBName).Collection(c)
+		n, err := collection.CountDocuments(ctx, filter)
+		if err != nil {
+			return result, err
+		}
+		result += n
+	}
+	return result, nil
+}
