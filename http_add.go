@@ -520,6 +520,10 @@ func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
+	if item.ThumbImgUploaded && item.ThumbClipUploaded && item.DataUploaded {
+		item.Status = FileUploaded
+	}
+	fmt.Println(item.Status)
 	UpdateItem(client, "maya", item)
 }
 
