@@ -27,6 +27,7 @@ var funcMap = template.FuncMap{
 	"PreviousPage": PreviousPage,
 	"NextPage":     NextPage,
 	"Int2Status":   Int2Status,
+	"RmRootpath":   RmRootpath,
 }
 
 func webserver() {
@@ -58,7 +59,7 @@ func webserver() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	http.Handle(adminsetting.Rootpath, http.FileServer(http.Dir("/")))
+	http.Handle("/storage/", http.StripPrefix("/storage/", http.FileServer(http.Dir(adminsetting.Rootpath))))
 	// 웹주소 설정
 	http.HandleFunc("/", handleSearch)
 	http.HandleFunc("/search", handleSearch)

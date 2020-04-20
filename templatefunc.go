@@ -1,6 +1,8 @@
 package main
 
-import "strings"
+import (
+	"strings"
+)
 
 // Tags2str 템플릿함수는 태그리스트를 공백으로 분리된 문자열로 만든다.
 func Tags2str(tags []string) string {
@@ -16,6 +18,11 @@ func Tags2str(tags []string) string {
 // add함수는 입력받은 두 정수를 더한 값을 반환한다.
 func add(a, b int) int {
 	return (a + b)
+}
+
+// RmRootpath 템플릿함수는 path가 rootpath로 시작하면 rootpath 문자열을 제거한다.
+func RmRootpath(path, rootpath string) string {
+	return strings.TrimLeft(path, rootpath)
 }
 
 // Int2Status 는 입력받은 ItemStatus에 해당하는 문자열을 반환한다.
