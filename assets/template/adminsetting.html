@@ -57,21 +57,21 @@
                     <div class="col-sm">
                         <div class="form-group">
                             <label class="text-muted">Umask</label>
-                            <input type="text" name="umask" class="form-control" placeholder="0000" value="{{.Adminsetting.Umask}}">
+                            <input type="text" name="umask" class="form-control" placeholder="0000" value="{{.Adminsetting.Umask}}" onkeyup=handlerNumCheck(this)>
                             <small class="form-text text-muted">Umask 값을 설정해주세요.</small>
                         </div>
                     </div>
                     <div class="col-sm">
                         <div class="form-group">
                             <label class="text-muted">Folder Permission</label>
-                            <input type="text" name="folderpermission" class="form-control" placeholder="0775" value="{{.Adminsetting.FolderPermission}}">
+                            <input type="text" name="folderpermission" class="form-control" placeholder="0775" value="{{.Adminsetting.FolderPermission}}" onkeyup=handlerNumCheck(this)>
                             <small class="form-text text-muted">폴더 권한을 설정해주세요.</small>
                         </div>
                     </div>
                     <div class="col-sm">
                         <div class="form-group">
                             <label class="text-muted">File Permission</label>
-                            <input type="text" name="filepermission" class="form-control" placeholder="0440" value="{{.Adminsetting.FilePermission}}">
+                            <input type="text" name="filepermission" class="form-control" placeholder="0440" value="{{.Adminsetting.FilePermission}}" onkeyup=handlerNumCheck(this)>
                             <small class="form-text text-muted">파일 권한을 설정해주세요.</small>
                         </div>
                     </div>
@@ -80,14 +80,14 @@
                     <div class="col-sm">
                         <div class="form-group">
                             <label class="text-muted">UID</label>
-                            <input type="text" name="uid" class="form-control" placeholder="501" value="{{.Adminsetting.UID}}">
+                            <input type="text" name="uid" class="form-control" placeholder="501" value="{{.Adminsetting.UID}}" onkeyup=handlerNumCheck(this)>
                             <small class="form-text text-muted">User ID를 설정해주세요.</small>
                         </div>
                     </div>
                     <div class="col-sm">
                         <div class="form-group">
                             <label class="text-muted">GID</label>
-                            <input type="text" name="gid" class="form-control" placeholder="20" value="{{.Adminsetting.GID}}">
+                            <input type="text" name="gid" class="form-control" placeholder="20" value="{{.Adminsetting.GID}}" onkeyup=handlerNumCheck(this)>
                             <small class="form-text text-muted">Group ID를 설정해주세요.</small>
                         </div>
                     </div>
@@ -132,14 +132,14 @@
                     <div class="col-sm">
                         <div class="form-group">
                             <label class="text-muted">썸네일 이미지 Width</label>
-                            <input type="text" name="thumbnailimagewidth" class="form-control" placeholder="320" value="{{if eq .Adminsetting.ThumbnailImageWidth 0}}320{{else}}{{.Adminsetting.ThumbnailImageWidth}}{{end}}">
+                            <input type="text" name="thumbnailimagewidth" class="form-control" placeholder="320" value="{{if eq .Adminsetting.ThumbnailImageWidth 0}}320{{else}}{{.Adminsetting.ThumbnailImageWidth}}{{end}}" onkeyup=handlerNumCheck(this)>
                             <small class="form-text text-muted">썸네일 이미지 가로 사이즈를 입력해주세요.</small>
                         </div>
                     </div>
                     <div class="col-sm">
                         <div class="form-group">
                             <label class="text-muted">썸네일 이미지 Height</label>
-                            <input type="text" name="thumbnailimageheight" class="form-control" placeholder="180" value="{{if eq .Adminsetting.ThumbnailImageHeight 0}}180{{else}}{{.Adminsetting.ThumbnailImageHeight}}{{end}}">
+                            <input type="text" name="thumbnailimageheight" class="form-control" placeholder="180" value="{{if eq .Adminsetting.ThumbnailImageHeight 0}}180{{else}}{{.Adminsetting.ThumbnailImageHeight}}{{end}}" onkeyup=handlerNumCheck(this)>
                             <small class="form-text text-muted">썸네일 이미지 세로 사이즈를 입력해주세요.</small>
                         </div>
                     </div>
@@ -148,14 +148,14 @@
                     <div class="col-sm">
                         <div class="form-group">
                             <label class="text-muted">썸네일 동영상 Width</label>
-                            <input type="text" name="thumbnailcontainerwidth" class="form-control" placeholder="1280" value="{{if eq .Adminsetting.ThumbnailContainerWidth 0}}1280{{else}}{{.Adminsetting.ThumbnailContainerWidth}}{{end}}">
+                            <input type="text" name="thumbnailcontainerwidth" class="form-control" placeholder="1280" value="{{if eq .Adminsetting.ThumbnailContainerWidth 0}}1280{{else}}{{.Adminsetting.ThumbnailContainerWidth}}{{end}}" onkeyup=handlerNumCheck(this)>
                             <small class="form-text text-muted">썸네일 동영상 가로 사이즈를 입력해주세요.</small>
                         </div>
                     </div>
                     <div class="col-sm">
                         <div class="form-group">
                             <label class="text-muted">썸네일 동영상 Height</label>
-                            <input type="text" name="thumbnailcontainerheight" class="form-control" placeholder="720" value="{{if eq .Adminsetting.ThumbnailContainerHeight 0}}720{{else}}{{.Adminsetting.ThumbnailContainerHeight}}{{end}}">
+                            <input type="text" name="thumbnailcontainerheight" class="form-control" placeholder="720" value="{{if eq .Adminsetting.ThumbnailContainerHeight 0}}720{{else}}{{.Adminsetting.ThumbnailContainerHeight}}{{end}}" onkeyup=handlerNumCheck(this)>
                             <small class="form-text text-muted">썸네일 동영상 세로 사이즈를 입력해주세요.</small>
                         </div>
                     </div>

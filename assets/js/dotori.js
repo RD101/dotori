@@ -43,3 +43,27 @@ function copyButton(elementId) {
     document.execCommand("copy");               // 복사기능 실행
     document.body.removeChild(id);              // body에 요소 삭제
 }
+
+// handlerNumCheck 은 숫자만 적히도록 하는 레귤러익스프레션이다.
+function handlerNumCheck(element){
+    var num = $(element).val();
+    var lastnum = num.charAt(num.length-1);
+    $(element).val($(element).val().replace(/[^0-9]/g,""));
+
+    if(element.name == "umask" || element.name == "folderpermission" || element.name == "filepermission"){
+        var password1RegExp = /^[0-9]{0,4}$/;
+        if (!password1RegExp.test(num)) {
+            alert("숫자 4자리까지 입력해야합니다!");
+            var sliceStr = num.slice(0,-1);
+            $(element).val(sliceStr);
+        }
+
+        if(0<=lastnum && lastnum <=7){
+            return;
+        }else{
+            var sliceStr = num.slice(0,-1);
+            $(element).val(sliceStr);
+            alert("0~7 사이의 숫자를 입력해주세요.");
+        }
+    }
+}
