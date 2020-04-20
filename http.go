@@ -121,6 +121,9 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 	if itemType == "" {
 		itemType = "maya"
 	}
+	if page == "" {
+		page = "1"
+	}
 	type recipe struct {
 		Items       []Item
 		Searchword  string

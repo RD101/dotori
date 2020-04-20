@@ -4,7 +4,7 @@
             {{$itemtype := .ItemType}}
             <div class="col-sm-4 text-center">
                 <div class="thumbnail">
-                    <img src="/assets/img/noimage.svg">
+                    <img src="{{.OutputThumbnailPngPath}}" onerror="this.src='/assets/img/noimage.svg'">
                 </div>
                 <div class="info mb-3">
                     <div>
