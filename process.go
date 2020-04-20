@@ -21,8 +21,8 @@ import (
 func Processing() {
 	for {
 		time.Sleep(time.Duration(*flagProcessInterval) * 1000 * time.Millisecond)
-		go ProcessDemo()
-		// go processingItem()
+		//go ProcessDemo()
+		go processingItem()
 	}
 }
 
