@@ -175,8 +175,14 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
+		// 프로세스 연산을 실행한다.
+		// webserver와 같이 실행해야하기 때문에 go를 붙혀서 실행한다.
+		// go 명령어가 없다면, webserver() 함수가 실행되지 않는다.
+		go Processing()
+		// 웹서버 실행
 		fmt.Printf("Service start: http://%s\n", ip)
 		webserver()
+
 	} else if *flagSearchID {
 		//mongoDB client 연결
 		client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))

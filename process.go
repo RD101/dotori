@@ -17,6 +17,21 @@ import (
 	"golang.org/x/sys/unix"
 )
 
+// Processing 함수는 일정시간마다 프로세스를 실행시킨다.
+func Processing() {
+	for {
+		time.Sleep(time.Duration(*flagProcessInterval) * 1000 * time.Millisecond)
+		go ProcessDemo()
+		// go processingItem()
+	}
+}
+
+// ProcessDemo 함수는 go 프로세스가 잘 실행되는지 테스트하는 함수이다.
+func ProcessDemo() {
+	fmt.Println("processing", *flagProcessNum)
+	fmt.Println("wait", *flagProcessInterval, "sec")
+}
+
 func processingItem() error {
 	//mongoDB client 연결
 	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
