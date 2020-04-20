@@ -227,6 +227,7 @@ func genThumbImage(adminSetting Adminsetting, item Item) error {
 // getThumbOggContainer 함수는 인수로 받은 아이템의 .ogg 동영상을 만든다.
 func getThumbOggContainer(adminSetting Adminsetting, item Item) error {
 	args := []string{
+		"-y",
 		"-i",
 		item.InputThumbnailClipPath,
 		"-c:v",
@@ -258,6 +259,7 @@ func getThumbOggContainer(adminSetting Adminsetting, item Item) error {
 // getThumbMovContainer 함수는 인수로 받은 아이템의 .mov 동영상을 만든다.
 func getThumbMovContainer(adminSetting Adminsetting, item Item) error {
 	args := []string{
+		"-y",
 		"-i",
 		item.InputThumbnailClipPath,
 		"-c:v",
@@ -289,6 +291,7 @@ func getThumbMovContainer(adminSetting Adminsetting, item Item) error {
 // getThumbMp4Container 함수는 인수로 받은 아이템의 .mp4 동영상을 만든다.
 func getThumbMp4Container(adminSetting Adminsetting, item Item) error {
 	args := []string{
+		"-y",
 		"-i",
 		item.InputThumbnailClipPath,
 		"-c:v",
