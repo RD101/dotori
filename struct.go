@@ -24,6 +24,7 @@ type Adminsetting struct {
 	FFmpeg                   string `json:"ffmpeg" bson:"ffmpeg"`                                     // FFmpeg 명령어 경로
 	OCIOConfig               string `json:"ocioconfig" bson:"ocioconfig"`                             // ocio.config 경로
 	OpenImageIO              string `json:"openimageio" bson:"openimageio"`                           // OpenImageIO 명령어 경로
+	LDLibraryPath            string `json:"ldlibrarypath"`                                            // LD_LIBRARY_PATH
 	MultipartFormBufferSize  int    `json:"multipartformbuffersize" bson:"multipartformbuffersize"`   // MultipartForm Buffersize
 	ThumbnailImageWidth      int    `json:"thumbnailimagewidth" bson:"thumbnailimagewidth"`           // 썸네일 이미지 가로 픽셀 사이즈
 	ThumbnailImageHeight     int    `json:"thumbnailimageheight" bson:"thumbnailimageheight"`         // 썸네일 이미지 세로 픽셀 사이즈

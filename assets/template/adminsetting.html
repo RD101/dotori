@@ -122,6 +122,15 @@
                 <div class="row">
                     <div class="col-sm">
                         <div class="form-group">
+                            <label class="text-muted">LD_LIBRARY_PATH</label>
+                            <input type="text" name="ldlibrarypath" class="form-control" placeholder="/path/lib:/path/lib" value="{{.Adminsetting.LDLibraryPath}}">
+                            <small class="form-text text-muted">연산에 필요한 라이브러리 경로를 설정해주세요. 구분은 : 문자로 합니다.</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm">
+                        <div class="form-group">
                             <label class="text-muted">MultipartForm Buffer Size</label>
                             <input type="number" name="multipartformbuffersize" class="form-control" placeholder="200000" value="{{.Adminsetting.MultipartFormBufferSize}}">
                             <small class="form-text text-muted">MultipartForm Buffersize</small>

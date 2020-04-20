@@ -78,6 +78,7 @@ func handleAdminSettingSubmit(w http.ResponseWriter, r *http.Request) {
 	a.FFmpeg = r.FormValue("ffmpeg")
 	a.OCIOConfig = r.FormValue("ocioconfig")
 	a.OpenImageIO = r.FormValue("openimageio")
+	a.LDLibraryPath = r.FormValue("ldlibrarypath")
 	bsize, err := strconv.Atoi(r.FormValue("multipartformbuffersize"))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
