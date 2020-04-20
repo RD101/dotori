@@ -234,8 +234,13 @@ func getThumbOggContainer(adminSetting Adminsetting, item Item) error {
 		adminSetting.VideoCodecOgg,
 		"-qscale:v",
 		"7",
-		"-s",
-		fmt.Sprintf("%dx%d", adminSetting.ThumbnailContainerWidth, adminSetting.ThumbnailContainerHeight),
+		"-vf",
+		fmt.Sprintf("scale=%d:%d,crop=%d:%d:0:0,setsar=1",
+			adminSetting.ThumbnailContainerWidth,
+			adminSetting.ThumbnailContainerHeight,
+			adminSetting.ThumbnailContainerWidth,
+			adminSetting.ThumbnailContainerHeight,
+		),
 	}
 	if adminSetting.AudioCodec == "nosound" {
 		// nosound라면 사운드를 넣지 않는 옵션을 추가한다.
@@ -266,8 +271,13 @@ func getThumbMovContainer(adminSetting Adminsetting, item Item) error {
 		adminSetting.VideoCodecMov,
 		"-qscale:v",
 		"7",
-		"-s",
-		fmt.Sprintf("%dx%d", adminSetting.ThumbnailContainerWidth, adminSetting.ThumbnailContainerHeight),
+		"-vf",
+		fmt.Sprintf("scale=%d:%d,crop=%d:%d:0:0,setsar=1",
+			adminSetting.ThumbnailContainerWidth,
+			adminSetting.ThumbnailContainerHeight,
+			adminSetting.ThumbnailContainerWidth,
+			adminSetting.ThumbnailContainerHeight,
+		),
 	}
 	if adminSetting.AudioCodec == "nosound" {
 		// nosound라면 사운드를 넣지 않는 옵션을 추가한다.
@@ -298,8 +308,13 @@ func getThumbMp4Container(adminSetting Adminsetting, item Item) error {
 		adminSetting.VideoCodecMp4,
 		"-qscale:v",
 		"7",
-		"-s",
-		fmt.Sprintf("%dx%d", adminSetting.ThumbnailContainerWidth, adminSetting.ThumbnailContainerHeight),
+		"-vf",
+		fmt.Sprintf("scale=%d:%d,crop=%d:%d:0:0,setsar=1",
+			adminSetting.ThumbnailContainerWidth,
+			adminSetting.ThumbnailContainerHeight,
+			adminSetting.ThumbnailContainerWidth,
+			adminSetting.ThumbnailContainerHeight,
+		),
 	}
 	if adminSetting.AudioCodec == "nosound" {
 		// nosound라면 사운드를 넣지 않는 옵션을 추가한다.
