@@ -37,12 +37,13 @@ var (
 	flagAttributes  = flag.String("attributes", "", "detail info of file") // "key:value,key:value"
 
 	// 서비스에 필요한 인수
-	flagMongoDBURI = flag.String("mongodburi", "mongodb://localhost:27017", "mongoDB URI ex)mongodb://localhost:27017")
-	flagDBName     = flag.String("dbname", "dotori", "DB name")
-	flagHTTPPort   = flag.String("http", "", "Web Service Port Number")
-	flagPagenum    = flag.Int64("pagenum", 9, "maximum number of items in a page")
-	flagCookieAge  = flag.Int("cookieage", 4, "cookie age (hour)") // MPAA 기준 4시간이다.
-	flagThreads    = flag.Int("threads", 1, "process thread number")
+	flagMongoDBURI      = flag.String("mongodburi", "mongodb://localhost:27017", "mongoDB URI ex)mongodb://localhost:27017")
+	flagDBName          = flag.String("dbname", "dotori", "DB name")
+	flagHTTPPort        = flag.String("http", "", "Web Service Port Number")
+	flagPagenum         = flag.Int64("pagenum", 9, "maximum number of items in a page")
+	flagCookieAge       = flag.Int("cookieage", 4, "cookie age (hour)") // MPAA 기준 4시간이다.
+	flagProcessNum      = flag.Int("processnum", 1, "number of process")
+	flagProcessDuration = flag.Int("processduration", 10, "seconds of interval between processes") // 기본 10초
 
 	flagItemID = flag.String("itemid", "", "bson ObjectID assigned by mongodb")
 )
