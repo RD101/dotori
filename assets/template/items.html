@@ -4,7 +4,11 @@
             {{$itemtype := .ItemType}}
             <div class="col-sm-4 text-center">
                 <div class="thumbnail">
-                    <img src="{{.OutputThumbnailPngPath}}" onerror="this.src='/assets/img/noimage.svg'">
+                    {{if eq .Status 14}}
+                        <img src="/storage/{{RmRootpath .OutputThumbnailPngPath $.Adminsetting.Rootpath}}">
+                    {{else}}
+                        <img src="/assets/img/noimage.svg">
+                    {{end}}
                 </div>
                 <div class="info mb-3">
                     <div>
