@@ -42,6 +42,7 @@ var (
 	flagHTTPPort   = flag.String("http", "", "Web Service Port Number")
 	flagPagenum    = flag.Int64("pagenum", 9, "maximum number of items in a page")
 	flagCookieAge  = flag.Int("cookieage", 4, "cookie age (hour)") // MPAA 기준 4시간이다.
+	flagThreads    = flag.Int("threads", 1, "process thread number")
 
 	flagItemID = flag.String("itemid", "", "bson ObjectID assigned by mongodb")
 )
