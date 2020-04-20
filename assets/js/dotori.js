@@ -43,3 +43,8 @@ function copyButton(elementId) {
     document.execCommand("copy");               // 복사기능 실행
     document.body.removeChild(id);              // body에 요소 삭제
 }
+
+// handlerNumCheck 은 숫자만 적히도록 하는 레귤러익스프레션이다.
+function handlerNumCheck(element){
+    $(element).val($(element).val().replace(/[^0-9]/g,""));
+}
