@@ -346,8 +346,8 @@ func SetAdminSetting(client *mongo.Client, a Adminsetting) error {
 	return nil
 }
 
-// GetReadyItem 은 DB에서 ready상태인 Item을 하나 가져온다.
-func GetReadyItem(client *mongo.Client) (Item, error) {
+// GetFileUploadedItem 은 DB에서 FileUploaded상태인 Item을 하나 가져온다.
+func GetFileUploadedItem(client *mongo.Client) (Item, error) {
 	var result Item
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -355,7 +355,7 @@ func GetReadyItem(client *mongo.Client) (Item, error) {
 	if err != nil {
 		return result, err
 	}
-	// 컬렉션을 for문 돌면서 Ready 상태인 Item을 찾는다.
+	// 컬렉션을 for문 돌면서 FileUploaded 상태인 Item을 찾는다.
 	for _, c := range collections {
 		if c == "setting.admin" { // setting.admin 컬렉션은 제외한다.
 			continue
@@ -367,15 +367,15 @@ func GetReadyItem(client *mongo.Client) (Item, error) {
 			continue
 		}
 		collection := client.Database(*flagDBName).Collection(c)
-		n, err := collection.CountDocuments(ctx, bson.M{"status": Ready})
+		filter := bson.M{"status": FileUploaded}
+		n, err := collection.CountDocuments(ctx, filter)
 		if err != nil {
 			return result, err
 		}
 		if n == 0 {
 			continue
 		}
-		// ready상태인 Item이 있다면 찾고, Status를 업데이트 한다.
-		filter := bson.M{"status": Ready}
+		// FileUploaded상태인 Item이 있다면 찾고, Status를 업데이트 한다.
 		update := bson.M{
 			"$set": bson.M{"status": StartProcessing},
 		}
@@ -386,7 +386,7 @@ func GetReadyItem(client *mongo.Client) (Item, error) {
 		// 해당 Item을 반환한다.
 		return result, nil
 	}
-	return result, errors.New("ready상태인 Item이 없습니다")
+	return result, errors.New("FileUploaded상태인 Item이 없습니다")
 }
 
 // GetOngoingProcess 는 처리 중인 아이템을 가져온다.
