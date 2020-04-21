@@ -346,7 +346,7 @@ func SetAdminSetting(client *mongo.Client, a Adminsetting) error {
 	return nil
 }
 
-// GetFileUploadedItem 은 DB에서 ready상태인 Item을 하나 가져온다.
+// GetFileUploadedItem 은 DB에서 FileUploaded상태인 Item을 하나 가져온다.
 func GetFileUploadedItem(client *mongo.Client) (Item, error) {
 	var result Item
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
