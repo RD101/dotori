@@ -54,13 +54,13 @@ func processingItem() error {
 	if err != nil {
 		return err
 	}
-	// Status가 Ready인 item을 가져온다.
-	item, err := GetReadyItem(client)
+	// Status가 FileUploaded인 item을 가져온다.
+	item, err := GetFileUploadedItem(client)
 	if err != nil {
 		return err
 	}
 	if *flagDebug {
-		fmt.Println("GetReadyItem 완료")
+		fmt.Println("GetFileUploadedItem 완료")
 	}
 	// thumbnail 폴더를 생성한다.
 	err = SetStatus(client, item, CreatingThumbDir)
