@@ -155,22 +155,6 @@ func processingItem() error {
 
 //genThumbDir 은 인수로 받은 아이템의 경로에 thumbnail 폴더를 생성한다.
 func genThumbDir(adminSetting Adminsetting, item Item) error {
-	//mongoDB client 연결
-	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
-	if err != nil {
-		return err
-	}
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-	defer client.Disconnect(ctx)
-	err = client.Connect(ctx)
-	if err != nil {
-		return err
-	}
-	err = client.Ping(ctx, readpref.Primary())
-	if err != nil {
-		return err
-	}
 	// umask, 권한 셋팅
 	umask, err := strconv.Atoi(adminSetting.Umask)
 	if err != nil {
