@@ -99,7 +99,7 @@ func processingItem() error {
 	if err != nil {
 		return err
 	}
-	err = getThumbOggContainer(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+	err = genThumbOggContainer(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
 		return err
 	}
@@ -115,7 +115,7 @@ func processingItem() error {
 	if err != nil {
 		return err
 	}
-	err = getThumbMovContainer(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+	err = genThumbMovContainer(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
 		return err
 	}
@@ -131,7 +131,7 @@ func processingItem() error {
 	if err != nil {
 		return err
 	}
-	err = getThumbMp4Container(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+	err = genThumbMp4Container(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
 		return err
 	}
@@ -155,22 +155,6 @@ func processingItem() error {
 
 //genThumbDir 은 인수로 받은 아이템의 경로에 thumbnail 폴더를 생성한다.
 func genThumbDir(adminSetting Adminsetting, item Item) error {
-	//mongoDB client 연결
-	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
-	if err != nil {
-		return err
-	}
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-	defer client.Disconnect(ctx)
-	err = client.Connect(ctx)
-	if err != nil {
-		return err
-	}
-	err = client.Ping(ctx, readpref.Primary())
-	if err != nil {
-		return err
-	}
 	// umask, 권한 셋팅
 	umask, err := strconv.Atoi(adminSetting.Umask)
 	if err != nil {
@@ -192,22 +176,6 @@ func genThumbDir(adminSetting Adminsetting, item Item) error {
 
 // genThumbImage 함수는 인수로 받은 아이템의 썸네일 이미지를 만든다.
 func genThumbImage(adminSetting Adminsetting, item Item) error {
-	//mongoDB client 연결
-	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
-	if err != nil {
-		return err
-	}
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-	defer client.Disconnect(ctx)
-	err = client.Connect(ctx)
-	if err != nil {
-		return err
-	}
-	err = client.Ping(ctx, readpref.Primary())
-	if err != nil {
-		return err
-	}
 	// 변환할 이미지를 가져온다.
 	path := item.InputThumbnailImgPath
 	target, err := imaging.Open(path)
@@ -224,8 +192,8 @@ func genThumbImage(adminSetting Adminsetting, item Item) error {
 	return nil
 }
 
-// getThumbOggContainer 함수는 인수로 받은 아이템의 .ogg 동영상을 만든다.
-func getThumbOggContainer(adminSetting Adminsetting, item Item) error {
+// genThumbOggContainer 함수는 인수로 받은 아이템의 .ogg 동영상을 만든다.
+func genThumbOggContainer(adminSetting Adminsetting, item Item) error {
 	args := []string{
 		"-y",
 		"-i",
@@ -261,8 +229,8 @@ func getThumbOggContainer(adminSetting Adminsetting, item Item) error {
 	return nil
 }
 
-// getThumbMovContainer 함수는 인수로 받은 아이템의 .mov 동영상을 만든다.
-func getThumbMovContainer(adminSetting Adminsetting, item Item) error {
+// genThumbMovContainer 함수는 인수로 받은 아이템의 .mov 동영상을 만든다.
+func genThumbMovContainer(adminSetting Adminsetting, item Item) error {
 	args := []string{
 		"-y",
 		"-i",
@@ -298,8 +266,8 @@ func getThumbMovContainer(adminSetting Adminsetting, item Item) error {
 	return nil
 }
 
-// getThumbMp4Container 함수는 인수로 받은 아이템의 .mp4 동영상을 만든다.
-func getThumbMp4Container(adminSetting Adminsetting, item Item) error {
+// genThumbMp4Container 함수는 인수로 받은 아이템의 .mp4 동영상을 만든다.
+func genThumbMp4Container(adminSetting Adminsetting, item Item) error {
 	args := []string{
 		"-y",
 		"-i",

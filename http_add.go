@@ -523,7 +523,6 @@ func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
 	if item.ThumbImgUploaded && item.ThumbClipUploaded && item.DataUploaded {
 		item.Status = FileUploaded
 	}
-	fmt.Println(item.Status)
 	UpdateItem(client, "maya", item)
 }
 
@@ -544,11 +543,6 @@ func handleUploadMayaCheckData(w http.ResponseWriter, r *http.Request) {
 	defer cancel()
 	defer client.Disconnect(ctx)
 	err = client.Connect(ctx)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	err = client.Ping(ctx, readpref.Primary())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
