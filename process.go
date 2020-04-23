@@ -183,7 +183,7 @@ func genThumbImage(adminSetting Adminsetting, item Item) error {
 		return err
 	}
 	// Resize the cropped image to width = 200px preserving the aspect ratio.
-	result := imaging.Fill(target, 320, 180, imaging.Center, imaging.Lanczos)
+	result := imaging.Fill(target, adminSetting.ThumbnailImageWidth, adminSetting.ThumbnailImageHeight, imaging.Center, imaging.Lanczos)
 	//생성한 경로에 연산된 이미지 저장
 	err = imaging.Save(result, item.OutputThumbnailPngPath)
 	if err != nil {
