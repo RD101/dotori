@@ -176,22 +176,6 @@ func genThumbDir(adminSetting Adminsetting, item Item) error {
 
 // genThumbImage 함수는 인수로 받은 아이템의 썸네일 이미지를 만든다.
 func genThumbImage(adminSetting Adminsetting, item Item) error {
-	//mongoDB client 연결
-	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
-	if err != nil {
-		return err
-	}
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-	defer client.Disconnect(ctx)
-	err = client.Connect(ctx)
-	if err != nil {
-		return err
-	}
-	err = client.Ping(ctx, readpref.Primary())
-	if err != nil {
-		return err
-	}
 	// 변환할 이미지를 가져온다.
 	path := item.InputThumbnailImgPath
 	target, err := imaging.Open(path)
