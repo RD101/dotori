@@ -60,7 +60,7 @@ type Item struct {
 	Description string             `json:"description" bson:"description"` // 에셋에 대한 추가 정보. 에셋의 제약, 사용전 알아야 할 특징
 	ItemType    string             `json:"itemtype" bson:"itemtype"`       // maya, source, houdini, blender, nuke ..  같은 형태인가.
 	Status      ItemStatus         `json:"status" bson:"status"`           // 상태(에러, done, wip)
-	Log         string             `json:"log" bson:"log"`                 // 데이터를 처리할 때 생성되는 로그
+	Logs        []string           `json:"logs" bson:"logs"`               // 데이터를 처리할 때 생성되는 로그
 	CreateTime  string             `json:"createtime" bson:"createtime"`   // Item 생성 시간
 	Updatetime  string             `json:"updatetime" bson:"updatetime"`   // UTC 타임으로 들어가도록 하기.
 	UsingRate   int64              `json:"usingrate" bson:"usingrate"`     // 사용 빈도 수
