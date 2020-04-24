@@ -59,8 +59,9 @@ func processingItem() {
 	if err != nil {
 		return
 	}
-	if *flagDebug {
-		fmt.Println("GetFileUploadedItem 완료")
+	err = SetLog(client, item.ItemType, item.ID.Hex(), "GetFileUploadedItem 완료")
+	if err != nil {
+		return
 	}
 	// thumbnail 폴더를 생성한다.
 	err = SetStatus(client, item, "creatingthumbdir")
@@ -71,8 +72,9 @@ func processingItem() {
 	if err != nil {
 		return
 	}
-	if *flagDebug {
-		fmt.Println("genThumbDir 완료")
+	err = SetLog(client, item.ItemType, item.ID.Hex(), "genThumbDir 완료")
+	if err != nil {
+		return
 	}
 	err = SetStatus(client, item, "createdthumbdir")
 	if err != nil {
@@ -87,8 +89,9 @@ func processingItem() {
 	if err != nil {
 		return
 	}
-	if *flagDebug {
-		fmt.Println("genThumbImage 완료")
+	err = SetLog(client, item.ItemType, item.ID.Hex(), "genThumbImage 완료")
+	if err != nil {
+		return
 	}
 	err = SetStatus(client, item, "createdthumbimg")
 	if err != nil {
@@ -103,8 +106,9 @@ func processingItem() {
 	if err != nil {
 		return
 	}
-	if *flagDebug {
-		fmt.Println("genThumbOggContainer 완료")
+	err = SetLog(client, item.ItemType, item.ID.Hex(), "genThumbOggContainer 완료")
+	if err != nil {
+		return
 	}
 	err = SetStatus(client, item, "createdoggcontainer")
 	if err != nil {
@@ -119,8 +123,9 @@ func processingItem() {
 	if err != nil {
 		return
 	}
-	if *flagDebug {
-		fmt.Println("genThumbMovContainer 완료")
+	err = SetLog(client, item.ItemType, item.ID.Hex(), "genThumbMovContainer 완료")
+	if err != nil {
+		return
 	}
 	err = SetStatus(client, item, "createdmovcontainer")
 	if err != nil {
