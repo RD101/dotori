@@ -63,7 +63,7 @@ func processingItem() error {
 		fmt.Println("GetFileUploadedItem 완료")
 	}
 	// thumbnail 폴더를 생성한다.
-	err = SetStatus(client, item, CreatingThumbDir)
+	err = SetStatus(client, item, "creatingthumbdir")
 	if err != nil {
 		return err
 	}
@@ -74,12 +74,12 @@ func processingItem() error {
 	if *flagDebug {
 		fmt.Println("genThumbDir 완료")
 	}
-	err = SetStatus(client, item, CreatedThumbDir)
+	err = SetStatus(client, item, "createdthumbdir")
 	if err != nil {
 		return err
 	}
 	// 썸네일 이미지를 생성한다.
-	err = SetStatus(client, item, CreatingThumbImg)
+	err = SetStatus(client, item, "creatingthumbimg")
 	if err != nil {
 		return err
 	}
@@ -90,12 +90,12 @@ func processingItem() error {
 	if *flagDebug {
 		fmt.Println("genThumbImage 완료")
 	}
-	err = SetStatus(client, item, CreatedThumbImg)
+	err = SetStatus(client, item, "createdthumbimg")
 	if err != nil {
 		return err
 	}
 	// .ogg 썸네일 동영상을 생성한다.
-	err = SetStatus(client, item, CreatingOggContainer)
+	err = SetStatus(client, item, "creatingoggcontainer")
 	if err != nil {
 		return err
 	}
@@ -106,12 +106,12 @@ func processingItem() error {
 	if *flagDebug {
 		fmt.Println("genThumbOggContainer 완료")
 	}
-	err = SetStatus(client, item, CreatedOggContainer)
+	err = SetStatus(client, item, "createdoggcontainer")
 	if err != nil {
 		return err
 	}
 	// .mov 썸네일 동영상을 생성한다.
-	err = SetStatus(client, item, CreatingMovContainer)
+	err = SetStatus(client, item, "creatingmovcontainer")
 	if err != nil {
 		return err
 	}
@@ -122,12 +122,12 @@ func processingItem() error {
 	if *flagDebug {
 		fmt.Println("genThumbMovContainer 완료")
 	}
-	err = SetStatus(client, item, CreatedMovContainer)
+	err = SetStatus(client, item, "createdmovcontainer")
 	if err != nil {
 		return err
 	}
 	// .mp4 썸네일 동영상을 생성한다.
-	err = SetStatus(client, item, CreatingMp4Container)
+	err = SetStatus(client, item, "creatingmp4container")
 	if err != nil {
 		return err
 	}
@@ -138,15 +138,15 @@ func processingItem() error {
 	if *flagDebug {
 		fmt.Println("genThumbMp4Container 완료")
 	}
-	err = SetStatus(client, item, CreatedMp4Container)
+	err = SetStatus(client, item, "createdmp4container")
 	if err != nil {
 		return err
 	}
-	err = SetStatus(client, item, CreatedContainers)
+	err = SetStatus(client, item, "createdcontainers")
 	if err != nil {
 		return err
 	}
-	err = SetStatus(client, item, Done)
+	err = SetStatus(client, item, "done")
 	if err != nil {
 		return err
 	}

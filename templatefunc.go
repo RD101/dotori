@@ -24,27 +24,3 @@ func add(a, b int) int {
 func RmRootpath(path, rootpath string) string {
 	return strings.TrimLeft(path, rootpath)
 }
-
-// Int2Status 는 입력받은 ItemStatus에 해당하는 문자열을 반환한다.
-func Int2Status(i ItemStatus) string {
-	switch i {
-	case 0:
-		return "Ready"
-	case 1:
-		return "Copying"
-	case 2:
-		return "Copied"
-	case 3:
-		return "CreatingThumbnail"
-	case 4:
-		return "CreatedThumbnail"
-	case 5:
-		return "CreatingContainer"
-	case 6:
-		return "CreatedContainer"
-	case 7:
-		return "Done"
-	default:
-		return ""
-	}
-}
