@@ -59,7 +59,7 @@ type Item struct {
 	Tags        []string           `json:"tags" bson:"tags"`               // 태그리스트
 	Description string             `json:"description" bson:"description"` // 에셋에 대한 추가 정보. 에셋의 제약, 사용전 알아야 할 특징
 	ItemType    string             `json:"itemtype" bson:"itemtype"`       // maya, source, houdini, blender, nuke ..  같은 형태인가.
-	Status      ItemStatus         `json:"status" bson:"status"`           // 상태(에러, done, wip)
+	Status      string             `json:"status" bson:"status"`           // 상태: "error", "done", "wip" 등등
 	Log         string             `json:"log" bson:"log"`                 // 데이터를 처리할 때 생성되는 로그
 	CreateTime  string             `json:"createtime" bson:"createtime"`   // Item 생성 시간
 	Updatetime  string             `json:"updatetime" bson:"updatetime"`   // UTC 타임으로 들어가도록 하기.
@@ -81,26 +81,6 @@ type Item struct {
 
 // ItemStatus 는 숫자이다.
 type ItemStatus int
-
-// item의 상태
-const (
-	Ready                = ItemStatus(iota) // DB 업로드 완료 및 준비중
-	FileUploaded                            // 파일 업로드 완료
-	StartProcessing                         // 처리 시작
-	CreatingThumbDir                        //thumbnail 폴더 생성중
-	CreatedThumbDir                         //thumbnail 폴더 생성완료
-	CreatingThumbImg                        // 썸네일 이미지 생성중
-	CreatedThumbImg                         // 썸네일 이미지 생성완료
-	StartContainers                         // 썸네일 동영상 프로세스 시작
-	CreatingOggContainer                    // 썸네일 .ogg 파일 생성중
-	CreatedOggContainer                     // 썸네일 .ogg 파일 생성완료
-	CreatingMovContainer                    // 썸네일 .mov 파일 생성중
-	CreatedMovContainer                     // 썸네일 .mov 파일 생성완료
-	CreatingMp4Container                    // 썸네일 .mp4 파일 생성중
-	CreatedMp4Container                     // 썸네일 .mp4 파일 생성완료
-	CreatedContainers                       // 썸네일 동영상 생성완료
-	Done                                    // 등록 완료
-)
 
 // CheckError 는 Item 자료구조에 값이 정확히 들어갔는지 확인하는 메소드이다.
 func (i Item) CheckError() error {
