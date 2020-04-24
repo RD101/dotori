@@ -140,8 +140,13 @@ func processingItem() {
 	if err != nil {
 		return
 	}
-	if *flagDebug {
-		fmt.Println("genThumbMp4Container 완료")
+	err = SetLog(client, item.ItemType, item.ID.Hex(), "genThumbMovContainer 완료")
+	if err != nil {
+		return
+	}
+	err = SetLog(client, item.ItemType, item.ID.Hex(), "genThumbMp4Container 완료")
+	if err != nil {
+		return
 	}
 	err = SetStatus(client, item, "createdmp4container")
 	if err != nil {
