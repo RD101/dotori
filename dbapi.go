@@ -368,13 +368,6 @@ func GetFileUploadedItem(client *mongo.Client) (Item, error) {
 		}
 		collection := client.Database(*flagDBName).Collection(c)
 		filter := bson.M{"status": "fileuploaded"}
-		n, err := collection.CountDocuments(ctx, filter)
-		if err != nil {
-			return result, err
-		}
-		if n == 0 {
-			continue
-		}
 		// FileUploaded상태인 Item이 있다면 찾고, Status를 업데이트 한다.
 		update := bson.M{
 			"$set": bson.M{"status": "startprocessing"},
@@ -387,6 +380,37 @@ func GetFileUploadedItem(client *mongo.Client) (Item, error) {
 		return result, nil
 	}
 	// FileUploaded 상태인 Item이 하나도 없는 경우
+	return result, nil
+}
+
+// GetFileUploadedItemsNum 함수는 fileuploaded 상태 갯수가 몇개인지 체크한다,
+func GetFileUploadedItemsNum(client *mongo.Client) (int64, error) {
+	var result int64
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	collections, err := client.Database(*flagDBName).ListCollectionNames(ctx, bson.D{})
+	if err != nil {
+		return result, err
+	}
+	// 컬렉션을 for문 돌면서 FileUploaded 상태인 Item을 찾는다.
+	for _, c := range collections {
+		if c == "setting.admin" { // setting.admin 컬렉션은 제외한다.
+			continue
+		}
+		if c == "system.indexs" { //mongodb의 기본 컬렉션. 제외한다.
+			continue
+		}
+		if c == "users" { // 사용자 컬렉션을 제외한다.
+			continue
+		}
+		collection := client.Database(*flagDBName).Collection(c)
+		filter := bson.M{"status": "fileuploaded"}
+		n, err := collection.CountDocuments(ctx, filter)
+		if err != nil {
+			return 0, err
+		}
+		result += n
+	}
 	return result, nil
 }
 
