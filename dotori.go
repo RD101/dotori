@@ -225,10 +225,7 @@ func main() {
 		items, err := GetOngoingProcess(client)
 		fmt.Println(items)
 	} else if *flagProcess {
-		err := processingItem()
-		if err != nil {
-			log.Fatal(err)
-		}
+		processingItem()
 		fmt.Println("done")
 	} else {
 		flag.PrintDefaults()
