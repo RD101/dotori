@@ -55,12 +55,12 @@ func processingItem() {
 		return
 	}
 	// 연산해야할 리스트(FileUploaded) 갯수가 몇개인지 구한다.
-	fileUploadItemsNum, err := GetFileUploadedItemsNum(client)
+	fileUploadedItemsNum, err := GetFileUploadedItemsNum(client)
 	if err != nil {
 		return
 	}
 	// 연산할 리스트가 없다면 return 한다.
-	if fileUploadItemsNum == 0 {
+	if fileUploadedItemsNum == 0 {
 		return
 	}
 	// Status가 FileUploaded인 item을 가져온다.
