@@ -386,7 +386,8 @@ func GetFileUploadedItem(client *mongo.Client) (Item, error) {
 		// 해당 Item을 반환한다.
 		return result, nil
 	}
-	return result, errors.New("FileUploaded상태인 Item이 없습니다")
+	// FileUploaded 상태인 Item이 하나도 없는 경우
+	return result, nil
 }
 
 // GetOngoingProcess 는 처리 중인 아이템을 가져온다.
