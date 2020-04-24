@@ -367,7 +367,7 @@ func GetFileUploadedItem(client *mongo.Client) (Item, error) {
 			continue
 		}
 		collection := client.Database(*flagDBName).Collection(c)
-		filter := bson.M{"status": FileUploaded}
+		filter := bson.M{"status": "fileuploaded"}
 		n, err := collection.CountDocuments(ctx, filter)
 		if err != nil {
 			return result, err
@@ -377,7 +377,7 @@ func GetFileUploadedItem(client *mongo.Client) (Item, error) {
 		}
 		// FileUploaded상태인 Item이 있다면 찾고, Status를 업데이트 한다.
 		update := bson.M{
-			"$set": bson.M{"status": StartProcessing},
+			"$set": bson.M{"status": "startprocessing"},
 		}
 		err = collection.FindOneAndUpdate(ctx, filter, update).Decode(&result)
 		if err != nil {
@@ -386,7 +386,8 @@ func GetFileUploadedItem(client *mongo.Client) (Item, error) {
 		// 해당 Item을 반환한다.
 		return result, nil
 	}
-	return result, errors.New("FileUploaded상태인 Item이 없습니다")
+	// FileUploaded 상태인 Item이 하나도 없는 경우
+	return result, nil
 }
 
 // GetOngoingProcess 는 처리 중인 아이템을 가져온다.
@@ -411,7 +412,7 @@ func GetOngoingProcess(client *mongo.Client) ([]Item, error) {
 		if c == "users" { // 사용자 컬렉션을 제외한다.
 			continue
 		}
-		cursor, err := client.Database(*flagDBName).Collection(c).Find(ctx, bson.M{"status": bson.M{"$ne": Done}})
+		cursor, err := client.Database(*flagDBName).Collection(c).Find(ctx, bson.M{"status": bson.M{"$ne": "done"}})
 		if err != nil {
 			return results, err
 		}
@@ -425,7 +426,7 @@ func GetOngoingProcess(client *mongo.Client) ([]Item, error) {
 }
 
 //SetStatus 함수는 인수로 받은 item의 Status를 status로 바꾼다
-func SetStatus(client *mongo.Client, item Item, status ItemStatus) error {
+func SetStatus(client *mongo.Client, item Item, status string) error {
 	collection := client.Database(*flagDBName).Collection(item.ItemType)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -448,8 +449,8 @@ func GetProcessingItemNum(client *mongo.Client) (int64, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	filter := bson.M{"$ne": bson.M{"$or": []interface{}{
-		bson.M{"status": Ready},
-		bson.M{"status": Done},
+		bson.M{"status": "ready"},
+		bson.M{"status": "done"},
 	}}}
 	collections, err := client.Database(*flagDBName).ListCollectionNames(ctx, bson.M{})
 	if err != nil {

@@ -26,7 +26,6 @@ var funcMap = template.FuncMap{
 	"add":          add,
 	"PreviousPage": PreviousPage,
 	"NextPage":     NextPage,
-	"Int2Status":   Int2Status,
 	"RmRootpath":   RmRootpath,
 }
 

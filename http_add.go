@@ -266,7 +266,7 @@ func handleUploadMayaItem(w http.ResponseWriter, r *http.Request) {
 		attr[key] = value
 	}
 	item.Attributes = attr
-	item.Status = Ready
+	item.Status = "ready"
 	currentTime := time.Now()
 	item.CreateTime = currentTime.Format("2006-01-02 15:04:05")
 	item.ThumbImgUploaded = false
@@ -522,7 +522,7 @@ func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	if item.ThumbImgUploaded && item.ThumbClipUploaded && item.DataUploaded {
-		item.Status = FileUploaded
+		item.Status = "fileuploaded"
 	}
 	UpdateItem(client, "maya", item)
 }
