@@ -476,3 +476,22 @@ func GetProcessingItemNum(client *mongo.Client) (int64, error) {
 	}
 	return result, nil
 }
+
+// SetLog 함수는 itemtype과 id와 로그메세지를 받아서 해당 item에 로그메세지를 더한다.
+func SetLog(client *mongo.Client, itemType, id, msg string) error {
+	collection := client.Database(*flagDBName).Collection(itemType)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	objID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return err
+	}
+	// 로그를 업데이트 한다.
+	filter := bson.M{"_id": objID}
+	update := bson.M{"$push": bson.M{"logs": msg}}
+	err = collection.FindOneAndUpdate(ctx, filter, update).Err()
+	if err != nil {
+		return err
+	}
+	return nil
+}
