@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/shurcooL/httpfs/html/vfstemplate"
@@ -120,11 +121,29 @@ func webserver() {
 	http.HandleFunc("/api/search", handleAPISearch)
 
 	// 웹서버 실행
-	err = http.ListenAndServe(*flagHTTPPort, nil)
-	if err != nil {
-		log.Fatal(err)
+	if *flagHTTPPort == ":443" { // https ports
+		if *flagCertFullchanin == "" {
+			log.Fatal("CertFullchanin 인증서 설정이 필요합니다.")
+		}
+		if *flagCertPrivkey == "" {
+			log.Fatal("CertPrivkey 인증서 설정이 필요합니다.")
+		}
+		if _, err := os.Stat(*flagCertFullchanin); os.IsNotExist(err) {
+			log.Fatal(*flagCertFullchanin + " 경로에 인증서 파일이 존재하지 않습니다")
+		}
+		if _, err := os.Stat(*flagCertFullchanin); os.IsNotExist(err) {
+			log.Fatal(*flagCertPrivkey + " 경로에 인증서 파일이 존재하지 않습니다")
+		}
+		err := http.ListenAndServeTLS(*flagHTTPPort, *flagCertFullchanin, *flagCertPrivkey, nil)
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		err = http.ListenAndServe(*flagHTTPPort, nil)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
-
 }
 
 // handleSearch는 URL을 통해 query를 할 수 있게 해주는 함수입니다.

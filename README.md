@@ -62,6 +62,8 @@ $ sudo dotori -remove -itemtype maya -itemid 5e89cef7cd1747fd5eacf256
 $ sudo dotori -http :80
 ```
 
+- [인증서 만드는 방법](documents/how_to_make_certification.md)
+
 ## restAPI
 Dotori는 restAPI를 지원합니다. Python, Go, Java, Javascript, node.JS, C++, C, C# 등 수많은 언어를 통해 Dotori를 이용할 수 있습니다.
 아래는 Dotori restAPI reference 문서입니다.
