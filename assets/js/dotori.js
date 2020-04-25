@@ -52,3 +52,23 @@ function handlerNumCheck(element){
         $(element).val($(element).val().replace(/[^0-7]/g,""));
     }
 }
+
+// addPageBlankCheck 은 addPage에서 빈값을 체크하는 함수이다.
+function addPageBlankCheck(){
+    var author = document.getElementById("addAuthor");
+    if(author.value == ''){
+        alert("Author를 입력해주세요.");
+        return false;
+    }
+    var description = document.getElementById("addDescription");
+    if(description.value == ''){
+        alert("Description을 입력해주세요.");
+        return false;
+    }
+    var tag = document.getElementById("addTag");
+    if(tag.value == ''){
+        alert("Tag를 입력해주세요.");
+        return false;
+    }
+    return true;
+}
