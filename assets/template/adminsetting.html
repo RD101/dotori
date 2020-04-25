@@ -57,21 +57,21 @@
                     <div class="col-sm">
                         <div class="form-group">
                             <label class="text-muted">Umask</label>
-                            <input type="text" name="umask" class="form-control" placeholder="0000" value="{{.Adminsetting.Umask}}" onkeyup=handlerNumCheck(this)>
+                            <input type="text" name="umask" class="form-control" placeholder="0000" value="{{.Adminsetting.Umask}}" maxlength="4" onkeyup=handlerNumCheck(this)>
                             <small class="form-text text-muted">Umask 값을 설정해주세요.</small>
                         </div>
                     </div>
                     <div class="col-sm">
                         <div class="form-group">
                             <label class="text-muted">Folder Permission</label>
-                            <input type="text" name="folderpermission" class="form-control" placeholder="0775" value="{{.Adminsetting.FolderPermission}}" onkeyup=handlerNumCheck(this)>
+                            <input type="text" name="folderpermission" class="form-control" placeholder="0775" value="{{.Adminsetting.FolderPermission}}" maxlength="4" onkeyup=handlerNumCheck(this)>
                             <small class="form-text text-muted">폴더 권한을 설정해주세요.</small>
                         </div>
                     </div>
                     <div class="col-sm">
                         <div class="form-group">
                             <label class="text-muted">File Permission</label>
-                            <input type="text" name="filepermission" class="form-control" placeholder="0440" value="{{.Adminsetting.FilePermission}}" onkeyup=handlerNumCheck(this)>
+                            <input type="text" name="filepermission" class="form-control" placeholder="0440" value="{{.Adminsetting.FilePermission}}" maxlength="4" onkeyup=handlerNumCheck(this)>
                             <small class="form-text text-muted">파일 권한을 설정해주세요.</small>
                         </div>
                     </div>
