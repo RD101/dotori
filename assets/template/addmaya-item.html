@@ -2,7 +2,7 @@
 {{template "head"}}
 <body>
 {{template "navbar" .}}
-<form action="/uploadmaya-item" method="post">
+<form action="/uploadmaya-item" method="post" onsubmit="return addPageBlankCheck()">
 <div class="container py-5 px-2">
     <div class="col-lg-6 col-md-8 col-sm-12 mx-auto">
         <div class="pt-3 pb-3">
@@ -12,7 +12,7 @@
             <div class="col-sm">
                 <div class="form-group">
                     <label class="text-muted">Author</label>
-                    <input type="text" name="author" class="form-control" placeholder="에셋 제작자 이름">
+                    <input id="addAuthor" type="text" name="author" class="form-control" placeholder="에셋 제작자 이름">
                     <small class="form-text text-muted">에셋 제작자 이름을 적어주세요.</small>
                 </div>
             </div>
@@ -21,7 +21,7 @@
             <div class="col-sm">
                 <div class="form-group">
                     <label class="text-muted">Description</label>
-                    <textarea name="description" class="form-control" rows="5"></textarea>
+                    <textarea id="addDescription" name="description" class="form-control" rows="5"></textarea>
                     <small class="form-text text-muted">에셋 사용시 참고해야할 사항</small>
                 </div>
             </div>
@@ -30,7 +30,7 @@
             <div class="col-sm">
                 <div class="form-group">
                     <label class="text-muted">Tag</label>
-                    <input type="text" name="tag" class="form-control" placeholder="자동차 하늘">
+                    <input id="addTag" type="text" name="tag" class="form-control" placeholder="자동차 하늘">
                     <small class="form-text text-muted">태그를 입력하세요. 태그는 띄어쓰기로 구분합니다.</small>
                 </div>
             </div>
