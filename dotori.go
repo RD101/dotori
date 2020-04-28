@@ -51,6 +51,8 @@ var (
 )
 
 func main() {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	log.SetPrefix("dotori: ")
 	flag.Parse()
 	if *flagSeek {
 		items, err := searchSeq(*flagInputpath)
