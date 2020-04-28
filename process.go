@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"path"
@@ -21,7 +22,32 @@ import (
 func Processing() {
 	for {
 		time.Sleep(time.Duration(*flagProcessInterval) * 1000 * time.Millisecond)
-		//go ProcessDemo()
+		client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+		if err != nil {
+			log.Println(err)
+			continue
+		}
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		defer client.Disconnect(ctx)
+		err = client.Connect(ctx)
+		if err != nil {
+			log.Println(err)
+			continue
+		}
+		err = client.Ping(ctx, readpref.Primary())
+		if err != nil {
+			log.Println(err)
+			continue
+		}
+		getProcessNum, err := GetProcessingItemNum(client)
+		if err != nil {
+			log.Println(err)
+			continue
+		}
+		if *flagProcessNum < getProcessNum {
+			continue
+		}
 		go processingItem()
 	}
 }
@@ -52,15 +78,6 @@ func processingItem() {
 	// AdminSetting을 DB에서 가지고 온다.
 	adminSetting, err := GetAdminSetting(client)
 	if err != nil {
-		return
-	}
-	// 연산해야할 리스트(FileUploaded) 갯수가 몇개인지 구한다.
-	fileUploadedItemsNum, err := GetFileUploadedItemsNum(client)
-	if err != nil {
-		return
-	}
-	// 연산할 리스트가 없다면 return 한다.
-	if fileUploadedItemsNum == 0 {
 		return
 	}
 	// Status가 FileUploaded인 item을 가져온다.
