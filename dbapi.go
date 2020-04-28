@@ -559,3 +559,23 @@ func GetIncompleteItems(client *mongo.Client) ([]Item, error) {
 	}
 	return results, nil
 }
+
+// GetUsingRate 함수는 itemType과 id를 받아서 해당 아이템의 UsingRate을 가져온다.
+func GetUsingRate(client *mongo.Client, itemType, id string) (int64, error) {
+	var result int64
+	var item Item
+	collection := client.Database(*flagDBName).Collection(itemType)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	objID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return result, err
+	}
+	filter := bson.M{"_id": objID}
+	err = collection.FindOne(ctx, filter).Decode(&item)
+	if err != nil {
+		return result, err
+	}
+	result = item.UsingRate
+	return result, nil
+}
