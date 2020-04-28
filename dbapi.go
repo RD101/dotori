@@ -575,3 +575,24 @@ func GetUsingRate(client *mongo.Client, itemType, id string) (int64, error) {
 	result = item.UsingRate
 	return result, nil
 }
+
+// UpdateUsingRate 함수는 itemType과 id를 받아서 해당 아이템의 usingrate을 1만큼 올린다.
+func UpdateUsingRate(client *mongo.Client, itemType, id string) (int64, error) {
+	var result int64
+	var item Item
+	collection := client.Database(*flagDBName).Collection(itemType)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	objID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return result, err
+	}
+	filter := bson.M{"_id": objID}
+	update := bson.M{"$inc": bson.M{"usingrate": 1}}
+	err = collection.FindOneAndUpdate(ctx, filter, update).Decode(&item)
+	if err != nil {
+		return result, err
+	}
+	result = item.UsingRate
+	return result, nil
+}
