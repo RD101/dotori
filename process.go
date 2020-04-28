@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
 	"path"
@@ -37,8 +36,7 @@ func processingItem() {
 	//mongoDB client 연결
 	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 	if err != nil {
-		l := log.New(os.Stderr, "process: ", 0)
-		l.Println("Error while connecting to mongoDB client")
+		fmt.Fprintf(os.Stderr, "process: %s", err)
 		return
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -46,177 +44,149 @@ func processingItem() {
 	defer client.Disconnect(ctx)
 	err = client.Connect(ctx)
 	if err != nil {
-		l := log.New(os.Stderr, "process: ", 0)
-		l.Println("Error while connecting to mongoDB client")
+		fmt.Fprintf(os.Stderr, "process: %s", err)
 		return
 	}
 	err = client.Ping(ctx, readpref.Primary())
 	if err != nil {
-		l := log.New(os.Stderr, "process: ", 0)
-		l.Println("Ping has no answer")
+		fmt.Fprintf(os.Stderr, "process: %s", err)
 		return
 	}
 	// AdminSetting을 DB에서 가지고 온다.
 	adminSetting, err := GetAdminSetting(client)
 	if err != nil {
-		l := log.New(os.Stderr, "process: ", 0)
-		l.Println("Error on GetAdminSetting")
+		fmt.Fprintf(os.Stderr, "process: %s", err)
 		return
 	}
 	// Status가 FileUploaded인 item을 가져온다.
 	item, err := GetFileUploadedItem(client)
 	if err != nil {
-		l := log.New(os.Stderr, "process: ", 0)
-		l.Println("Error on GetFileUploadedItem")
+		fmt.Fprintf(os.Stderr, "process: %s", err)
 		return
 	}
 	err = SetLog(client, item.ItemType, item.ID.Hex(), "GetFileUploadedItem 완료")
 	if err != nil {
-		l := log.New(os.Stderr, "process: ", 0)
-		l.Println("Error on SetLog")
+		fmt.Fprintf(os.Stderr, "process: %s", err)
 		return
 	}
 	// thumbnail 폴더를 생성한다.
 	err = SetStatus(client, item, "creatingthumbdir")
 	if err != nil {
-		l := log.New(os.Stderr, "process: ", 0)
-		l.Println("Error on SetStatus")
+		fmt.Fprintf(os.Stderr, "process: %s", err)
 		return
 	}
 	err = genThumbDir(adminSetting, item)
 	if err != nil {
-		l := log.New(os.Stderr, "process: ", 0)
-		l.Println("Error on genThumbDir")
+		fmt.Fprintf(os.Stderr, "process: %s", err)
 		return
 	}
 	err = SetLog(client, item.ItemType, item.ID.Hex(), "genThumbDir 완료")
 	if err != nil {
-		l := log.New(os.Stderr, "process: ", 0)
-		l.Println("Error on SetLog")
+		fmt.Fprintf(os.Stderr, "process: %s", err)
 		return
 	}
 	err = SetStatus(client, item, "createdthumbdir")
 	if err != nil {
-		l := log.New(os.Stderr, "process: ", 0)
-		l.Println("Error on SetStatus")
+		fmt.Fprintf(os.Stderr, "process: %s", err)
 		return
 	}
 	// 썸네일 이미지를 생성한다.
 	err = SetStatus(client, item, "creatingthumbimg")
 	if err != nil {
-		l := log.New(os.Stderr, "process: ", 0)
-		l.Println("Error on SetStatus")
+		fmt.Fprintf(os.Stderr, "process: %s", err)
 		return
 	}
 	err = genThumbImage(adminSetting, item)
 	if err != nil {
-		l := log.New(os.Stderr, "process: ", 0)
-		l.Println("Error on genThumbImage")
+		fmt.Fprintf(os.Stderr, "process: %s", err)
 		return
 	}
 	err = SetLog(client, item.ItemType, item.ID.Hex(), "genThumbImage 완료")
 	if err != nil {
-		l := log.New(os.Stderr, "process: ", 0)
-		l.Println("Error on SetLog")
+		fmt.Fprintf(os.Stderr, "process: %s", err)
 		return
 	}
 	err = SetStatus(client, item, "createdthumbimg")
 	if err != nil {
-		l := log.New(os.Stderr, "process: ", 0)
-		l.Println("Error on SetStatus")
+		fmt.Fprintf(os.Stderr, "process: %s", err)
 		return
 	}
 	// .ogg 썸네일 동영상을 생성한다.
 	err = SetStatus(client, item, "creatingoggcontainer")
 	if err != nil {
-		l := log.New(os.Stderr, "process: ", 0)
-		l.Println("Error on SetStatus")
+		fmt.Fprintf(os.Stderr, "process: %s", err)
 		return
 	}
 	err = genThumbOggContainer(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
-		l := log.New(os.Stderr, "process: ", 0)
-		l.Println("Error on genThumbOggContainer")
+		fmt.Fprintf(os.Stderr, "process: %s", err)
 		return
 	}
 	err = SetLog(client, item.ItemType, item.ID.Hex(), "genThumbOggContainer 완료")
 	if err != nil {
-		l := log.New(os.Stderr, "process: ", 0)
-		l.Println("Error on SetLog")
+		fmt.Fprintf(os.Stderr, "process: %s", err)
 		return
 	}
 	err = SetStatus(client, item, "createdoggcontainer")
 	if err != nil {
-		l := log.New(os.Stderr, "process: ", 0)
-		l.Println("Error on SetStatus")
+		fmt.Fprintf(os.Stderr, "process: %s", err)
 		return
 	}
 	// .mov 썸네일 동영상을 생성한다.
 	err = SetStatus(client, item, "creatingmovcontainer")
 	if err != nil {
-		l := log.New(os.Stderr, "process: ", 0)
-		l.Println("Error on SetStatus")
+		fmt.Fprintf(os.Stderr, "process: %s", err)
 		return
 	}
 	err = genThumbMovContainer(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
-		l := log.New(os.Stderr, "process: ", 0)
-		l.Println("Error on genThumbMovContainer")
+		fmt.Fprintf(os.Stderr, "process: %s", err)
 		return
 	}
 	err = SetLog(client, item.ItemType, item.ID.Hex(), "genThumbMovContainer 완료")
 	if err != nil {
-		l := log.New(os.Stderr, "process: ", 0)
-		l.Println("Error on SetLog")
+		fmt.Fprintf(os.Stderr, "process: %s", err)
 		return
 	}
 	err = SetStatus(client, item, "createdmovcontainer")
 	if err != nil {
-		l := log.New(os.Stderr, "process: ", 0)
-		l.Println("Error on SetStatus")
+		fmt.Fprintf(os.Stderr, "process: %s", err)
 		return
 	}
 	// .mp4 썸네일 동영상을 생성한다.
 	err = SetStatus(client, item, "creatingmp4container")
 	if err != nil {
-		l := log.New(os.Stderr, "process: ", 0)
-		l.Println("Error on SetStatus")
+		fmt.Fprintf(os.Stderr, "process: %s", err)
 		return
 	}
 	err = genThumbMp4Container(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
-		l := log.New(os.Stderr, "process: ", 0)
-		l.Println("Error on genThumbMp4Container")
+		fmt.Fprintf(os.Stderr, "process: %s", err)
 		return
 	}
 	err = SetLog(client, item.ItemType, item.ID.Hex(), "genThumbMovContainer 완료")
 	if err != nil {
-		l := log.New(os.Stderr, "process: ", 0)
-		l.Println("Error on SetLog")
+		fmt.Fprintf(os.Stderr, "process: %s", err)
 		return
 	}
 	err = SetLog(client, item.ItemType, item.ID.Hex(), "genThumbMp4Container 완료")
 	if err != nil {
-		l := log.New(os.Stderr, "process: ", 0)
-		l.Println("Error on SetLog")
+		fmt.Fprintf(os.Stderr, "process: %s", err)
 		return
 	}
 	err = SetStatus(client, item, "createdmp4container")
 	if err != nil {
-		l := log.New(os.Stderr, "process: ", 0)
-		l.Println("Error on SetStatus")
+		fmt.Fprintf(os.Stderr, "process: %s", err)
 		return
 	}
 	err = SetStatus(client, item, "createdcontainers")
 	if err != nil {
-		l := log.New(os.Stderr, "process: ", 0)
-		l.Println("Error on SetStatus")
+		fmt.Fprintf(os.Stderr, "process: %s", err)
 		return
 	}
 	err = SetStatus(client, item, "done")
 	if err != nil {
-		l := log.New(os.Stderr, "process: ", 0)
-		l.Println("Error on SetStatus")
+		fmt.Fprintf(os.Stderr, "process: %s", err)
 		return
 	}
 	return
