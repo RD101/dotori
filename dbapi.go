@@ -368,11 +368,7 @@ func GetFileUploadedItem(client *mongo.Client) (Item, error) {
 		}
 		collection := client.Database(*flagDBName).Collection(c)
 		filter := bson.M{"status": "fileuploaded"}
-		// FileUploaded상태인 Item이 있다면 찾고, Status를 업데이트 한다.
-		update := bson.M{
-			"$set": bson.M{"status": "startprocessing"},
-		}
-		err = collection.FindOneAndUpdate(ctx, filter, update).Decode(&result)
+		err = collection.FindOne(ctx, filter).Decode(&result)
 		if err != nil {
 			return result, err
 		}
@@ -472,10 +468,10 @@ func GetProcessingItemNum(client *mongo.Client) (int64, error) {
 	result = 0
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	filter := bson.M{"$ne": bson.M{"$or": []interface{}{
-		bson.M{"status": "ready"},
-		bson.M{"status": "done"},
-	}}}
+	filter := bson.M{"$and": []interface{}{
+		bson.M{"status": bson.M{"$ne": "ready"}},
+		bson.M{"status": bson.M{"$ne": "done"}},
+	}}
 	collections, err := client.Database(*flagDBName).ListCollectionNames(ctx, bson.M{})
 	if err != nil {
 		return result, err
