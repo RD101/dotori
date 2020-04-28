@@ -520,6 +520,46 @@ func SetLog(client *mongo.Client, itemType, id, msg string) error {
 	return nil
 }
 
+//GetIncompleteItems 함수는 썸네일 이미지, 썸네일 클립, 데이터 중 하나라도 없는 아이템을 모두 가져온다.
+func GetIncompleteItems(client *mongo.Client) ([]Item, error) {
+	var results []Item
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	//콜렉션 리스트를 가져온다.
+	collections, err := client.Database(*flagDBName).ListCollectionNames(ctx, bson.M{})
+	if err != nil {
+		return results, err
+	}
+	filter := bson.M{"$or": []interface{}{
+		bson.M{"ThumbImgUploaded": false},
+		bson.M{"ThumbClipUploaded": false},
+		bson.M{"DataUploaded": false},
+	}}
+	// 콜렉션마다 돌면서 ThumbImg, ThumbClip, Data 중 하나라도 없는 아이템을 가져온다.
+	for _, c := range collections {
+		var items []Item
+		if c == "system.indexs" { //mongodb의 기본 컬렉션. 제외한다.
+			continue
+		}
+		if c == "setting.admin" { //admin setting값을 저장하는 컬렉션. 제외한다.
+			continue
+		}
+		if c == "users" { // 사용자 컬렉션을 제외한다.
+			continue
+		}
+		cursor, err := client.Database(*flagDBName).Collection(c).Find(ctx, filter)
+		if err != nil {
+			return results, err
+		}
+		err = cursor.All(ctx, &items)
+		if err != nil {
+			return results, err
+		}
+		results = append(results, items...)
+	}
+	return results, nil
+}
+
 // UpdateUsingRate 함수는 itemType과 id를 받아서 해당 아이템의 usingrate을 1만큼 올린다.
 func UpdateUsingRate(client *mongo.Client, itemType, id string) (int64, error) {
 	var result int64
