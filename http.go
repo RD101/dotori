@@ -122,19 +122,19 @@ func webserver() {
 
 	// 웹서버 실행
 	if *flagHTTPPort == ":443" { // https ports
-		if *flagCertFullchanin == "" {
+		if *flagCertFullchain == "" {
 			log.Fatal("CertFullchanin 인증서 설정이 필요합니다.")
 		}
 		if *flagCertPrivkey == "" {
 			log.Fatal("CertPrivkey 인증서 설정이 필요합니다.")
 		}
-		if _, err := os.Stat(*flagCertFullchanin); os.IsNotExist(err) {
-			log.Fatal(*flagCertFullchanin + " 경로에 인증서 파일이 존재하지 않습니다")
+		if _, err := os.Stat(*flagCertFullchain); os.IsNotExist(err) {
+			log.Fatal(*flagCertFullchain + " 경로에 인증서 파일이 존재하지 않습니다")
 		}
-		if _, err := os.Stat(*flagCertFullchanin); os.IsNotExist(err) {
+		if _, err := os.Stat(*flagCertFullchain); os.IsNotExist(err) {
 			log.Fatal(*flagCertPrivkey + " 경로에 인증서 파일이 존재하지 않습니다")
 		}
-		err := http.ListenAndServeTLS(*flagHTTPPort, *flagCertFullchanin, *flagCertPrivkey, nil)
+		err := http.ListenAndServeTLS(*flagHTTPPort, *flagCertFullchain, *flagCertPrivkey, nil)
 		if err != nil {
 			log.Fatal(err)
 		}
