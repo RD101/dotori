@@ -22,40 +22,8 @@ import (
 func Processing() {
 	for {
 		time.Sleep(time.Duration(*flagProcessInterval) * 1000 * time.Millisecond)
-		client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
-		if err != nil {
-			log.Println(err)
-			continue
-		}
-		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		defer cancel()
-		defer client.Disconnect(ctx)
-		err = client.Connect(ctx)
-		if err != nil {
-			log.Println(err)
-			continue
-		}
-		err = client.Ping(ctx, readpref.Primary())
-		if err != nil {
-			log.Println(err)
-			continue
-		}
-		getProcessNum, err := GetProcessingItemNum(client)
-		if err != nil {
-			log.Println(err)
-			continue
-		}
-		if *flagProcessNum < getProcessNum {
-			continue
-		}
 		go processingItem()
 	}
-}
-
-// ProcessDemo 함수는 go 프로세스가 잘 실행되는지 테스트하는 함수이다.
-func ProcessDemo() {
-	fmt.Println("processing", *flagProcessNum)
-	fmt.Println("wait", *flagProcessInterval, "sec")
 }
 
 func processingItem() {
@@ -76,6 +44,15 @@ func processingItem() {
 	err = client.Ping(ctx, readpref.Primary())
 	if err != nil {
 		log.Println(err)
+		return
+	}
+	// 연산 갯수를 체크한다.
+	getProcessNum, err := GetProcessingItemNum(client)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	if *flagProcessNum < getProcessNum {
 		return
 	}
 	// AdminSetting을 DB에서 가지고 온다.
