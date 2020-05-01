@@ -233,3 +233,43 @@ func handleAPISearch(w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 	return
 }
+
+func handleAPIAdminSetting(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet {
+		//mongoDB client 연결
+		client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		defer client.Disconnect(ctx)
+		err = client.Connect(ctx)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		err = client.Ping(ctx, readpref.Primary())
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		admin, err := GetAdminSetting(client)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		data, err := json.Marshal(admin)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(http.StatusOK)
+		w.Write(data)
+		return
+	}
+	http.Error(w, "Not Supported Method", http.StatusMethodNotAllowed)
+	return
+}
