@@ -79,31 +79,33 @@ func processingItem() {
 			log.Println(err)
 			return
 		}
-	case "source":
+	case "source": // 소스, 시퀀스
 		return
-	case "nuke":
+	case "nuke": // 뉴크파일
 		return
-	case "usd":
+	case "usd": // Pixar USD
 		return
-	case "alembic":
+	case "alembic": // Alembic
 		return
-	case "houdini":
+	case "houdini": // 후디니
 		return
-	case "openvdb":
+	case "openvdb": // 볼륨데이터
 		return
-	case "pdf":
+	case "pdf": // 문서
 		return
-	case "ies":
+	case "ies": // 조명파일
 		return
-	case "hdri":
+	case "hdri": // HDRI 이미지, 환경맵
 		return
-	case "blender":
+	case "blender": // 블렌더 파일
 		return
-	case "texture":
+	case "texture": // 텍스쳐
 		return
-	case "modo":
+	case "psd": // 포토샵 파일
 		return
-	case "lut", "3dl", "blut", "cms", "csp", "cub", "cube", "vf", "vfz":
+	case "modo": // 모도
+		return
+	case "lut", "3dl", "blut", "cms", "csp", "cub", "cube", "vf", "vfz": // LUT 파일들
 		return
 	default:
 		return
