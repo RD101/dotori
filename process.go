@@ -71,92 +71,117 @@ func processingItem() {
 		log.Println(err)
 		return
 	}
-	// thumbnail 폴더를 생성한다.
-	err = SetStatus(client, item, "creatingthumbdir")
-	if err != nil {
-		log.Println(err)
+	// ItemType별로 연산한다.
+	switch item.ItemType {
+	case "maya":
+		err = ProcessMayaItem(client, adminSetting, item)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+	case "source":
 		return
+	case "nuke":
+		return
+	case "usd":
+		return
+	case "alembic":
+		return
+	case "houdini":
+		return
+	case "openvdb":
+		return
+	case "pdf":
+		return
+	case "ies":
+		return
+	case "hdri":
+		return
+	case "blender":
+		return
+	case "texture":
+		return
+	case "modo":
+		return
+	case "lut", "3dl", "blut", "cms", "csp", "cub", "cube", "vf", "vfz":
+		return
+	default:
+		return
+	}
+}
+
+// ProcessMayaItem 함수는 마야타임을 연산한다.
+func ProcessMayaItem(client *mongo.Client, adminSetting Adminsetting, item Item) error {
+	// thumbnail 폴더를 생성한다.
+	err := SetStatus(client, item, "creatingthumbdir")
+	if err != nil {
+		return err
 	}
 	err = genThumbDir(adminSetting, item)
 	if err != nil {
-		log.Println(err)
-		return
+		return err
 	}
 	err = SetStatus(client, item, "createdthumbdir")
 	if err != nil {
-		log.Println(err)
-		return
+		return err
 	}
 	// 썸네일 이미지를 생성한다.
 	err = SetStatus(client, item, "creatingthumbimg")
 	if err != nil {
-		log.Println(err)
-		return
+		return err
 	}
 	err = genThumbImage(adminSetting, item)
 	if err != nil {
-		log.Println(err)
-		return
+		return err
 	}
 	err = SetStatus(client, item, "createdthumbimg")
 	if err != nil {
-		log.Println(err)
-		return
+		return err
 	}
 	// .ogg 썸네일 동영상을 생성한다.
 	err = SetStatus(client, item, "creatingoggcontainer")
 	if err != nil {
-		log.Println(err)
-		return
+		return err
 	}
 	err = genThumbOggContainer(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
-		log.Println(err)
-		return
+		return err
 	}
 	err = SetStatus(client, item, "createdoggcontainer")
 	if err != nil {
-		log.Println(err)
-		return
+		return err
 	}
 	// .mov 썸네일 동영상을 생성한다.
 	err = SetStatus(client, item, "creatingmovcontainer")
 	if err != nil {
-		log.Println(err)
-		return
+		return err
 	}
 	err = genThumbMovContainer(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
-		log.Println(err)
-		return
+		return err
 	}
 	err = SetStatus(client, item, "createdmovcontainer")
 	if err != nil {
-		log.Println(err)
-		return
+		return err
 	}
 	// .mp4 썸네일 동영상을 생성한다.
 	err = SetStatus(client, item, "creatingmp4container")
 	if err != nil {
-		log.Println(err)
-		return
+		return err
 	}
 	err = genThumbMp4Container(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
-		log.Println(err)
-		return
+		return err
 	}
 	err = SetStatus(client, item, "createdmp4container")
 	if err != nil {
-		log.Println(err)
-		return
+		return err
 	}
 	err = SetStatus(client, item, "done")
 	if err != nil {
-		log.Println(err)
-		return
+		return err
 	}
-	return
+	return nil
 }
 
 //genThumbDir 은 인수로 받은 아이템의 경로에 thumbnail 폴더를 생성한다.
