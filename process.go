@@ -108,6 +108,7 @@ func processingItem() {
 	case "lut", "3dl", "blut", "cms", "csp", "cub", "cube", "vf", "vfz": // LUT 파일들
 		return
 	default:
+		log.Println("약속된 type이 아닙니다")
 		return
 	}
 }
