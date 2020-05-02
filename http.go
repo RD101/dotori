@@ -334,6 +334,7 @@ func handleItemProcess(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		rcp.StorageTitle = "Storage Space (Please set RootPath)"
 		rcp.StoragePercent = 0
+		rcp.StorageClassName = "progress-bar bg-success"
 	} else {
 		rcp.StorageTitle = "Storage Space"
 		rcp.StoragePercent = int64((float64(ds.Used) / float64(ds.All)) * 100)
@@ -342,19 +343,15 @@ func handleItemProcess(w http.ResponseWriter, r *http.Request) {
 		case 10:
 		case 9:
 			rcp.StorageClassName = "progress-bar bg-danger"
-			fmt.Println("90%")
 			break
 		case 8:
 			rcp.StorageClassName = "progress-bar bg-warning"
-			fmt.Println("80%")
 			break
 		case 7:
 			rcp.StorageClassName = "progress-bar bg-info"
-			fmt.Println("70%")
 			break
 		default:
 			rcp.StorageClassName = "progress-bar bg-success"
-			fmt.Println("default")
 			break
 		}
 	}
