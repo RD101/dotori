@@ -292,7 +292,10 @@ func handleItemProcess(w http.ResponseWriter, r *http.Request) {
 	type recipe struct {
 		Items []Item
 		Token
-		Adminsetting Adminsetting
+		Adminsetting     Adminsetting
+		StorageClassName string
+		StorageTitle     string
+		StoragePercent   int64
 	}
 	//mongoDB client 연결
 	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
@@ -327,6 +330,31 @@ func handleItemProcess(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rcp.Adminsetting = adminsetting
+	ds, err := DiskCheck()
+	if err != nil {
+		rcp.StorageTitle = "Storage Space (Please set RootPath)"
+		rcp.StoragePercent = 0
+		rcp.StorageClassName = "progress-bar bg-success"
+	} else {
+		rcp.StorageTitle = "Storage Space"
+		rcp.StoragePercent = int64((float64(ds.Used) / float64(ds.All)) * 100)
+		num := rcp.StoragePercent / 10
+		switch num {
+		case 10:
+		case 9:
+			rcp.StorageClassName = "progress-bar bg-danger"
+			break
+		case 8:
+			rcp.StorageClassName = "progress-bar bg-warning"
+			break
+		case 7:
+			rcp.StorageClassName = "progress-bar bg-info"
+			break
+		default:
+			rcp.StorageClassName = "progress-bar bg-success"
+			break
+		}
+	}
 	err = TEMPLATES.ExecuteTemplate(w, "item-process", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
