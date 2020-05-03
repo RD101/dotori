@@ -34,7 +34,7 @@ func Test_FilenameToTags(t *testing.T) {
 	},
 	}
 	for _, c := range cases {
-		b, _ := FilenameToTags(c.in)
+		b := FilenameToTags(c.in)
 		if !reflect.DeepEqual(b, c.want) {
 			t.Fatalf("Test_SplitbySign(): 입력 값: %v, 원하는 값: %v, 얻은 값: %v\n", c.in, c.want, b)
 		}
