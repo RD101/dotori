@@ -103,6 +103,7 @@ func webserver() {
 
 	// Process
 	http.HandleFunc("/item-process", handleItemProcess)
+	http.HandleFunc("/cleanup-db", handleCleanUpDB)
 
 	// Help
 	http.HandleFunc("/help", handleHelp)
@@ -328,6 +329,53 @@ func handleItemProcess(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Adminsetting = adminsetting
 	err = TEMPLATES.ExecuteTemplate(w, "item-process", rcp)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func handleCleanUpDB(w http.ResponseWriter, r *http.Request) {
+	token, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html")
+	type recipe struct {
+		Items []Item
+		Token
+		Adminsetting Adminsetting
+	}
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	defer client.Disconnect(ctx)
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp := recipe{}
+	// 데이터가 모두 업로드되지 않은 아이템을 가져온다
+	rcp.Items, err = GetIncompleteItems(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp.Token = token
+	adminsetting, err := GetAdminSetting(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp.Adminsetting = adminsetting
+	err = TEMPLATES.ExecuteTemplate(w, "cleanup-db", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

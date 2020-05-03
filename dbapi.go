@@ -527,9 +527,9 @@ func GetIncompleteItems(client *mongo.Client) ([]Item, error) {
 		return results, err
 	}
 	filter := bson.M{"$or": []interface{}{
-		bson.M{"ThumbImgUploaded": false},
-		bson.M{"ThumbClipUploaded": false},
-		bson.M{"DataUploaded": false},
+		bson.M{"thumbimguploaded": false},
+		bson.M{"thumbclipuploaded": false},
+		bson.M{"datauploaded": false},
 	}}
 	// 콜렉션마다 돌면서 ThumbImg, ThumbClip, Data 중 하나라도 없는 아이템을 가져온다.
 	for _, c := range collections {
