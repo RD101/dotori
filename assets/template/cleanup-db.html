@@ -1,0 +1,92 @@
+{{define "cleanup-db"}}
+{{template "head"}}
+<body>
+{{template "navbar" .}}
+<div class="container pt-5 pb-5">
+    <div class="text-center mx-auto pt-5 pb-5">
+        <h2 class="text-muted">Clean Up DB</h2>
+    </div>
+    <div class="row pt-1 pb-1 text-muted text-center">
+        <div class="col-sm-2 col-md-2 col-lg-1">
+            index
+        </div>
+        <div class="col-sm-2 col-md-2 col-lg-1">
+            <input type="checkbox" class="form-check-input" id="selectallitem">
+        </div>
+        <div class="col-sm-4 col-md-4 col-lg-1">
+            itemtype
+        </div>
+        <div class="col-sm-4 col-md-4 col-lg-1">
+            author
+        </div>
+        <div class="col-sm-12 col-md-6 col-lg-4">
+            id
+        </div>
+        <div class="col-sm-4 col-md-2 col-lg-1">
+            thumbimg
+        </div>
+        <div class="col-sm-4 col-md-2 col-lg-1">
+            thumbmov
+        </div>
+        <div class="col-sm-4 col-md-2 col-lg-1">
+            data
+        </div>
+    </div>
+    <div>
+        <hr class="my-1 p-0 m-0 divider">
+    </div>
+    <div class="text-muted text-center">
+        {{$index := 1}}
+        {{range .Items}}
+        <div class="row py-3">
+            <div class="col-sm-2 col-md-2 col-lg-1">
+                <span class="text-center">{{$index}}</span>
+            </div>
+            <div class="col-sm-2 col-md-2 col-lg-1">
+                <input type="checkbox" class="form-check-input" id="item{{$index}}" value="{{.ID.Hex}}">
+            </div>
+            <div class="col-sm-4 col-md-4 col-lg-1">
+                {{.ItemType}}
+            </div>
+            <div class="col-sm-4 col-md-4 col-lg-1">
+                {{.Author}}
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-4">
+                {{.ID.Hex}}
+            </div>
+            <div class="col-sm-4 col-md-2 col-lg-1">
+                {{if .ThumbImgUploaded}}
+                <span class="badge badge-pill badge-success">O</span>
+                {{else}}
+                <span class="badge badge-pill badge-secondary">X</span>
+                {{end}}
+            </div>
+            <div class="col-sm-4 col-md-2 col-lg-1">
+                {{if .ThumbClipUploaded}}
+                <span class="badge badge-pill badge-success">O</span>
+                {{else}}
+                <span class="badge badge-pill badge-secondary">X</span>
+                {{end}}
+            </div>
+            <div class="col-sm-4 col-md-2 col-lg-1">
+                {{if .DataUploaded}}
+                <span class="badge badge-pill badge-success">O</span>
+                {{else}}
+                <span class="badge badge-pill badge-secondary">X</span>
+                {{end}}
+            </div>
+        </div>
+        <div>
+            <hr class="my-1 p-0 m-0 divider">
+        </div>
+        {{$index = add $index 1}}
+        {{end}}
+    </div>
+</div>
+{{template "footer"}}
+</body>
+<!--add javascript-->
+<script src="/assets/js/jquery-3.1.1.min.js"></script>
+<script src="/assets/bootstrap-4/js/bootstrap.min.js"></script>
+</html>
+{{end}}
