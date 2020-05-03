@@ -333,11 +333,11 @@ func handleItemProcess(w http.ResponseWriter, r *http.Request) {
 	rcp.Adminsetting = adminsetting
 	ds, err := DiskCheck()
 	if err != nil {
-		rcp.StorageTitle = "Storage Space (Please set RootPath)"
+		rcp.StorageTitle = "Storage Usage (Please set RootPath)"
 		rcp.StoragePercent = 0
 		rcp.StorageClassName = "progress-bar bg-success"
 	} else {
-		rcp.StorageTitle = "Storage Space"
+		rcp.StorageTitle = "Storage Usage"
 		rcp.StoragePercent = int64((float64(ds.Used) / float64(ds.All)) * 100)
 		num := rcp.StoragePercent / 10
 		switch num {
