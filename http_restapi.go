@@ -320,8 +320,7 @@ func handleAPIUsingRate(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write(data)
 		return
-	} else {
-		http.Error(w, "Not Supported Method", http.StatusMethodNotAllowed)
-		return
 	}
+	http.Error(w, "Not Supported Method", http.StatusMethodNotAllowed)
+	return
 }
