@@ -2,6 +2,7 @@
 {{template "head"}}
 <body>
 {{template "navbar" .}}
+<form action="/cleanup-db-submit" method="post">
 <div class="container pt-5 pb-5">
     <div class="text-center mx-auto pt-5 pb-5">
         <h2 class="text-muted">Clean Up DB</h2>
@@ -43,7 +44,7 @@
                 <span class="text-center">{{$index}}</span>
             </div>
             <div class="col-sm-2 col-md-2 col-lg-1">
-                <input type="checkbox" class="form-check-input" id="item{{$index}}" value="{{.ID.Hex}}">
+                <input type="checkbox" name="checkbox{{$index}}"class="form-check-input" id="item{{$index}}" value="{{.ID.Hex}}">
             </div>
             <div class="col-sm-4 col-md-4 col-lg-1">
                 {{.ItemType}}
@@ -82,7 +83,11 @@
         {{$index = add $index 1}}
         {{end}}
     </div>
+    <div class="text-center pt-5">
+        <button type="submit" class="btn btn-outline-danger">DELETE</button>
+    </div>
 </div>
+</form>
 {{template "footer"}}
 </body>
 <!--add javascript-->

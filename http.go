@@ -108,6 +108,8 @@ func webserver() {
 	// Process
 	http.HandleFunc("/item-process", handleItemProcess)
 	http.HandleFunc("/cleanup-db", handleCleanUpDB)
+	http.HandleFunc("/cleanup-db-submit", handleCleanUpDBSubmit)
+	http.HandleFunc("/cleanup-db-success", handleCleanUpDBSuccess)
 
 	// Help
 	http.HandleFunc("/help", handleHelp)
@@ -409,6 +411,76 @@ func handleCleanUpDB(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Adminsetting = adminsetting
 	err = TEMPLATES.ExecuteTemplate(w, "cleanup-db", rcp)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func handleCleanUpDBSubmit(w http.ResponseWriter, r *http.Request) {
+	_, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
+	//checkbox의 개수를 받아온다(attribute처럼)
+	//checkbox의 개수만큼 포문을 돈다
+	//check되어 있는지 확인한다.(어떻게?)
+	//check 되어 있으면 id를 삭제할 아이템의 id 리스트에 append한다
+	//안되어 있으면 넘어간다
+	//삭제할 아이템의 id 리스트를 돌면서 삭제한다.
+	//중간에 에러나면?
+	//var ids []string
+	for i := 0; i < 4; i++ {
+		fmt.Println(r.FormValue(fmt.Sprintf("checkbox%d", i+1)))
+	}
+	//잘 성공하면 success 페이지로 연결한다.
+	//w.Write([]byte("test"))
+	// for i := 0; i < 4; i++ {
+	// 	fmt.Println(ids[i])
+	// }
+	http.Redirect(w, r, "/cleanup-db-success", http.StatusSeeOther)
+}
+
+func handleCleanUpDBSuccess(w http.ResponseWriter, r *http.Request) {
+	token, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
+	type recipe struct {
+		Token
+		Adminsetting Adminsetting
+	}
+	rcp := recipe{}
+	rcp.Token = token
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	defer client.Disconnect(ctx)
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	adminsetting, err := GetAdminSetting(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp.Adminsetting = adminsetting
+	w.Header().Set("Content-Type", "text/html")
+	err = TEMPLATES.ExecuteTemplate(w, "cleanup-db-success", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
