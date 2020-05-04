@@ -589,7 +589,7 @@ func UpdateUsingRate(client *mongo.Client, itemType, id string) (int64, error) {
 	}
 	filter := bson.M{"_id": objID}
 	update := bson.M{"$inc": bson.M{"usingrate": 1}}
-	option := *options.FindOneAndUpdate().SetReturnDocument(options.After)
+	option := *options.FindOneAndUpdate().SetReturnDocument(options.After) // option은 4.0부터 추가됨.
 	err = collection.FindOneAndUpdate(ctx, filter, update, &option).Decode(&item)
 	if err != nil {
 		return result, err
