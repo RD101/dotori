@@ -21,7 +21,6 @@ func handleDownloadItem(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
 		return
 	}
-	w.Header().Set("Content-Type", "text/html")
 
 	q := r.URL.Query()
 	itemtype := q.Get("itemtype")
@@ -83,6 +82,8 @@ func handleDownloadItem(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	// zip 파일에 데이터 파일 추가
 	for _, f := range files {
 		fileName, err := os.Open(dataPath + f.Name())
 		if err != nil {
@@ -110,6 +111,10 @@ func handleDownloadItem(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		_, err = io.Copy(writer, fileName)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 	}
 
 	w.Header().Add("Content-Type", "application/zip")
