@@ -273,3 +273,55 @@ func handleAPIAdminSetting(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, "Not Supported Method", http.StatusMethodNotAllowed)
 	return
 }
+
+func handleAPIUsingRate(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodPost {
+		r.ParseForm()
+		itemtype := r.FormValue("itemtype")
+		if itemtype == "" {
+			http.Error(w, "itemtype을 입력해주세요", http.StatusBadRequest)
+			return
+		}
+		id := r.FormValue("id")
+		if id == "" {
+			http.Error(w, "id를 입력해주세요", http.StatusBadRequest)
+			return
+		}
+		//mongoDB client 연결
+		client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		defer client.Disconnect(ctx)
+		err = client.Connect(ctx)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		err = client.Ping(ctx, readpref.Primary())
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		usingrate, err := UpdateUsingRate(client, itemtype, id)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		data, err := json.Marshal(usingrate)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(http.StatusOK)
+		w.Write(data)
+		return
+	} else {
+		http.Error(w, "Not Supported Method", http.StatusMethodNotAllowed)
+		return
+	}
+}

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"log"
 	"path/filepath"
 	"strings"
@@ -53,7 +52,7 @@ func StringToMap(str string) map[string]string {
 }
 
 // FilenameToTags 는 경로를 받아서 태그를 반환한다.
-func FilenameToTags(path string) ([]string, error) {
+func FilenameToTags(path string) []string {
 	var returnTags []string
 	filename := strings.TrimSuffix(path, filepath.Ext(path)) // 확장자 제거
 	tags := regexSplitBySign.Split(filename, -1)
@@ -63,7 +62,7 @@ func FilenameToTags(path string) ([]string, error) {
 		}
 	}
 	if len(returnTags) == 0 {
-		return returnTags, errors.New("태그리스트가 비어있습니다")
+		return returnTags
 	}
-	return returnTags, nil
+	return returnTags
 }
