@@ -53,7 +53,7 @@ func handleDownloadItem(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	item, err := SearchItem(client, itemtype, id)
+	item, err := GetItem(client, itemtype, id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -92,6 +92,7 @@ func handleDownloadItem(w http.ResponseWriter, r *http.Request) {
 		}
 		defer fileName.Close()
 
+		// zip 파일의 헤더 설정
 		info, err := fileName.Stat()
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -102,18 +103,25 @@ func handleDownloadItem(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-
 		header.Method = zip.Deflate
 		writer, err := zipWriter.CreateHeader(header)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+
 		_, err = io.Copy(writer, fileName)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+	}
+
+	// Using Rate 업데이트
+	_, err = UpdateUsingRate(client, itemtype, id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	w.Header().Add("Content-Type", "application/zip")
