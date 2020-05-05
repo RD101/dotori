@@ -179,6 +179,7 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 		TotalPage   int64
 		Pages       []int64
 		Token
+		User
 		Adminsetting Adminsetting
 	}
 	rcp := recipe{}
@@ -204,6 +205,7 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
 	rcp.CurrentPage = PageToInt(page)
 	totalPage, totalNum, items, err := SearchPage(client, itemType, searchword, rcp.CurrentPage, *flagPagenum)
 	if err != nil {
@@ -211,6 +213,10 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rcp.Items = items
+	rcp.User, err = GetUser(client, token.ID) // user 정보 가져옴
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 	rcp.TotalNum = totalNum
 	rcp.TotalPage = totalPage
 	// Pages를 설정한다.

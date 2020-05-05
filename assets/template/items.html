@@ -26,8 +26,8 @@
                         <a href="/edit{{.ItemType}}?itemtype={{.ItemType}}&id={{.ID.Hex}}" class="badge badge-outline-darkmode">Edit</a>
                         <button class="finger badge badge-outline-darkmode" onclick="copyButton(this.value)" value="{{.OutputDataPath}}">Copy Path</button>
                         <button class="finger badge badge-outline-darkmode">Download</button>
-                        {{if eq $.User.AccessLevel "admin" }}
-                            <span class="finger badge badge-outline-darkmode" data-toggle="modal" data-target="#modal-rmitem" onclick="delButton('{{.ID}}')">Delete</span>
+                        {{if eq $.User.AccessLevel "admin"}}
+                            <button class="finger badge badge-outline-darkmode">Delete</button>
                         {{end}}
                     </div>           
                 </div>
