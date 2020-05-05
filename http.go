@@ -77,6 +77,10 @@ func webserver() {
 	http.HandleFunc("/editmaya-submit", handleEditMayaSubmit)
 	http.HandleFunc("/editmaya-success", handleEditMayaSuccess)
 
+	// source
+	http.HandleFunc("/addsource", handleAddSource)
+	http.HandleFunc("/addsource-item", handleAddSourceItem)
+
 	// nuke
 	http.HandleFunc("/addnuke", handleAddNuke)
 	http.HandleFunc("/addnuke-process", handleAddNukeProcess)
@@ -103,6 +107,7 @@ func webserver() {
 
 	// Process
 	http.HandleFunc("/item-process", handleItemProcess)
+	http.HandleFunc("/cleanup-db", handleCleanUpDB)
 
 	// Download
 	http.HandleFunc("/download-item", handleDownloadItem)
@@ -122,22 +127,24 @@ func webserver() {
 	// REST API
 	http.HandleFunc("/api/item", handleAPIItem)
 	http.HandleFunc("/api/search", handleAPISearch)
+	http.HandleFunc("/api/adminsetting", handleAPIAdminSetting)
+	http.HandleFunc("/api/usingrate", handleAPIUsingRate)
 
 	// 웹서버 실행
 	if *flagHTTPPort == ":443" { // https ports
-		if *flagCertFullchanin == "" {
+		if *flagCertFullchain == "" {
 			log.Fatal("CertFullchanin 인증서 설정이 필요합니다.")
 		}
 		if *flagCertPrivkey == "" {
 			log.Fatal("CertPrivkey 인증서 설정이 필요합니다.")
 		}
-		if _, err := os.Stat(*flagCertFullchanin); os.IsNotExist(err) {
-			log.Fatal(*flagCertFullchanin + " 경로에 인증서 파일이 존재하지 않습니다")
+		if _, err := os.Stat(*flagCertFullchain); os.IsNotExist(err) {
+			log.Fatal(*flagCertFullchain + " 경로에 인증서 파일이 존재하지 않습니다")
 		}
-		if _, err := os.Stat(*flagCertFullchanin); os.IsNotExist(err) {
+		if _, err := os.Stat(*flagCertFullchain); os.IsNotExist(err) {
 			log.Fatal(*flagCertPrivkey + " 경로에 인증서 파일이 존재하지 않습니다")
 		}
-		err := http.ListenAndServeTLS(*flagHTTPPort, *flagCertFullchanin, *flagCertPrivkey, nil)
+		err := http.ListenAndServeTLS(*flagHTTPPort, *flagCertFullchain, *flagCertPrivkey, nil)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -294,7 +301,10 @@ func handleItemProcess(w http.ResponseWriter, r *http.Request) {
 	type recipe struct {
 		Items []Item
 		Token
-		Adminsetting Adminsetting
+		Adminsetting     Adminsetting
+		StorageClassName string
+		StorageTitle     string
+		StoragePercent   int64
 	}
 	//mongoDB client 연결
 	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
@@ -329,7 +339,79 @@ func handleItemProcess(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rcp.Adminsetting = adminsetting
+	ds, err := DiskCheck()
+	if err != nil {
+		rcp.StorageTitle = "Storage Usage (Please set RootPath)"
+		rcp.StoragePercent = 0
+		rcp.StorageClassName = "progress-bar bg-success"
+	} else {
+		rcp.StorageTitle = "Storage Usage"
+		rcp.StoragePercent = int64((float64(ds.Used) / float64(ds.All)) * 100)
+		num := rcp.StoragePercent / 10
+		switch num {
+		case 10:
+		case 9:
+			rcp.StorageClassName = "progress-bar bg-danger"
+			break
+		case 8:
+			rcp.StorageClassName = "progress-bar bg-warning"
+			break
+		case 7:
+			rcp.StorageClassName = "progress-bar bg-info"
+			break
+		default:
+			rcp.StorageClassName = "progress-bar bg-success"
+			break
+		}
+	}
 	err = TEMPLATES.ExecuteTemplate(w, "item-process", rcp)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func handleCleanUpDB(w http.ResponseWriter, r *http.Request) {
+	token, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html")
+	type recipe struct {
+		Items []Item
+		Token
+		Adminsetting Adminsetting
+	}
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	defer client.Disconnect(ctx)
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp := recipe{}
+	// 데이터가 모두 업로드되지 않은 아이템을 가져온다
+	rcp.Items, err = GetIncompleteItems(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp.Token = token
+	adminsetting, err := GetAdminSetting(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp.Adminsetting = adminsetting
+	err = TEMPLATES.ExecuteTemplate(w, "cleanup-db", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

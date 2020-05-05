@@ -267,6 +267,7 @@ func handleUploadMayaItem(w http.ResponseWriter, r *http.Request) {
 	}
 	item.Attributes = attr
 	item.Status = "ready"
+	item.Logs = append(item.Logs, "아이템이 생성되었습니다.")
 	currentTime := time.Now()
 	item.CreateTime = currentTime.Format("2006-01-02 15:04:05")
 	item.ThumbImgUploaded = false
@@ -503,11 +504,7 @@ func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
 				http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
 				return
 			}
-			tags, err := FilenameToTags(f.Filename)
-			if err != nil {
-				l := "'" + f.Filename + "'을 tag에 추가하지 못했습니다"
-				log.Println(l)
-			}
+			tags := FilenameToTags(f.Filename)
 			for _, tag := range tags {
 				has := false // 중복되는 tag가 있다면 append하지 않는다.
 				for _, t := range item.Tags {

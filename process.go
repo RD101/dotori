@@ -22,40 +22,8 @@ import (
 func Processing() {
 	for {
 		time.Sleep(time.Duration(*flagProcessInterval) * 1000 * time.Millisecond)
-		client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
-		if err != nil {
-			log.Println(err)
-			continue
-		}
-		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		defer cancel()
-		defer client.Disconnect(ctx)
-		err = client.Connect(ctx)
-		if err != nil {
-			log.Println(err)
-			continue
-		}
-		err = client.Ping(ctx, readpref.Primary())
-		if err != nil {
-			log.Println(err)
-			continue
-		}
-		getProcessNum, err := GetProcessingItemNum(client)
-		if err != nil {
-			log.Println(err)
-			continue
-		}
-		if *flagProcessNum < getProcessNum {
-			continue
-		}
 		go processingItem()
 	}
-}
-
-// ProcessDemo 함수는 go 프로세스가 잘 실행되는지 테스트하는 함수이다.
-func ProcessDemo() {
-	fmt.Println("processing", *flagProcessNum)
-	fmt.Println("wait", *flagProcessInterval, "sec")
 }
 
 func processingItem() {
@@ -78,6 +46,15 @@ func processingItem() {
 		log.Println(err)
 		return
 	}
+	// 연산 갯수를 체크한다.
+	getProcessNum, err := GetProcessingItemNum(client)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	if *flagProcessNum < getProcessNum {
+		return
+	}
 	// AdminSetting을 DB에서 가지고 온다.
 	adminSetting, err := GetAdminSetting(client)
 	if err != nil {
@@ -94,92 +71,120 @@ func processingItem() {
 		log.Println(err)
 		return
 	}
-	// thumbnail 폴더를 생성한다.
-	err = SetStatus(client, item, "creatingthumbdir")
-	if err != nil {
-		log.Println(err)
+	// ItemType별로 연산한다.
+	switch item.ItemType {
+	case "maya":
+		err = ProcessMayaItem(client, adminSetting, item)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+	case "source": // 소스, 시퀀스
 		return
+	case "nuke": // 뉴크파일
+		return
+	case "usd": // Pixar USD
+		return
+	case "alembic": // Alembic
+		return
+	case "houdini": // 후디니
+		return
+	case "openvdb": // 볼륨데이터
+		return
+	case "pdf": // 문서
+		return
+	case "ies": // 조명파일
+		return
+	case "hdri": // HDRI 이미지, 환경맵
+		return
+	case "blender": // 블렌더 파일
+		return
+	case "texture": // 텍스쳐
+		return
+	case "psd": // 포토샵 파일
+		return
+	case "modo": // 모도
+		return
+	case "lut", "3dl", "blut", "cms", "csp", "cub", "cube", "vf", "vfz": // LUT 파일들
+		return
+	default:
+		log.Println("약속된 type이 아닙니다")
+		return
+	}
+}
+
+// ProcessMayaItem 함수는 마야타임을 연산한다.
+func ProcessMayaItem(client *mongo.Client, adminSetting Adminsetting, item Item) error {
+	// thumbnail 폴더를 생성한다.
+	err := SetStatus(client, item, "creatingthumbdir")
+	if err != nil {
+		return err
 	}
 	err = genThumbDir(adminSetting, item)
 	if err != nil {
-		log.Println(err)
-		return
+		return err
 	}
 	err = SetStatus(client, item, "createdthumbdir")
 	if err != nil {
-		log.Println(err)
-		return
+		return err
 	}
 	// 썸네일 이미지를 생성한다.
 	err = SetStatus(client, item, "creatingthumbimg")
 	if err != nil {
-		log.Println(err)
-		return
+		return err
 	}
 	err = genThumbImage(adminSetting, item)
 	if err != nil {
-		log.Println(err)
-		return
+		return err
 	}
 	err = SetStatus(client, item, "createdthumbimg")
 	if err != nil {
-		log.Println(err)
-		return
+		return err
 	}
 	// .ogg 썸네일 동영상을 생성한다.
 	err = SetStatus(client, item, "creatingoggcontainer")
 	if err != nil {
-		log.Println(err)
-		return
+		return err
 	}
 	err = genThumbOggContainer(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
-		log.Println(err)
-		return
+		return err
 	}
 	err = SetStatus(client, item, "createdoggcontainer")
 	if err != nil {
-		log.Println(err)
-		return
+		return err
 	}
 	// .mov 썸네일 동영상을 생성한다.
 	err = SetStatus(client, item, "creatingmovcontainer")
 	if err != nil {
-		log.Println(err)
-		return
+		return err
 	}
 	err = genThumbMovContainer(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
-		log.Println(err)
-		return
+		return err
 	}
 	err = SetStatus(client, item, "createdmovcontainer")
 	if err != nil {
-		log.Println(err)
-		return
+		return err
 	}
 	// .mp4 썸네일 동영상을 생성한다.
 	err = SetStatus(client, item, "creatingmp4container")
 	if err != nil {
-		log.Println(err)
-		return
+		return err
 	}
 	err = genThumbMp4Container(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
-		log.Println(err)
-		return
+		return err
 	}
 	err = SetStatus(client, item, "createdmp4container")
 	if err != nil {
-		log.Println(err)
-		return
+		return err
 	}
 	err = SetStatus(client, item, "done")
 	if err != nil {
-		log.Println(err)
-		return
+		return err
 	}
-	return
+	return nil
 }
 
 //genThumbDir 은 인수로 받은 아이템의 경로에 thumbnail 폴더를 생성한다.
