@@ -73,8 +73,8 @@ func handleDownloadItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer zipFile.Close()
-	archive := zip.NewWriter(zipFile)
-	defer archive.Close()
+	zipWriter := zip.NewWriter(zipFile)
+	defer zipWriter.Close()
 
 	dataPath := item.OutputDataPath
 	files, err := ioutil.ReadDir(dataPath)
@@ -103,9 +103,8 @@ func handleDownloadItem(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		header.Name = f.Name()
 		header.Method = zip.Deflate
-		writer, err := archive.CreateHeader(header)
+		writer, err := zipWriter.CreateHeader(header)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
