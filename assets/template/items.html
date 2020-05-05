@@ -27,7 +27,7 @@
                         <button class="finger badge badge-outline-darkmode" onclick="copyButton(this.value)" value="{{.OutputDataPath}}">Copy Path</button>
                         <button class="finger badge badge-outline-darkmode">Download</button>
                         {{if eq $.User.AccessLevel "admin"}}
-                            <button class="finger badge badge-outline-darkmode">Delete</button>
+                            <button class="finger badge badge-danger">Delete</button>
                         {{end}}
                     </div>           
                 </div>

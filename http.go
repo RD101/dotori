@@ -179,7 +179,7 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 		TotalPage   int64
 		Pages       []int64
 		Token
-		User
+		User         User
 		Adminsetting Adminsetting
 	}
 	rcp := recipe{}
