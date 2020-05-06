@@ -109,6 +109,9 @@ func webserver() {
 	http.HandleFunc("/item-process", handleItemProcess)
 	http.HandleFunc("/cleanup-db", handleCleanUpDB)
 
+	// Download
+	http.HandleFunc("/download-item", handleDownloadItem)
+
 	// Help
 	http.HandleFunc("/help", handleHelp)
 
