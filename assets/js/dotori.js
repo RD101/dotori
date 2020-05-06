@@ -44,12 +44,12 @@ function copyButton(elementId) {
     document.body.removeChild(id);              // body에 요소 삭제
 }
 
-// 아이템 삭제 버튼을 누르면 id값을 받아 modal 창에서 보여주는 함수이다.
+// setRmItemModal 은 아이템 삭제 버튼을 누르면 id값을 받아 modal창에 보여주는 함수이다.
 function setRmItemModal(itemId) {
     document.getElementById("modal-rmitem-itemid").value = itemId;
 }
 
-// 삭제 modal창에서 Delete 버튼을 누르면 실행되는 아이템 삭제 함수이다. 
+// rmItemModal 은 삭제 modal창에서 Delete 버튼을 누르면 실행되는 아이템 삭제 함수이다. 
 function rmItemModal(itemId) {
     console.log(itemId)
 }
