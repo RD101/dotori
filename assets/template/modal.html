@@ -13,12 +13,12 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="modal-rmitem-itemid" class="col-form-label">아래 에셋을 삭제하겠습니까?</label>
-                        <textarea class="form-control" id="modal-rmitem-itemid" rows="2" disabled></textarea>
+                        <textarea class="form-control" style="color:#fff;" id="modal-rmitem-itemid" rows="2" disabled></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-darkmode" data-dismiss="modal">Close</button>
-                    <!--<button type="button" class="btn btn-outline-danger" onclick="rmItemModal(document.getElementById('modal-rmitem-itemid'))">Delete</button>!-->
+                    <button type="button" class="btn btn-outline-danger" onclick="rmItemModal(document.getElementById('modal-rmitem-itemid').value)">Delete</button>
                 </div>
             </div>
 

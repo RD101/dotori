@@ -44,9 +44,14 @@ function copyButton(elementId) {
     document.body.removeChild(id);              // body에 요소 삭제
 }
 
-// 아이템 삭제 시 해당 id값을 받아 modal 창에서 보여주는 함수이다.
+// 아이템 삭제 버튼을 누르면 id값을 받아 modal 창에서 보여주는 함수이다.
 function setRmItemModal(itemId) {
     document.getElementById("modal-rmitem-itemid").value = itemId;
+}
+
+// 삭제 modal창에서 Delete 버튼을 누르면 실행되는 아이템 삭제 함수이다. 
+function rmItemModal(itemId) {
+    console.log(itemId)
 }
 
 // handlerNumCheck 은 숫자만 적히도록 하는 레귤러익스프레션이다.
