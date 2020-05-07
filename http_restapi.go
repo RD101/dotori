@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -359,7 +358,7 @@ func handleAPIRmItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if user.AccessLevel != "admin" {
-		http.Error(w, "삭제 권한이 없는 계정입니다.", http.StatusBadRequest)s
+		http.Error(w, "삭제 권한이 없는 계정입니다.", http.StatusBadRequest)
 	}
 	// url에서 정보 쿼리
 	q := r.URL.Query()
@@ -374,7 +373,7 @@ func handleAPIRmItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// db 에서 item 삭제하는 함수 호출
-	err = RmItem(client, itemtype, id) 
+	err = RmItem(client, itemtype, id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
