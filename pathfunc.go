@@ -142,3 +142,9 @@ func GetRootPath(client *mongo.Client) (string, error) {
 	}
 	return rootpath, nil
 }
+
+// RmData 은 받아온 item id에 해당하는 데이터를 폴더 트리에서 삭제한다
+func RmData(itemId string) error {
+
+	return nil
+}

@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -324,4 +325,64 @@ func handleAPIUsingRate(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Not Supported Method", http.StatusMethodNotAllowed)
 		return
 	}
+}
+
+func handleAPIRmItem(w http.ResponseWriter, r *http.Request) {
+	token, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	defer client.Disconnect(ctx)
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	//user 체크
+	user, err := GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if user.AccessLevel != "admin" {
+		http.Error(w, "삭제 권한이 없는 계정입니다.", http.StatusBadRequest)s
+	}
+	// url에서 정보 쿼리
+	q := r.URL.Query()
+	itemtype := q.Get("itemtype")
+	id := q.Get("id")
+	if id == "" {
+		http.Error(w, "URL에 id을 입력해주세요", http.StatusBadRequest)
+		return
+	}
+	if itemtype == "" {
+		http.Error(w, "URL에 itemtype을 입력해주세요", http.StatusBadRequest)
+		return
+	}
+	// db 에서 item 삭제하는 함수 호출
+	err = RmItem(client, itemtype, id) 
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	// 폴더 트레에서 data 삭제하는 함수 호출
+	err = RmData(id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
 }

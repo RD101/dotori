@@ -129,6 +129,7 @@ func webserver() {
 	http.HandleFunc("/api/search", handleAPISearch)
 	http.HandleFunc("/api/adminsetting", handleAPIAdminSetting)
 	http.HandleFunc("/api/usingrate", handleAPIUsingRate)
+	http.HandleFunc("/api/rmitem", handleAPIRmItem)
 
 	// 웹서버 실행
 	if *flagHTTPPort == ":443" { // https ports
