@@ -10,6 +10,7 @@
 | URI | Description | Attributes | Curl Example |
 | --- | --- | --- | --- |
 | /api/search | 검색하기 | itemtype, searchword | `$ curl -X POST -d "itemtype=maya&searchword=나무" http://192.168.219.104/api/search` |
+| /api/usingrate | Using Rate 올리기 | itemtype, id | `$ curl -X POST -d "itemtype=maya&id=5eaa5758eafdfd2dae3bb050" http://192.168.219.104/api/usingrate`
 
 
 ## Python example
