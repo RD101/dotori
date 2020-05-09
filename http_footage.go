@@ -12,18 +12,18 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-// handleAddSource 함수는 URL에 objectID를 붙여서 /addsource-item 페이지로 redirect한다.
-func handleAddSource(w http.ResponseWriter, r *http.Request) {
+// handleAddFootage 함수는 URL에 objectID를 붙여서 /addfootage-item 페이지로 redirect한다.
+func handleAddFootage(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
 		return
 	}
 	objectID := primitive.NewObjectID().Hex()
-	http.Redirect(w, r, fmt.Sprintf("/addsource-item?objectid=%s", objectID), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/addfootage-item?objectid=%s", objectID), http.StatusSeeOther)
 }
 
-func handleAddSourceItem(w http.ResponseWriter, r *http.Request) {
+func handleAddFootageItem(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -68,7 +68,7 @@ func handleAddSourceItem(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Colorspaces = ocioConfig.Colorspaces
 	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "addsource-item", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "addfootage-item", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

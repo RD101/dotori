@@ -77,9 +77,9 @@ func webserver() {
 	http.HandleFunc("/editmaya-submit", handleEditMayaSubmit)
 	http.HandleFunc("/editmaya-success", handleEditMayaSuccess)
 
-	// source
-	http.HandleFunc("/addsource", handleAddSource)
-	http.HandleFunc("/addsource-item", handleAddSourceItem)
+	// Footage
+	http.HandleFunc("/addfootage", handleAddFootage)
+	http.HandleFunc("/addfootage-item", handleAddFootageItem)
 
 	// nuke
 	http.HandleFunc("/addnuke", handleAddNuke)
