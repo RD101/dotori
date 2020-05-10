@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/shurcooL/httpfs/html/vfstemplate"
@@ -431,23 +432,46 @@ func handleCleanUpDBSubmit(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
 		return
 	}
-	//checkbox의 개수를 받아온다(attribute처럼)
-	//checkbox의 개수만큼 포문을 돈다
-	//check되어 있는지 확인한다.(어떻게?)
-	//check 되어 있으면 id를 삭제할 아이템의 id 리스트에 append한다
-	//안되어 있으면 넘어간다
-	//삭제할 아이템의 id 리스트를 돌면서 삭제한다.
-	//중간에 에러나면?
-	//var ids []string
-	for i := 0; i < 4; i++ {
-		fmt.Println(r.FormValue(fmt.Sprintf("checkbox%d", i+1)))
+	//checkbox의 개수를 받아온다.
+	itemNum, err := strconv.Atoi(r.FormValue("itemnum"))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
-	//잘 성공하면 success 페이지로 연결한다.
-	//w.Write([]byte("test"))
-	// for i := 0; i < 4; i++ {
-	// 	fmt.Println(ids[i])
-	// }
-	http.Redirect(w, r, "/cleanup-db-success", http.StatusSeeOther)
+	itemsToDelete := make(map[string]string)
+	//checkbox의 개수만큼 포문을 돈다
+	for i := 0; i < itemNum; i++ {
+		//check되어 있는지 확인한다.
+		id := r.FormValue(fmt.Sprintf("checkbox%d", i+1))
+		if id == "" {
+			continue // check 안되어 있으면 넘어간다
+		} //check 되어 있으면 itemytpe을 가져와서 map을 채운다.
+		itemtype := r.FormValue(fmt.Sprintf("itemtype%d", i+1))
+		itemsToDelete[id] = itemtype
+	}
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	defer client.Disconnect(ctx)
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	//삭제할 아이템의 리스트를 돌면서 삭제한다.
+	for id, itemtype := range itemsToDelete {
+		err = RmItem(client, itemtype, id)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+	http.Redirect(w, r, "/cleanup-db", http.StatusSeeOther)
 }
 
 func handleCleanUpDBSuccess(w http.ResponseWriter, r *http.Request) {

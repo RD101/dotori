@@ -44,11 +44,12 @@
                 <span class="text-center">{{$index}}</span>
             </div>
             <div class="col-sm-2 col-md-2 col-lg-1">
-                <input type="checkbox" name="checkbox{{$index}}"class="form-check-input" id="item{{$index}}" value="{{.ID.Hex}}">
+                <input type="checkbox" id="item{{$index}}" name="checkbox{{$index}}"class="form-check-input" value="{{.ID.Hex}}">
             </div>
             <div class="col-sm-4 col-md-4 col-lg-1">
                 {{.ItemType}}
             </div>
+            <input type="hidden" id="itemtype{{$index}}" name="itemtype{{$index}}" value="{{.ItemType}}">
             <div class="col-sm-4 col-md-4 col-lg-1">
                 {{.Author}}
             </div>
@@ -83,6 +84,7 @@
         {{$index = add $index 1}}
         {{end}}
     </div>
+    <input type="hidden" id="itemnum" name="itemnum" value="{{$index}}">
     <div class="text-center pt-5">
         <button type="submit" class="btn btn-outline-danger">DELETE</button>
     </div>
