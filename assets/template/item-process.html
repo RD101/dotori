@@ -6,7 +6,15 @@
         <div class="my-auto pb-5">
             <h5 class="text-muted pb-3">{{.StorageTitle}}</h5>
             <div class="progress">
-            <div class={{.StorageClassName}} role="progressbar" style="width: {{.StoragePercent}}%" aria-valuenow={{.StoragePercent}} aria-valuemin="1" aria-valuemax="100"><b>{{.StoragePercent}}%</b></div>
+                {{if eq .StorageLevel 7}}
+                <div class="progress-bar bg-info" role="progressbar" style="width: {{.StoragePercent}}%" aria-valuenow={{.StoragePercent}} aria-valuemin="1" aria-valuemax="100"><b>{{.StoragePercent}}%</b></div>
+                {{else if eq .StorageLevel 8}}
+                <div class="progress-bar bg-warning" role="progressbar" style="width: {{.StoragePercent}}%" aria-valuenow={{.StoragePercent}} aria-valuemin="1" aria-valuemax="100"><b>{{.StoragePercent}}%</b></div>
+                {{else if eq .StorageLevel 9}}
+                <div class="progress-bar bg-danger" role="progressbar" style="width: {{.StoragePercent}}%" aria-valuenow={{.StoragePercent}} aria-valuemin="1" aria-valuemax="100"><b>{{.StoragePercent}}%</b></div>
+                {{else}}
+                <div class="progress-bar bg-success" role="progressbar" style="width: {{.StoragePercent}}%" aria-valuenow={{.StoragePercent}} aria-valuemin="1" aria-valuemax="100"><b>{{.StoragePercent}}%</b></div>
+                {{end}}
             </div>
         </div>        
         <div class="text-center mx-auto pt-5 pb-5">
