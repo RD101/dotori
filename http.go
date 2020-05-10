@@ -77,9 +77,9 @@ func webserver() {
 	http.HandleFunc("/editmaya-submit", handleEditMayaSubmit)
 	http.HandleFunc("/editmaya-success", handleEditMayaSuccess)
 
-	// source
-	http.HandleFunc("/addsource", handleAddSource)
-	http.HandleFunc("/addsource-item", handleAddSourceItem)
+	// Footage
+	http.HandleFunc("/addfootage", handleAddFootage)
+	http.HandleFunc("/addfootage-item", handleAddFootageItem)
 
 	// nuke
 	http.HandleFunc("/addnuke", handleAddNuke)
@@ -110,6 +110,9 @@ func webserver() {
 	http.HandleFunc("/cleanup-db", handleCleanUpDB)
 	http.HandleFunc("/cleanup-db-submit", handleCleanUpDBSubmit)
 	http.HandleFunc("/cleanup-db-success", handleCleanUpDBSuccess)
+
+	// Download
+	http.HandleFunc("/download-item", handleDownloadItem)
 
 	// Help
 	http.HandleFunc("/help", handleHelp)
@@ -181,6 +184,7 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 		TotalPage   int64
 		Pages       []int64
 		Token
+		User         User
 		Adminsetting Adminsetting
 	}
 	rcp := recipe{}
@@ -213,6 +217,10 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rcp.Items = items
+	rcp.User, err = GetUser(client, token.ID) // user 정보 가져옴
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 	rcp.TotalNum = totalNum
 	rcp.TotalPage = totalPage
 	// Pages를 설정한다.
