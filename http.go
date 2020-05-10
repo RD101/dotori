@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/shurcooL/httpfs/html/vfstemplate"
@@ -108,6 +109,8 @@ func webserver() {
 	// Process
 	http.HandleFunc("/item-process", handleItemProcess)
 	http.HandleFunc("/cleanup-db", handleCleanUpDB)
+	http.HandleFunc("/cleanup-db-submit", handleCleanUpDBSubmit)
+	http.HandleFunc("/cleanup-db-success", handleCleanUpDBSuccess)
 
 	// Download
 	http.HandleFunc("/download-item", handleDownloadItem)
@@ -402,6 +405,99 @@ func handleCleanUpDB(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Adminsetting = adminsetting
 	err = TEMPLATES.ExecuteTemplate(w, "cleanup-db", rcp)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func handleCleanUpDBSubmit(w http.ResponseWriter, r *http.Request) {
+	_, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
+	//checkbox의 개수를 받아온다.
+	itemNum, err := strconv.Atoi(r.FormValue("itemnum"))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	itemsToDelete := make(map[string]string)
+	//checkbox의 개수만큼 포문을 돈다
+	for i := 0; i < itemNum; i++ {
+		//check되어 있는지 확인한다.
+		id := r.FormValue(fmt.Sprintf("checkbox%d", i+1))
+		if id == "" {
+			continue // check 안되어 있으면 넘어간다
+		} //check 되어 있으면 itemytpe을 가져와서 map을 채운다.
+		itemtype := r.FormValue(fmt.Sprintf("itemtype%d", i+1))
+		itemsToDelete[id] = itemtype
+	}
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	defer client.Disconnect(ctx)
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	//삭제할 아이템의 리스트를 돌면서 삭제한다.
+	for id, itemtype := range itemsToDelete {
+		err = RmItem(client, itemtype, id)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+	http.Redirect(w, r, "/cleanup-db", http.StatusSeeOther)
+}
+
+func handleCleanUpDBSuccess(w http.ResponseWriter, r *http.Request) {
+	token, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
+	type recipe struct {
+		Token
+		Adminsetting Adminsetting
+	}
+	rcp := recipe{}
+	rcp.Token = token
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	defer client.Disconnect(ctx)
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	adminsetting, err := GetAdminSetting(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp.Adminsetting = adminsetting
+	w.Header().Set("Content-Type", "text/html")
+	err = TEMPLATES.ExecuteTemplate(w, "cleanup-db-success", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
