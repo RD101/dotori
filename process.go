@@ -79,7 +79,7 @@ func processingItem() {
 			log.Println(err)
 			return
 		}
-	case "source": // 소스, 시퀀스
+	case "footage": // Footage 소스, 시퀀스
 		return
 	case "nuke": // 뉴크파일
 		return

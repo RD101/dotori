@@ -7,10 +7,18 @@
 					<select name="itemtype" class="custom-select left-radius">
 						<option value="maya" {{if eq .ItemType "maya" }}selected{{end}}>Maya</option>
 						<option value="usd" {{if eq .ItemType "usd" }}selected{{end}}>USD</option>
+						<option value="alembic" {{if eq .ItemType "alembic" }}selected{{end}}>Alembic</option>
+						<option value="vdb" {{if eq .ItemType "vdb" }}selected{{end}}>OpenVDB</option>
 						<option value="nuke" {{if eq .ItemType "nuke" }}selected{{end}}>Nuke</option>
 						<option value="houdini" {{if eq .ItemType "houdini" }}selected{{end}}>Houdini</option>
 						<option value="footage" {{if eq .ItemType "footage" }}selected{{end}}>Footage</option>
 						<option value="psd" {{if eq .ItemType "psd" }}selected{{end}}>PSD</option>
+						<option value="pdf" {{if eq .ItemType "pdf" }}selected{{end}}>PDF</option>
+						<option value="lut" {{if eq .ItemType "lut" }}selected{{end}}>LUT</option>
+						<option value="ies" {{if eq .ItemType "ies" }}selected{{end}}>IES</option>
+						<option value="hdri" {{if eq .ItemType "hdri" }}selected{{end}}>HDRI</option>
+						<option value="modo" {{if eq .ItemType "modo" }}selected{{end}}>Modo</option>
+						<option value="blender" {{if eq .ItemType "blender" }}selected{{end}}>Blender</option>
 						<option value="" {{if eq .ItemType "" }}selected{{end}}>All</option>
 					</select>
 				</div>
