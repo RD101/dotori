@@ -77,6 +77,11 @@ func processingItem() {
 		err = ProcessMayaItem(client, adminSetting, item)
 		if err != nil {
 			log.Println(err)
+			err = SetLog(client, item.ItemType, item.ID.Hex(), err.Error())
+			if err != nil {
+				log.Println(err)
+				return
+			}
 			return
 		}
 	case "source": // 소스, 시퀀스
