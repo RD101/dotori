@@ -479,7 +479,7 @@ func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
 				}
 				data, err := ioutil.ReadAll(file)
 				if err != nil {
-					fmt.Fprintf(w, "%v", err)
+					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return
 				}
 				path := item.OutputDataPath

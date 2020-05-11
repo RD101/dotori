@@ -82,6 +82,8 @@ func webserver() {
 	http.HandleFunc("/addfootage", handleAddFootage)
 	http.HandleFunc("/addfootage-item", handleAddFootageItem)
 	http.HandleFunc("/uploadfootage-item", handleUploadFootageItem)
+	http.HandleFunc("/addfootage-file", handleAddFootageFile)
+	http.HandleFunc("/uploadfootage-file", handleUploadFootageFile)
 
 	// nuke
 	http.HandleFunc("/addnuke", handleAddNuke)
