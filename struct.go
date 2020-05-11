@@ -77,6 +77,9 @@ type Item struct {
 	ThumbImgUploaded  bool `json:"thumbimguploaded" bson:"thumbimguploaded"`   // 썸네일 이미지의 업로드 여부 체크
 	ThumbClipUploaded bool `json:"thumbclipuploaded" bson:"thumbclipuploaded"` // 썸네일 클립의 업로드 여부 체크
 	DataUploaded      bool `json:"datauploaded" bson:"datauploaded"`           // 데이터의 업로드 여부 체크
+
+	InColorspace  string `json:"incolorspace" bson:"incolorspace"`   // InColorspace
+	OutColorspace string `json:"outcolorspace" bson:"outcolorspace"` // OutColorspace
 }
 
 // ItemStatus 는 숫자이다.

@@ -41,13 +41,13 @@
                     <label class="text-muted">Colorspace</label>
                     <div class="row">
                         <div class="col">
-                            <select name="InColorspace" class="form-control">
+                            <select name="incolorspace" class="form-control">
                                 {{range .Colorspaces}}<option value="{{.Name}}">{{.Name}}</option>{{end}}
                             </select>
                             <small class="form-text text-muted">In Colorspace</small>
                         </div>
                         <div class="col">
-                            <select name="OutColorspace" class="form-control">
+                            <select name="outcolorspace" class="form-control">
                                 {{range .Colorspaces}}<option value="{{.Name}}">{{.Name}}</option>{{end}}
                             </select>
                             <small class="form-text text-muted">Out Colorspace</small>
