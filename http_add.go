@@ -110,7 +110,7 @@ func handleAddMayaItem(w http.ResponseWriter, r *http.Request) {
 }
 
 // handleAddMayaSubmit 함수는 URL에 objectID를 붙여서 /addmaya-item 페이지로 redirect한다.
-func handleAddMayaSubmit(w http.ResponseWriter, r *http.Request) {
+func handleAddMaya(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
