@@ -42,12 +42,12 @@ func handleDownloadItem(w http.ResponseWriter, r *http.Request) {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	defer client.Disconnect(ctx)
 	err = client.Connect(ctx)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	defer client.Disconnect(ctx)
 	err = client.Ping(ctx, readpref.Primary())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -58,7 +58,7 @@ func handleDownloadItem(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
+	// 임시 디렉토리를 생성한다.
 	tempDir, err := ioutil.TempDir("", "zip")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -66,16 +66,20 @@ func handleDownloadItem(w http.ResponseWriter, r *http.Request) {
 	}
 	defer os.RemoveAll(tempDir)
 
-	zipFileDir := tempDir + "/" + id + ".zip"
-	zipFile, err := os.Create(zipFileDir)
+	// zip 파일을 생성한다.
+	zipFilePath := tempDir + "/" + id + ".zip"
+	zipFile, err := os.Create(zipFilePath)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	defer zipFile.Close()
+
+	// zip 파일에 쓰기할 준비를 한다.
 	zipWriter := zip.NewWriter(zipFile)
 	defer zipWriter.Close()
 
+	// item의 data경로에 존재하는 파일 리스트를 불러온다.
 	dataPath := item.OutputDataPath
 	files, err := ioutil.ReadDir(dataPath)
 	if err != nil {
@@ -83,7 +87,7 @@ func handleDownloadItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// zip 파일에 데이터 파일 추가
+	// 데이터 파일을 돌면서 zip 파일에 데이터 파일 추가한다.
 	for _, f := range files {
 		fileName, err := os.Open(dataPath + f.Name())
 		if err != nil {
@@ -92,32 +96,38 @@ func handleDownloadItem(w http.ResponseWriter, r *http.Request) {
 		}
 		defer fileName.Close()
 
-		// zip 파일의 헤더 설정
+		// 파일정보를 가지고 온다.
 		info, err := fileName.Stat()
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+		// 압축할 때 zip 파일에 파일정보를 헤더로 설정한다.
 		header, err := zip.FileInfoHeader(info)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		header.Method = zip.Deflate
+		// 헤더정보를 zip 파일에 쓴다.
 		writer, err := zipWriter.CreateHeader(header)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-
+		// 파일의 실제 내용을 zip 파일에 복사한다.
 		_, err = io.Copy(writer, fileName)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 	}
+	// zip파일 Writer를 닫는다.
+	zipWriter.Close()
+	// zip파일을 닫는다.
+	zipFile.Close()
 
-	// Using Rate 업데이트
+	// Using Rate(사용률)을 업데이트 한다.
 	_, err = UpdateUsingRate(client, itemtype, id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -126,5 +136,5 @@ func handleDownloadItem(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Add("Content-Type", "application/zip")
 	w.Header().Add("Content-Disposition", fmt.Sprintf("Attachment; filename=%s", id+".zip"))
-	http.ServeFile(w, r, zipFileDir)
+	http.ServeFile(w, r, zipFilePath)
 }
