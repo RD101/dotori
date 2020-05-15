@@ -47,11 +47,11 @@ func webserver() {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	defer client.Disconnect(ctx)
 	err = client.Connect(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer client.Disconnect(ctx)
 	err = client.Ping(ctx, readpref.Primary())
 	if err != nil {
 		log.Fatal(err)
@@ -208,12 +208,12 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	defer client.Disconnect(ctx)
 	err = client.Connect(ctx)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	defer client.Disconnect(ctx)
 	err = client.Ping(ctx, readpref.Primary())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -282,12 +282,12 @@ func handleHelp(w http.ResponseWriter, r *http.Request) {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	defer client.Disconnect(ctx)
 	err = client.Connect(ctx)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	defer client.Disconnect(ctx)
 	err = client.Ping(ctx, readpref.Primary())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -330,12 +330,12 @@ func handleItemProcess(w http.ResponseWriter, r *http.Request) {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	defer client.Disconnect(ctx)
 	err = client.Connect(ctx)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	defer client.Disconnect(ctx)
 	err = client.Ping(ctx, readpref.Primary())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -392,12 +392,12 @@ func handleCleanUpDB(w http.ResponseWriter, r *http.Request) {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	defer client.Disconnect(ctx)
 	err = client.Connect(ctx)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	defer client.Disconnect(ctx)
 	rcp := recipe{}
 	// 데이터가 모두 업로드되지 않은 아이템을 가져온다
 	rcp.Items, err = GetIncompleteItems(client)
@@ -450,12 +450,12 @@ func handleCleanUpDBSubmit(w http.ResponseWriter, r *http.Request) {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	defer client.Disconnect(ctx)
 	err = client.Connect(ctx)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	defer client.Disconnect(ctx)
 	//삭제할 아이템의 리스트를 돌면서 삭제한다.
 	for id, itemtype := range itemsToDelete {
 		err = RmItem(client, itemtype, id)
@@ -487,12 +487,12 @@ func handleCleanUpDBSuccess(w http.ResponseWriter, r *http.Request) {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	defer client.Disconnect(ctx)
 	err = client.Connect(ctx)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	defer client.Disconnect(ctx)
 	err = client.Ping(ctx, readpref.Primary())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

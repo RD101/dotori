@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"log"
 	"net/http"
 	"time"
 
@@ -38,18 +37,21 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 		//mongoDB client 연결
 		client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 		if err != nil {
-			log.Fatal(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
 		}
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
-		defer client.Disconnect(ctx)
 		err = client.Connect(ctx)
 		if err != nil {
-			log.Fatal(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
 		}
+		defer client.Disconnect(ctx)
 		err = client.Ping(ctx, readpref.Primary())
 		if err != nil {
-			log.Fatal(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
 		}
 		// admin settin에서 rootpath를 가져와서 경로를 생성한다.
 		rootpath, err := GetRootPath(client)
@@ -105,12 +107,12 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 		}
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
-		defer client.Disconnect(ctx)
 		err = client.Connect(ctx)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+		defer client.Disconnect(ctx)
 		err = client.Ping(ctx, readpref.Primary())
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -150,12 +152,12 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 		}
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
-		defer client.Disconnect(ctx)
 		err = client.Connect(ctx)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+		defer client.Disconnect(ctx)
 		err = client.Ping(ctx, readpref.Primary())
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -207,12 +209,12 @@ func handleAPISearch(w http.ResponseWriter, r *http.Request) {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	defer client.Disconnect(ctx)
 	err = client.Connect(ctx)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	defer client.Disconnect(ctx)
 	err = client.Ping(ctx, readpref.Primary())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -244,12 +246,12 @@ func handleAPIAdminSetting(w http.ResponseWriter, r *http.Request) {
 		}
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
-		defer client.Disconnect(ctx)
 		err = client.Connect(ctx)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+		defer client.Disconnect(ctx)
 		err = client.Ping(ctx, readpref.Primary())
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -295,12 +297,12 @@ func handleAPIUsingRate(w http.ResponseWriter, r *http.Request) {
 		}
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
-		defer client.Disconnect(ctx)
 		err = client.Connect(ctx)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+		defer client.Disconnect(ctx)
 		err = client.Ping(ctx, readpref.Primary())
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)

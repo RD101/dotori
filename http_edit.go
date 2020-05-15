@@ -49,12 +49,12 @@ func handleEditMaya(w http.ResponseWriter, r *http.Request) {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	defer client.Disconnect(ctx)
 	err = client.Connect(ctx)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	defer client.Disconnect(ctx)
 	err = client.Ping(ctx, readpref.Primary())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -117,12 +117,12 @@ func handleEditMayaSubmit(w http.ResponseWriter, r *http.Request) {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	defer client.Disconnect(ctx)
 	err = client.Connect(ctx)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	defer client.Disconnect(ctx)
 	err = client.Ping(ctx, readpref.Primary())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -165,12 +165,12 @@ func handleEditMayaSuccess(w http.ResponseWriter, r *http.Request) {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	defer client.Disconnect(ctx)
 	err = client.Connect(ctx)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	defer client.Disconnect(ctx)
 	err = client.Ping(ctx, readpref.Primary())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
