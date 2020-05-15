@@ -91,6 +91,8 @@ func webserver() {
 	http.HandleFunc("/uploadnuke-item", handlUploadNukeItem)
 	http.HandleFunc("/addnuke-file", handleAddNukeFile)
 	http.HandleFunc("/uploadnuke-file", handleUploadNukeFile)
+	http.HandleFunc("/uploadnuke-checkdata", handleUploadNukeCheckData)
+	http.HandleFunc("/addnuke-success", handleAddNukeSuccess)
 
 	// Houdini
 	http.HandleFunc("/addhoudini", handleAddHoudini)
