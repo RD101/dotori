@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path"
 	"path/filepath"
 	"strconv"
 	"time"
@@ -401,7 +402,15 @@ func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return
 				}
-				path := item.InputThumbnailImgPath
+				path, filename := path.Split(item.InputThumbnailImgPath)
+				if filename != "" { // 썸네일 이미지가 이미 존재하는 경우, 지우고 경로를 새로 지정한다.
+					err = os.Remove(item.InputThumbnailImgPath)
+					if err != nil {
+						http.Error(w, err.Error(), http.StatusInternalServerError)
+						return
+					}
+					item.InputThumbnailImgPath = path
+				}
 				err = os.MkdirAll(path, os.FileMode(folderPerm))
 				if err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -425,7 +434,15 @@ func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return
 				}
-				path := item.InputThumbnailClipPath
+				path, filename := path.Split(item.InputThumbnailClipPath)
+				if filename != "" { // 썸네일 클립이 이미 존재하는 경우, 지우고 경로를 새로 지정한다.
+					err = os.Remove(item.InputThumbnailClipPath)
+					if err != nil {
+						http.Error(w, err.Error(), http.StatusInternalServerError)
+						return
+					}
+					item.InputThumbnailClipPath = path
+				}
 				err = os.MkdirAll(path, os.FileMode(folderPerm))
 				if err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
