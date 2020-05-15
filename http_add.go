@@ -289,6 +289,18 @@ func handleUploadMayaItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	err = AddItem(client, item)
+	if err == "err message" { // 동일한 ID의 도큐먼트가 이미 존재해서 생기는 에러라면
+		// 기존 DB 삭제
+		err = RmItem(client, item.ItemType, item.ID.Hex())
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		// 리다이렉트
+		objectID := primitive.NewObjectID().Hex()
+		http.Redirect(w, r, fmt.Sprintf("/addmaya-item?objectid=%s", objectID), http.StatusSeeOther)
+		return
+	}
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
