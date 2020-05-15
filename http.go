@@ -123,6 +123,9 @@ func webserver() {
 	// Help
 	http.HandleFunc("/help", handleHelp)
 
+	// Error
+	http.HandleFunc("/error-ocio", handleErrorOCIO)
+
 	// User
 	http.HandleFunc("/profile", handleProfile)
 	http.HandleFunc("/signup", handleSignup)

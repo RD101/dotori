@@ -69,7 +69,7 @@ func handleAddFootageItem(w http.ResponseWriter, r *http.Request) {
 	rcp.Adminsetting = adminsetting
 	ocioConfig, err := loadOCIOConfig(rcp.Adminsetting.OCIOConfig)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Redirect(w, r, "/error-ocio", http.StatusSeeOther)
 		return
 	}
 	rcp.Colorspaces = ocioConfig.Colorspaces
