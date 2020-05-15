@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -167,88 +166,248 @@ func handlUploadNukeItem(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, fmt.Sprintf("/addnuke-file?objectid=%s", objectID), http.StatusSeeOther)
 }
 
-// handleUploadNuke 함수는 Nuke파일을 DB에 업로드하는 페이지를 연다.
-func handleUploadNuke(w http.ResponseWriter, r *http.Request) {
+// handleAddNukeFile 함수는 Nuke 파일을 추가하는 페이지 이다.
+func handleAddNukeFile(w http.ResponseWriter, r *http.Request) {
+	token, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
+	type recipe struct {
+		Token
+		Adminsetting Adminsetting
+	}
+	rcp := recipe{}
+	rcp.Token = token
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	defer client.Disconnect(ctx)
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	adminsetting, err := GetAdminSetting(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp.Adminsetting = adminsetting
+	w.Header().Set("Content-Type", "text/html")
+	err = TEMPLATES.ExecuteTemplate(w, "addnuke-file", rcp)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+// handleUploadNuke 함수는 Nuke파일을 DB에 업로드하는 페이지를 연다. dropzone에 파일을 올릴 경우 실행된다.
+func handleUploadNukeFile(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
 		return
 	}
-	file, header, err := r.FormFile("file")
+	objectID, err := GetObjectIDfromRequestHeader(r)
 	if err != nil {
-		log.Println(err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	defer client.Disconnect(ctx)
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	item, err := GetItem(client, "nuke", objectID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	adminsetting, err := GetAdminSetting(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
-	defer file.Close()
-	unix.Umask(0)
-	mimeType := header.Header.Get("Content-Type")
-	switch mimeType {
-	case "image/jpeg", "image/png":
-		data, err := ioutil.ReadAll(file)
-		if err != nil {
-			fmt.Fprintf(w, "%v", err)
-			return
-		}
-		path := os.TempDir() + "/dotori/thumbnail"
-		err = os.MkdirAll(path, 0770)
-		if err != nil {
-			return
-		}
-		err = ioutil.WriteFile(path+"/"+header.Filename, data, 0440)
-		if err != nil {
-			fmt.Fprintf(w, "%v", err)
-			return
-		}
-	case "video/quicktime", "video/mp4", "video/ogg", "application/ogg":
-		data, err := ioutil.ReadAll(file)
-		if err != nil {
-			fmt.Fprintf(w, "%v", err)
-			return
-		}
-		path := os.TempDir() + "/dotori/preview"
-		err = os.MkdirAll(path, 0770)
-		if err != nil {
-			return
-		}
-		err = ioutil.WriteFile(path+"/"+header.Filename, data, 0440)
-		if err != nil {
-			fmt.Fprintf(w, "%v", err)
-			return
-		}
-	case "application/octet-stream":
-		ext := filepath.Ext(header.Filename)
-		if ext == ".nk" {
-			data, err := ioutil.ReadAll(file)
-			if err != nil {
-				fmt.Fprintf(w, "%v", err)
+	//admin setting에서 폴더권한에 관련된 옵션값을 가져온다
+	um := adminsetting.Umask
+	umask, err := strconv.Atoi(um)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	folderP := adminsetting.FolderPermission
+	folderPerm, err := strconv.ParseInt(folderP, 8, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	fileP := adminsetting.FilePermission
+	filePerm, err := strconv.ParseInt(fileP, 8, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	u := adminsetting.UID
+	uid, err := strconv.Atoi(u)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	g := adminsetting.GID
+	gid, err := strconv.Atoi(g)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	buffer := adminsetting.MultipartFormBufferSize
+	err = r.ParseMultipartForm(int64(buffer)) // grab the multipart form
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	for _, files := range r.MultipartForm.File {
+		for _, f := range files {
+			if f.Size == 0 {
+				http.Error(w, "파일사이즈가 0 바이트입니다", http.StatusInternalServerError)
 				return
 			}
-			path := os.TempDir() + "/dotori"
-			err = os.MkdirAll(path, 0770)
+			file, err := f.Open()
 			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				continue
+			}
+			defer file.Close()
+			unix.Umask(umask)
+			mimeType := f.Header.Get("Content-Type")
+			switch mimeType {
+			case "image/jpeg", "image/png":
+				data, err := ioutil.ReadAll(file)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				path := item.InputThumbnailImgPath
+				err = os.MkdirAll(path, os.FileMode(folderPerm))
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				err = os.Chown(path, uid, gid)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				err = ioutil.WriteFile(path+f.Filename, data, os.FileMode(filePerm))
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				item.InputThumbnailImgPath = path + f.Filename
+				item.ThumbImgUploaded = true
+			case "video/quicktime", "video/mp4", "video/ogg", "application/ogg":
+				data, err := ioutil.ReadAll(file)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				path := item.InputThumbnailClipPath
+				err = os.MkdirAll(path, os.FileMode(folderPerm))
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				err = os.Chown(path, uid, gid)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				err = ioutil.WriteFile(path+f.Filename, data, os.FileMode(filePerm))
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				item.InputThumbnailClipPath = path + f.Filename
+				item.ThumbClipUploaded = true
+			case "application/octet-stream":
+				ext := filepath.Ext(f.Filename)
+				if ext != ".nk" {
+					http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
+					return
+				}
+				data, err := ioutil.ReadAll(file)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				path := item.OutputDataPath
+				err = os.MkdirAll(path, os.FileMode(folderPerm))
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				err = os.Chown(path, uid, gid)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				err = ioutil.WriteFile(path+"/"+f.Filename, data, os.FileMode(filePerm))
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				item.DataUploaded = true
+			default:
+				//허용하지 않는 파일 포맷입니다.
+				http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
 				return
 			}
-			err = ioutil.WriteFile(path+"/"+header.Filename, data, 0440)
-			if err != nil {
-				fmt.Fprintf(w, "%v", err)
-				return
+			tags := FilenameToTags(f.Filename)
+			for _, tag := range tags {
+				has := false // 중복되는 tag가 있다면 append하지 않는다.
+				for _, t := range item.Tags {
+					if tag == t {
+						has = true
+					}
+				}
+				if !has {
+					item.Tags = append(item.Tags, tag)
+				}
 			}
-		}
-	default:
-		data, err := ioutil.ReadAll(file)
-		if err != nil {
-			fmt.Fprintf(w, "%v", err)
-			return
-		}
-		path := os.TempDir() + "/dotori"
-		err = os.MkdirAll(path, 0770)
-		if err != nil {
-			return
-		}
-		err = ioutil.WriteFile(path+"/"+header.Filename, data, 0440)
-		if err != nil {
-			fmt.Fprintf(w, "%v", err)
-			return
 		}
 	}
+	if item.ThumbImgUploaded && item.ThumbClipUploaded && item.DataUploaded {
+		item.Status = "fileuploaded"
+	}
+	UpdateItem(client, "nuke", item)
 }

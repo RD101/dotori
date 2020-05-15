@@ -89,7 +89,8 @@ func webserver() {
 	http.HandleFunc("/addnuke", handleAddNuke)
 	http.HandleFunc("/addnuke-item", handleAddNukeItem)
 	http.HandleFunc("/uploadnuke-item", handlUploadNukeItem)
-	http.HandleFunc("/upload-nuke", handleUploadNuke) // legacy
+	http.HandleFunc("/addnuke-file", handleAddNukeFile)
+	http.HandleFunc("/uploadnuke-file", handleUploadNukeFile)
 
 	// Houdini
 	http.HandleFunc("/addhoudini", handleAddHoudini)
