@@ -319,7 +319,7 @@ func handleUploadNukeFile(w http.ResponseWriter, r *http.Request) {
 					return
 				}
 				path, filename := path.Split(item.InputThumbnailImgPath)
-				if filename != "" { // 파일이 이미 존재하는 경우, 지우고 경로를 새로 지정한다.
+				if filename != "" { // 썸네일 이미지가 이미 존재하는 경우, 지우고 경로를 새로 지정한다.
 					err = os.Remove(item.InputThumbnailImgPath)
 					if err != nil {
 						http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -351,7 +351,7 @@ func handleUploadNukeFile(w http.ResponseWriter, r *http.Request) {
 					return
 				}
 				path, filename := path.Split(item.InputThumbnailClipPath)
-				if filename != "" { // 파일이 이미 존재하는 경우, 지우고 경로를 새로 지정한다.
+				if filename != "" { // 썸네일 클립이 이미 존재하는 경우, 지우고 경로를 새로 지정한다.
 					err = os.Remove(item.InputThumbnailClipPath)
 					if err != nil {
 						http.Error(w, err.Error(), http.StatusInternalServerError)
