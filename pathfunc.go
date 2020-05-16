@@ -173,6 +173,8 @@ func RmData(client *mongo.Client, id string) error {
 			if err != nil {
 				return err
 			}
+		} else {
+			break
 		}
 		if splitpath == rootpath {
 			break
