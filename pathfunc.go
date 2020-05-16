@@ -3,7 +3,9 @@ package main
 import (
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"os"
+	"path"
 	"path/filepath"
 	"regexp"
 	"strconv"
@@ -141,4 +143,40 @@ func GetRootPath(client *mongo.Client) (string, error) {
 		rootpath = "/" + rootpath
 	}
 	return rootpath, nil
+}
+
+// RmData 함수는 받아온 item id에 해당하는 데이터를 폴더 트리에서 삭제한다
+func RmData(client *mongo.Client, id string) error {
+	// get path
+	rootpath, err := GetRootPath(client)
+	if err != nil {
+		return errors.New("admin setting에서 rootpath를 가져오지 못했습니다")
+	}
+	idpath, err := idToPath(id)
+	if err != nil {
+		return errors.New("id를 경로 형식으로 변환하지 못했습니다")
+	}
+	rmpath := rootpath + idpath
+	splitpath, _ := path.Split(rmpath)
+	//delete
+	err = os.RemoveAll(rmpath) // idpath와 정확히 일치하는 최하단 경로만 강제로 삭제
+	if err != nil {
+		return err
+	}
+	for {
+		splitpath, _ = path.Split(splitpath)
+		splitpath = strings.TrimSuffix(splitpath, "/")
+		c, _ := ioutil.ReadDir(splitpath)
+		// 하위 폴더 없으면 삭제
+		if len(c) == 0 {
+			err := os.Remove(splitpath)
+			if err != nil {
+				return err
+			}
+		}
+		if splitpath == rootpath {
+			break
+		}
+	}
+	return nil
 }
