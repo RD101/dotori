@@ -362,3 +362,90 @@ func handleAddFootageFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+func handleEditFootage(w http.ResponseWriter, r *http.Request) {
+	token, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html")
+	type recipe struct {
+		ID            primitive.ObjectID `json:"id" bson:"id"`
+		ItemType      string             `json:"itemtype" bson:"itemtype"`
+		Author        string             `json:"author" bson:"author"`
+		Description   string             `json:"description" bson:"description"`
+		Tags          []string           `json:"tags" bson:"tags"`
+		Attributes    map[string]string  `json:"attributes" bson:"attributes"`
+		InColorspace  string             `json:"incolorspace"`
+		OutColorspace string             `json:"outcolorspace"`
+		Colorspaces   []Colorspace       `json:"colorspaces"`
+		Token
+		Adminsetting Adminsetting
+	}
+	q := r.URL.Query()
+	itemtype := q.Get("itemtype")
+	id := q.Get("id")
+	if itemtype == "" {
+		http.Error(w, "URL에 itemtype을 입력해주세요", http.StatusBadRequest)
+		return
+	}
+	if id == "" {
+		http.Error(w, "URL에 id를 입력해주세요", http.StatusBadRequest)
+		return
+	}
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer client.Disconnect(ctx)
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	item, err := SearchItem(client, itemtype, id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	adminsetting, err := GetAdminSetting(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ocioConfig, err := loadOCIOConfig(adminsetting.OCIOConfig)
+	if err != nil {
+		http.Redirect(w, r, "/error-ocio", http.StatusSeeOther)
+		return
+	}
+	rcp := recipe{
+		ID:            item.ID,
+		ItemType:      item.ItemType,
+		Author:        item.Author,
+		Description:   item.Description,
+		Tags:          item.Tags,
+		Attributes:    item.Attributes,
+		InColorspace:  item.InColorspace,
+		OutColorspace: item.OutColorspace,
+		Colorspaces:   ocioConfig.Colorspaces,
+		Token:         token,
+		Adminsetting:  adminsetting,
+	}
+
+	err = TEMPLATES.ExecuteTemplate(w, "editfootage", rcp)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
