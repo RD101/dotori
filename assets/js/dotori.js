@@ -61,7 +61,7 @@ function rmItemModal(itemtype,itemId) {
             location.reload();
         },
         error: function(){
-            alert("itemtype: "+itemtype+"\nid: "+itemId+"\n아이템 삭제를 실패했습니다.");  
+            alert("itemtype: "+itemtype+"\nid: "+itemId+"\n\n아이템 삭제를 실패했습니다.");  
         }
     });
 }
