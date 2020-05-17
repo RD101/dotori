@@ -39,48 +39,50 @@
     <div class="text-muted text-center">
         {{$index := 1}}
         {{range .Items}}
-        <div class="row py-3">
-            <div class="col-sm-2 col-md-2 col-lg-1">
-                <span class="text-center">{{$index}}</span>
-            </div>
-            <div class="col-sm-2 col-md-2 col-lg-1">
-                <input type="checkbox" id="item{{$index}}" name="checkbox{{$index}}"class="form-check-input" value="{{.ID.Hex}}">
-            </div>
-            <div class="col-sm-4 col-md-4 col-lg-1">
-                {{.ItemType}}
-            </div>
-            <input type="hidden" id="itemtype{{$index}}" name="itemtype{{$index}}" value="{{.ItemType}}">
-            <div class="col-sm-4 col-md-4 col-lg-1">
+        <label style="width : 100%">
+            <div class="row py-3">
+                <div class="col-sm-2 col-md-2 col-lg-1">
+                    <span class="text-center">{{$index}}</span>
+                </div>
+                <div class="col-sm-2 col-md-2 col-lg-1">
+                    <input type="checkbox" id="item{{$index}}" name="checkbox{{$index}}"class="form-check-input" value="{{.ID.Hex}}">
+                </div>
+                <div class="col-sm-4 col-md-4 col-lg-1">
+                    {{.ItemType}}
+                </div>
+                <input type="hidden" id="itemtype{{$index}}" name="itemtype{{$index}}" value="{{.ItemType}}">
+                <div class="col-sm-4 col-md-4 col-lg-1">
                 {{.Author}}
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-4">
+                    {{.ID.Hex}}
+                </div>
+                <div class="col-sm-4 col-md-2 col-lg-1">
+                    {{if .ThumbImgUploaded}}
+                    <span class="badge badge-pill badge-success">O</span>
+                    {{else}}
+                    <span class="badge badge-pill badge-secondary">X</span>
+                    {{end}}
+                </div>
+                <div class="col-sm-4 col-md-2 col-lg-1">
+                    {{if .ThumbClipUploaded}}
+                    <span class="badge badge-pill badge-success">O</span>
+                    {{else}}
+                    <span class="badge badge-pill badge-secondary">X</span>
+                    {{end}}
+                </div>
+                <div class="col-sm-4 col-md-2 col-lg-1">
+                    {{if .DataUploaded}}
+                    <span class="badge badge-pill badge-success">O</span>
+                    {{else}}
+                    <span class="badge badge-pill badge-secondary">X</span>
+                    {{end}}
+                </div>
             </div>
-            <div class="col-sm-12 col-md-6 col-lg-4">
-                {{.ID.Hex}}
+            <div>
+                <hr class="my-1 p-0 m-0 divider">
             </div>
-            <div class="col-sm-4 col-md-2 col-lg-1">
-                {{if .ThumbImgUploaded}}
-                <span class="badge badge-pill badge-success">O</span>
-                {{else}}
-                <span class="badge badge-pill badge-secondary">X</span>
-                {{end}}
-            </div>
-            <div class="col-sm-4 col-md-2 col-lg-1">
-                {{if .ThumbClipUploaded}}
-                <span class="badge badge-pill badge-success">O</span>
-                {{else}}
-                <span class="badge badge-pill badge-secondary">X</span>
-                {{end}}
-            </div>
-            <div class="col-sm-4 col-md-2 col-lg-1">
-                {{if .DataUploaded}}
-                <span class="badge badge-pill badge-success">O</span>
-                {{else}}
-                <span class="badge badge-pill badge-secondary">X</span>
-                {{end}}
-            </div>
-        </div>
-        <div>
-            <hr class="my-1 p-0 m-0 divider">
-        </div>
+        </label>
         {{$index = add $index 1}}
         {{end}}
     </div>
