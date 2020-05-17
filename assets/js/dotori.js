@@ -45,13 +45,25 @@ function copyButton(elementId) {
 }
 
 // setRmItemModal 은 아이템 삭제 버튼을 누르면 id값을 받아 modal창에 보여주는 함수이다.
-function setRmItemModal(itemId) {
+function setRmItemModal(itemtype, itemId) {
+    document.getElementById("modal-rmitem-itemtype").value = itemtype;
     document.getElementById("modal-rmitem-itemid").value = itemId;
 }
 
 // rmItemModal 은 삭제 modal창에서 Delete 버튼을 누르면 실행되는 아이템 삭제 함수이다. 
-function rmItemModal(itemId) {
-    console.log(itemId)
+function rmItemModal(itemtype,itemId) {
+    $.ajax({
+        url: `/api/item?itemtype=${itemtype}&id=${itemId}`,
+        type: "delete",
+        dataType: "json",
+        success: function() {
+            alert("itemtype: "+itemtype+"\nid: "+itemId+"\n\n아이템 삭제를 성공했습니다."); 
+            location.reload();
+        },
+        error: function(){
+            alert("itemtype: "+itemtype+"\nid: "+itemId+"\n\n아이템 삭제를 실패했습니다.");  
+        }
+    });
 }
 
 // handlerNumCheck 은 숫자만 적히도록 하는 레귤러익스프레션이다.
