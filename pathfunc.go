@@ -166,7 +166,10 @@ func RmData(client *mongo.Client, id string) error {
 	for {
 		splitpath, _ = path.Split(splitpath)
 		splitpath = strings.TrimSuffix(splitpath, "/")
-		c, _ := ioutil.ReadDir(splitpath)
+		c, err := ioutil.ReadDir(splitpath)
+		if err != nil {
+			return err
+		}
 		// 하위 폴더 없으면 삭제
 		if len(c) == 0 {
 			err := os.Remove(splitpath)
