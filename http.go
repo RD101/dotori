@@ -106,8 +106,10 @@ func webserver() {
 	http.HandleFunc("/addalembic-process", handleAddAlembicProcess)
 	http.HandleFunc("/upload-alembic", handleUploadAlembic)
 
-	// 앞으로 정리할 것
+	// Blender
 	http.HandleFunc("/addblender", handleAddBlender)
+
+	// PixarUSD
 	http.HandleFunc("/addusd", handleAddUSD)
 
 	// Admin
