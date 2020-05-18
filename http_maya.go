@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
 	"path"
@@ -110,7 +109,7 @@ func handleAddMayaItem(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// handleAddMayaSubmit 함수는 URL에 objectID를 붙여서 /addmaya-item 페이지로 redirect한다.
+// handleAddMaya 함수는 URL에 objectID를 붙여서 /addmaya-item 페이지로 redirect한다.
 func handleAddMaya(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
@@ -119,90 +118,6 @@ func handleAddMaya(w http.ResponseWriter, r *http.Request) {
 	}
 	objectID := primitive.NewObjectID().Hex()
 	http.Redirect(w, r, fmt.Sprintf("/addmaya-item?objectid=%s", objectID), http.StatusSeeOther)
-}
-
-func handleAddHoudini(w http.ResponseWriter, r *http.Request) {
-	token, err := GetTokenFromHeader(w, r)
-	if err != nil {
-		http.Redirect(w, r, "/signin", http.StatusSeeOther)
-		return
-	}
-	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "addhoudini", token)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-}
-
-func handleAddBlender(w http.ResponseWriter, r *http.Request) {
-	token, err := GetTokenFromHeader(w, r)
-	if err != nil {
-		http.Redirect(w, r, "/signin", http.StatusSeeOther)
-		return
-	}
-	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "addblender", token)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-}
-
-func handleAddAlembic(w http.ResponseWriter, r *http.Request) {
-	token, err := GetTokenFromHeader(w, r)
-	if err != nil {
-		http.Redirect(w, r, "/signin", http.StatusSeeOther)
-		return
-	}
-	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "addalembic", token)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-}
-
-func handleAddUSD(w http.ResponseWriter, r *http.Request) {
-	token, err := GetTokenFromHeader(w, r)
-	if err != nil {
-		http.Redirect(w, r, "/signin", http.StatusSeeOther)
-		return
-	}
-	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "addusd", token)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-}
-
-func handleAddHoudiniProcess(w http.ResponseWriter, r *http.Request) {
-	token, err := GetTokenFromHeader(w, r)
-	if err != nil {
-		http.Redirect(w, r, "/signin", http.StatusSeeOther)
-		return
-	}
-	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "addhoudini-process", token)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-}
-
-func handleAddAlembicProcess(w http.ResponseWriter, r *http.Request) {
-	token, err := GetTokenFromHeader(w, r)
-	if err != nil {
-		http.Redirect(w, r, "/signin", http.StatusSeeOther)
-		return
-	}
-	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "addalembic-process", token)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
 }
 
 func handleUploadMayaItem(w http.ResponseWriter, r *http.Request) {
@@ -608,171 +523,179 @@ func handleAddMayaSuccess(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// handleAddHoudiniProcess 함수는 Houdini 파일을 처리하는 페이지 이다.
-func handleUploadHoudini(w http.ResponseWriter, r *http.Request) {
-	_, err := GetTokenFromHeader(w, r)
+func handleEditMaya(w http.ResponseWriter, r *http.Request) {
+	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
 		return
 	}
-	file, header, err := r.FormFile("file")
-	if err != nil {
-		log.Println(err)
+	w.Header().Set("Content-Type", "text/html")
+	type recipe struct {
+		ID          primitive.ObjectID `json:"id" bson:"id"`
+		ItemType    string             `json:"itemtype" bson:"itemtype"`
+		Author      string             `json:"author" bson:"author"`
+		Description string             `json:"description" bson:"description"`
+		Tags        []string           `json:"tags" bson:"tags"`
+		Attributes  map[string]string  `json:"attributes" bson:"attributes"`
+		Token
+		Adminsetting Adminsetting
 	}
-	defer file.Close()
-	unix.Umask(0)
-	mimeType := header.Header.Get("Content-Type")
-	switch mimeType {
-	case "image/jpeg", "image/png":
-		data, err := ioutil.ReadAll(file)
-		if err != nil {
-			fmt.Fprintf(w, "%v", err)
-			return
-		}
-		path := os.TempDir() + "/dotori/thumbnail"
-		err = os.MkdirAll(path, 0770)
-		if err != nil {
-			return
-		}
-		err = ioutil.WriteFile(path+"/"+header.Filename, data, 0440)
-		if err != nil {
-			fmt.Fprintf(w, "%v", err)
-			return
-		}
-	case "video/quicktime", "video/mp4", "video/ogg", "application/ogg":
-		data, err := ioutil.ReadAll(file)
-		if err != nil {
-			fmt.Fprintf(w, "%v", err)
-			return
-		}
-		path := os.TempDir() + "/dotori/preview"
-		err = os.MkdirAll(path, 0770)
-		if err != nil {
-			return
-		}
-		err = ioutil.WriteFile(path+"/"+header.Filename, data, 0440)
-		if err != nil {
-			fmt.Fprintf(w, "%v", err)
-			return
-		}
-	case "application/octet-stream":
-		ext := filepath.Ext(header.Filename)
-		if ext == ".hip" || ext == ".hda" {
-			data, err := ioutil.ReadAll(file)
-			if err != nil {
-				fmt.Fprintf(w, "%v", err)
-				return
-			}
-			path := os.TempDir() + "/dotori"
-			err = os.MkdirAll(path, 0770)
-			if err != nil {
-				return
-			}
-			err = ioutil.WriteFile(path+"/"+header.Filename, data, 0440)
-			if err != nil {
-				fmt.Fprintf(w, "%v", err)
-				return
-			}
-		}
-	default:
-		data, err := ioutil.ReadAll(file)
-		if err != nil {
-			fmt.Fprintf(w, "%v", err)
-			return
-		}
-		path := os.TempDir() + "/dotori"
-		err = os.MkdirAll(path, 0770)
-		if err != nil {
-			return
-		}
-		err = ioutil.WriteFile(path+"/"+header.Filename, data, 0440)
-		if err != nil {
-			fmt.Fprintf(w, "%v", err)
-			return
-		}
+	q := r.URL.Query()
+	itemtype := q.Get("itemtype")
+	id := q.Get("id")
+	if itemtype == "" {
+		http.Error(w, "URL에 itemtype을 입력해주세요", http.StatusBadRequest)
+		return
+	}
+	if id == "" {
+		http.Error(w, "URL에 id를 입력해주세요", http.StatusBadRequest)
+		return
+	}
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer client.Disconnect(ctx)
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	item, err := SearchItem(client, itemtype, id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	adminsetting, err := GetAdminSetting(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp := recipe{
+		ID:           item.ID,
+		ItemType:     item.ItemType,
+		Author:       item.Author,
+		Description:  item.Description,
+		Tags:         item.Tags,
+		Attributes:   item.Attributes,
+		Token:        token,
+		Adminsetting: adminsetting,
+	}
+
+	err = TEMPLATES.ExecuteTemplate(w, "editmaya", rcp)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 }
 
-// handleUploadAlembic 함수는 Alembic 파일을 처리하는 페이지 이다.
-func handleUploadAlembic(w http.ResponseWriter, r *http.Request) {
+//handleEditMayaSubmit 함수는 maya아이템을 수정하는 페이지에서 UPDATE버튼을 누르면 작동하는 함수다.
+func handleEditMayaSubmit(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
 		return
 	}
-	file, header, err := r.FormFile("file")
+	id := r.FormValue("id")
+	itemtype := r.FormValue("itemtype")
+	attrNum, err := strconv.Atoi(r.FormValue("attributesNum"))
 	if err != nil {
-		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
-	defer file.Close()
-	mimeType := header.Header.Get("Content-Type")
-	switch mimeType {
-	case "image/jpeg", "image/png":
-		data, err := ioutil.ReadAll(file)
-		if err != nil {
-			fmt.Fprintf(w, "%v", err)
-			return
-		}
-		path := os.TempDir() + "/dotori/thumbnail"
-		err = os.MkdirAll(path, 0766)
-		if err != nil {
-			return
-		}
-		err = ioutil.WriteFile(path+"/"+header.Filename, data, 0666)
-		if err != nil {
-			fmt.Fprintf(w, "%v", err)
-			return
-		}
-	case "video/quicktime", "video/mp4", "video/ogg", "application/ogg":
-		data, err := ioutil.ReadAll(file)
-		if err != nil {
-			fmt.Fprintf(w, "%v", err)
-			return
-		}
-		path := os.TempDir() + "/dotori/preview"
-		err = os.MkdirAll(path, 0766)
-		if err != nil {
-			return
-		}
-		err = ioutil.WriteFile(path+"/"+header.Filename, data, 0666)
-		if err != nil {
-			fmt.Fprintf(w, "%v", err)
-			return
-		}
-	case "application/octet-stream":
-		ext := filepath.Ext(header.Filename)
-		if ext == ".abc" {
-			data, err := ioutil.ReadAll(file)
-			if err != nil {
-				fmt.Fprintf(w, "%v", err)
-				return
-			}
-			path := os.TempDir() + "/dotori"
-			err = os.MkdirAll(path, 0766)
-			if err != nil {
-				return
-			}
-			err = ioutil.WriteFile(path+"/"+header.Filename, data, 0666) // 악성 코드가 들어올 수 있으므로 실행권한은 주지 않는다.
-			if err != nil {
-				fmt.Fprintf(w, "%v", err)
-				return
-			}
-		}
-	default:
-		data, err := ioutil.ReadAll(file)
-		if err != nil {
-			fmt.Fprintf(w, "%v", err)
-			return
-		}
-		path := os.TempDir() + "/dotori"
-		err = os.MkdirAll(path, 0766)
-		if err != nil {
-			return
-		}
-		err = ioutil.WriteFile(path+"/"+header.Filename, data, 0666)
-		if err != nil {
-			fmt.Fprintf(w, "%v", err)
-			return
-		}
+	attr := make(map[string]string)
+	for i := 0; i < attrNum; i++ {
+		key := r.FormValue(fmt.Sprintf("key%d", i))
+		value := r.FormValue(fmt.Sprintf("value%d", i))
+		attr[key] = value
+	}
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer client.Disconnect(ctx)
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	item, err := SearchItem(client, itemtype, id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	item.Author = r.FormValue("author")
+	item.Description = r.FormValue("description")
+	item.Tags = SplitBySpace(r.FormValue("tags"))
+	item.Attributes = attr
+	err = UpdateItem(client, itemtype, item)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	http.Redirect(w, r, "/editmaya-success", http.StatusSeeOther)
+}
+
+func handleEditMayaSuccess(w http.ResponseWriter, r *http.Request) {
+	token, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
+	type recipe struct {
+		Token
+		Adminsetting Adminsetting
+	}
+	rcp := recipe{}
+	rcp.Token = token
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer client.Disconnect(ctx)
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	adminsetting, err := GetAdminSetting(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp.Adminsetting = adminsetting
+	w.Header().Set("Content-Type", "text/html")
+	err = TEMPLATES.ExecuteTemplate(w, "editmaya-success", rcp)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 }

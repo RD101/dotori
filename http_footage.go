@@ -449,3 +449,61 @@ func handleEditFootage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+//handleEditFootageSubmit 함수는 footage아이템을 수정하는 페이지에서 UPDATE버튼을 누르면 작동하는 함수다.
+func handleEditFootageSubmit(w http.ResponseWriter, r *http.Request) {
+	_, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
+	id := r.FormValue("id")
+	itemtype := r.FormValue("itemtype")
+	attrNum, err := strconv.Atoi(r.FormValue("attributesNum"))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	attr := make(map[string]string)
+	for i := 0; i < attrNum; i++ {
+		key := r.FormValue(fmt.Sprintf("key%d", i))
+		value := r.FormValue(fmt.Sprintf("value%d", i))
+		attr[key] = value
+	}
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer client.Disconnect(ctx)
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	item, err := SearchItem(client, itemtype, id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	item.Author = r.FormValue("author")
+	item.Description = r.FormValue("description")
+	item.Tags = SplitBySpace(r.FormValue("tags"))
+	item.InColorspace = r.FormValue("incolorspace")
+	item.OutColorspace = r.FormValue("outcolorspace")
+	item.Attributes = attr
+	err = UpdateItem(client, itemtype, item)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	http.Redirect(w, r, "/editfootage-success", http.StatusSeeOther)
+}
