@@ -461,7 +461,7 @@ func handleEditFootageSubmit(w http.ResponseWriter, r *http.Request) {
 	itemtype := r.FormValue("itemtype")
 	attrNum, err := strconv.Atoi(r.FormValue("attributesNum"))
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	attr := make(map[string]string)
