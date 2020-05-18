@@ -14,6 +14,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
+// 이 파일에서는 최대한 핸들러만 선언합니다.
+
 // LoadTemplates 함수는 템플릿을 로딩합니다.
 func LoadTemplates() (*template.Template, error) {
 	t := template.New("").Funcs(funcMap)
