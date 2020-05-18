@@ -118,7 +118,13 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		err = RmItem(client, itemtype, id)
+		// 삭제 함수 호출
+		err = RmItem(client, itemtype, id) // db 에서 삭제
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		err = RmData(client, id) // 실제 데이터 삭제
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
