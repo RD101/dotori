@@ -405,6 +405,28 @@ func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
 					return
 				}
 				item.DataUploaded = true
+			case "application/zip":
+				data, err := ioutil.ReadAll(file)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				path := item.OutputDataPath
+				err = os.MkdirAll(path, os.FileMode(folderPerm))
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				err = os.Chown(path, uid, gid)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				err = ioutil.WriteFile(path+"/"+f.Filename, data, os.FileMode(filePerm))
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
 			default:
 				//허용하지 않는 파일 포맷입니다.
 				http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
