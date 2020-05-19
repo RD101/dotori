@@ -11,7 +11,7 @@ func IsDup(err error) bool {
 	var e mongo.WriteException
 	if errors.As(err, &e) {
 		for _, we := range e.WriteErrors {
-			if we.Code == 11000 {
+			if we.Code == 11000 { // https://github.com/mongodb/mongo-go-driver/blob/c814cfb676dc29a6ad6171e138510ee88c51983f/mongo/integration/collection_test.go#L27
 				return true
 			}
 		}
