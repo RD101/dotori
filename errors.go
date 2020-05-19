@@ -1,0 +1,20 @@
+package main
+
+import (
+	"errors"
+
+	"go.mongodb.org/mongo-driver/mongo"
+)
+
+// IsDup 함수는 인자로 받은 에러가 mongoDB의 duplicate key error인지 판단한다.
+func IsDup(err error) bool {
+	var e mongo.WriteException
+	if errors.As(err, &e) {
+		for _, we := range e.WriteErrors {
+			if we.Code == 11000 {
+				return true
+			}
+		}
+	}
+	return false
+}
