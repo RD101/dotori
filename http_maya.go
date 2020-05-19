@@ -427,6 +427,7 @@ func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return
 				}
+				item.DataUploaded = true
 			default:
 				//허용하지 않는 파일 포맷입니다.
 				http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
