@@ -162,6 +162,10 @@ func handleUploadMayaItem(w http.ResponseWriter, r *http.Request) {
 	}
 	err = AddItem(client, item)
 	if err != nil {
+		if IsDup(err) { // 동일한 ID의 도큐먼트를 업로드하려고 하면, 새로운 ID의 페이지로 리다이렉트한다.
+			http.Redirect(w, r, "/addmaya", http.StatusSeeOther)
+			return
+		}
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
