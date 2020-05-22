@@ -73,11 +73,8 @@ func handleDownloadItem(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	defer zipFile.Close()
-
 	// zip 파일에 쓰기할 준비를 한다.
 	zipWriter := zip.NewWriter(zipFile)
-	defer zipWriter.Close()
 
 	// item의 data경로에 존재하는 파일 리스트를 불러온다.
 	dataPath := item.OutputDataPath
