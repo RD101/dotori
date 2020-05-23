@@ -1,0 +1,70 @@
+{{define "help_toolbar"}}
+    <div class="pt-5 bg-darklight">
+        <h3 class="pt-2 text-darkmode text-center">Toolbar</h3>
+        <div class="row">
+            <div class="mx-auto">
+                <div class="">
+                    <nav class="navbar navbar-expand-lg navbar-darkmode">
+                        <div>
+                        <ul class="navbar-nav">
+                            <span class="navbar-brand finger" title="홈으로 이동합니다.">DOTORI</span>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Add
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <span class="dropdown-item finger" title="Autodesk 마야 파일을 등록합니다.">Maya</span>
+                                    <span class="dropdown-item finger" title="Foundry 뉴크 파일을 등록합니다.">Nuke</span>
+                                    <span class="dropdown-item finger" title="SideFX Houdini 파일을 등록합니다.">Houdini</span>
+                                    <span class="dropdown-item finger" title="Blender 파일을 등록합니다.">Blender</span>
+                                    <span class="dropdown-item finger" title="촬영소스를 등록합니다.">Footage</span>
+                                    <span class="dropdown-item finger" title="Alembic 파일을 등록합니다.">Alembic file</span>
+                                    <span class="dropdown-item finger" title="Pixar USD 파일을 등록합니다.">USD file</span>
+                                </div>
+                            </li>
+
+                            <li class="nav-item">
+                                <span class="nav-link finger" title="데이터 처리 현황을 볼 수 있습니다.">Process</span>
+                            </li>
+                            <li class="nav-item">
+                                <span class="nav-link finger" title="도움말을 확인합니다.">Help</span>
+                            </li>
+
+                            
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-danger finger" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Admin
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <span class="dropdown-item finger" title="관리자 옵션을 설정합니다.">Admin setting</span>
+                                    <span class="dropdown-item finger" title="DB를 정리합니다.">Cleanup DB</span>                            </div>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    UserID
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <span class="dropdown-item" title="개인 정보를 확인합니다.">Profile</span>
+                                    <span class="dropdown-item" title="로그아웃 합니다.">SignOut</span>
+                                </div>
+                            </li>
+                        </ul>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="mx-auto text-center">
+                <div class="text-left text-darkmode p-4 m-2 help-text">
+                    메뉴를 클릭하고 마우스를 올리면 간단한 설명을 볼 수 있습니다.<br>
+                    • Add: 소스를 등록할 때 사용합니다.<br>
+                    • Proess: 데이터 처리 현황을 볼 수 있습니다.<br>
+                    • Help: 도움말<br>
+                    • Admin: 관리자 옵션을 설정할 수 있습니다.<br>
+                    • UserID: 프로필, 로그아웃<br>
+                </div>
+            </div>
+        </div>
+    </div>
+{{end}}
