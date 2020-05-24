@@ -1,0 +1,59 @@
+{{define "help_search"}}
+<div class="p-3 text-center text-darkmode">
+    <h3 class="pt-5">Search</h3>
+
+	<div class="row justify-content-center align-items-center m-3">
+		<div class="col-lg-5">
+			<div class="input-group mb-3">
+				<div class="input-group-prepend">
+					<select name="Itemtype" class="custom-select left-radius" id="Itemtype">
+                        <option value="maya" selected>Maya</option>
+						<option value="usd" >USD</option>
+						<option value="alembic" >Alembic</option>
+						<option value="vdb" >OpenVDB</option>
+						<option value="nuke" >Nuke</option>
+						<option value="houdini" >Houdini</option>
+						<option value="footage" >Footage</option>
+						<option value="psd" >PSD</option>
+						<option value="pdf" >PDF</option>
+						<option value="lut" >LUT</option>
+						<option value="ies" >IES</option>
+						<option value="hdri" >HDRI</option>
+						<option value="modo" >Modo</option>
+						<option value="blender" >Blender</option>
+						<option value="" >All</option>
+					</select>
+				</div>
+				
+				<input class="form-control" id="search" placeholder="검색어를 입력해주세요." type="text" name="Searchword" value="">
+				
+				<div class="input-group-append">
+					<button class="btn btn-darkmode" id="button" title="검색합니다.">
+						Search
+						<span class="badge badge-secondary">5</span>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+
+	<p class="h6 font-weight-light">
+		<p class="h6 font-weight-light">검색어를 이용해서 원하는 결과를 검색할 수 있습니다.</p>
+        <p class="h6 font-weight-light"><span class="btn btn-outline-darkmode btn-sm" onclick="document.getElementById('search').value='검색어1 검색어2'">
+            검색어1&nbsp;&nbsp;&nbsp;검색어2&nbsp;&nbsp;&nbsp;...</span>
+            : 검색어를 연속을 입력하면, 매 검색어가 포함된 결과가 검색됩니다.
+        </p>
+        <p class="h6 font-weight-light">
+            <span class="btn btn-outline-darkmode btn-sm" onclick="document.getElementById('search').value='maya:2020'">
+            maya:2020</span>
+            : Attributes 키과 값을 검색합니다. 예) 키 maya, 값 2020
+        </p>
+        <p class="h6 font-weight-light">
+            <span class="btn btn-outline-darkmode btn-sm" onclick="document.getElementById('search').value='author:김한웅'">
+            author:김한웅</span>
+            : 에셋 등록자를 검색합니다.
+        </p>
+    </p>
+</div>
+{{end}}
