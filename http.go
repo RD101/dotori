@@ -112,6 +112,15 @@ func webserver() {
 
 	// PixarUSD
 	http.HandleFunc("/addusd", handleAddUSD)
+	http.HandleFunc("/addusd-item", handleAddUSDItem)
+	http.HandleFunc("/uploadusd-item", handleUploadUSDItem)
+	http.HandleFunc("/addusd-file", handleAddUSDFile)
+	http.HandleFunc("/uploadusd-file", handleUploadUSDFile)
+	http.HandleFunc("/uploadusd-checkdata", handleUploadUSDCheckData)
+	http.HandleFunc("/addusd-success", handleAddUSDSuccess)
+	http.HandleFunc("/editusd", handleEditUSD)
+	http.HandleFunc("/editusd-submit", handleEditUSDSubmit)
+	http.HandleFunc("/editusd-success", handleEditUSDSuccess)
 
 	// Sound
 	http.HandleFunc("/addsound", handleAddSound)
