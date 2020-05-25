@@ -15,7 +15,7 @@
 ## Delete
 | URI | Description | Attributes | Curl Example |
 | --- | --- | --- | --- |
-| /api/item | 삭제하기 | itemtype, id | `curl -H "Authorization: Basic <Token>” -X DELETE "http://192.168.219.104/api/item?itemtype=maya&id=5ec37a67e048d951ee46a45a"`
+| /api/item | 삭제하기 | itemtype, id | `curl -H "Authorization: Basic <Token>" -X DELETE "http://192.168.219.104/api/item?itemtype=maya&id=5ec37a67e048d951ee46a45a"`
 
 ## Python example
 ### asset 가지고 오기 
