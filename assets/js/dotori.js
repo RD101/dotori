@@ -52,9 +52,13 @@ function setRmItemModal(itemtype, itemId) {
 
 // rmItemModal 은 삭제 modal창에서 Delete 버튼을 누르면 실행되는 아이템 삭제 함수이다. 
 function rmItemModal(itemtype,itemId) {
+    let token = document.getElementById("token").value;
     $.ajax({
         url: `/api/item?itemtype=${itemtype}&id=${itemId}`,
         type: "delete",
+        headers: {
+            "Authorization": "Basic " + token
+        },
         dataType: "json",
         success: function() {
             alert("itemtype: "+itemtype+"\nid: "+itemId+"\n\n아이템 삭제를 성공했습니다."); 

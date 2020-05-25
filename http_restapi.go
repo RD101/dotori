@@ -118,6 +118,13 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+		//accesslevel 체크
+		accesslevel, err := GetAccessLevelFromToken(r, client)
+		if accesslevel != "admin" {
+			http.Error(w, "삭제 권한이 없는 계정입니다", http.StatusBadRequest)
+			return
+		}
+
 		// 삭제 함수 호출
 		err = RmItem(client, itemtype, id) // db 에서 삭제
 		if err != nil {
@@ -129,6 +136,7 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+
 		data, err := json.Marshal(id)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
