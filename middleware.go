@@ -1,11 +1,16 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"net/http"
 	"net/url"
+	"strings"
+	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 // GetObjectIDfromRequestHeader 미들웨어는 리퀘스트헤더에서 ObjectID를 가지고 온다.
@@ -62,4 +67,21 @@ func GetTokenFromHeader(w http.ResponseWriter, r *http.Request) (Token, error) {
 		return tk, errors.New("Token key is not valid")
 	}
 	return tk, nil
+}
+
+// TokenHander 함수는 restapi 사용 시 토큰을 체크하고 accesslevel을 반환하는 함수이다.
+func TokenHandler(r *http.Request, client *mongo.Client) (string, error) {
+	auth := strings.SplitN(r.Header.Get("Authorization"), " ", 2)
+	if len(auth) != 2 || auth[0] != "Basic" {
+		return "", errors.New("authorization failed")
+	}
+	collection := client.Database(*flagDBName).Collection("users")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	user := User{}
+	err := collection.FindOne(ctx, bson.M{"token": auth[1]}).Decode(&user)
+	if err != nil {
+		return "", err
+	}
+	return user.AccessLevel, nil
 }
