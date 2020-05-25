@@ -121,7 +121,7 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 		//accesslevel 체크
 		accesslevel, err := GetAccessLevelFromToken(r, client)
 		if accesslevel != "admin" {
-			http.Error(w, "삭제 권한이 없는 계정입니다", http.StatusBadRequest)
+			http.Error(w, "삭제 권한이 없는 계정입니다", http.StatusUnauthorized)
 			return
 		}
 
