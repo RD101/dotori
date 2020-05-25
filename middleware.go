@@ -77,6 +77,7 @@ func GetAccessLevelFromToken(r *http.Request, client *mongo.Client) (string, err
 		return "", errors.New("authorization failed")
 	}
 	token := auth[1]
+
 	//DB 검색
 	collection := client.Database(*flagDBName).Collection("users")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
