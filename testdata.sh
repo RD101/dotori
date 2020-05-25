@@ -10,6 +10,7 @@ dotori -add -author bailey -itemtype maya -description "description7 about some 
 dotori -add -author bailey -itemtype maya -description "description8 about some details" -tag "하늘 아침"
 dotori -add -author bailey -itemtype maya -description "description9 about some details" -tag "기차 KTX"
 dotori -add -author bailey -itemtype maya -description "description10 about some details" -tag "기차 무궁화호"
+dotori -add -author bailey -itemtype usd -description "description10 about some details" -tag "기차 무궁화호"
 
 #REST API
 curl -X POST -d "author=bae&itemtype=maya" http://127.0.0.1/api/item
