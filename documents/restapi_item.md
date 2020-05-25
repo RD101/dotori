@@ -12,6 +12,10 @@
 | /api/search | 검색하기 | itemtype, searchword | `$ curl -X POST -d "itemtype=maya&searchword=나무" http://192.168.219.104/api/search` |
 | /api/usingrate | Using Rate 올리기 | itemtype, id | `$ curl -X POST -d "itemtype=maya&id=5eaa5758eafdfd2dae3bb050" http://192.168.219.104/api/usingrate`
 
+## Delete
+| URI | Description | Attributes | Curl Example |
+| --- | --- | --- | --- |
+| /api/item | 삭제하기 | itemtype, id | `curl -H "Authorization: Basic <Token>" -X DELETE "http://192.168.219.104/api/item?itemtype=maya&id=5ec37a67e048d951ee46a45a"`
 
 ## Python example
 ### asset 가지고 오기 
