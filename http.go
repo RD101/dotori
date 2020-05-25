@@ -122,6 +122,18 @@ func webserver() {
 	http.HandleFunc("/editusd-submit", handleEditUSDSubmit)
 	http.HandleFunc("/editusd-success", handleEditUSDSuccess)
 
+	// Sound
+	http.HandleFunc("/addsound", handleAddSound)
+	http.HandleFunc("/addsound-item", handleAddSoundItem)
+	http.HandleFunc("/addsound-file", handleAddSoundFile)
+	http.HandleFunc("/uploadsound-item", handleUploadSoundItem)
+	http.HandleFunc("/uploadsound-file", handleUploadSoundFile)
+	http.HandleFunc("/uploadsound-checkdata", handleUploadSoundCheckData)
+	http.HandleFunc("/addsound-success", handleAddSoundSuccess)
+	http.HandleFunc("/editsound", handleEditSound)
+	http.HandleFunc("/editsound-submit", handleEditSoundSubmit)
+	http.HandleFunc("/editsound-success", handleEditSoundSuccess)
+
 	// Admin
 	http.HandleFunc("/adminsetting", handleAdminSetting)
 	http.HandleFunc("/adminsetting-submit", handleAdminSettingSubmit)
