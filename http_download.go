@@ -65,7 +65,8 @@ func handleDownloadItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer os.RemoveAll(tempDir)
-	zipFilePath, err := genZipfile(tempDir, item)
+	zipFileName := item.ID.Hex() + ".zip"
+	zipFilePath, err := genZipfile(tempDir, zipFileName, item)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -78,13 +79,13 @@ func handleDownloadItem(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Add("Content-Type", "application/zip")
-	w.Header().Add("Content-Disposition", fmt.Sprintf("Attachment; filename=%s", id+".zip"))
+	w.Header().Add("Content-Disposition", fmt.Sprintf("Attachment; filename=%s", zipFileName))
 	http.ServeFile(w, r, zipFilePath)
 }
 
-func genZipfile(tempDir string, item Item) (string, error) {
+func genZipfile(tempDir, zipFileName string, item Item) (string, error) {
 	// zip 파일을 생성한다.
-	zipFilePath := tempDir + "/" + item.ID.String() + ".zip"
+	zipFilePath := tempDir + "/" + zipFileName
 	zipFile, err := os.Create(zipFilePath)
 	if err != nil {
 		return zipFilePath, err
