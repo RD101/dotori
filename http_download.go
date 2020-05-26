@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"path/filepath"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -66,7 +67,8 @@ func handleDownloadItem(w http.ResponseWriter, r *http.Request) {
 	}
 	defer os.RemoveAll(tempDir)
 	zipFileName := item.ID.Hex() + ".zip"
-	zipFilePath, err := genZipfile(tempDir, zipFileName, item)
+	zipFilePath := filepath.Join(tempDir, zipFileName)
+	err = genZipfile(zipFilePath, item)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -83,12 +85,11 @@ func handleDownloadItem(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, zipFilePath)
 }
 
-func genZipfile(tempDir, zipFileName string, item Item) (string, error) {
+func genZipfile(zipFilePath string, item Item) error {
 	// zip 파일을 생성한다.
-	zipFilePath := tempDir + "/" + zipFileName
 	zipFile, err := os.Create(zipFilePath)
 	if err != nil {
-		return zipFilePath, err
+		return err
 	}
 	defer zipFile.Close()
 	// zip 파일에 쓰기할 준비를 한다.
@@ -99,38 +100,38 @@ func genZipfile(tempDir, zipFileName string, item Item) (string, error) {
 	dataPath := item.OutputDataPath
 	files, err := ioutil.ReadDir(dataPath)
 	if err != nil {
-		return zipFilePath, err
+		return err
 	}
 
 	// 데이터 파일을 돌면서 zip 파일에 데이터 파일 추가한다.
 	for _, f := range files {
 		fileName, err := os.Open(dataPath + f.Name())
 		if err != nil {
-			return zipFilePath, err
+			return err
 		}
 		defer fileName.Close()
 
 		// 파일정보를 가지고 온다.
 		info, err := fileName.Stat()
 		if err != nil {
-			return zipFilePath, err
+			return err
 		}
 		// 압축할 때 zip 파일에 파일정보를 헤더로 설정한다.
 		header, err := zip.FileInfoHeader(info)
 		if err != nil {
-			return zipFilePath, err
+			return err
 		}
 		header.Method = zip.Deflate
 		// 헤더정보를 zip 파일에 쓴다.
 		writer, err := zipWriter.CreateHeader(header)
 		if err != nil {
-			return zipFilePath, err
+			return err
 		}
 		// 파일의 실제 내용을 zip 파일에 복사한다.
 		_, err = io.Copy(writer, fileName)
 		if err != nil {
-			return zipFilePath, err
+			return err
 		}
 	}
-	return zipFilePath, nil
+	return nil
 }
