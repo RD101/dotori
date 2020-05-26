@@ -6,8 +6,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"path"
-	"path/filepath"
 	"strconv"
 	"time"
 
@@ -148,12 +146,6 @@ func handleUploadSoundItem(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	item.InputThumbnailImgPath = rootpath + objIDpath + "/originalthumbimg/"
-	item.InputThumbnailClipPath = rootpath + objIDpath + "/originalthumbmov/"
-	item.OutputThumbnailPngPath = rootpath + objIDpath + "/thumbnail/thumbnail.png"
-	item.OutputThumbnailMp4Path = rootpath + objIDpath + "/thumbnail/thumbnail.mp4"
-	item.OutputThumbnailOggPath = rootpath + objIDpath + "/thumbnail/thumbnail.ogg"
-	item.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/thumbnail.mov"
 	item.OutputDataPath = rootpath + objIDpath + "/data/"
 	err = item.CheckError()
 	if err != nil {
@@ -316,77 +308,11 @@ func handleUploadSoundFile(w http.ResponseWriter, r *http.Request) {
 			defer file.Close()
 			unix.Umask(umask)
 			mimeType := f.Header.Get("Content-Type")
+			fmt.Println(mimeType)
 			switch mimeType {
-			case "image/jpeg", "image/png":
-				data, err := ioutil.ReadAll(file)
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				path, filename := path.Split(item.InputThumbnailImgPath)
-				if filename != "" { // 썸네일 이미지가 이미 존재하는 경우, 지우고 경로를 새로 지정한다.
-					err = os.Remove(item.InputThumbnailImgPath)
-					if err != nil {
-						http.Error(w, err.Error(), http.StatusInternalServerError)
-						return
-					}
-					item.InputThumbnailImgPath = path
-				}
-				err = os.MkdirAll(path, os.FileMode(folderPerm))
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				err = os.Chown(path, uid, gid)
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				err = ioutil.WriteFile(path+f.Filename, data, os.FileMode(filePerm))
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				item.InputThumbnailImgPath = path + f.Filename
-				item.ThumbImgUploaded = true
-			case "video/quicktime", "video/mp4", "video/ogg", "application/ogg":
-				data, err := ioutil.ReadAll(file)
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				path, filename := path.Split(item.InputThumbnailClipPath)
-				if filename != "" { // 썸네일 클립이 이미 존재하는 경우, 지우고 경로를 새로 지정한다.
-					err = os.Remove(item.InputThumbnailClipPath)
-					if err != nil {
-						http.Error(w, err.Error(), http.StatusInternalServerError)
-						return
-					}
-					item.InputThumbnailClipPath = path
-				}
-				err = os.MkdirAll(path, os.FileMode(folderPerm))
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				err = os.Chown(path, uid, gid)
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				err = ioutil.WriteFile(path+f.Filename, data, os.FileMode(filePerm))
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				item.InputThumbnailClipPath = path + f.Filename
-				item.ThumbClipUploaded = true
-			case "application/octet-stream":
-				ext := filepath.Ext(f.Filename)
-				if ext != ".mb" && ext != ".ma" { // .ma .mb 외에는 허용하지 않는다.
-					http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
-					return
-				}
+			// 허용하는 audio file format: mp3, wav, m4a, amr, au, flac, midi, ra, wma
+			// chrome에서는 'audio/x-ms-wma'가 'video/x-ms-wma'로 뜬다
+			case "audio/mp3", "audio/wav", "audio/x-m4a", "audio/amr", "audio/basic", "audio/flac", "audio/midi", "audio/vnd.rn-realaudio", "audio/x-ms-wma", "video/x-ms-wma":
 				data, err := ioutil.ReadAll(file)
 				if err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -451,7 +377,7 @@ func handleUploadSoundFile(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
-	if item.ThumbImgUploaded && item.ThumbClipUploaded && item.DataUploaded {
+	if item.DataUploaded {
 		item.Status = "fileuploaded"
 	}
 	UpdateItem(client, "sound", item)
@@ -486,16 +412,6 @@ func handleUploadSoundCheckData(w http.ResponseWriter, r *http.Request) {
 	item, err := GetItem(client, "sound", objectID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	// 썸네일이미지가 있는지 체크
-	if !item.ThumbImgUploaded {
-		http.Error(w, "썸네일이미지를 업로드해주세요", http.StatusBadRequest)
-		return
-	}
-	// 썸네일클립이 있는지 체크
-	if !item.ThumbClipUploaded {
-		http.Error(w, "썸네일클립을 업로드해주세요", http.StatusBadRequest)
 		return
 	}
 	// sound파일이 있는지 체크
