@@ -106,6 +106,9 @@ func handlUploadNukeItem(w http.ResponseWriter, r *http.Request) {
 	for i := 0; i < attrNum; i++ {
 		key := r.FormValue(fmt.Sprintf("key%d", i))
 		value := r.FormValue(fmt.Sprintf("value%d", i))
+		if key == "" || value == "" {
+			continue
+		}
 		attr[key] = value
 	}
 	item.Attributes = attr
@@ -619,6 +622,9 @@ func handleEditNukeSubmit(w http.ResponseWriter, r *http.Request) {
 	for i := 0; i < attrNum; i++ {
 		key := r.FormValue(fmt.Sprintf("key%d", i))
 		value := r.FormValue(fmt.Sprintf("value%d", i))
+		if key == "" || value == "" {
+			continue
+		}
 		attr[key] = value
 	}
 	//mongoDB client 연결
