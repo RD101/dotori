@@ -308,7 +308,6 @@ func handleUploadSoundFile(w http.ResponseWriter, r *http.Request) {
 			defer file.Close()
 			unix.Umask(umask)
 			mimeType := f.Header.Get("Content-Type")
-			fmt.Println(mimeType)
 			switch mimeType {
 			// 허용하는 audio file format: mp3, wav, m4a, amr, au, flac, midi, ra, wma
 			// chrome에서는 'audio/x-ms-wma'가 'video/x-ms-wma'로 뜬다
