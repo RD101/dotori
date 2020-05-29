@@ -173,13 +173,7 @@ func webserver() {
 	http.HandleFunc("/api/usingrate", handleAPIUsingRate)
 
 	// 웹서버 실행
-	if *flagHTTPPort == ":443" { // https ports
-		if *flagCertFullchain == "" {
-			log.Fatal("CertFullchanin 인증서 설정이 필요합니다.")
-		}
-		if *flagCertPrivkey == "" {
-			log.Fatal("CertPrivkey 인증서 설정이 필요합니다.")
-		}
+	if *flagCertFullchain != "" || *flagCertPrivkey != "" {
 		if _, err := os.Stat(*flagCertFullchain); os.IsNotExist(err) {
 			log.Fatal(*flagCertFullchain + " 경로에 인증서 파일이 존재하지 않습니다")
 		}
