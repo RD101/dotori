@@ -14,6 +14,8 @@ import (
 
 // AddItem 은 데이터베이스에 Item을 넣는 함수이다.
 func AddItem(client *mongo.Client, i Item) error {
+	i.CreateTime = time.Now().Format(time.RFC3339)
+	i.Updatetime = i.CreateTime
 	collection := client.Database(*flagDBName).Collection(i.ItemType)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -93,14 +95,15 @@ func AllItems(client *mongo.Client, itemType string) ([]Item, error) {
 }
 
 // UpdateItem 은 컬렉션 이름과 Item을 받아서, Item을 업데이트한다.
-func UpdateItem(client *mongo.Client, itemType string, item Item) error {
+func UpdateItem(client *mongo.Client, itemType string, i Item) error {
+	i.Updatetime = time.Now().Format(time.RFC3339)
 	collection := client.Database(*flagDBName).Collection(itemType)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	_, err := collection.UpdateOne(
 		ctx,
-		bson.M{"_id": item.ID},
-		bson.D{{Key: "$set", Value: item}},
+		bson.M{"_id": i.ID},
+		bson.D{{Key: "$set", Value: i}},
 	)
 	if err != nil {
 		return err
