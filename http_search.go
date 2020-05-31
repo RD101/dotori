@@ -64,7 +64,7 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rcp.CurrentPage = PageToInt(page)
-	totalPage, totalNum, items, err := SearchPage(client, itemType, searchword, rcp.CurrentPage, *flagPagenum)
+	totalPage, totalNum, items, err := SearchPage(client, searchword, rcp.CurrentPage, *flagPagenum)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

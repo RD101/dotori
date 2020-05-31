@@ -257,7 +257,7 @@ func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	item, err := GetItem(client, "maya", objectID)
+	item, err := GetItem(client, objectID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -457,7 +457,7 @@ func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
 	if item.ThumbImgUploaded && item.ThumbClipUploaded && item.DataUploaded {
 		item.Status = "fileuploaded"
 	}
-	UpdateItem(client, "maya", item)
+	UpdateItem(client, item)
 }
 
 func handleUploadMayaCheckData(w http.ResponseWriter, r *http.Request) {
@@ -486,7 +486,7 @@ func handleUploadMayaCheckData(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	item, err := GetItem(client, "maya", objectID)
+	item, err := GetItem(client, objectID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -603,7 +603,7 @@ func handleEditMaya(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	item, err := SearchItem(client, itemtype, id)
+	item, err := SearchItem(client, id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -639,7 +639,6 @@ func handleEditMayaSubmit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	id := r.FormValue("id")
-	itemtype := r.FormValue("itemtype")
 	attrNum, err := strconv.Atoi(r.FormValue("attributesNum"))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -673,7 +672,7 @@ func handleEditMayaSubmit(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	item, err := SearchItem(client, itemtype, id)
+	item, err := SearchItem(client, id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -682,7 +681,7 @@ func handleEditMayaSubmit(w http.ResponseWriter, r *http.Request) {
 	item.Description = r.FormValue("description")
 	item.Tags = SplitBySpace(r.FormValue("tags"))
 	item.Attributes = attr
-	err = UpdateItem(client, itemtype, item)
+	err = UpdateItem(client, item)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

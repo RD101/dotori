@@ -249,7 +249,7 @@ func handleUploadSoundFile(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	item, err := GetItem(client, "sound", objectID)
+	item, err := GetItem(client, objectID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -382,7 +382,7 @@ func handleUploadSoundFile(w http.ResponseWriter, r *http.Request) {
 	if item.DataUploaded {
 		item.Status = "fileuploaded"
 	}
-	UpdateItem(client, "sound", item)
+	UpdateItem(client, item)
 }
 
 func handleUploadSoundCheckData(w http.ResponseWriter, r *http.Request) {
@@ -411,7 +411,7 @@ func handleUploadSoundCheckData(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	item, err := GetItem(client, "sound", objectID)
+	item, err := GetItem(client, objectID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -518,7 +518,7 @@ func handleEditSound(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	item, err := SearchItem(client, itemtype, id)
+	item, err := SearchItem(client, id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -554,7 +554,6 @@ func handleEditSoundSubmit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	id := r.FormValue("id")
-	itemtype := r.FormValue("itemtype")
 	attrNum, err := strconv.Atoi(r.FormValue("attributesNum"))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -588,7 +587,7 @@ func handleEditSoundSubmit(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	item, err := SearchItem(client, itemtype, id)
+	item, err := SearchItem(client, id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -597,7 +596,7 @@ func handleEditSoundSubmit(w http.ResponseWriter, r *http.Request) {
 	item.Description = r.FormValue("description")
 	item.Tags = SplitBySpace(r.FormValue("tags"))
 	item.Attributes = attr
-	err = UpdateItem(client, itemtype, item)
+	err = UpdateItem(client, item)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

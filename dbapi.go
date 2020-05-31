@@ -16,7 +16,7 @@ import (
 func AddItem(client *mongo.Client, i Item) error {
 	i.CreateTime = time.Now().Format(time.RFC3339)
 	i.Updatetime = i.CreateTime
-	collection := client.Database(*flagDBName).Collection(i.ItemType)
+	collection := client.Database(*flagDBName).Collection("items")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	_, err := collection.InsertOne(ctx, i)
@@ -27,8 +27,8 @@ func AddItem(client *mongo.Client, i Item) error {
 }
 
 // GetItem 은 데이터베이스에 Item을 가지고 오는 함수이다.
-func GetItem(client *mongo.Client, itemType, id string) (Item, error) {
-	collection := client.Database(*flagDBName).Collection(itemType)
+func GetItem(client *mongo.Client, id string) (Item, error) {
+	collection := client.Database(*flagDBName).Collection("items")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	var result Item
@@ -61,9 +61,9 @@ func GetAdminSetting(client *mongo.Client) (Adminsetting, error) {
 	return result, nil
 }
 
-// RmItem 는 컬렉션 이름과 id를 받아서, 해당 컬렉션에서 id가 일치하는 Item을 삭제한다.
-func RmItem(client *mongo.Client, itemType, id string) error {
-	collection := client.Database(*flagDBName).Collection(itemType)
+// RmItem 는 id를 받아서, 해당 컬렉션에서 id가 일치하는 Item을 삭제한다.
+func RmItem(client *mongo.Client, id string) error {
+	collection := client.Database(*flagDBName).Collection("items")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	objID, err := primitive.ObjectIDFromHex(id)
@@ -78,8 +78,8 @@ func RmItem(client *mongo.Client, itemType, id string) error {
 }
 
 // AllItems 는 DB에서 전체 아이템 정보를 가져오는 함수입니다.
-func AllItems(client *mongo.Client, itemType string) ([]Item, error) {
-	collection := client.Database(*flagDBName).Collection(itemType)
+func AllItems(client *mongo.Client) ([]Item, error) {
+	collection := client.Database(*flagDBName).Collection("items")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	var results []Item
@@ -95,9 +95,9 @@ func AllItems(client *mongo.Client, itemType string) ([]Item, error) {
 }
 
 // UpdateItem 은 컬렉션 이름과 Item을 받아서, Item을 업데이트한다.
-func UpdateItem(client *mongo.Client, itemType string, i Item) error {
+func UpdateItem(client *mongo.Client, i Item) error {
 	i.Updatetime = time.Now().Format(time.RFC3339)
-	collection := client.Database(*flagDBName).Collection(itemType)
+	collection := client.Database(*flagDBName).Collection("items")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	_, err := collection.UpdateOne(
@@ -111,15 +111,15 @@ func UpdateItem(client *mongo.Client, itemType string, i Item) error {
 	return nil
 }
 
-// Search 는 itemType, words를 입력받아 해당 아이템을 검색한다.
+// Search 는 words를 입력받아 해당 아이템을 검색한다.
 // http_restapi.go에서 사용중
-func Search(client *mongo.Client, itemType string, words string) ([]Item, error) {
+func Search(client *mongo.Client, words string) ([]Item, error) {
 	var results []Item
 	//검색어가 존재하지 않으면 빈 결과를 반환한다.
 	if words == "" {
 		return results, nil
 	}
-	collection := client.Database(*flagDBName).Collection(itemType)
+	collection := client.Database(*flagDBName).Collection("items")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	wordsQueries := []bson.M{}
@@ -165,15 +165,15 @@ func Search(client *mongo.Client, itemType string, words string) ([]Item, error)
 	return results, nil
 }
 
-// SearchPage 는 itemType, words, 해당 page를 입력받아 해당 아이템을 검색한다. 검색된 아이템과 그 개수를 반환한다.
+// SearchPage 는 words, 해당 page를 입력받아 해당 아이템을 검색한다. 검색된 아이템과 그 개수를 반환한다.
 // http.go에서 사용중
-func SearchPage(client *mongo.Client, itemType string, words string, page, limitnum int64) (int64, int64, []Item, error) {
+func SearchPage(client *mongo.Client, words string, page, limitnum int64) (int64, int64, []Item, error) {
 	var results []Item
 	//검색어가 존재하지 않으면 빈 결과를 반환한다.
 	if words == "" {
 		return 0, 0, results, nil
 	}
-	collection := client.Database(*flagDBName).Collection(itemType)
+	collection := client.Database(*flagDBName).Collection("items")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	wordsQueries := []bson.M{}
@@ -224,9 +224,9 @@ func SearchPage(client *mongo.Client, itemType string, words string, page, limit
 	return TotalPage(totalNum, limitnum), totalNum, results, nil
 }
 
-// SearchItem 은 컬렉션 이름(itemType)과 id를 받아서, 해당 컬렉션에서 id가 일치하는 item을 검색, 반환한다.
-func SearchItem(client *mongo.Client, itemType, id string) (Item, error) {
-	collection := client.Database(*flagDBName).Collection(itemType)
+// SearchItem 은 id를 받아서, 해당 컬렉션에서 id가 일치하는 item을 검색, 반환한다.
+func SearchItem(client *mongo.Client, id string) (Item, error) {
+	collection := client.Database(*flagDBName).Collection("items")
 	var result Item
 	objID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
@@ -241,9 +241,9 @@ func SearchItem(client *mongo.Client, itemType, id string) (Item, error) {
 	return result, nil
 }
 
-// SearchTags 는 itemType, tag를 입력받아 tag의 값이 일치하면 반환하는 함수입니다.
-func SearchTags(client *mongo.Client, itemType string, tag string) ([]Item, error) {
-	collection := client.Database(*flagDBName).Collection(itemType)
+// SearchTags 는 tag를 입력받아 tag의 값이 일치하면 반환하는 함수입니다.
+func SearchTags(client *mongo.Client, tag string) ([]Item, error) {
+	collection := client.Database(*flagDBName).Collection("items")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	var results []Item
@@ -358,63 +358,27 @@ func GetFileUploadedItem(client *mongo.Client) (Item, error) {
 	var result Item
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	collections, err := client.Database(*flagDBName).ListCollectionNames(ctx, bson.D{})
+
+	collection := client.Database(*flagDBName).Collection("items")
+	filter := bson.M{"status": "fileuploaded"}
+	err := collection.FindOne(ctx, filter).Decode(&result)
 	if err != nil {
 		return result, err
 	}
-	// 컬렉션을 for문 돌면서 FileUploaded 상태인 Item을 찾는다.
-	for _, c := range collections {
-		if c == "setting.admin" { // setting.admin 컬렉션은 제외한다.
-			continue
-		}
-		if c == "system.indexs" { //mongodb의 기본 컬렉션. 제외한다.
-			continue
-		}
-		if c == "users" { // 사용자 컬렉션을 제외한다.
-			continue
-		}
-		collection := client.Database(*flagDBName).Collection(c)
-		filter := bson.M{"status": "fileuploaded"}
-		err = collection.FindOne(ctx, filter).Decode(&result)
-		if err != nil {
-			return result, err
-		}
-		// 해당 Item을 반환한다.
-		return result, nil
-	}
-	// FileUploaded 상태인 Item이 하나도 없는 경우
 	return result, nil
 }
 
 // GetFileUploadedItemsNum 함수는 fileuploaded 상태 갯수가 몇개인지 체크한다,
 func GetFileUploadedItemsNum(client *mongo.Client) (int64, error) {
-	var result int64
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	collections, err := client.Database(*flagDBName).ListCollectionNames(ctx, bson.D{})
+	collection := client.Database(*flagDBName).Collection("items")
+	filter := bson.M{"status": "fileuploaded"}
+	n, err := collection.CountDocuments(ctx, filter)
 	if err != nil {
-		return result, err
+		return 0, err
 	}
-	// 컬렉션을 for문 돌면서 FileUploaded 상태인 Item을 찾는다.
-	for _, c := range collections {
-		if c == "setting.admin" { // setting.admin 컬렉션은 제외한다.
-			continue
-		}
-		if c == "system.indexs" { //mongodb의 기본 컬렉션. 제외한다.
-			continue
-		}
-		if c == "users" { // 사용자 컬렉션을 제외한다.
-			continue
-		}
-		collection := client.Database(*flagDBName).Collection(c)
-		filter := bson.M{"status": "fileuploaded"}
-		n, err := collection.CountDocuments(ctx, filter)
-		if err != nil {
-			return 0, err
-		}
-		result += n
-	}
-	return result, nil
+	return n, nil
 }
 
 // GetOngoingProcess 는 처리 중인 아이템을 가져온다.
@@ -422,39 +386,20 @@ func GetOngoingProcess(client *mongo.Client) ([]Item, error) {
 	var results []Item
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	//콜렉션 리스트를 가져온다.
-	collections, err := client.Database(*flagDBName).ListCollectionNames(ctx, bson.M{})
+	cursor, err := client.Database(*flagDBName).Collection("items").Find(ctx, bson.M{"status": bson.M{"$ne": "done"}})
 	if err != nil {
 		return results, err
 	}
-	// 콜렉션마다 돌면서 Status가 Done이 아닌 아이템을 가져온다.
-	for _, c := range collections {
-		var items []Item
-		if c == "system.indexs" { //mongodb의 기본 컬렉션. 제외한다.
-			continue
-		}
-		if c == "setting.admin" { //admin setting값을 저장하는 컬렉션. 제외한다.
-			continue
-		}
-		if c == "users" { // 사용자 컬렉션을 제외한다.
-			continue
-		}
-		cursor, err := client.Database(*flagDBName).Collection(c).Find(ctx, bson.M{"status": bson.M{"$ne": "done"}})
-		if err != nil {
-			return results, err
-		}
-		err = cursor.All(ctx, &items)
-		if err != nil {
-			return results, err
-		}
-		results = append(results, items...)
+	err = cursor.All(ctx, &results)
+	if err != nil {
+		return results, err
 	}
 	return results, nil
 }
 
 //SetStatus 함수는 인수로 받은 item의 Status를 status로 바꾼다
 func SetStatus(client *mongo.Client, item Item, status string) error {
-	collection := client.Database(*flagDBName).Collection(item.ItemType)
+	collection := client.Database(*flagDBName).Collection("items")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	// item의 Status를 업데이트 한다.
@@ -471,42 +416,23 @@ func SetStatus(client *mongo.Client, item Item, status string) error {
 
 // GetProcessingItemNum 함수는 현재 연산 중인 아이템의 개수를 구한다.
 func GetProcessingItemNum(client *mongo.Client) (int64, error) {
-	var result int64
-	result = 0
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	filter := bson.M{"$and": []interface{}{
 		bson.M{"status": bson.M{"$ne": "ready"}},
 		bson.M{"status": bson.M{"$ne": "done"}},
 	}}
-	collections, err := client.Database(*flagDBName).ListCollectionNames(ctx, bson.M{})
+	collection := client.Database(*flagDBName).Collection("items")
+	n, err := collection.CountDocuments(ctx, filter)
 	if err != nil {
-		return result, err
+		return 0, err
 	}
-	// 컬렉션을 for문 돌면서 Ready,Done 상태가 아닌 Item의 수를 구하여 result에 더한다.
-	for _, c := range collections {
-		if c == "setting.admin" { // setting.admin 컬렉션은 제외한다.
-			continue
-		}
-		if c == "system.indexs" { //mongodb의 기본 컬렉션. 제외한다.
-			continue
-		}
-		if c == "users" { // 사용자 컬렉션을 제외한다.
-			continue
-		}
-		collection := client.Database(*flagDBName).Collection(c)
-		n, err := collection.CountDocuments(ctx, filter)
-		if err != nil {
-			return result, err
-		}
-		result += n
-	}
-	return result, nil
+	return n, nil
 }
 
-// SetLog 함수는 itemtype과 id와 로그메세지를 받아서 해당 item에 로그메세지를 더한다.
-func SetLog(client *mongo.Client, itemType, id, msg string) error {
-	collection := client.Database(*flagDBName).Collection(itemType)
+// SetLog 함수는 id와 로그메세지를 받아서 해당 item에 로그메세지를 더한다.
+func SetLog(client *mongo.Client, id, msg string) error {
+	collection := client.Database(*flagDBName).Collection("items")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	objID, err := primitive.ObjectIDFromHex(id)
@@ -528,79 +454,57 @@ func GetIncompleteItems(client *mongo.Client) ([]Item, error) {
 	var results []Item
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	//콜렉션 리스트를 가져온다.
-	collections, err := client.Database(*flagDBName).ListCollectionNames(ctx, bson.M{})
-	if err != nil {
-		return results, err
-	}
+
 	filter := bson.M{"$or": []interface{}{
 		bson.M{"thumbimguploaded": false},
 		bson.M{"thumbclipuploaded": false},
 		bson.M{"datauploaded": false},
 	}}
-	// 콜렉션마다 돌면서 ThumbImg, ThumbClip, Data 중 하나라도 없는 아이템을 가져온다.
-	for _, c := range collections {
-		var items []Item
-		if c == "system.indexs" { //mongodb의 기본 컬렉션. 제외한다.
-			continue
-		}
-		if c == "setting.admin" { //admin setting값을 저장하는 컬렉션. 제외한다.
-			continue
-		}
-		if c == "users" { // 사용자 컬렉션을 제외한다.
-			continue
-		}
-		cursor, err := client.Database(*flagDBName).Collection(c).Find(ctx, filter)
-		if err != nil {
-			return results, err
-		}
-		err = cursor.All(ctx, &items)
-		if err != nil {
-			return results, err
-		}
-		results = append(results, items...)
+	cursor, err := client.Database(*flagDBName).Collection("items").Find(ctx, filter)
+	if err != nil {
+		return results, err
+	}
+	err = cursor.All(ctx, &results)
+	if err != nil {
+		return results, err
 	}
 	return results, nil
 }
 
-// GetUsingRate 함수는 itemType과 id를 받아서 해당 아이템의 UsingRate을 가져온다.
-func GetUsingRate(client *mongo.Client, itemType, id string) (int64, error) {
-	var result int64
+// GetUsingRate 함수는 id를 받아서 해당 아이템의 UsingRate을 가져온다.
+func GetUsingRate(client *mongo.Client, id string) (int64, error) {
 	var item Item
-	collection := client.Database(*flagDBName).Collection(itemType)
+	collection := client.Database(*flagDBName).Collection("items")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	objID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		return result, err
+		return 0, err
 	}
 	filter := bson.M{"_id": objID}
 	err = collection.FindOne(ctx, filter).Decode(&item)
 	if err != nil {
-		return result, err
+		return 0, err
 	}
-	result = item.UsingRate
-	return result, nil
+	return item.UsingRate, nil
 }
 
-// UpdateUsingRate 함수는 itemType과 id를 받아서 해당 아이템의 usingrate을 1만큼 올린다.
-func UpdateUsingRate(client *mongo.Client, itemType, id string) (int64, error) {
-	var result int64
+// UpdateUsingRate 함수는 id를 받아서 해당 아이템의 usingrate을 1만큼 올린다.
+func UpdateUsingRate(client *mongo.Client, id string) (int64, error) {
 	var item Item
-	collection := client.Database(*flagDBName).Collection(itemType)
+	collection := client.Database(*flagDBName).Collection("items")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	objID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		return result, err
+		return 0, err
 	}
 	filter := bson.M{"_id": objID}
 	update := bson.M{"$inc": bson.M{"usingrate": 1}}
 	option := *options.FindOneAndUpdate().SetReturnDocument(options.After) // option은 4.0부터 추가됨.
 	err = collection.FindOneAndUpdate(ctx, filter, update, &option).Decode(&item)
 	if err != nil {
-		return result, err
+		return 0, err
 	}
-	result = item.UsingRate
-	return result, nil
+	return item.UsingRate, nil
 }

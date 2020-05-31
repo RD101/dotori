@@ -77,7 +77,7 @@ func processingItem() {
 		err = ProcessMayaItem(client, adminSetting, item)
 		if err != nil {
 			log.Println(err)
-			err = SetLog(client, item.ItemType, item.ID.Hex(), err.Error())
+			err = SetLog(client, item.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 				return
@@ -92,7 +92,7 @@ func processingItem() {
 		err = ProcessUSDItem(client, adminSetting, item)
 		if err != nil {
 			log.Println(err)
-			err = SetLog(client, item.ItemType, item.ID.Hex(), err.Error())
+			err = SetLog(client, item.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 				return
@@ -125,7 +125,7 @@ func processingItem() {
 		err = ProcessSoundItem(client, adminSetting, item)
 		if err != nil {
 			log.Println(err)
-			err = SetLog(client, item.ItemType, item.ID.Hex(), err.Error())
+			err = SetLog(client, item.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 				return

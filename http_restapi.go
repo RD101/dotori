@@ -126,7 +126,7 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// 삭제 함수 호출
-		err = RmItem(client, itemtype, id) // db 에서 삭제
+		err = RmItem(client, id) // db 에서 삭제
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -177,7 +177,7 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		i, err := GetItem(client, itemtype, id)
+		i, err := GetItem(client, id)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -234,7 +234,7 @@ func handleAPISearch(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	item, err := Search(client, itemtype, searchword)
+	item, err := Search(client, searchword)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -322,7 +322,7 @@ func handleAPIUsingRate(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		usingrate, err := UpdateUsingRate(client, itemtype, id)
+		usingrate, err := UpdateUsingRate(client, id)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
