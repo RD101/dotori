@@ -252,7 +252,7 @@ func handleUploadNukeFile(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	item, err := GetItem(client, "nuke", objectID)
+	item, err := GetItem(client, objectID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -429,7 +429,7 @@ func handleUploadNukeFile(w http.ResponseWriter, r *http.Request) {
 	if item.ThumbImgUploaded && item.ThumbClipUploaded && item.DataUploaded {
 		item.Status = "fileuploaded"
 	}
-	UpdateItem(client, "nuke", item)
+	UpdateItem(client, item)
 }
 
 // handleUploadNukeCheckData 함수는 필요한 파일들을 모두 업로드했는지 체크하고, /addnuke-success 페이지로 redirect한다.
@@ -459,7 +459,7 @@ func handleUploadNukeCheckData(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	item, err := GetItem(client, "nuke", objectID)
+	item, err := GetItem(client, objectID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -576,7 +576,7 @@ func handleEditNuke(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	item, err := SearchItem(client, itemtype, id)
+	item, err := SearchItem(client, id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -612,7 +612,6 @@ func handleEditNukeSubmit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	id := r.FormValue("id")
-	itemtype := r.FormValue("itemtype")
 	attrNum, err := strconv.Atoi(r.FormValue("attributesNum"))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -646,7 +645,7 @@ func handleEditNukeSubmit(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	item, err := SearchItem(client, itemtype, id)
+	item, err := SearchItem(client, id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -655,7 +654,7 @@ func handleEditNukeSubmit(w http.ResponseWriter, r *http.Request) {
 	item.Description = r.FormValue("description")
 	item.Tags = SplitBySpace(r.FormValue("tags"))
 	item.Attributes = attr
-	err = UpdateItem(client, itemtype, item)
+	err = UpdateItem(client, item)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

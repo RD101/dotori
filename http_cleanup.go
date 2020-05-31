@@ -97,8 +97,8 @@ func handleCleanUpDBSubmit(w http.ResponseWriter, r *http.Request) {
 	}
 	defer client.Disconnect(ctx)
 	//삭제할 아이템의 리스트를 돌면서 삭제한다.
-	for id, itemtype := range itemsToDelete {
-		err = RmItem(client, itemtype, id)
+	for id := range itemsToDelete {
+		err = RmItem(client, id)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return

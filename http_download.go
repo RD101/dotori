@@ -54,7 +54,7 @@ func handleDownloadItem(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	item, err := GetItem(client, itemtype, id)
+	item, err := GetItem(client, id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -74,7 +74,7 @@ func handleDownloadItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Using Rate(사용률)을 업데이트 한다.
-	_, err = UpdateUsingRate(client, itemtype, id)
+	_, err = UpdateUsingRate(client, id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

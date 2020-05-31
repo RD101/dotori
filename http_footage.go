@@ -215,7 +215,7 @@ func handleUploadFootageFile(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	item, err := GetItem(client, "footage", objectID)
+	item, err := GetItem(client, objectID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -317,7 +317,7 @@ func handleUploadFootageFile(w http.ResponseWriter, r *http.Request) {
 	if item.DataUploaded {
 		item.Status = "fileuploaded"
 	}
-	UpdateItem(client, "footage", item)
+	UpdateItem(client, item)
 }
 
 // handleAddFootageFile 함수는 Footage 파일을 추가하는 페이지 이다.
@@ -417,7 +417,7 @@ func handleEditFootage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	item, err := SearchItem(client, itemtype, id)
+	item, err := SearchItem(client, id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -461,7 +461,6 @@ func handleEditFootageSubmit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	id := r.FormValue("id")
-	itemtype := r.FormValue("itemtype")
 	attrNum, err := strconv.Atoi(r.FormValue("attributesNum"))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -495,7 +494,7 @@ func handleEditFootageSubmit(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	item, err := SearchItem(client, itemtype, id)
+	item, err := SearchItem(client, id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -506,7 +505,7 @@ func handleEditFootageSubmit(w http.ResponseWriter, r *http.Request) {
 	item.InColorspace = r.FormValue("incolorspace")
 	item.OutColorspace = r.FormValue("outcolorspace")
 	item.Attributes = attr
-	err = UpdateItem(client, itemtype, item)
+	err = UpdateItem(client, item)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
