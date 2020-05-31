@@ -69,8 +69,8 @@ func GetTokenFromHeader(w http.ResponseWriter, r *http.Request) (Token, error) {
 	return tk, nil
 }
 
-// GetAccessLevelFromToken 함수는 restapi 사용 시 토큰을 체크하고 accesslevel을 반환하는 함수이다.
-func GetAccessLevelFromToken(r *http.Request, client *mongo.Client) (string, error) {
+// GetAccessLevelFromHeader 함수는 restapi 사용 시 토큰을 체크하고 accesslevel을 반환하는 함수이다.
+func GetAccessLevelFromHeader(r *http.Request, client *mongo.Client) (string, error) {
 	//header에서 token을 가져온다.
 	auth := strings.SplitN(r.Header.Get("Authorization"), " ", 2)
 	if len(auth) != 2 || auth[0] != "Basic" {
