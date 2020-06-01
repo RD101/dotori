@@ -98,6 +98,7 @@ func handleUploadUSDItem(w http.ResponseWriter, r *http.Request) {
 	tags := SplitBySpace(r.FormValue("tag"))
 	item.Tags = tags
 	item.ItemType = "usd"
+	item.KindOfUSD = r.FormValue("kindofusd")
 	attr := make(map[string]string)
 	attrNum, err := strconv.Atoi(r.FormValue("attributesNum"))
 	if err != nil {
