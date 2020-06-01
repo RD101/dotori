@@ -98,3 +98,26 @@ function addPageBlankCheck(){
     }
     return true;
 }
+
+function toggleItems(){
+    // 기준이되는 상태값을 가지고 온다.
+    let status = document.getElementById("toggle-checkbox").checked
+    // 기준상태를 기준으로 상태를 설정한다.
+    let checkboxes = document.querySelectorAll('*[name^="checkbox"]');
+    for (i=0;i<checkboxes.length;i++) {
+        if (checkboxes[i].checked == status) {
+            continue
+        }
+        checkboxes[i].checked = status
+    }
+}
+
+// function selectAll(source) {
+//     Console.log("log")
+//     itemnum = document.getElementsByName('itemnum');
+//     Console.log(itemnum)
+//     for(var i=0 ; i<itemnum ; i++) {
+//         checkbox = document.getElementsByName('checkbox%d', i);
+//         checkbox.checked = source.checked;
+//     }
+// }
