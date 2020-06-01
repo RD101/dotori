@@ -456,10 +456,22 @@ func GetIncompleteItems(client *mongo.Client) ([]Item, error) {
 	defer cancel()
 
 	filter := bson.M{"$or": []interface{}{
-		bson.M{"thumbimguploaded": false},
-		bson.M{"thumbclipuploaded": false},
-		bson.M{"datauploaded": false},
+		// sound를 제외한 itemtype의 조건
+		bson.M{"$and": []interface{}{
+			bson.M{"itemtype": bson.M{"$ne": "sound"}},
+			bson.M{"$or": []interface{}{
+				bson.M{"thumbimguploaded": false},
+				bson.M{"thumbclipuploaded": false},
+				bson.M{"datauploaded": false},
+			}},
+		}},
+		// sound 타입 아이템의 조건
+		bson.M{"$and": []interface{}{
+			bson.M{"itemtype": "sound"},
+			bson.M{"datauploaded": false},
+		}},
 	}}
+
 	cursor, err := client.Database(*flagDBName).Collection("items").Find(ctx, filter)
 	if err != nil {
 		return results, err
