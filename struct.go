@@ -80,6 +80,8 @@ type Item struct {
 
 	InColorspace  string `json:"incolorspace" bson:"incolorspace"`   // InColorspace
 	OutColorspace string `json:"outcolorspace" bson:"outcolorspace"` // OutColorspace
+
+	KindOfUSD string `json:"kindofusd" bson:"kindofusd"` // Kind Of USD
 }
 
 // ItemStatus 는 숫자이다.
