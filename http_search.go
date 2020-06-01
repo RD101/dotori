@@ -22,9 +22,6 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 	itemType := q.Get("itemtype")
 	searchword := q.Get("searchword")
 	page := PageToString(q.Get("page"))
-	if itemType == "" {
-		itemType = "maya"
-	}
 	if page == "" {
 		page = "1"
 	}
@@ -64,7 +61,7 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rcp.CurrentPage = PageToInt(page)
-	totalPage, totalNum, items, err := SearchPage(client, searchword, rcp.CurrentPage, *flagPagenum)
+	totalPage, totalNum, items, err := SearchPage(client, itemType, searchword, rcp.CurrentPage, *flagPagenum)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

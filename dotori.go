@@ -81,7 +81,7 @@ func main() {
 		if *flagItemType == "" {
 			log.Fatal("itemtype이 빈 문자열입니다")
 		}
-		items, err := Search(client, *flagSearchWord)
+		items, err := Search(client, *flagItemType, *flagSearchWord)
 		if err != nil {
 			log.Fatal(err)
 		}

@@ -5,6 +5,7 @@
 			<div class="input-group mb-3">
 				<div class="input-group-prepend">
 					<select name="itemtype" class="custom-select left-radius">
+						<option value="" {{if eq .ItemType "" }}selected{{end}}>All</option>
 						<option value="maya" {{if eq .ItemType "maya" }}selected{{end}}>Maya</option>
 						<option value="usd" {{if eq .ItemType "usd" }}selected{{end}}>USD</option>
 						<option value="alembic" {{if eq .ItemType "alembic" }}selected{{end}}>Alembic</option>
@@ -20,7 +21,6 @@
 						<option value="modo" {{if eq .ItemType "modo" }}selected{{end}}>Modo</option>
 						<option value="blender" {{if eq .ItemType "blender" }}selected{{end}}>Blender</option>
 						<option value="sound" {{if eq .ItemType "sound" }}selected{{end}}>Sound</option>
-						<option value="" {{if eq .ItemType "" }}selected{{end}}>All</option>
 					</select>
 				</div>
 				
