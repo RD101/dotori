@@ -234,7 +234,7 @@ func handleAPISearch(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	item, err := Search(client, searchword)
+	item, err := Search(client, itemtype, searchword)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

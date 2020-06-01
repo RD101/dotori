@@ -113,7 +113,7 @@ func UpdateItem(client *mongo.Client, i Item) error {
 
 // Search 는 words를 입력받아 해당 아이템을 검색한다.
 // http_restapi.go에서 사용중
-func Search(client *mongo.Client, words string) ([]Item, error) {
+func Search(client *mongo.Client, itemType, words string) ([]Item, error) {
 	var results []Item
 	//검색어가 존재하지 않으면 빈 결과를 반환한다.
 	if words == "" {
@@ -123,6 +123,11 @@ func Search(client *mongo.Client, words string) ([]Item, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	wordsQueries := []bson.M{}
+	if itemType != "" {
+		querys := []bson.M{}
+		querys = append(querys, bson.M{"itemtype": itemType})
+		wordsQueries = append(wordsQueries, bson.M{"$and": querys})
+	}
 	for _, word := range strings.Split(words, " ") {
 		if word == "" {
 			continue
@@ -167,7 +172,7 @@ func Search(client *mongo.Client, words string) ([]Item, error) {
 
 // SearchPage 는 words, 해당 page를 입력받아 해당 아이템을 검색한다. 검색된 아이템과 그 개수를 반환한다.
 // http.go에서 사용중
-func SearchPage(client *mongo.Client, words string, page, limitnum int64) (int64, int64, []Item, error) {
+func SearchPage(client *mongo.Client, itemType, words string, page, limitnum int64) (int64, int64, []Item, error) {
 	var results []Item
 	//검색어가 존재하지 않으면 빈 결과를 반환한다.
 	if words == "" {
@@ -177,6 +182,13 @@ func SearchPage(client *mongo.Client, words string, page, limitnum int64) (int64
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	wordsQueries := []bson.M{}
+
+	if itemType != "" {
+		querys := []bson.M{}
+		querys = append(querys, bson.M{"itemtype": itemType})
+		wordsQueries = append(wordsQueries, bson.M{"$and": querys})
+	}
+
 	for _, word := range strings.Split(words, " ") {
 		if word == "" {
 			continue
