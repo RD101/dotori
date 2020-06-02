@@ -105,13 +105,22 @@ func webserver() {
 	http.HandleFunc("/addhoudini-process", handleAddHoudiniProcess)
 	http.HandleFunc("/upload-houdini", handleUploadHoudini)
 
+	// Blender
+	http.HandleFunc("/addblender", handleAddBlender)
+	http.HandleFunc("/addblender-item", handleAddBlenderItem)
+	http.HandleFunc("/addblender-file", handleAddBlenderFile)
+	http.HandleFunc("/uploadblender-item", handleUploadBlenderItem)
+	http.HandleFunc("/uploadblender-file", handleUploadBlenderFile)
+	http.HandleFunc("/uploadblender-checkdata", handleUploadBlenderCheckData)
+	http.HandleFunc("/addblender-success", handleAddBlenderSuccess)
+	http.HandleFunc("/editblender", handleEditBlender)
+	http.HandleFunc("/editblender-submit", handleEditBlenderSubmit)
+	http.HandleFunc("/editblender-success", handleEditBlenderSuccess)
+
 	// Alembic
 	http.HandleFunc("/addalembic", handleAddAlembic)
 	http.HandleFunc("/addalembic-process", handleAddAlembicProcess)
 	http.HandleFunc("/upload-alembic", handleUploadAlembic)
-
-	// Blender
-	http.HandleFunc("/addblender", handleAddBlender)
 
 	// PixarUSD
 	http.HandleFunc("/addusd", handleAddUSD)
