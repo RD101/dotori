@@ -12,7 +12,7 @@
             index
         </div>
         <div class="col-sm-2 col-md-2 col-lg-1">
-            <input type="checkbox" class="form-check-input" id="selectallitem">
+            <input type="checkbox" class="form-check-input" id="toggle-checkbox" onclick="toggleItems();">
         </div>
         <div class="col-sm-4 col-md-4 col-lg-1">
             itemtype
@@ -52,7 +52,7 @@
                 </div>
                 <input type="hidden" id="itemtype{{$index}}" name="itemtype{{$index}}" value="{{.ItemType}}">
                 <div class="col-sm-4 col-md-4 col-lg-1">
-                {{.Author}}
+                    {{.Author}}
                 </div>
                 <div class="col-sm-12 col-md-6 col-lg-4">
                     {{.ID.Hex}}
@@ -97,5 +97,6 @@
 <!--add javascript-->
 <script src="/assets/js/jquery-3.1.1.min.js"></script>
 <script src="/assets/bootstrap-4/js/bootstrap.min.js"></script>
+<script src="/assets/js/dotori.js"></script>
 </html>
 {{end}}
