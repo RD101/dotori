@@ -106,9 +106,6 @@ function toggleItems(){
     // 가져온 상태값을 기준으로 모든 체크박스의 상태를 설정한다.
     let checkboxes = document.querySelectorAll('*[name^="checkbox"]');
     for (i=0;i<checkboxes.length;i++) {
-        if (checkboxes[i].checked == status) {
-            continue
-        }
         checkboxes[i].checked = status
     }
 }
