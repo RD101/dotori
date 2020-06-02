@@ -1,0 +1,35 @@
+{{define "addblender-file"}}
+{{template "head"}}
+<body>
+{{template "navbar" .}}
+<!--dropzone-->
+<div class="container py-5 px-2">
+    <div class="col-lg-6 col-md-8 col-sm-12 mx-auto">
+        <div class="pt-3 pb-3">
+            <h2 class="text-muted">Add Blender Asset</h2>
+        </div>
+        <div class="">
+            <form action="/uploadblender-file" method="post" class="dropzone" enctype="multipart/form-data">
+                <div class="fallback">
+                    <input name="file" type="file" />
+                </div>
+            </form>
+            <small class="form-text text-muted">업로드할 마야파일, 썸네일, 동영상을 Drag & Drop 해주세요.</small>
+        </div>
+    </div>
+    <div class="text-center pt-5">
+        <a href="/uploadblender-checkdata" class="btn btn-outline-warning">등록</a>
+    </div>
+</div>
+</div>
+</form>
+
+{{template "footer"}}
+</body>
+<!--add javascript-->
+<script src="/assets/js/jquery-3.1.1.min.js"></script>
+<script src="/assets/bootstrap-4/js/bootstrap.min.js"></script>
+<script src="/assets/js/dropzone.js"></script>
+<script src="/assets/js/dotori.js"></script>
+</html>
+{{end}}
