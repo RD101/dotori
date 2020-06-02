@@ -112,7 +112,16 @@ func processingItem() {
 	case "hdri": // HDRI 이미지, 환경맵
 		return
 	case "blender": // 블렌더 파일
-		return
+		err = ProcessBlenderItem(client, adminSetting, item)
+		if err != nil {
+			log.Println(err)
+			err = SetLog(client, item.ID.Hex(), err.Error())
+			if err != nil {
+				log.Println(err)
+				return
+			}
+			return
+		}
 	case "texture": // 텍스쳐
 		return
 	case "psd": // 포토샵 파일
@@ -288,6 +297,80 @@ func ProcessUSDItem(client *mongo.Client, adminSetting Adminsetting, item Item) 
 
 // ProcessSoundItem 함수는 sound 아이템을 연산한다.
 func ProcessSoundItem(client *mongo.Client, adminSetting Adminsetting, item Item) error {
+	// thumbnail 폴더를 생성한다.
+	err := SetStatus(client, item, "creatingthumbdir")
+	if err != nil {
+		return err
+	}
+	err = genThumbDir(adminSetting, item)
+	if err != nil {
+		return err
+	}
+	err = SetStatus(client, item, "createdthumbdir")
+	if err != nil {
+		return err
+	}
+	// 썸네일 이미지를 생성한다.
+	err = SetStatus(client, item, "creatingthumbimg")
+	if err != nil {
+		return err
+	}
+	err = genThumbImage(adminSetting, item)
+	if err != nil {
+		return err
+	}
+	err = SetStatus(client, item, "createdthumbimg")
+	if err != nil {
+		return err
+	}
+	// .ogg 썸네일 동영상을 생성한다.
+	err = SetStatus(client, item, "creatingoggcontainer")
+	if err != nil {
+		return err
+	}
+	err = genThumbOggContainer(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+	if err != nil {
+		return err
+	}
+	err = SetStatus(client, item, "createdoggcontainer")
+	if err != nil {
+		return err
+	}
+	// .mov 썸네일 동영상을 생성한다.
+	err = SetStatus(client, item, "creatingmovcontainer")
+	if err != nil {
+		return err
+	}
+	err = genThumbMovContainer(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+	if err != nil {
+		return err
+	}
+	err = SetStatus(client, item, "createdmovcontainer")
+	if err != nil {
+		return err
+	}
+	// .mp4 썸네일 동영상을 생성한다.
+	err = SetStatus(client, item, "creatingmp4container")
+	if err != nil {
+		return err
+	}
+	err = genThumbMp4Container(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+	if err != nil {
+		return err
+	}
+	err = SetStatus(client, item, "createdmp4container")
+	if err != nil {
+		return err
+	}
+	err = SetStatus(client, item, "done")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// ProcessBlenderItem 함수는 blender 아이템을 연산한다.
+func ProcessBlenderItem(client *mongo.Client, adminSetting Adminsetting, item Item) error {
 	// thumbnail 폴더를 생성한다.
 	err := SetStatus(client, item, "creatingthumbdir")
 	if err != nil {
