@@ -125,6 +125,9 @@ func webserver() {
 	http.HandleFunc("/uploadalembic-file", handleUploadAlembicFile)
 	http.HandleFunc("/uploadalembic-checkdata", handleUploadAlembicCheckData)
 	http.HandleFunc("/addalembic-success", handleAddAlembicSuccess)
+	http.HandleFunc("/editalembic", handleEditAlembic)
+	http.HandleFunc("/editalembic-submit", handleEditAlembicSubmit)
+	http.HandleFunc("/editalembic-success", handleEditAlembicSuccess)
 
 	// PixarUSD
 	http.HandleFunc("/addusd", handleAddUSD)
