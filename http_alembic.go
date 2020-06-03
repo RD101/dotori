@@ -458,6 +458,7 @@ func handleUploadAlembicFile(w http.ResponseWriter, r *http.Request) {
 	UpdateItem(client, item)
 }
 
+// handleUploadAlembicCheckData 함수는 필요한 파일(썸네일, data 파일 등)을 추가했는지 체크한다.
 func handleUploadAlembicCheckData(w http.ResponseWriter, r *http.Request) {
 	// objectID로 item을 가져온다.
 	objectID, err := GetObjectIDfromRequestHeader(r)
@@ -508,6 +509,7 @@ func handleUploadAlembicCheckData(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/addalembic-success", http.StatusSeeOther)
 }
 
+// handleAddAlembicSuccess 함수는 add alembic item을 성공했다는 페이지를 연다.
 func handleAddAlembicSuccess(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
@@ -553,6 +555,7 @@ func handleAddAlembicSuccess(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// handleEditAlembic 함수는 alembic item 정보를 수정할 수 있는 페이지를 연다. edit 버튼을 누를 때 실행된다.
 func handleEditAlembic(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
@@ -687,6 +690,7 @@ func handleEditAlembicSubmit(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/editalembic-success", http.StatusSeeOther)
 }
 
+// handleEditAlembicSuccess 함수는 alembic item 정보 수정을 성공했다는 페이지를 연다.
 func handleEditAlembicSuccess(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
