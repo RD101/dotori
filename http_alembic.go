@@ -458,6 +458,7 @@ func handleUploadAlembicFile(w http.ResponseWriter, r *http.Request) {
 	UpdateItem(client, item)
 }
 
+// handleUploadAlembicCheckData 함수는 필요한 파일(썸네일, data 파일 등)을 추가했는지 체크한다.
 func handleUploadAlembicCheckData(w http.ResponseWriter, r *http.Request) {
 	// objectID로 item을 가져온다.
 	objectID, err := GetObjectIDfromRequestHeader(r)
@@ -508,6 +509,7 @@ func handleUploadAlembicCheckData(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/addalembic-success", http.StatusSeeOther)
 }
 
+// handleAddAlembicSuccess 함수는 add alembic item을 성공했다는 페이지를 연다.
 func handleAddAlembicSuccess(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
@@ -547,6 +549,187 @@ func handleAddAlembicSuccess(w http.ResponseWriter, r *http.Request) {
 	rcp.Adminsetting = adminsetting
 	w.Header().Set("Content-Type", "text/html")
 	err = TEMPLATES.ExecuteTemplate(w, "addalembic-success", rcp)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+// handleEditAlembic 함수는 alembic item 정보를 수정할 수 있는 페이지를 연다. edit 버튼을 누를 때 실행된다.
+func handleEditAlembic(w http.ResponseWriter, r *http.Request) {
+	token, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html")
+	type recipe struct {
+		ID          primitive.ObjectID `json:"id" bson:"id"`
+		ItemType    string             `json:"itemtype" bson:"itemtype"`
+		Author      string             `json:"author" bson:"author"`
+		Description string             `json:"description" bson:"description"`
+		Tags        []string           `json:"tags" bson:"tags"`
+		Attributes  map[string]string  `json:"attributes" bson:"attributes"`
+		Token
+		Adminsetting Adminsetting
+	}
+	q := r.URL.Query()
+	itemtype := q.Get("itemtype")
+	id := q.Get("id")
+	if itemtype == "" {
+		http.Error(w, "URL에 itemtype을 입력해주세요", http.StatusBadRequest)
+		return
+	}
+	if id == "" {
+		http.Error(w, "URL에 id를 입력해주세요", http.StatusBadRequest)
+		return
+	}
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer client.Disconnect(ctx)
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	item, err := SearchItem(client, id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	adminsetting, err := GetAdminSetting(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp := recipe{
+		ID:           item.ID,
+		ItemType:     item.ItemType,
+		Author:       item.Author,
+		Description:  item.Description,
+		Tags:         item.Tags,
+		Attributes:   item.Attributes,
+		Token:        token,
+		Adminsetting: adminsetting,
+	}
+
+	err = TEMPLATES.ExecuteTemplate(w, "editalembic", rcp)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+//handleEditAlembicSubmit 함수는 alembic 아이템을 수정하는 페이지에서 UPDATE 버튼을 누르면 작동하는 함수다.
+func handleEditAlembicSubmit(w http.ResponseWriter, r *http.Request) {
+	_, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
+	id := r.FormValue("id")
+	attrNum, err := strconv.Atoi(r.FormValue("attributesNum"))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	attr := make(map[string]string)
+	for i := 0; i < attrNum; i++ {
+		key := r.FormValue(fmt.Sprintf("key%d", i))
+		value := r.FormValue(fmt.Sprintf("value%d", i))
+		if key == "" || value == "" {
+			continue
+		}
+		attr[key] = value
+	}
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer client.Disconnect(ctx)
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	item, err := SearchItem(client, id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	item.Author = r.FormValue("author")
+	item.Description = r.FormValue("description")
+	item.Tags = SplitBySpace(r.FormValue("tags"))
+	item.Attributes = attr
+	err = UpdateItem(client, item)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	http.Redirect(w, r, "/editalembic-success", http.StatusSeeOther)
+}
+
+// handleEditAlembicSuccess 함수는 alembic item 정보 수정을 성공했다는 페이지를 연다.
+func handleEditAlembicSuccess(w http.ResponseWriter, r *http.Request) {
+	token, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
+	type recipe struct {
+		Token
+		Adminsetting Adminsetting
+	}
+	rcp := recipe{}
+	rcp.Token = token
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer client.Disconnect(ctx)
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	adminsetting, err := GetAdminSetting(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp.Adminsetting = adminsetting
+	w.Header().Set("Content-Type", "text/html")
+	err = TEMPLATES.ExecuteTemplate(w, "editalembic-success", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
