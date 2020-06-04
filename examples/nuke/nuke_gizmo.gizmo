@@ -1,0 +1,22 @@
+#! /usr/local/Nuke10.5v4/libnuke-10.5.4.so -nx
+version 10.5 v4
+Gizmo {
+}
+ Input {
+  inputs 0
+  name Input1
+  xpos 258
+  ypos 60
+ }
+ Reformat {
+  format "1920 1080 0 0 1920 1080 1 HD_1080"
+  name Reformat1
+  xpos 258
+  ypos 86
+ }
+ Output {
+  name Output1
+  xpos 258
+  ypos 124
+ }
+end_group
