@@ -19,9 +19,4 @@ Gizmo {
   xpos 258
   ypos 124
  }
- Output {
-  name Output1
-  xpos 258
-  ypos 224
- }
 end_group
