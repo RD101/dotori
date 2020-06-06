@@ -165,6 +165,16 @@ func ProcessMayaItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 	}
 	err = genThumbDir(adminSetting, item)
 	if err != nil {
+		// 상태를 error로 바꾼다.
+		err = SetStatus(client, item, "error")
+		if err != nil {
+			return err
+		}
+		// 에러 내용을 로그로 남긴다.
+		err = SetLog(client, item.ID.Hex(), err.Error())
+		if err != nil {
+			return err
+		}
 		return err
 	}
 	err = SetStatus(client, item, "createdthumbdir")
@@ -178,6 +188,16 @@ func ProcessMayaItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 	}
 	err = genThumbImage(adminSetting, item)
 	if err != nil {
+		// 상태를 error로 바꾼다.
+		err = SetStatus(client, item, "error")
+		if err != nil {
+			return err
+		}
+		// 에러 내용을 로그로 남긴다.
+		err = SetLog(client, item.ID.Hex(), err.Error())
+		if err != nil {
+			return err
+		}
 		return err
 	}
 	err = SetStatus(client, item, "createdthumbimg")
@@ -191,6 +211,16 @@ func ProcessMayaItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 	}
 	err = genThumbOggContainer(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
+		// 상태를 error로 바꾼다.
+		err = SetStatus(client, item, "error")
+		if err != nil {
+			return err
+		}
+		// 에러 내용을 로그로 남긴다.
+		err = SetLog(client, item.ID.Hex(), err.Error())
+		if err != nil {
+			return err
+		}
 		return err
 	}
 	err = SetStatus(client, item, "createdoggcontainer")
@@ -204,6 +234,16 @@ func ProcessMayaItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 	}
 	err = genThumbMovContainer(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
+		// 상태를 error로 바꾼다.
+		err = SetStatus(client, item, "error")
+		if err != nil {
+			return err
+		}
+		// 에러 내용을 로그로 남긴다.
+		err = SetLog(client, item.ID.Hex(), err.Error())
+		if err != nil {
+			return err
+		}
 		return err
 	}
 	err = SetStatus(client, item, "createdmovcontainer")
@@ -217,6 +257,16 @@ func ProcessMayaItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 	}
 	err = genThumbMp4Container(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
+		// 상태를 error로 바꾼다.
+		err = SetStatus(client, item, "error")
+		if err != nil {
+			return err
+		}
+		// 에러 내용을 로그로 남긴다.
+		err = SetLog(client, item.ID.Hex(), err.Error())
+		if err != nil {
+			return err
+		}
 		return err
 	}
 	err = SetStatus(client, item, "createdmp4container")

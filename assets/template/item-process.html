@@ -37,21 +37,21 @@
                             {{.ID.Hex}}
                         </div>
                         <div class="col-sm-3 col-md-2 col-lg-1 my-auto">
-                            <span class="badge badge-success">
-                                {{.Status}}
-                            </span>
+                            {{if eq .Status "error"}}
+                                <span class="badge badge-danger">{{.Status}}</span>
+                            {{else}}
+                                <span class="badge badge-success">{{.Status}}</span>
+                            {{end}}
                         </div>
                         <div class="col-sm-9 col-md-10 col-lg-4 my-auto">
                             <div class="progress">
                                 <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 10%" aria-valuenow="3" aria-valuemin="1" aria-valuemax="7"></div>
                             </div>
                         </div>
-                        
                     </div>
                     <div>
                         <hr class="my-1 p-0 m-0 divider">
                     </div>
-                    
                 {{$index = add $index 1}}
             {{end}}
         </div>
