@@ -11,7 +11,7 @@ Dotori is web-based asset library tool.
 - 테스트서버: https://csi.lazypic.org:8089
 
 #### 서버권장사항
-- 동시접속자 처리를 위한 OS: Linux 또는 macOS
+- 동시접속자 처리를 위한 OS: Linux, macOS, Windows Server
 - 메모리 32기가 이상. (데이터를 많이 처리할 때 DB는 약 14기가의 메모리를 사용한다.)
 
 ### DB 설치, 실행
