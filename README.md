@@ -68,11 +68,22 @@ $ sudo dotori -http :80
 
 - [인증서 만드는 방법](documents/how_to_make_certification.md)
 
-### restAPI
+### RestAPI
 Dotori는 restAPI를 지원합니다. Python, Go, Java, Javascript, node.JS, C++, C, C# 등 수많은 언어를 통해 Dotori를 이용할 수 있습니다.
 아래는 Dotori restAPI reference 문서입니다.
 - [item](documents/restapi_item.md)
 - [admin setting](documents/restapi_adminsetting.md)
+
+### 개발환경셋팅
+Go에서 컴파일된 파일이 생성되는 경로를 설정하기 위해 GOBIN 환경변수 셋팅이 필요합니다.
+
+리눅스라면 .bashrc에 선언해주세요.
+macOS이고 zsh쉘을 사용한다면 `.zshenv` 에 bash쉘을 사용한다면 `.bashrc`에 아래 설정을 추가해주세요.
+
+```bash
+export GOBIN=$HOME/bin
+export PATH=$PATH:$GOBIN
+```
 
 ### 예제파일
 - 에셋 라이브러리 개발에 사용된 예제 파일은 `examples` 폴더에 들어있습니다.
