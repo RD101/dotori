@@ -29,6 +29,7 @@ var funcMap = template.FuncMap{
 	"PreviousPage": PreviousPage,
 	"NextPage":     NextPage,
 	"RmRootpath":   RmRootpath,
+	"LastLog":      LastLog,
 }
 
 func webserver() {
