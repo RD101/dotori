@@ -116,8 +116,8 @@ func handleUploadHwpItem(w http.ResponseWriter, r *http.Request) {
 	item.Logs = append(item.Logs, "아이템이 생성되었습니다.")
 	currentTime := time.Now()
 	item.CreateTime = currentTime.Format("2006-01-02 15:04:05")
-	item.ThumbImgUploaded = true  // hwp 데이터는 이미지 썸네일 정보를 담고 있다.
-	item.ThumbClipUploaded = true // footage 데이터는 썸네일 클립이 필요없다.
+	item.ThumbImgUploaded = false
+	item.ThumbClipUploaded = false
 	item.DataUploaded = false
 
 	//mongoDB client 연결
@@ -318,7 +318,6 @@ func handleUploadHwpFile(w http.ResponseWriter, r *http.Request) {
 			defer file.Close()
 			unix.Umask(umask)
 			mimeType := f.Header.Get("Content-Type")
-			fmt.Println(mimeType)
 			switch mimeType {
 			case "application/octet-stream":
 				ext := filepath.Ext(f.Filename)
@@ -390,7 +389,7 @@ func handleUploadHwpFile(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
-	if item.ThumbImgUploaded && item.ThumbClipUploaded && item.DataUploaded {
+	if item.DataUploaded {
 		item.Status = "fileuploaded"
 	}
 	UpdateItem(client, item)
