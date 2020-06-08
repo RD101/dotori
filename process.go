@@ -339,6 +339,10 @@ func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item It
 	if err != nil {
 		return err
 	}
+	err = SetThumbImgUploaded(client, item, true)
+	if err != nil {
+		return err
+	}
 	/*
 		// .ogg 썸네일 동영상을 생성한다.
 		err = SetStatus(client, item, "creatingoggcontainer")

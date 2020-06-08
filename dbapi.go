@@ -532,3 +532,20 @@ func UpdateUsingRate(client *mongo.Client, id string) (int64, error) {
 	}
 	return item.UsingRate, nil
 }
+
+//SetThumbImgUploaded 함수는 인수로 받은 item의 ThumbImgUploaded 값을 바꾼다.
+func SetThumbImgUploaded(client *mongo.Client, item Item, status bool) error {
+	collection := client.Database(*flagDBName).Collection("items")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	// item의 Status를 업데이트 한다.
+	filter := bson.M{"_id": item.ID}
+	update := bson.M{
+		"$set": bson.M{"thumbimguploaded": status},
+	}
+	err := collection.FindOneAndUpdate(ctx, filter, update).Err()
+	if err != nil {
+		return err
+	}
+	return nil
+}
