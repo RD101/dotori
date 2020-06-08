@@ -54,7 +54,7 @@ func processingItem() {
 		log.Println(err)
 		return
 	}
-	if *flagProcessNum < getProcessNum {
+	if *flagMaxProcessNum < getProcessNum {
 		return
 	}
 	// AdminSetting을 DB에서 가지고 온다.
