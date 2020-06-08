@@ -154,6 +154,18 @@ func webserver() {
 	http.HandleFunc("/editsound-submit", handleEditSoundSubmit)
 	http.HandleFunc("/editsound-success", handleEditSoundSuccess)
 
+	// pdf
+	http.HandleFunc("/addpdf", handleAddPdf)
+	http.HandleFunc("/addpdf-item", handleAddPdfItem)
+	http.HandleFunc("/addpdf-file", handleAddPdfFile)
+	http.HandleFunc("/uploadpdf-item", handleUploadPdfItem)
+	http.HandleFunc("/uploadpdf-file", handleUploadPdfFile)
+	http.HandleFunc("/uploadpdf-checkdata", handleUploadPdfCheckData)
+	http.HandleFunc("/addpdf-success", handleAddPdfSuccess)
+	http.HandleFunc("/editpdf", handleEditPdf)
+	http.HandleFunc("/editpdf-submit", handleEditPdfSubmit)
+	http.HandleFunc("/editpdf-success", handleEditPdfSuccess)
+
 	// hwp
 	http.HandleFunc("/addhwp", handleAddHwp)
 	http.HandleFunc("/addhwp-item", handleAddHwpItem)
