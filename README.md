@@ -68,8 +68,8 @@ $ sudo dotori -http :80
 
 - [인증서 만드는 방법](documents/how_to_make_certification.md)
 
-### RestAPI
-Dotori는 restAPI를 지원합니다. Python, Go, Java, Javascript, node.JS, C++, C, C# 등 수많은 언어를 통해 Dotori를 이용할 수 있습니다.
+### REST API
+Dotori는 REST API를 지원합니다. Python, Go, Java, Javascript, node.JS, C++, C, C# 등 수많은 언어를 통해 Dotori를 이용할 수 있습니다.
 아래는 Dotori restAPI reference 문서입니다.
 - [item](documents/restapi_item.md)
 - [admin setting](documents/restapi_adminsetting.md)
