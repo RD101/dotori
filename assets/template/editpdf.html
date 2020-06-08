@@ -1,0 +1,88 @@
+{{define "editpdf"}}
+{{template "head"}}
+<body>
+{{template "navbar" .}}
+<form action="/editpdf-submit" method="post">
+    <input type="hidden" id="id" name="id" value="{{.ID.Hex}}">
+    <input type="hidden" id="itemtype" name="itemtype" value="{{.ItemType}}">
+    <div class="container p-5">
+        <div class="col-lg-6 col-md-8 col-sm-12 mx-auto">
+            <div class="pt-3 pb-3">
+                <h2 class="section-heading text-muted">Edit Pdf Details</h2>
+            </div>
+            <div class="row">
+                <div class="col-sm">
+                    <div class="form-group">
+                        <label class="text-muted">Author</label>
+                        <input type="text" id="author" name="author" class="form-control" placeholder="에셋 제작자 이름" value="{{.Author}}">
+                        <small class="form-text text-muted">에셋 제작자 이름을 적어주세요.</small>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm">
+                    <div class="form-group">
+                        <label class="text-muted">Description</label>
+                        <textarea id="description" name="description" class="form-control" rows="5">{{.Description}}</textarea>
+                        <small class="form-text text-muted">에셋 사용시 참고해야할 사항</small>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm">
+                    <div class="form-group">
+                        <label class="text-muted">Tags</label>
+                        <input type="text" id="tags" name="tags" class="form-control" placeholder="자동차 하늘" value="{{Tags2str .Tags}}">
+                        <small class="form-text text-muted">태그를 입력하세요. 태그는 띄어쓰기로 구분합니다.</small>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm">
+                    <div class="form-group">
+                        <label class="text-muted">Attributes</label>
+                        <div id="attributes">
+                            {{$index := 0}}
+                            {{range $key, $value := .Attributes}}
+                                <div class="row mb-2">
+                                    <div class="col">
+                                        <div class="form-group p-0 m-0">
+                                            <input type="text" class="form-control" placeholder="key" value="{{$key}}" id="key{{$index}}" name="key{{$index}}">
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group p-0 m-0">
+                                            <input type="text" class="form-control" placeholder="value" value="{{$value}}" id="value{{$index}}" name="value{{$index}}">
+                                        </div>			
+                                    </div>
+                                </div>
+                                {{$index = add $index 1}}
+                            {{end}}
+                        </div>
+                        <div class="row">
+                            <input type="hidden" id="attributesNum" name="attributesNum" value="{{$index}}">
+                            <div class="col">
+                                <small class="form-text text-muted float-right">필요시 속성을 추가해 주세요.</small>
+                                <br>
+                                <span class="add float-right" onclick="addAttribute();">+</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        <div class="text-center pt-5">
+            <button type="submit" class="btn btn-outline-warning mt-5">Update</button>
+        </div>
+    </div>
+</form>
+{{template "footer"}}
+</body>
+<!--add javascript-->
+<script src="/assets/js/jquery-3.1.1.min.js"></script>
+<script src="/assets/bootstrap-4/js/bootstrap.min.js"></script>
+<script src="/assets/js/dropzone.js"></script>
+<script src="/assets/js/dotori.js"></script>
+</html>
+{{end}}
