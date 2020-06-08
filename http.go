@@ -154,6 +154,18 @@ func webserver() {
 	http.HandleFunc("/editsound-submit", handleEditSoundSubmit)
 	http.HandleFunc("/editsound-success", handleEditSoundSuccess)
 
+	// hwp
+	http.HandleFunc("/addhwp", handleAddHwp)
+	http.HandleFunc("/addhwp-item", handleAddHwpItem)
+	http.HandleFunc("/addhwp-file", handleAddHwpFile)
+	http.HandleFunc("/uploadhwp-item", handleUploadHwpItem)
+	http.HandleFunc("/uploadhwp-file", handleUploadHwpFile)
+	http.HandleFunc("/uploadhwp-checkdata", handleUploadHwpCheckData)
+	http.HandleFunc("/addhwp-success", handleAddHwpSuccess)
+	http.HandleFunc("/edithwp", handleEditHwp)
+	http.HandleFunc("/edithwp-submit", handleEditHwpSubmit)
+	http.HandleFunc("/edithwp-success", handleEditHwpSuccess)
+
 	// Admin
 	http.HandleFunc("/adminsetting", handleAdminSetting)
 	http.HandleFunc("/adminsetting-submit", handleAdminSettingSubmit)
