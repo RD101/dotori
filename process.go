@@ -2,7 +2,9 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
@@ -85,7 +87,16 @@ func processingItem() {
 			return
 		}
 	case "footage": // Footage 소스, 시퀀스
-		return
+		err = ProcessFootageItem(client, adminSetting, item)
+		if err != nil {
+			log.Println(err)
+			err = SetLog(client, item.ID.Hex(), err.Error())
+			if err != nil {
+				log.Println(err)
+				return
+			}
+			return
+		}
 	case "nuke": // 뉴크파일
 		return
 	case "usd": // Pixar USD
@@ -273,6 +284,132 @@ func ProcessMayaItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 	if err != nil {
 		return err
 	}
+	err = SetStatus(client, item, "done")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// ProcessFootageItem 함수는 footage 아이템을 연산한다.
+func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item Item) error {
+	// thumbnail 폴더를 생성한다.
+	err := SetStatus(client, item, "creatingthumbdir")
+	if err != nil {
+		return err
+	}
+	err = genThumbDir(adminSetting, item)
+	if err != nil {
+		// 상태를 error로 바꾼다.
+		err = SetStatus(client, item, "error")
+		if err != nil {
+			return err
+		}
+		// 에러 내용을 로그로 남긴다.
+		err = SetLog(client, item.ID.Hex(), err.Error())
+		if err != nil {
+			return err
+		}
+		return err
+	}
+	err = SetStatus(client, item, "createdthumbdir")
+	if err != nil {
+		return err
+	}
+	// 썸네일 이미지를 생성한다.
+	err = SetStatus(client, item, "creatingthumbimg")
+	if err != nil {
+		return err
+	}
+	err = genThumbFootage(adminSetting, item)
+	if err != nil {
+		// 상태를 error로 바꾼다.
+		err = SetStatus(client, item, "error")
+		if err != nil {
+			return err
+		}
+		// 에러 내용을 로그로 남긴다.
+		err = SetLog(client, item.ID.Hex(), err.Error())
+		if err != nil {
+			return err
+		}
+		return err
+	}
+	err = SetStatus(client, item, "createdthumbimg")
+	if err != nil {
+		return err
+	}
+	/*
+		// .ogg 썸네일 동영상을 생성한다.
+		err = SetStatus(client, item, "creatingoggcontainer")
+		if err != nil {
+			return err
+		}
+		err = genThumbOggContainer(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+		if err != nil {
+			// 상태를 error로 바꾼다.
+			err = SetStatus(client, item, "error")
+			if err != nil {
+				return err
+			}
+			// 에러 내용을 로그로 남긴다.
+			err = SetLog(client, item.ID.Hex(), err.Error())
+			if err != nil {
+				return err
+			}
+			return err
+		}
+		err = SetStatus(client, item, "createdoggcontainer")
+		if err != nil {
+			return err
+		}
+		// .mov 썸네일 동영상을 생성한다.
+		err = SetStatus(client, item, "creatingmovcontainer")
+		if err != nil {
+			return err
+		}
+		err = genThumbMovContainer(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+		if err != nil {
+			// 상태를 error로 바꾼다.
+			err = SetStatus(client, item, "error")
+			if err != nil {
+				return err
+			}
+			// 에러 내용을 로그로 남긴다.
+			err = SetLog(client, item.ID.Hex(), err.Error())
+			if err != nil {
+				return err
+			}
+			return err
+		}
+		err = SetStatus(client, item, "createdmovcontainer")
+		if err != nil {
+			return err
+		}
+		// .mp4 썸네일 동영상을 생성한다.
+		err = SetStatus(client, item, "creatingmp4container")
+		if err != nil {
+			return err
+		}
+		err = genThumbMp4Container(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+		if err != nil {
+			// 상태를 error로 바꾼다.
+			err = SetStatus(client, item, "error")
+			if err != nil {
+				return err
+			}
+			// 에러 내용을 로그로 남긴다.
+			err = SetLog(client, item.ID.Hex(), err.Error())
+			if err != nil {
+				return err
+			}
+			return err
+		}
+		err = SetStatus(client, item, "createdmp4container")
+		if err != nil {
+			return err
+		}
+	*/
 	err = SetStatus(client, item, "done")
 	if err != nil {
 		return err
@@ -660,6 +797,47 @@ func genThumbImage(adminSetting Adminsetting, item Item) error {
 	result := imaging.Fill(target, adminSetting.ThumbnailImageWidth, adminSetting.ThumbnailImageHeight, imaging.Center, imaging.Lanczos)
 	//생성한 경로에 연산된 이미지 저장
 	err = imaging.Save(result, item.OutputThumbnailPngPath)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// genThumbFootage 함수는 Footage 아이템정보를 이용하여 oiiotool 명령어로 썸네일 이미지를 만든다.
+func genThumbFootage(adminSetting Adminsetting, item Item) error {
+	// 변환할 이미지를 한프레임 가지고온다.
+	path := item.OutputDataPath
+	files, err := ioutil.ReadDir(path)
+	if err != nil {
+		return err
+	}
+	input := ""
+	// 연산할 파일을 하나 구한다.
+	switch len(files) {
+	case 0: // 파일이 없을 때
+		return errors.New("no files")
+	case 1: // 파일이 한개일 때
+		input = files[0].Name()
+	default: // 중간프레임 파일명을 구한다.
+		input = files[len(files)/2].Name()
+	}
+	args := []string{
+		path + "/" + input,
+		"--colorconvert",
+		item.InColorspace,
+		item.OutColorspace,
+		"--fit",
+		fmt.Sprintf("%dx%d", adminSetting.ThumbnailImageWidth, adminSetting.ThumbnailImageHeight),
+		"-o",
+		item.OutputThumbnailPngPath,
+	}
+	// OIIO 이미지 연산을 위해 OCIO 환경변수를 설정한다.
+	_, err = os.Stat(adminSetting.OCIOConfig)
+	if os.IsNotExist(err) {
+		return errors.New("admin 셋팅에서 OCIOConfig 값을 설정해주세요")
+	}
+	os.Setenv("OCIO", adminSetting.OCIOConfig)
+	err = exec.Command(adminSetting.OpenImageIO, args...).Run()
 	if err != nil {
 		return err
 	}
