@@ -125,8 +125,8 @@ func handleUploadFootageItem(w http.ResponseWriter, r *http.Request) {
 	item.Logs = append(item.Logs, "아이템이 생성되었습니다.")
 	currentTime := time.Now()
 	item.CreateTime = currentTime.Format("2006-01-02 15:04:05")
-	item.ThumbImgUploaded = true  // footage 데이터는 이미지 썸네일 정보를 담고 있다.
-	item.ThumbClipUploaded = true // footage 데이터를 이용해서 썸네일 클립을 만들 수 있다.
+	item.ThumbImgUploaded = false
+	item.ThumbClipUploaded = false
 	item.DataUploaded = false
 
 	//mongoDB client 연결
