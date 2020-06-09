@@ -300,7 +300,7 @@ func ProcessMayaItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 	return nil
 }
 
-// ProcessHoudiniItem 함수는 maya 아이템을 연산한다.
+// ProcessHoudiniItem 함수는 houdini 아이템을 연산한다.
 func ProcessHoudiniItem(client *mongo.Client, adminSetting Adminsetting, item Item) error {
 	// thumbnail 폴더를 생성한다.
 	err := SetStatus(client, item, "creatingthumbdir")
