@@ -29,6 +29,7 @@ var funcMap = template.FuncMap{
 	"PreviousPage": PreviousPage,
 	"NextPage":     NextPage,
 	"RmRootpath":   RmRootpath,
+	"LastLog":      LastLog,
 }
 
 func webserver() {
@@ -111,13 +112,29 @@ func webserver() {
 	http.HandleFunc("/edithoudini-submit", handleEditHoudiniSubmit)
 	http.HandleFunc("/edithoudini-success", handleEditHoudiniSuccess)
 
-	// Alembic
-	http.HandleFunc("/addalembic", handleAddAlembic)
-	http.HandleFunc("/addalembic-process", handleAddAlembicProcess)
-	http.HandleFunc("/upload-alembic", handleUploadAlembic)
-
 	// Blender
 	http.HandleFunc("/addblender", handleAddBlender)
+	http.HandleFunc("/addblender-item", handleAddBlenderItem)
+	http.HandleFunc("/addblender-file", handleAddBlenderFile)
+	http.HandleFunc("/uploadblender-item", handleUploadBlenderItem)
+	http.HandleFunc("/uploadblender-file", handleUploadBlenderFile)
+	http.HandleFunc("/uploadblender-checkdata", handleUploadBlenderCheckData)
+	http.HandleFunc("/addblender-success", handleAddBlenderSuccess)
+	http.HandleFunc("/editblender", handleEditBlender)
+	http.HandleFunc("/editblender-submit", handleEditBlenderSubmit)
+	http.HandleFunc("/editblender-success", handleEditBlenderSuccess)
+
+	// Alembic
+	http.HandleFunc("/addalembic", handleAddAlembic)
+	http.HandleFunc("/addalembic-item", handleAddAlembicItem)
+	http.HandleFunc("/addalembic-file", handleAddAlembicFile)
+	http.HandleFunc("/uploadalembic-item", handleUploadAlembicItem)
+	http.HandleFunc("/uploadalembic-file", handleUploadAlembicFile)
+	http.HandleFunc("/uploadalembic-checkdata", handleUploadAlembicCheckData)
+	http.HandleFunc("/addalembic-success", handleAddAlembicSuccess)
+	http.HandleFunc("/editalembic", handleEditAlembic)
+	http.HandleFunc("/editalembic-submit", handleEditAlembicSubmit)
+	http.HandleFunc("/editalembic-success", handleEditAlembicSuccess)
 
 	// PixarUSD
 	http.HandleFunc("/addusd", handleAddUSD)
@@ -142,6 +159,30 @@ func webserver() {
 	http.HandleFunc("/editsound", handleEditSound)
 	http.HandleFunc("/editsound-submit", handleEditSoundSubmit)
 	http.HandleFunc("/editsound-success", handleEditSoundSuccess)
+
+	// pdf
+	http.HandleFunc("/addpdf", handleAddPdf)
+	http.HandleFunc("/addpdf-item", handleAddPdfItem)
+	http.HandleFunc("/addpdf-file", handleAddPdfFile)
+	http.HandleFunc("/uploadpdf-item", handleUploadPdfItem)
+	http.HandleFunc("/uploadpdf-file", handleUploadPdfFile)
+	http.HandleFunc("/uploadpdf-checkdata", handleUploadPdfCheckData)
+	http.HandleFunc("/addpdf-success", handleAddPdfSuccess)
+	http.HandleFunc("/editpdf", handleEditPdf)
+	http.HandleFunc("/editpdf-submit", handleEditPdfSubmit)
+	http.HandleFunc("/editpdf-success", handleEditPdfSuccess)
+
+	// hwp
+	http.HandleFunc("/addhwp", handleAddHwp)
+	http.HandleFunc("/addhwp-item", handleAddHwpItem)
+	http.HandleFunc("/addhwp-file", handleAddHwpFile)
+	http.HandleFunc("/uploadhwp-item", handleUploadHwpItem)
+	http.HandleFunc("/uploadhwp-file", handleUploadHwpFile)
+	http.HandleFunc("/uploadhwp-checkdata", handleUploadHwpCheckData)
+	http.HandleFunc("/addhwp-success", handleAddHwpSuccess)
+	http.HandleFunc("/edithwp", handleEditHwp)
+	http.HandleFunc("/edithwp-submit", handleEditHwpSubmit)
+	http.HandleFunc("/edithwp-success", handleEditHwpSuccess)
 
 	// Admin
 	http.HandleFunc("/adminsetting", handleAdminSetting)

@@ -314,7 +314,7 @@ func handleUploadSoundFile(w http.ResponseWriter, r *http.Request) {
 			switch mimeType {
 			// 허용하는 audio file format: mp3, wav, m4a, amr, au, flac, midi, ra, wma
 			// chrome에서는 'audio/x-ms-wma'가 'video/x-ms-wma'로 뜬다
-			case "audio/mp3", "audio/wav", "audio/x-m4a", "audio/amr", "audio/basic", "audio/flac", "audio/midi", "audio/vnd.rn-realaudio", "audio/x-ms-wma", "video/x-ms-wma", "audio/ac3":
+			case "audio/mp3", "audio/wav": //, "audio/x-m4a", "audio/amr", "audio/basic", "audio/flac", "audio/midi", "audio/vnd.rn-realaudio", "audio/x-ms-wma", "video/x-ms-wma", "audio/ac3":
 				data, err := ioutil.ReadAll(file)
 				if err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)

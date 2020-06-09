@@ -98,3 +98,14 @@ function addPageBlankCheck(){
     }
     return true;
 }
+
+// toggoleItems는 상단의 체크박스를 클릭하면 작동하는 함수로, 모든 체크박스를 선택 혹은 선택해제 한다.
+function toggleItems(){
+    // 기준이 되는 체크박스의 상태값을 가지고 온다.
+    let status = document.getElementById("toggle-checkbox").checked
+    // 가져온 상태값을 기준으로 모든 체크박스의 상태를 설정한다.
+    let checkboxes = document.querySelectorAll('*[name^="checkbox"]');
+    for (i=0;i<checkboxes.length;i++) {
+        checkboxes[i].checked = status
+    }
+}

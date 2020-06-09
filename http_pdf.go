@@ -6,8 +6,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"path"
-	"path/filepath"
 	"strconv"
 	"time"
 
@@ -18,19 +16,19 @@ import (
 	"golang.org/x/sys/unix"
 )
 
-// handleAddMaya 함수는 URL에 objectID를 붙여서 /addmaya-item 페이지로 redirect한다.
-func handleAddMaya(w http.ResponseWriter, r *http.Request) {
+// handleAddPdf 함수는 URL에 objectID를 붙여서 /addpdf-item 페이지로 redirect한다.
+func handleAddPdf(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
 		return
 	}
 	objectID := primitive.NewObjectID().Hex()
-	http.Redirect(w, r, fmt.Sprintf("/addmaya-item?objectid=%s", objectID), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/addpdf-item?objectid=%s", objectID), http.StatusSeeOther)
 }
 
-// handleAddMayaItem 함수는 DB에 저장할 Maya 파일의 정보를 입력하는 페이지 이다.
-func handleAddMayaItem(w http.ResponseWriter, r *http.Request) {
+// handleAddPdfItem 함수는 DB에 저장할 pdf 파일의 정보를 입력하는 페이지 이다.
+func handleAddPdfItem(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -68,15 +66,15 @@ func handleAddMayaItem(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Adminsetting = adminsetting
 	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "addmaya-item", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "addpdf-item", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
 
-// handleUploadMayaItem 함수는 /addmaya-item에서 입력한 정보를 DB에 저장하는 함수이다.
-func handleUploadMayaItem(w http.ResponseWriter, r *http.Request) {
+// handleUploadPdfItem 함수는 /addpdf-item에서 입력한 정보를 DB에 저장하는 함수이다.
+func handleUploadPdfItem(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -97,7 +95,7 @@ func handleUploadMayaItem(w http.ResponseWriter, r *http.Request) {
 	item.Description = r.FormValue("description")
 	tags := SplitBySpace(r.FormValue("tag"))
 	item.Tags = tags
-	item.ItemType = "maya"
+	item.ItemType = "pdf"
 	attr := make(map[string]string)
 	attrNum, err := strconv.Atoi(r.FormValue("attributesNum"))
 	if err != nil {
@@ -166,17 +164,17 @@ func handleUploadMayaItem(w http.ResponseWriter, r *http.Request) {
 	err = AddItem(client, item)
 	if err != nil {
 		if IsDup(err) { // 동일한 ID의 도큐먼트를 업로드하려고 하면, 새로운 ID의 페이지로 리다이렉트한다.
-			http.Redirect(w, r, "/addmaya", http.StatusSeeOther)
+			http.Redirect(w, r, "/addpdf", http.StatusSeeOther)
 			return
 		}
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	http.Redirect(w, r, fmt.Sprintf("/addmaya-file?objectid=%s", objectID), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/addpdf-file?objectid=%s", objectID), http.StatusSeeOther)
 }
 
-// handleAddMayaFile 함수는 Maya 파일을 추가하는 페이지 이다.
-func handleAddMayaFile(w http.ResponseWriter, r *http.Request) {
+// handleAddPdfFile 함수는 Pdf 파일을 추가하는 페이지 이다.
+func handleAddPdfFile(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -214,15 +212,15 @@ func handleAddMayaFile(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Adminsetting = adminsetting
 	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "addmaya-file", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "addpdf-file", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
 
-// handleUploadMaya 함수는 Maya파일을 DB에 업로드하는 페이지를 연다. dropzone에 파일을 올릴 경우 실행된다.
-func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
+// handleUploadPdf 함수는 Pdf파일을 DB에 업로드하는 페이지를 연다. dropzone에 파일을 올릴 경우 실행된다.
+func handleUploadPdfFile(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -319,77 +317,9 @@ func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
 			defer file.Close()
 			unix.Umask(umask)
 			mimeType := f.Header.Get("Content-Type")
+			fmt.Println(mimeType)
 			switch mimeType {
-			case "image/jpeg", "image/png":
-				data, err := ioutil.ReadAll(file)
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				path, filename := path.Split(item.InputThumbnailImgPath)
-				if filename != "" { // 썸네일 이미지가 이미 존재하는 경우, 지우고 경로를 새로 지정한다.
-					err = os.Remove(item.InputThumbnailImgPath)
-					if err != nil {
-						http.Error(w, err.Error(), http.StatusInternalServerError)
-						return
-					}
-					item.InputThumbnailImgPath = path
-				}
-				err = os.MkdirAll(path, os.FileMode(folderPerm))
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				err = os.Chown(path, uid, gid)
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				err = ioutil.WriteFile(path+f.Filename, data, os.FileMode(filePerm))
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				item.InputThumbnailImgPath = path + f.Filename
-				item.ThumbImgUploaded = true
-			case "video/quicktime", "video/mp4", "video/ogg", "application/ogg":
-				data, err := ioutil.ReadAll(file)
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				path, filename := path.Split(item.InputThumbnailClipPath)
-				if filename != "" { // 썸네일 클립이 이미 존재하는 경우, 지우고 경로를 새로 지정한다.
-					err = os.Remove(item.InputThumbnailClipPath)
-					if err != nil {
-						http.Error(w, err.Error(), http.StatusInternalServerError)
-						return
-					}
-					item.InputThumbnailClipPath = path
-				}
-				err = os.MkdirAll(path, os.FileMode(folderPerm))
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				err = os.Chown(path, uid, gid)
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				err = ioutil.WriteFile(path+f.Filename, data, os.FileMode(filePerm))
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				item.InputThumbnailClipPath = path + f.Filename
-				item.ThumbClipUploaded = true
-			case "application/octet-stream":
-				ext := filepath.Ext(f.Filename)
-				if ext != ".mb" && ext != ".ma" { // .ma .mb 외에는 허용하지 않는다.
-					http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
-					return
-				}
+			case "application/pdf":
 				data, err := ioutil.ReadAll(file)
 				if err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -454,25 +384,14 @@ func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
-	if item.ThumbImgUploaded && item.ThumbClipUploaded && item.DataUploaded {
+	if item.DataUploaded {
 		item.Status = "fileuploaded"
 	}
 	UpdateItem(client, item)
 }
 
-func handleUploadMayaCheckData(w http.ResponseWriter, r *http.Request) {
-	token, err := GetTokenFromHeader(w, r)
-	if err != nil {
-		http.Redirect(w, r, "/signin", http.StatusSeeOther)
-		return
-	}
-	type recipe struct {
-		Token
-		Adminsetting Adminsetting
-		Item         Item
-	}
-	rcp := recipe{}
-	rcp.Token = token
+// handleUploadPdfCheckData 함수는 필요한 파일들을 모두 업로드했는지 체크하고, /addpdf-success 페이지로 redirect한다.
+func handleUploadPdfCheckData(w http.ResponseWriter, r *http.Request) {
 	// objectID로 item을 가져온다.
 	objectID, err := GetObjectIDfromRequestHeader(r)
 	if err != nil {
@@ -498,32 +417,21 @@ func handleUploadMayaCheckData(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	//rcp에 adminsetting 추가
-	adminsetting, err := GetAdminSetting(client)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	rcp.Adminsetting = adminsetting
-	//rcp에 item 추가
 	item, err := GetItem(client, objectID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	rcp.Item = item
-	if !item.ThumbImgUploaded || !item.ThumbClipUploaded || !item.DataUploaded {
-		err = TEMPLATES.ExecuteTemplate(w, "checkmaya-file", rcp)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
+	// Pdf파일이 있는지 체크
+	if !item.DataUploaded {
+		http.Error(w, "pdf 파일을 업로드해주세요", http.StatusBadRequest)
 		return
 	}
-	http.Redirect(w, r, "/addmaya-success", http.StatusSeeOther)
+	// addpdf-success 페이지로 연결
+	http.Redirect(w, r, "/addpdf-success", http.StatusSeeOther)
 }
 
-func handleAddMayaSuccess(w http.ResponseWriter, r *http.Request) {
+func handleAddPdfSuccess(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -561,14 +469,14 @@ func handleAddMayaSuccess(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Adminsetting = adminsetting
 	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "addmaya-success", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "addpdf-success", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
 
-func handleEditMaya(w http.ResponseWriter, r *http.Request) {
+func handleEditPdf(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -637,15 +545,15 @@ func handleEditMaya(w http.ResponseWriter, r *http.Request) {
 		Adminsetting: adminsetting,
 	}
 
-	err = TEMPLATES.ExecuteTemplate(w, "editmaya", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "editpdf", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
 
-//handleEditMayaSubmit 함수는 maya아이템을 수정하는 페이지에서 UPDATE버튼을 누르면 작동하는 함수다.
-func handleEditMayaSubmit(w http.ResponseWriter, r *http.Request) {
+//handleEditPdfSubmit 함수는 pdf아이템을 수정하는 페이지에서 UPDATE버튼을 누르면 작동하는 함수다.
+func handleEditPdfSubmit(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -699,11 +607,10 @@ func handleEditMayaSubmit(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	http.Redirect(w, r, "/editmaya-success", http.StatusSeeOther)
+	http.Redirect(w, r, "/editpdf-success", http.StatusSeeOther)
 }
 
-//handleEditMayaSuccess 함수는 maya아이템 수정이 정상적으로 완료되었다고 안내하는 페이지를 띄우는 함수이다.
-func handleEditMayaSuccess(w http.ResponseWriter, r *http.Request) {
+func handleEditPdfSuccess(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -741,7 +648,7 @@ func handleEditMayaSuccess(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Adminsetting = adminsetting
 	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "editmaya-success", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "editpdf-success", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

@@ -36,22 +36,23 @@
                         <div class="col-sm-6 col-md-6 col-lg-4">
                             {{.ID.Hex}}
                         </div>
-                        <div class="col-sm-3 col-md-2 col-lg-1 my-auto">
-                            <span class="badge badge-success">
-                                {{.Status}}
-                            </span>
-                        </div>
-                        <div class="col-sm-9 col-md-10 col-lg-4 my-auto">
+                        <div class="col-sm-12 col-md-12 col-lg-5 my-auto">
                             <div class="progress">
-                                <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 10%" aria-valuenow="3" aria-valuemin="1" aria-valuemax="7"></div>
+                                {{if eq .Status "error"}}
+                                    <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="10" aria-valuemin="1" aria-valuemax="10">
+                                        {{.Status}} - {{LastLog .Logs}}
+                                    </div>
+                                {{else}}
+                                    <div class="progress-bar progress-bar-animated progress-bar-striped bg-success" role="progressbar" style="width: 100%" aria-valuenow="10" aria-valuemin="1" aria-valuemax="10">
+                                        {{.Status}} - {{LastLog .Logs}}
+                                    </div>
+                                {{end}}
                             </div>
                         </div>
-                        
                     </div>
                     <div>
                         <hr class="my-1 p-0 m-0 divider">
                     </div>
-                    
                 {{$index = add $index 1}}
             {{end}}
         </div>

@@ -24,3 +24,11 @@ func add(a, b int) int {
 func RmRootpath(path, rootpath string) string {
 	return strings.TrimLeft(path, rootpath)
 }
+
+// LastLog 함수는 마지막 로그를 반환한다.
+func LastLog(logs []string) string {
+	if len(logs) == 0 {
+		return ""
+	}
+	return logs[len(logs)-1]
+}
