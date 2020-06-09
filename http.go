@@ -103,8 +103,14 @@ func webserver() {
 
 	// Houdini
 	http.HandleFunc("/addhoudini", handleAddHoudini)
-	http.HandleFunc("/addhoudini-process", handleAddHoudiniProcess)
-	http.HandleFunc("/upload-houdini", handleUploadHoudini)
+	http.HandleFunc("/addhoudini-item", handleAddHoudiniItem)
+	http.HandleFunc("/addhoudini-file", handleAddHoudiniFile)
+	http.HandleFunc("/uploadhoudini-item", handleUploadHoudiniItem)
+	http.HandleFunc("/uploadhoudini-file", handleUploadHoudiniFile)
+	http.HandleFunc("/uploadhoudini-checkdata", handleUploadHoudiniCheckData)
+	http.HandleFunc("/edithoudini", handleEditHoudini)
+	http.HandleFunc("/edithoudini-submit", handleEditHoudiniSubmit)
+	http.HandleFunc("/edithoudini-success", handleEditHoudiniSuccess)
 
 	// Blender
 	http.HandleFunc("/addblender", handleAddBlender)
