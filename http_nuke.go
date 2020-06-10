@@ -474,9 +474,9 @@ func handleUploadNukeCheckData(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "썸네일클립을 업로드해주세요", http.StatusBadRequest)
 		return
 	}
-	// 마야파일이 있는지 체크
+	// 누크파일이 있는지 체크
 	if !item.DataUploaded {
-		http.Error(w, "마야 파일을 업로드해주세요", http.StatusBadRequest)
+		http.Error(w, "누크 파일을 업로드해주세요", http.StatusBadRequest)
 		return
 	}
 	// addnuke-success 페이지로 연결
