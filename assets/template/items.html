@@ -4,11 +4,19 @@
             {{$itemtype := .ItemType}}
             <div class="col-sm-4 text-center">
                 <div class="thumbnail">
+                    {{if eq .ItemType "pdf"}}
+                    <img width="320" height="180" src="/assets/img/pdfthumbnail.svg" alt="/assets/img/noimage.svg">
+                    {{else if eq .ItemType "hwp"}}
+                    <img width="320" height="180" src="/assets/img/hwpthumbnail.svg" alt="/assets/img/noimage.svg">
+                    {{else if eq .ItemType "sound"}}
+                    <img width="320" height="180" src="/assets/img/soundthumbnail.svg" alt="/assets/img/noimage.svg">
+                    {{else}}
                     <video width="320" height="180" controls poster="{{if eq .Status "done" }}/storage/{{RmRootpath .OutputThumbnailPngPath $.Adminsetting.Rootpath}}{{else}}/assets/img/noimage.svg{{end}}">
                         <source src="/storage/{{RmRootpath .OutputThumbnailMp4Path $.Adminsetting.Rootpath}}" type="video/mp4">
                         <source src="/storage/{{RmRootpath .OutputThumbnailOggPath $.Adminsetting.Rootpath}}" type="video/ogg">
                         Your browser does not support the video tag.
                     </video>
+                    {{end}}
                 </div>
                 <div class="info mb-3">
                     <div>
