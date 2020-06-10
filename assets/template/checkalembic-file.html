@@ -1,0 +1,67 @@
+{{define "checkalembic-file"}}
+{{template "head"}}
+<body>
+<div class="container p-5">
+    <div class="col-lg-6 col-md-6 col-sm-12 mx-auto">
+        <div class="pt-3 pb-5">
+            <h2 class="text-center section-heading text-muted">Need More File</h2>
+        </div>
+        <div class="pb-5">
+            <h4 class="text-center text-muted">
+                아래 파일을 업로드 해주세요
+            </h4>
+        </div>
+        <div class="text-muted text-center">
+            <label style="width : 100%">
+                <div class="row">
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                        thumbnail<br>
+                        image
+                    </div>
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                        thumbnail<br>
+                        clip
+                    </div>
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                        data
+                    </div>
+                </div>
+                <div class="row py-3">
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                        {{if .Item.ThumbImgUploaded}}
+                        <span class="badge badge-pill badge-success">O</span>
+                        {{else}}
+                        <span class="badge badge-pill badge-secondary">X</span>
+                        {{end}}
+                    </div>
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                        {{if .Item.ThumbClipUploaded}}
+                        <span class="badge badge-pill badge-success">O</span>
+                        {{else}}
+                        <span class="badge badge-pill badge-secondary">X</span>
+                        {{end}}
+                    </div>
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                        {{if .Item.DataUploaded}}
+                        <span class="badge badge-pill badge-success">O</span>
+                        {{else}}
+                        <span class="badge badge-pill badge-secondary">X</span>
+                        {{end}}
+                    </div>
+                </div>
+            </label>
+        </div>
+        <div class="text-center">
+            <button class="btn btn-darkmode mt-5" onclick="history.back(-1);">업로드하러 가기</button>
+        </div>
+    </div>
+</div>
+{{template "footer"}}
+</body>
+<!--add javascript-->
+<script src="/assets/js/jquery-3.1.1.min.js"></script>
+<script src="/assets/bootstrap-4/js/bootstrap.min.js"></script>
+<script src="/assets/js/dropzone.js"></script>
+<script src="/assets/js/dotori.js"></script>
+</html>
+{{end}}
