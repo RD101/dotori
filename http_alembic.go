@@ -460,6 +460,18 @@ func handleUploadAlembicFile(w http.ResponseWriter, r *http.Request) {
 
 // handleUploadAlembicCheckData 함수는 필요한 파일(썸네일, data 파일 등)을 추가했는지 체크한다.
 func handleUploadAlembicCheckData(w http.ResponseWriter, r *http.Request) {
+	token, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
+	type recipe struct {
+		Token
+		Adminsetting Adminsetting
+		Item         Item
+	}
+	rcp := recipe{}
+	rcp.Token = token
 	// objectID로 item을 가져온다.
 	objectID, err := GetObjectIDfromRequestHeader(r)
 	if err != nil {
@@ -485,27 +497,28 @@ func handleUploadAlembicCheckData(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	//rcp에 adminsetting 추가
+	adminsetting, err := GetAdminSetting(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp.Adminsetting = adminsetting
+	//rcp에 item 추가
 	item, err := GetItem(client, objectID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	// 썸네일이미지가 있는지 체크
-	if !item.ThumbImgUploaded {
-		http.Error(w, "썸네일이미지를 업로드해주세요", http.StatusBadRequest)
+	rcp.Item = item
+	if !item.ThumbImgUploaded || !item.ThumbClipUploaded || !item.DataUploaded {
+		err = TEMPLATES.ExecuteTemplate(w, "checkalembic-file", rcp)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 		return
 	}
-	// 썸네일클립이 있는지 체크
-	if !item.ThumbClipUploaded {
-		http.Error(w, "썸네일클립을 업로드해주세요", http.StatusBadRequest)
-		return
-	}
-	// alembic 파일이 있는지 체크
-	if !item.DataUploaded {
-		http.Error(w, "alembic 파일을 업로드해주세요", http.StatusBadRequest)
-		return
-	}
-	// addalembic-success 페이지로 연결
 	http.Redirect(w, r, "/addalembic-success", http.StatusSeeOther)
 }
 

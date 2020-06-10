@@ -391,6 +391,18 @@ func handleUploadPdfFile(w http.ResponseWriter, r *http.Request) {
 
 // handleUploadPdfCheckData 함수는 필요한 파일들을 모두 업로드했는지 체크하고, /addpdf-success 페이지로 redirect한다.
 func handleUploadPdfCheckData(w http.ResponseWriter, r *http.Request) {
+	token, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
+	type recipe struct {
+		Token
+		Adminsetting Adminsetting
+		Item         Item
+	}
+	rcp := recipe{}
+	rcp.Token = token
 	// objectID로 item을 가져온다.
 	objectID, err := GetObjectIDfromRequestHeader(r)
 	if err != nil {
@@ -416,17 +428,28 @@ func handleUploadPdfCheckData(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	//rcp에 adminsetting 추가
+	adminsetting, err := GetAdminSetting(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp.Adminsetting = adminsetting
+	//rcp에 item 추가
 	item, err := GetItem(client, objectID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	// Pdf파일이 있는지 체크
+	rcp.Item = item
 	if !item.DataUploaded {
-		http.Error(w, "pdf 파일을 업로드해주세요", http.StatusBadRequest)
+		err = TEMPLATES.ExecuteTemplate(w, "checkpdf-file", rcp)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 		return
 	}
-	// addpdf-success 페이지로 연결
 	http.Redirect(w, r, "/addpdf-success", http.StatusSeeOther)
 }
 

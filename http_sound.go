@@ -386,6 +386,18 @@ func handleUploadSoundFile(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleUploadSoundCheckData(w http.ResponseWriter, r *http.Request) {
+	token, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
+	type recipe struct {
+		Token
+		Adminsetting Adminsetting
+		Item         Item
+	}
+	rcp := recipe{}
+	rcp.Token = token
 	// objectID로 item을 가져온다.
 	objectID, err := GetObjectIDfromRequestHeader(r)
 	if err != nil {
@@ -411,17 +423,28 @@ func handleUploadSoundCheckData(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	//rcp에 adminsetting 추가
+	adminsetting, err := GetAdminSetting(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp.Adminsetting = adminsetting
+	//rcp에 item 추가
 	item, err := GetItem(client, objectID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	// sound파일이 있는지 체크
+	rcp.Item = item
 	if !item.DataUploaded {
-		http.Error(w, "Sound 파일을 업로드해주세요", http.StatusBadRequest)
+		err = TEMPLATES.ExecuteTemplate(w, "checksound-file", rcp)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 		return
 	}
-	// addsound-success 페이지로 연결
 	http.Redirect(w, r, "/addsound-success", http.StatusSeeOther)
 }
 
