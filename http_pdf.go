@@ -317,7 +317,6 @@ func handleUploadPdfFile(w http.ResponseWriter, r *http.Request) {
 			defer file.Close()
 			unix.Umask(umask)
 			mimeType := f.Header.Get("Content-Type")
-			fmt.Println(mimeType)
 			switch mimeType {
 			case "application/pdf":
 				data, err := ioutil.ReadAll(file)
