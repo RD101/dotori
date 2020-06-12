@@ -85,6 +85,8 @@ func webserver() {
 	http.HandleFunc("/uploadfootage-item", handleUploadFootageItem)
 	http.HandleFunc("/addfootage-file", handleAddFootageFile)
 	http.HandleFunc("/uploadfootage-file", handleUploadFootageFile)
+	http.HandleFunc("/uploadfootage-checkdata", handleUploadFootageCheckData)
+	http.HandleFunc("/addhwpfootage-success", handleAddFootageSuccess)
 	http.HandleFunc("/editfootage", handleEditFootage)
 	http.HandleFunc("/editfootage-submit", handleEditFootageSubmit)
 	http.HandleFunc("/editfootage-success", handleEditFootageSuccess)
