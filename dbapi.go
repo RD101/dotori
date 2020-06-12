@@ -412,7 +412,6 @@ func GetOngoingProcess(client *mongo.Client) ([]Item, error) {
 		// 조건: 프로세스가 종료되지 않은 모든 아이템
 		bson.M{"status": bson.M{"$ne": "done"}},
 	}}
-	//"status": bson.M{"$ne": "done"}
 	cursor, err := client.Database(*flagDBName).Collection("items").Find(ctx, filter)
 	if err != nil {
 		return results, err
