@@ -482,18 +482,34 @@ func GetIncompleteItems(client *mongo.Client) ([]Item, error) {
 	defer cancel()
 
 	filter := bson.M{"$or": []interface{}{
-		// sound를 제외한 itemtype의 조건
+		// sound, pdf, hwp를 제외한 itemtype의 조건
 		bson.M{"$and": []interface{}{
-			bson.M{"itemtype": bson.M{"$ne": "sound"}},
+			// 아이템 타입
+			bson.M{"$or": []interface{}{
+				bson.M{"itemtype": "maya"},
+				bson.M{"itemtype": "nuke"},
+				bson.M{"itemtype": "houdini"},
+				bson.M{"itemtype": "blender"},
+				bson.M{"itemtype": "footage"},
+				bson.M{"itemtype": "alembic"},
+				bson.M{"itemtype": "usd"},
+			}},
+			// 조건
 			bson.M{"$or": []interface{}{
 				bson.M{"thumbimguploaded": false},
 				bson.M{"thumbclipuploaded": false},
 				bson.M{"datauploaded": false},
 			}},
 		}},
-		// sound 타입 아이템의 조건
+		// sound, pdf, hwp 타입 아이템의 조건
 		bson.M{"$and": []interface{}{
-			bson.M{"itemtype": "sound"},
+			// 아이템 타입
+			bson.M{"$or": []interface{}{
+				bson.M{"itemtype": "sound"},
+				bson.M{"itemtype": "pdf"},
+				bson.M{"itemtype": "hwp"},
+			}},
+			// 조건
 			bson.M{"datauploaded": false},
 		}},
 	}}
