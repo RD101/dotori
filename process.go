@@ -1086,10 +1086,10 @@ func genThumbOggContainer(adminSetting Adminsetting, item Item) error {
 		"7",
 		"-vf",
 		fmt.Sprintf("scale=%d:%d,crop=%d:%d:0:0,setsar=1",
-			adminSetting.ThumbnailContainerWidth,
-			adminSetting.ThumbnailContainerHeight,
-			adminSetting.ThumbnailContainerWidth,
-			adminSetting.ThumbnailContainerHeight,
+			adminSetting.ContainerWidth,
+			adminSetting.ContainerHeight,
+			adminSetting.ContainerWidth,
+			adminSetting.ContainerHeight,
 		),
 	}
 	if adminSetting.AudioCodec == "nosound" {
@@ -1123,10 +1123,10 @@ func genThumbMovContainer(adminSetting Adminsetting, item Item) error {
 		"7",
 		"-vf",
 		fmt.Sprintf("scale=%d:%d,crop=%d:%d:0:0,setsar=1",
-			adminSetting.ThumbnailContainerWidth,
-			adminSetting.ThumbnailContainerHeight,
-			adminSetting.ThumbnailContainerWidth,
-			adminSetting.ThumbnailContainerHeight,
+			adminSetting.ContainerWidth,
+			adminSetting.ContainerHeight,
+			adminSetting.ContainerWidth,
+			adminSetting.ContainerHeight,
 		),
 	}
 	if adminSetting.AudioCodec == "nosound" {
@@ -1160,10 +1160,10 @@ func genThumbMp4Container(adminSetting Adminsetting, item Item) error {
 		"7",
 		"-vf",
 		fmt.Sprintf("scale=%d:%d,crop=%d:%d:0:0,setsar=1",
-			adminSetting.ThumbnailContainerWidth,
-			adminSetting.ThumbnailContainerHeight,
-			adminSetting.ThumbnailContainerWidth,
-			adminSetting.ThumbnailContainerHeight,
+			adminSetting.ContainerWidth,
+			adminSetting.ContainerHeight,
+			adminSetting.ContainerWidth,
+			adminSetting.ContainerHeight,
 		),
 	}
 	if adminSetting.AudioCodec == "nosound" {
