@@ -156,16 +156,16 @@
                 <div class="row">
                     <div class="col-sm">
                         <div class="form-group">
-                            <label class="text-muted">썸네일 동영상 Width</label>
-                            <input type="text" name="thumbnailcontainerwidth" class="form-control" placeholder="1280" value="{{if eq .Adminsetting.ThumbnailContainerWidth 0}}1280{{else}}{{.Adminsetting.ThumbnailContainerWidth}}{{end}}" onkeyup=handlerNumCheck(this)>
-                            <small class="form-text text-muted">썸네일 동영상 가로 사이즈를 입력해주세요.</small>
+                            <label class="text-muted">동영상 Width</label>
+                            <input type="text" name="containerwidth" class="form-control" placeholder="1280" value="{{if eq .Adminsetting.ContainerWidth 0}}1280{{else}}{{.Adminsetting.ContainerWidth}}{{end}}" onkeyup=handlerNumCheck(this)>
+                            <small class="form-text text-muted">업로드할 동영상의 가로 사이즈를 입력해주세요.</small>
                         </div>
                     </div>
                     <div class="col-sm">
                         <div class="form-group">
-                            <label class="text-muted">썸네일 동영상 Height</label>
-                            <input type="text" name="thumbnailcontainerheight" class="form-control" placeholder="720" value="{{if eq .Adminsetting.ThumbnailContainerHeight 0}}720{{else}}{{.Adminsetting.ThumbnailContainerHeight}}{{end}}" onkeyup=handlerNumCheck(this)>
-                            <small class="form-text text-muted">썸네일 동영상 세로 사이즈를 입력해주세요.</small>
+                            <label class="text-muted">동영상 Height</label>
+                            <input type="text" name="containerheight" class="form-control" placeholder="720" value="{{if eq .Adminsetting.ContainerHeight 0}}720{{else}}{{.Adminsetting.ContainerHeight}}{{end}}" onkeyup=handlerNumCheck(this)>
+                            <small class="form-text text-muted">업로드할 동영상의 세로 사이즈를 입력해주세요.</small>
                         </div>
                     </div>
                 </div>
