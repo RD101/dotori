@@ -28,8 +28,8 @@ type Adminsetting struct {
 	MultipartFormBufferSize int    `json:"multipartformbuffersize" bson:"multipartformbuffersize"` // MultipartForm Buffersize
 	ThumbnailImageWidth     int    `json:"thumbnailimagewidth" bson:"thumbnailimagewidth"`         // 썸네일 이미지 가로 픽셀 사이즈
 	ThumbnailImageHeight    int    `json:"thumbnailimageheight" bson:"thumbnailimageheight"`       // 썸네일 이미지 세로 픽셀 사이즈
-	ContainerWidth          int    `json:"containerwidth" bson:"containerwidth"`                   // 썸네일 동영상 가로 픽셀 사이즈
-	ContainerHeight         int    `json:"containerheight" bson:"containerheight"`                 // 썸네일 동영상 세로 픽셀 사이즈
+	MediaWidth              int    `json:"mediawidth" bson:"mediawidth"`                           // 동영상 가로 픽셀 사이즈
+	MediaHeight             int    `json:"mediaheight" bson:"mediaheight"`                         // 동영상 세로 픽셀 사이즈
 	VideoCodecOgg           string `json:"videocodecogg" bson:"videocodecogg"`                     // 비디오 코덱
 	VideoCodecMp4           string `json:"videocodecmp4" bson:"videocodecmp4"`                     // 비디오 코덱
 	VideoCodecMov           string `json:"videocodecmov" bson:"videocodecmov"`                     // 비디오 코덱

@@ -97,18 +97,18 @@ func handleAdminSettingSubmit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	a.ThumbnailImageHeight = imageHeight
-	containerWidth, err := strconv.Atoi(r.FormValue("containerwidth"))
+	mediaWidth, err := strconv.Atoi(r.FormValue("mediawidth"))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	a.ContainerWidth = containerWidth
-	containerHeight, err := strconv.Atoi(r.FormValue("containerheight"))
+	a.MediaWidth = mediaWidth
+	mediaHeight, err := strconv.Atoi(r.FormValue("mediaheight"))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	a.ContainerHeight = containerHeight
+	a.MediaHeight = mediaHeight
 	err = a.CheckError()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
