@@ -166,6 +166,7 @@ func handleUploadFootageItem(w http.ResponseWriter, r *http.Request) {
 	item.OutputThumbnailOggPath = rootpath + objIDpath + "/thumbnail/thumbnail.ogg"
 	item.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/thumbnail.mov"
 	item.OutputDataPath = rootpath + objIDpath + "/data/"
+	item.OutputProxyImgPath = rootpath + objIDpath + "/proxy/"
 	err = item.CheckError()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)

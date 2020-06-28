@@ -72,6 +72,7 @@ type Item struct {
 	OutputThumbnailMp4Path string `json:"outputthumbnailmp4path" bson:"outputthumbnailmp4path"` // 생성된 mp4형식의 썸네일 클립을 저장하는 경로
 	OutputThumbnailOggPath string `json:"outputthumbnailoggpath" bson:"outputthumbnailoggpath"` // 생성된 ogg형식의 썸네일 클립을 저장하는 경로
 	OutputThumbnailMovPath string `json:"outputthumbnailmovpath" bson:"outputthumbnailmovpath"` // 생성된 mov형식의 썸네일 클립을 저장하는 경로
+	OutputProxyImgPath     string `json:"outputproxyimgpath" bson:"outputproxyimgpath"`         // 프록시 이미지를 저장하는 경로
 	OutputDataPath         string `json:"outputdatapath" bson:"outputdatapath"`                 // 사용자가 업로드한 파일 중 썸네일 이미지와 클립을 제외한 나머지 파일을 저장하는 경로
 
 	ThumbImgUploaded  bool `json:"thumbimguploaded" bson:"thumbimguploaded"`   // 썸네일 이미지의 업로드 여부 체크
