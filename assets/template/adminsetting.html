@@ -157,14 +157,14 @@
                     <div class="col-sm">
                         <div class="form-group">
                             <label class="text-muted">동영상 Width</label>
-                            <input type="text" name="containerwidth" class="form-control" placeholder="1280" value="{{if eq .Adminsetting.ContainerWidth 0}}1280{{else}}{{.Adminsetting.ContainerWidth}}{{end}}" onkeyup=handlerNumCheck(this)>
+                            <input type="text" name="mediawidth" class="form-control" placeholder="1280" value="{{if eq .Adminsetting.MediaWidth 0}}1280{{else}}{{.Adminsetting.MediaWidth}}{{end}}" onkeyup=handlerNumCheck(this)>
                             <small class="form-text text-muted">업로드할 동영상의 가로 사이즈를 입력해주세요.</small>
                         </div>
                     </div>
                     <div class="col-sm">
                         <div class="form-group">
                             <label class="text-muted">동영상 Height</label>
-                            <input type="text" name="containerheight" class="form-control" placeholder="720" value="{{if eq .Adminsetting.ContainerHeight 0}}720{{else}}{{.Adminsetting.ContainerHeight}}{{end}}" onkeyup=handlerNumCheck(this)>
+                            <input type="text" name="mediaheight" class="form-control" placeholder="720" value="{{if eq .Adminsetting.MediaHeight 0}}720{{else}}{{.Adminsetting.MediaHeight}}{{end}}" onkeyup=handlerNumCheck(this)>
                             <small class="form-text text-muted">업로드할 동영상의 세로 사이즈를 입력해주세요.</small>
                         </div>
                     </div>

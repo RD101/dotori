@@ -234,11 +234,11 @@ func ProcessMayaItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 		return err
 	}
 	// .ogg 썸네일 동영상을 생성한다.
-	err = SetStatus(client, item, "creatingoggcontainer")
+	err = SetStatus(client, item, "creatingoggmedia")
 	if err != nil {
 		return err
 	}
-	err = genThumbOggContainer(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+	err = genThumbOggMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
 		// 상태를 error로 바꾼다.
 		err = SetStatus(client, item, "error")
@@ -252,16 +252,16 @@ func ProcessMayaItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 		}
 		return err
 	}
-	err = SetStatus(client, item, "createdoggcontainer")
+	err = SetStatus(client, item, "createdoggmedia")
 	if err != nil {
 		return err
 	}
 	// .mov 썸네일 동영상을 생성한다.
-	err = SetStatus(client, item, "creatingmovcontainer")
+	err = SetStatus(client, item, "creatingmovmedia")
 	if err != nil {
 		return err
 	}
-	err = genThumbMovContainer(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+	err = genThumbMovMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
 		// 상태를 error로 바꾼다.
 		err = SetStatus(client, item, "error")
@@ -275,16 +275,16 @@ func ProcessMayaItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 		}
 		return err
 	}
-	err = SetStatus(client, item, "createdmovcontainer")
+	err = SetStatus(client, item, "createdmovmedia")
 	if err != nil {
 		return err
 	}
 	// .mp4 썸네일 동영상을 생성한다.
-	err = SetStatus(client, item, "creatingmp4container")
+	err = SetStatus(client, item, "creatingmp4media")
 	if err != nil {
 		return err
 	}
-	err = genThumbMp4Container(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+	err = genThumbMp4Media(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
 		// 상태를 error로 바꾼다.
 		err = SetStatus(client, item, "error")
@@ -298,7 +298,7 @@ func ProcessMayaItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 		}
 		return err
 	}
-	err = SetStatus(client, item, "createdmp4container")
+	err = SetStatus(client, item, "createdmp4media")
 	if err != nil {
 		return err
 	}
@@ -350,11 +350,11 @@ func ProcessHoudiniItem(client *mongo.Client, adminSetting Adminsetting, item It
 		return err
 	}
 	// .ogg 썸네일 동영상을 생성한다.
-	err = SetStatus(client, item, "creatingoggcontainer")
+	err = SetStatus(client, item, "creatingoggmedia")
 	if err != nil {
 		return err
 	}
-	err = genThumbOggContainer(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+	err = genThumbOggMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
 		// 상태를 error로 바꾼다.
 		err = SetStatus(client, item, "error")
@@ -369,11 +369,11 @@ func ProcessHoudiniItem(client *mongo.Client, adminSetting Adminsetting, item It
 		return err
 	}
 	// .mov 썸네일 동영상을 생성한다.
-	err = SetStatus(client, item, "creatingmovcontainer")
+	err = SetStatus(client, item, "creatingmovmedia")
 	if err != nil {
 		return err
 	}
-	err = genThumbMovContainer(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+	err = genThumbMovMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
 		// 상태를 error로 바꾼다.
 		err = SetStatus(client, item, "error")
@@ -388,11 +388,11 @@ func ProcessHoudiniItem(client *mongo.Client, adminSetting Adminsetting, item It
 		return err
 	}
 	// .mp4 썸네일 동영상을 생성한다.
-	err = SetStatus(client, item, "creatingmp4container")
+	err = SetStatus(client, item, "creatingmp4media")
 	if err != nil {
 		return err
 	}
-	err = genThumbMp4Container(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+	err = genThumbMp4Media(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
 		// 상태를 error로 바꾼다.
 		err = SetStatus(client, item, "error")
@@ -467,11 +467,11 @@ func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item It
 	}
 	/*
 		// .ogg 썸네일 동영상을 생성한다.
-		err = SetStatus(client, item, "creatingoggcontainer")
+		err = SetStatus(client, item, "creatingoggmedia")
 		if err != nil {
 			return err
 		}
-		err = genThumbOggContainer(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+		err = genThumbOggMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 		if err != nil {
 			// 상태를 error로 바꾼다.
 			err = SetStatus(client, item, "error")
@@ -485,16 +485,16 @@ func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item It
 			}
 			return err
 		}
-		err = SetStatus(client, item, "createdoggcontainer")
+		err = SetStatus(client, item, "createdoggmedia")
 		if err != nil {
 			return err
 		}
 		// .mov 썸네일 동영상을 생성한다.
-		err = SetStatus(client, item, "creatingmovcontainer")
+		err = SetStatus(client, item, "creatingmovmedia")
 		if err != nil {
 			return err
 		}
-		err = genThumbMovContainer(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+		err = genThumbMovMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 		if err != nil {
 			// 상태를 error로 바꾼다.
 			err = SetStatus(client, item, "error")
@@ -508,16 +508,16 @@ func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item It
 			}
 			return err
 		}
-		err = SetStatus(client, item, "createdmovcontainer")
+		err = SetStatus(client, item, "createdmovmedia")
 		if err != nil {
 			return err
 		}
 		// .mp4 썸네일 동영상을 생성한다.
-		err = SetStatus(client, item, "creatingmp4container")
+		err = SetStatus(client, item, "creatingmp4media")
 		if err != nil {
 			return err
 		}
-		err = genThumbMp4Container(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+		err = genThumbMp4Media(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 		if err != nil {
 			// 상태를 error로 바꾼다.
 			err = SetStatus(client, item, "error")
@@ -531,7 +531,7 @@ func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item It
 			}
 			return err
 		}
-		err = SetStatus(client, item, "createdmp4container")
+		err = SetStatus(client, item, "createdmp4media")
 		if err != nil {
 			return err
 		}
@@ -584,11 +584,11 @@ func ProcessNukeItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 		return err
 	}
 	// .ogg 썸네일 동영상을 생성한다.
-	err = SetStatus(client, item, "creatingoggcontainer")
+	err = SetStatus(client, item, "creatingoggmedia")
 	if err != nil {
 		return err
 	}
-	err = genThumbOggContainer(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+	err = genThumbOggMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
 		// 상태를 error로 바꾼다.
 		err = SetStatus(client, item, "error")
@@ -603,11 +603,11 @@ func ProcessNukeItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 		return err
 	}
 	// .mov 썸네일 동영상을 생성한다.
-	err = SetStatus(client, item, "creatingmovcontainer")
+	err = SetStatus(client, item, "creatingmovmedia")
 	if err != nil {
 		return err
 	}
-	err = genThumbMovContainer(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+	err = genThumbMovMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
 		// 상태를 error로 바꾼다.
 		err = SetStatus(client, item, "error")
@@ -622,11 +622,11 @@ func ProcessNukeItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 		return err
 	}
 	// .mp4 썸네일 동영상을 생성한다.
-	err = SetStatus(client, item, "creatingmp4container")
+	err = SetStatus(client, item, "creatingmp4media")
 	if err != nil {
 		return err
 	}
-	err = genThumbMp4Container(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+	err = genThumbMp4Media(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
 		// 상태를 error로 바꾼다.
 		err = SetStatus(client, item, "error")
@@ -686,11 +686,11 @@ func ProcessUSDItem(client *mongo.Client, adminSetting Adminsetting, item Item) 
 		return err
 	}
 	// .ogg 썸네일 동영상을 생성한다.
-	err = SetStatus(client, item, "creatingoggcontainer")
+	err = SetStatus(client, item, "creatingoggmedia")
 	if err != nil {
 		return err
 	}
-	err = genThumbOggContainer(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+	err = genThumbOggMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
 		// 상태를 error로 바꾼다.
 		err = SetStatus(client, item, "error")
@@ -704,16 +704,16 @@ func ProcessUSDItem(client *mongo.Client, adminSetting Adminsetting, item Item) 
 		}
 		return err
 	}
-	err = SetStatus(client, item, "createdoggcontainer")
+	err = SetStatus(client, item, "createdoggmedia")
 	if err != nil {
 		return err
 	}
 	// .mov 썸네일 동영상을 생성한다.
-	err = SetStatus(client, item, "creatingmovcontainer")
+	err = SetStatus(client, item, "creatingmovmedia")
 	if err != nil {
 		return err
 	}
-	err = genThumbMovContainer(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+	err = genThumbMovMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
 		// 상태를 error로 바꾼다.
 		err = SetStatus(client, item, "error")
@@ -727,16 +727,16 @@ func ProcessUSDItem(client *mongo.Client, adminSetting Adminsetting, item Item) 
 		}
 		return err
 	}
-	err = SetStatus(client, item, "createdmovcontainer")
+	err = SetStatus(client, item, "createdmovmedia")
 	if err != nil {
 		return err
 	}
 	// .mp4 썸네일 동영상을 생성한다.
-	err = SetStatus(client, item, "creatingmp4container")
+	err = SetStatus(client, item, "creatingmp4media")
 	if err != nil {
 		return err
 	}
-	err = genThumbMp4Container(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+	err = genThumbMp4Media(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
 		// 상태를 error로 바꾼다.
 		err = SetStatus(client, item, "error")
@@ -750,7 +750,7 @@ func ProcessUSDItem(client *mongo.Client, adminSetting Adminsetting, item Item) 
 		}
 		return err
 	}
-	err = SetStatus(client, item, "createdmp4container")
+	err = SetStatus(client, item, "createdmp4media")
 	if err != nil {
 		return err
 	}
@@ -782,11 +782,11 @@ func ProcessAlembicItem(client *mongo.Client, adminSetting Adminsetting, item It
 		return err
 	}
 	// .ogg 썸네일 동영상을 생성한다.
-	err = SetStatus(client, item, "creatingoggcontainer")
+	err = SetStatus(client, item, "creatingoggmedia")
 	if err != nil {
 		return err
 	}
-	err = genThumbOggContainer(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+	err = genThumbOggMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
 		// 상태를 error로 바꾼다.
 		err = SetStatus(client, item, "error")
@@ -801,11 +801,11 @@ func ProcessAlembicItem(client *mongo.Client, adminSetting Adminsetting, item It
 		return err
 	}
 	// .mov 썸네일 동영상을 생성한다.
-	err = SetStatus(client, item, "creatingmovcontainer")
+	err = SetStatus(client, item, "creatingmovmedia")
 	if err != nil {
 		return err
 	}
-	err = genThumbMovContainer(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+	err = genThumbMovMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
 		// 상태를 error로 바꾼다.
 		err = SetStatus(client, item, "error")
@@ -820,11 +820,11 @@ func ProcessAlembicItem(client *mongo.Client, adminSetting Adminsetting, item It
 		return err
 	}
 	// .mp4 썸네일 동영상을 생성한다.
-	err = SetStatus(client, item, "creatingmp4container")
+	err = SetStatus(client, item, "creatingmp4media")
 	if err != nil {
 		return err
 	}
-	err = genThumbMp4Container(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+	err = genThumbMp4Media(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
 		// 상태를 error로 바꾼다.
 		err = SetStatus(client, item, "error")
@@ -919,11 +919,11 @@ func ProcessBlenderItem(client *mongo.Client, adminSetting Adminsetting, item It
 		return err
 	}
 	// .ogg 썸네일 동영상을 생성한다.
-	err = SetStatus(client, item, "creatingoggcontainer")
+	err = SetStatus(client, item, "creatingoggmedia")
 	if err != nil {
 		return err
 	}
-	err = genThumbOggContainer(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+	err = genThumbOggMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
 		// 상태를 error로 바꾼다.
 		err = SetStatus(client, item, "error")
@@ -937,16 +937,16 @@ func ProcessBlenderItem(client *mongo.Client, adminSetting Adminsetting, item It
 		}
 		return err
 	}
-	err = SetStatus(client, item, "createdoggcontainer")
+	err = SetStatus(client, item, "createdoggmedia")
 	if err != nil {
 		return err
 	}
 	// .mov 썸네일 동영상을 생성한다.
-	err = SetStatus(client, item, "creatingmovcontainer")
+	err = SetStatus(client, item, "creatingmovmedia")
 	if err != nil {
 		return err
 	}
-	err = genThumbMovContainer(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+	err = genThumbMovMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
 		// 상태를 error로 바꾼다.
 		err = SetStatus(client, item, "error")
@@ -960,16 +960,16 @@ func ProcessBlenderItem(client *mongo.Client, adminSetting Adminsetting, item It
 		}
 		return err
 	}
-	err = SetStatus(client, item, "createdmovcontainer")
+	err = SetStatus(client, item, "createdmovmedia")
 	if err != nil {
 		return err
 	}
 	// .mp4 썸네일 동영상을 생성한다.
-	err = SetStatus(client, item, "creatingmp4container")
+	err = SetStatus(client, item, "creatingmp4media")
 	if err != nil {
 		return err
 	}
-	err = genThumbMp4Container(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+	err = genThumbMp4Media(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
 		// 상태를 error로 바꾼다.
 		err = SetStatus(client, item, "error")
@@ -983,7 +983,7 @@ func ProcessBlenderItem(client *mongo.Client, adminSetting Adminsetting, item It
 		}
 		return err
 	}
-	err = SetStatus(client, item, "createdmp4container")
+	err = SetStatus(client, item, "createdmp4media")
 	if err != nil {
 		return err
 	}
@@ -1074,8 +1074,8 @@ func genThumbFootage(adminSetting Adminsetting, item Item) error {
 	return nil
 }
 
-// genThumbOggContainer 함수는 인수로 받은 아이템의 .ogg 동영상을 만든다.
-func genThumbOggContainer(adminSetting Adminsetting, item Item) error {
+// genThumbOggMedia 함수는 인수로 받은 아이템의 .ogg 동영상을 만든다.
+func genThumbOggMedia(adminSetting Adminsetting, item Item) error {
 	args := []string{
 		"-y",
 		"-i",
@@ -1086,10 +1086,10 @@ func genThumbOggContainer(adminSetting Adminsetting, item Item) error {
 		"7",
 		"-vf",
 		fmt.Sprintf("scale=%d:%d,crop=%d:%d:0:0,setsar=1",
-			adminSetting.ContainerWidth,
-			adminSetting.ContainerHeight,
-			adminSetting.ContainerWidth,
-			adminSetting.ContainerHeight,
+			adminSetting.MediaWidth,
+			adminSetting.MediaHeight,
+			adminSetting.MediaWidth,
+			adminSetting.MediaHeight,
 		),
 	}
 	if adminSetting.AudioCodec == "nosound" {
@@ -1111,8 +1111,8 @@ func genThumbOggContainer(adminSetting Adminsetting, item Item) error {
 	return nil
 }
 
-// genThumbMovContainer 함수는 인수로 받은 아이템의 .mov 동영상을 만든다.
-func genThumbMovContainer(adminSetting Adminsetting, item Item) error {
+// genThumbMovMedia 함수는 인수로 받은 아이템의 .mov 동영상을 만든다.
+func genThumbMovMedia(adminSetting Adminsetting, item Item) error {
 	args := []string{
 		"-y",
 		"-i",
@@ -1123,10 +1123,10 @@ func genThumbMovContainer(adminSetting Adminsetting, item Item) error {
 		"7",
 		"-vf",
 		fmt.Sprintf("scale=%d:%d,crop=%d:%d:0:0,setsar=1",
-			adminSetting.ContainerWidth,
-			adminSetting.ContainerHeight,
-			adminSetting.ContainerWidth,
-			adminSetting.ContainerHeight,
+			adminSetting.MediaWidth,
+			adminSetting.MediaHeight,
+			adminSetting.MediaWidth,
+			adminSetting.MediaHeight,
 		),
 	}
 	if adminSetting.AudioCodec == "nosound" {
@@ -1148,8 +1148,8 @@ func genThumbMovContainer(adminSetting Adminsetting, item Item) error {
 	return nil
 }
 
-// genThumbMp4Container 함수는 인수로 받은 아이템의 .mp4 동영상을 만든다.
-func genThumbMp4Container(adminSetting Adminsetting, item Item) error {
+// genThumbMp4Media 함수는 인수로 받은 아이템의 .mp4 동영상을 만든다.
+func genThumbMp4Media(adminSetting Adminsetting, item Item) error {
 	args := []string{
 		"-y",
 		"-i",
@@ -1160,10 +1160,10 @@ func genThumbMp4Container(adminSetting Adminsetting, item Item) error {
 		"7",
 		"-vf",
 		fmt.Sprintf("scale=%d:%d,crop=%d:%d:0:0,setsar=1",
-			adminSetting.ContainerWidth,
-			adminSetting.ContainerHeight,
-			adminSetting.ContainerWidth,
-			adminSetting.ContainerHeight,
+			adminSetting.MediaWidth,
+			adminSetting.MediaHeight,
+			adminSetting.MediaWidth,
+			adminSetting.MediaHeight,
 		),
 	}
 	if adminSetting.AudioCodec == "nosound" {
