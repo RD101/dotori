@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -461,10 +462,51 @@ func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item It
 	if err != nil {
 		return err
 	}
+	// 썸네일을 생성하였다. 썸네일이 업로드 되었다고 체크한다.
 	err = SetThumbImgUploaded(client, item, true)
 	if err != nil {
 		return err
 	}
+
+	err = genProxyDir(adminSetting, item)
+	if err != nil {
+		// 상태를 error로 바꾼다.
+		err = SetStatus(client, item, "error")
+		if err != nil {
+			return err
+		}
+		// 에러 내용을 로그로 남긴다.
+		err = SetLog(client, item.ID.Hex(), err.Error())
+		if err != nil {
+			return err
+		}
+		return err
+	}
+	err = SetStatus(client, item, "createdproxydir")
+	if err != nil {
+		return err
+	}
+
+	// Proxy 이미지를 생성한다.
+	err = genProxySequence(adminSetting, item)
+	if err != nil {
+		// 상태를 error로 바꾼다.
+		err = SetStatus(client, item, "error")
+		if err != nil {
+			return err
+		}
+		// 에러 내용을 로그로 남긴다.
+		err = SetLog(client, item.ID.Hex(), err.Error())
+		if err != nil {
+			return err
+		}
+		return err
+	}
+	err = SetStatus(client, item, "createdproxysequence")
+	if err != nil {
+		return err
+	}
+
 	/*
 		// .ogg 썸네일 동영상을 생성한다.
 		err = SetStatus(client, item, "creatingoggmedia")
@@ -1015,6 +1057,27 @@ func genThumbDir(adminSetting Adminsetting, item Item) error {
 	return nil
 }
 
+//genProxyDir 은 인수로 받은 아이템의 경로에 thumbnail 폴더를 생성한다.
+func genProxyDir(adminSetting Adminsetting, item Item) error {
+	// umask, 권한 셋팅
+	umask, err := strconv.Atoi(adminSetting.Umask)
+	if err != nil {
+		return err
+	}
+	unix.Umask(umask)
+	per, err := strconv.ParseInt(adminSetting.FolderPermission, 8, 64)
+	if err != nil {
+		return err
+	}
+	// 생성할 경로를 가져온다.
+	path := path.Dir(item.OutputProxyImgPath)
+	err = os.MkdirAll(path, os.FileMode(per))
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // genThumbImage 함수는 인수로 받은 아이템의 썸네일 이미지를 만든다.
 func genThumbImage(adminSetting Adminsetting, item Item) error {
 	// 변환할 이미지를 가져온다.
@@ -1070,6 +1133,41 @@ func genThumbFootage(adminSetting Adminsetting, item Item) error {
 	err = exec.Command(adminSetting.OpenImageIO, args...).Run()
 	if err != nil {
 		return err
+	}
+	return nil
+}
+
+// genProxySequence 함수는 Footage 아이템정보를 이용하여 oiiotool 명령어로 Proxy 이미지를 만든다.
+func genProxySequence(adminSetting Adminsetting, item Item) error {
+	// 변환할 이미지를 한프레임 가지고온다.
+	path := item.OutputDataPath
+	files, err := ioutil.ReadDir(path)
+	if err != nil {
+		return err
+	}
+	// OIIO 이미지 연산을 위해 OCIO 환경변수를 설정한다.
+	_, err = os.Stat(adminSetting.OCIOConfig)
+	if os.IsNotExist(err) {
+		return errors.New("admin 셋팅에서 OCIOConfig 값을 설정해주세요")
+	}
+	os.Setenv("OCIO", adminSetting.OCIOConfig)
+
+	// 각 파일을 돌면서 연산을 진행한다.
+	for _, file := range files {
+		ext := filepath.Ext(file.Name())
+		rmExt := strings.TrimSuffix(file.Name(), ext)
+		args := []string{
+			path + "/" + file.Name(),
+			"--colorconvert",
+			item.InColorspace,
+			item.OutColorspace,
+			"-o",
+			item.OutputProxyImgPath + rmExt + ".png",
+		}
+		err = exec.Command(adminSetting.OpenImageIO, args...).Run()
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
