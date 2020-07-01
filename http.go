@@ -150,6 +150,15 @@ func webserver() {
 	http.HandleFunc("/editusd-submit", handleEditUSDSubmit)
 	http.HandleFunc("/editusd-success", handleEditUSDSuccess)
 
+	// OpenVDB
+	http.HandleFunc("/addopenvdb", handleAddOpenVDB)
+	http.HandleFunc("/addopenvdb-item", handleAddOpenVDBItem)
+	http.HandleFunc("/uploadopenvdb-item", handleUploadOpenVDBItem)
+	http.HandleFunc("/addopenvdb-file", handleAddOpenVDBFile)
+	http.HandleFunc("/uploadopenvdb-file", handleUploadOpenVDBFile)
+	http.HandleFunc("/uploadopenvdb-checkdata", handleUploadOpenVDBCheckData)
+	http.HandleFunc("/addopenvdb-success", handleAddOpenVDBSuccess)
+
 	// Sound
 	http.HandleFunc("/addsound", handleAddSound)
 	http.HandleFunc("/addsound-item", handleAddSoundItem)
