@@ -98,7 +98,7 @@ func handleUploadOpenVDBItem(w http.ResponseWriter, r *http.Request) {
 	item.Description = r.FormValue("description")
 	tags := SplitBySpace(r.FormValue("tag"))
 	item.Tags = tags
-	item.ItemType = "openvdb"
+	item.ItemType = "vdb"
 	attr := make(map[string]string)
 	attrNum, err := strconv.Atoi(r.FormValue("attributesNum"))
 	if err != nil {
