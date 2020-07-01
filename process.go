@@ -458,12 +458,13 @@ func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item It
 		}
 		return err
 	}
-	err = SetStatus(client, item, "createdthumbimg")
+	// 썸네일을 생성하였다. 썸네일이 업로드 되었다고 체크한다.
+	err = SetThumbImgUploaded(client, item, true)
 	if err != nil {
 		return err
 	}
-	// 썸네일을 생성하였다. 썸네일이 업로드 되었다고 체크한다.
-	err = SetThumbImgUploaded(client, item, true)
+
+	err = SetStatus(client, item, "creating proxydir")
 	if err != nil {
 		return err
 	}
@@ -482,12 +483,13 @@ func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item It
 		}
 		return err
 	}
-	err = SetStatus(client, item, "createdproxydir")
+
+	// Proxy 이미지를 생성한다.
+	err = SetStatus(client, item, "creating proxysequence")
 	if err != nil {
 		return err
 	}
 
-	// Proxy 이미지를 생성한다.
 	err = genProxySequence(adminSetting, item)
 	if err != nil {
 		// 상태를 error로 바꾼다.
@@ -502,15 +504,11 @@ func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item It
 		}
 		return err
 	}
-	err = SetStatus(client, item, "createdproxysequence")
-	if err != nil {
-		return err
-	}
 
 	// 썸네일 동영상 생성
 
 	// .ogg 썸네일 동영상을 생성한다.
-	err = SetStatus(client, item, "creatingoggmedia")
+	err = SetStatus(client, item, "creating oggmedia")
 	if err != nil {
 		return err
 	}
@@ -528,13 +526,9 @@ func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item It
 		}
 		return err
 	}
-	err = SetStatus(client, item, "createdoggmedia")
-	if err != nil {
-		return err
-	}
 
 	// .mov 썸네일 동영상을 생성한다.
-	err = SetStatus(client, item, "creatingmovmedia")
+	err = SetStatus(client, item, "creating movmedia")
 	if err != nil {
 		return err
 	}
@@ -552,12 +546,9 @@ func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item It
 		}
 		return err
 	}
-	err = SetStatus(client, item, "createdmovmedia")
-	if err != nil {
-		return err
-	}
+
 	// .mp4 썸네일 동영상을 생성한다.
-	err = SetStatus(client, item, "creatingmp4media")
+	err = SetStatus(client, item, "creating mp4media")
 	if err != nil {
 		return err
 	}
@@ -575,17 +566,14 @@ func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item It
 		}
 		return err
 	}
-	err = SetStatus(client, item, "createdmp4media")
+
+	// Proxy 제거
+	err = SetStatus(client, item, "remove proxy")
 	if err != nil {
 		return err
 	}
 
-	// Proxy 제거
 	err = os.RemoveAll(item.OutputProxyImgPath)
-	if err != nil {
-		return err
-	}
-	err = SetStatus(client, item, "remove proxy")
 	if err != nil {
 		return err
 	}
