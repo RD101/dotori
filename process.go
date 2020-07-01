@@ -417,7 +417,7 @@ func ProcessHoudiniItem(client *mongo.Client, adminSetting Adminsetting, item It
 // ProcessFootageItem 함수는 footage 아이템을 연산한다.
 func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item Item) error {
 	// thumbnail 폴더를 생성한다.
-	err := SetStatus(client, item, "creatingthumbdir")
+	err := SetStatus(client, item, "creating thumbnail dir")
 	if err != nil {
 		return err
 	}
@@ -435,12 +435,9 @@ func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item It
 		}
 		return err
 	}
-	err = SetStatus(client, item, "createdthumbdir")
-	if err != nil {
-		return err
-	}
+
 	// 썸네일 이미지를 생성한다.
-	err = SetStatus(client, item, "creatingthumbimg")
+	err = SetStatus(client, item, "creating thumbnail image")
 	if err != nil {
 		return err
 	}
@@ -464,7 +461,7 @@ func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item It
 		return err
 	}
 
-	err = SetStatus(client, item, "creating proxydir")
+	err = SetStatus(client, item, "creating proxy dir")
 	if err != nil {
 		return err
 	}
@@ -485,7 +482,7 @@ func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item It
 	}
 
 	// Proxy 이미지를 생성한다.
-	err = SetStatus(client, item, "creating proxysequence")
+	err = SetStatus(client, item, "creating proxy sequence")
 	if err != nil {
 		return err
 	}
@@ -508,7 +505,7 @@ func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item It
 	// 썸네일 동영상 생성
 
 	// .ogg 썸네일 동영상을 생성한다.
-	err = SetStatus(client, item, "creating oggmedia")
+	err = SetStatus(client, item, "creating .ogg media")
 	if err != nil {
 		return err
 	}
@@ -528,7 +525,7 @@ func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item It
 	}
 
 	// .mov 썸네일 동영상을 생성한다.
-	err = SetStatus(client, item, "creating movmedia")
+	err = SetStatus(client, item, "creating .mov media")
 	if err != nil {
 		return err
 	}
@@ -548,7 +545,7 @@ func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item It
 	}
 
 	// .mp4 썸네일 동영상을 생성한다.
-	err = SetStatus(client, item, "creating mp4media")
+	err = SetStatus(client, item, "creating .mp4 media")
 	if err != nil {
 		return err
 	}
