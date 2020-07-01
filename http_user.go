@@ -196,12 +196,20 @@ func handleSigninSubmit(w http.ResponseWriter, r *http.Request) {
 	}
 	u, err := GetUser(client, id)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		err := TEMPLATES.ExecuteTemplate(w, "signin-fail", nil)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 		return
 	}
 	err = bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(pw))
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusUnauthorized)
+		err := TEMPLATES.ExecuteTemplate(w, "signin-fail", nil)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 		return
 	}
 	// Token을 쿠키에 저장한다.
