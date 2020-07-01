@@ -147,6 +147,16 @@ func processingItem() {
 	case "pdf": // 문서
 		return
 	case "ies": // 조명파일
+		err = ProcessIesItem(client, adminSetting, item)
+		if err != nil {
+			log.Println(err)
+			err = SetLog(client, item.ID.Hex(), err.Error())
+			if err != nil {
+				log.Println(err)
+				return
+			}
+			return
+		}
 		return
 	case "hdri": // HDRI 이미지, 환경맵
 		return
@@ -1405,6 +1415,61 @@ func genProxyToMp4Media(adminSetting Adminsetting, item Item) error {
 		fmt.Println(adminSetting.FFmpeg, strings.Join(args, " "))
 	}
 	err := exec.Command(adminSetting.FFmpeg, args...).Run()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// ProcessIesItem 함수는 ies 아이템을 연산한다.
+func ProcessIesItem(client *mongo.Client, adminSetting Adminsetting, item Item) error {
+	// thumbnail 폴더를 생성한다.
+	err := SetStatus(client, item, "creatingthumbdir")
+	if err != nil {
+		return err
+	}
+	err = genThumbDir(adminSetting, item)
+	if err != nil {
+		// 상태를 error로 바꾼다.
+		err = SetStatus(client, item, "error")
+		if err != nil {
+			return err
+		}
+		// 에러 내용을 로그로 남긴다.
+		err = SetLog(client, item.ID.Hex(), err.Error())
+		if err != nil {
+			return err
+		}
+		return err
+	}
+	err = SetStatus(client, item, "createdthumbdir")
+	if err != nil {
+		return err
+	}
+	// 썸네일 이미지를 생성한다.
+	err = SetStatus(client, item, "creatingthumbimg")
+	if err != nil {
+		return err
+	}
+	err = genThumbImage(adminSetting, item)
+	if err != nil {
+		// 상태를 error로 바꾼다.
+		err = SetStatus(client, item, "error")
+		if err != nil {
+			return err
+		}
+		// 에러 내용을 로그로 남긴다.
+		err = SetLog(client, item.ID.Hex(), err.Error())
+		if err != nil {
+			return err
+		}
+		return err
+	}
+	err = SetStatus(client, item, "createdthumbimg")
+	if err != nil {
+		return err
+	}
+	err = SetStatus(client, item, "done")
 	if err != nil {
 		return err
 	}

@@ -186,6 +186,18 @@ func webserver() {
 	http.HandleFunc("/edithwp-submit", handleEditHwpSubmit)
 	http.HandleFunc("/edithwp-success", handleEditHwpSuccess)
 
+	// ies
+	http.HandleFunc("/addies", handleAddIes)
+	http.HandleFunc("/addies-item", handleAddIesItem)
+	http.HandleFunc("/addies-file", handleAddIesFile)
+	http.HandleFunc("/uploadies-item", handleUploadIesItem)
+	http.HandleFunc("/uploadies-file", handleUploadIesFile)
+	http.HandleFunc("/uploadies-checkdata", handleUploadIesCheckData)
+	http.HandleFunc("/addies-success", handleAddIesSuccess)
+	http.HandleFunc("/edities", handleEditIes)
+	http.HandleFunc("/edities-submit", handleEditIesSubmit)
+	http.HandleFunc("/edities-success", handleEditIesSuccess)
+
 	// Admin
 	http.HandleFunc("/adminsetting", handleAdminSetting)
 	http.HandleFunc("/adminsetting-submit", handleAdminSettingSubmit)
