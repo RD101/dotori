@@ -565,7 +565,7 @@ func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item It
 	}
 
 	// Proxy 제거
-	err = SetStatus(client, item, "remove proxy")
+	err = SetStatus(client, item, "removing proxy")
 	if err != nil {
 		return err
 	}
