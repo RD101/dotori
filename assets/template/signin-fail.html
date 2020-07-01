@@ -1,0 +1,27 @@
+{{define "signin-fail"}}
+{{template "head"}}
+<body>
+<div class="container p-5">
+    <div class="col-lg-6 col-md-6 col-sm-12 mx-auto">
+        <div class="pt-3 pb-5">
+            <h3 class="text-center section-heading text-muted">Incorrect Username or Password</h3>
+        </div>
+        <div>
+            <h6 class="text-center text-muted">
+                아이디 혹은 패스워드가 정확하지 않습니다.
+            </h6>
+        </div>
+        <div class="text-center">
+            <a href="/" class="btn btn-darkmode mt-5">SignIn</a>
+        </div>
+    </div>
+</div>
+{{template "footer"}}
+</body>
+<!--add javascript-->
+<script src="/assets/js/jquery-3.1.1.min.js"></script>
+<script src="/assets/bootstrap-4/js/bootstrap.min.js"></script>
+<script src="/assets/js/dropzone.js"></script>
+<script src="/assets/js/dotori.js"></script>
+</html>
+{{end}}

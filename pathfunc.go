@@ -14,7 +14,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-// searchSeq 함수는 탐색할 경로를 입력받고 dpx, exr, mov 정보를 수집 반환한다.
+// searchSeq 함수는 탐색할 경로를 입력받고 dpx, exr, png, mov 정보를 수집 반환한다.
 func searchSeq(searchpath string) ([]Seq, error) {
 	// 경로가 존재하는지 체크한다.
 	_, err := os.Stat(searchpath)
@@ -42,7 +42,7 @@ func searchSeq(searchpath string) ([]Seq, error) {
 				ConvertExt: ".exr",
 			}
 			paths[path] = item
-		case ".dpx", ".exr":
+		case ".dpx", ".exr", ".png":
 			key, num, err := Seqnum2Sharp(path)
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "%s\n", err)
@@ -103,7 +103,7 @@ func Seqnum2Sharp(filename string) (string, int, error) {
 	if err != nil {
 		return filename, -1, err
 	}
-	return header + strings.Repeat("#", len(seq)) + ext, seqNum, nil
+	return header + "%0" + strconv.Itoa(len(seq)) + "d" + ext, seqNum, nil
 }
 
 // idToPath 함수는 MongoDB ID를 받아서 정한 형식에 맞게 ID를 변경시켜준다.
