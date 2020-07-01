@@ -228,10 +228,6 @@ func ProcessMayaItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 		}
 		return err
 	}
-	err = SetStatus(client, item, "createdthumbdir")
-	if err != nil {
-		return err
-	}
 	// 썸네일 이미지를 생성한다.
 	err = SetStatus(client, item, "creatingthumbimg")
 	if err != nil {
@@ -249,10 +245,6 @@ func ProcessMayaItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 		if err != nil {
 			return err
 		}
-		return err
-	}
-	err = SetStatus(client, item, "createdthumbimg")
-	if err != nil {
 		return err
 	}
 	// .ogg 썸네일 동영상을 생성한다.
@@ -274,10 +266,6 @@ func ProcessMayaItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 		}
 		return err
 	}
-	err = SetStatus(client, item, "createdoggmedia")
-	if err != nil {
-		return err
-	}
 	// .mov 썸네일 동영상을 생성한다.
 	err = SetStatus(client, item, "creatingmovmedia")
 	if err != nil {
@@ -297,10 +285,6 @@ func ProcessMayaItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 		}
 		return err
 	}
-	err = SetStatus(client, item, "createdmovmedia")
-	if err != nil {
-		return err
-	}
 	// .mp4 썸네일 동영상을 생성한다.
 	err = SetStatus(client, item, "creatingmp4media")
 	if err != nil {
@@ -318,10 +302,6 @@ func ProcessMayaItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 		if err != nil {
 			return err
 		}
-		return err
-	}
-	err = SetStatus(client, item, "createdmp4media")
-	if err != nil {
 		return err
 	}
 	err = SetStatus(client, item, "done")
@@ -456,10 +436,6 @@ func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item It
 		}
 		return err
 	}
-	err = SetStatus(client, item, "createdthumbdir")
-	if err != nil {
-		return err
-	}
 	// 썸네일 이미지를 생성한다.
 	err = SetStatus(client, item, "creatingthumbimg")
 	if err != nil {
@@ -477,10 +453,6 @@ func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item It
 		if err != nil {
 			return err
 		}
-		return err
-	}
-	err = SetStatus(client, item, "createdthumbimg")
-	if err != nil {
 		return err
 	}
 	// 썸네일을 생성하였다. 썸네일이 업로드 되었다고 체크한다.
@@ -503,11 +475,6 @@ func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item It
 		}
 		return err
 	}
-	err = SetStatus(client, item, "createdproxydir")
-	if err != nil {
-		return err
-	}
-
 	// Proxy 이미지를 생성한다.
 	err = genProxySequence(adminSetting, item)
 	if err != nil {
@@ -523,11 +490,6 @@ func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item It
 		}
 		return err
 	}
-	err = SetStatus(client, item, "createdproxysequence")
-	if err != nil {
-		return err
-	}
-
 	// 썸네일 동영상 생성
 
 	// .ogg 썸네일 동영상을 생성한다.
@@ -547,10 +509,6 @@ func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item It
 		if err != nil {
 			return err
 		}
-		return err
-	}
-	err = SetStatus(client, item, "createdoggmedia")
-	if err != nil {
 		return err
 	}
 	/*
@@ -723,10 +681,6 @@ func ProcessUSDItem(client *mongo.Client, adminSetting Adminsetting, item Item) 
 	if err != nil {
 		return err
 	}
-	err = SetStatus(client, item, "createdthumbdir")
-	if err != nil {
-		return err
-	}
 	// 썸네일 이미지를 생성한다.
 	err = SetStatus(client, item, "creatingthumbimg")
 	if err != nil {
@@ -744,10 +698,6 @@ func ProcessUSDItem(client *mongo.Client, adminSetting Adminsetting, item Item) 
 		if err != nil {
 			return err
 		}
-		return err
-	}
-	err = SetStatus(client, item, "createdthumbimg")
-	if err != nil {
 		return err
 	}
 	// .ogg 썸네일 동영상을 생성한다.
@@ -769,10 +719,6 @@ func ProcessUSDItem(client *mongo.Client, adminSetting Adminsetting, item Item) 
 		}
 		return err
 	}
-	err = SetStatus(client, item, "createdoggmedia")
-	if err != nil {
-		return err
-	}
 	// .mov 썸네일 동영상을 생성한다.
 	err = SetStatus(client, item, "creatingmovmedia")
 	if err != nil {
@@ -792,10 +738,6 @@ func ProcessUSDItem(client *mongo.Client, adminSetting Adminsetting, item Item) 
 		}
 		return err
 	}
-	err = SetStatus(client, item, "createdmovmedia")
-	if err != nil {
-		return err
-	}
 	// .mp4 썸네일 동영상을 생성한다.
 	err = SetStatus(client, item, "creatingmp4media")
 	if err != nil {
@@ -813,10 +755,6 @@ func ProcessUSDItem(client *mongo.Client, adminSetting Adminsetting, item Item) 
 		if err != nil {
 			return err
 		}
-		return err
-	}
-	err = SetStatus(client, item, "createdmp4media")
-	if err != nil {
 		return err
 	}
 	err = SetStatus(client, item, "done")
@@ -921,20 +859,12 @@ func ProcessSoundItem(client *mongo.Client, adminSetting Adminsetting, item Item
 	if err != nil {
 		return err
 	}
-	err = SetStatus(client, item, "createdthumbdir")
-	if err != nil {
-		return err
-	}
 	// 썸네일 이미지를 생성한다.
 	err = SetStatus(client, item, "creatingthumbimg")
 	if err != nil {
 		return err
 	}
 	err = genThumbImage(adminSetting, item)
-	if err != nil {
-		return err
-	}
-	err = SetStatus(client, item, "createdthumbimg")
 	if err != nil {
 		return err
 	}
@@ -956,10 +886,6 @@ func ProcessBlenderItem(client *mongo.Client, adminSetting Adminsetting, item It
 	if err != nil {
 		return err
 	}
-	err = SetStatus(client, item, "createdthumbdir")
-	if err != nil {
-		return err
-	}
 	// 썸네일 이미지를 생성한다.
 	err = SetStatus(client, item, "creatingthumbimg")
 	if err != nil {
@@ -977,10 +903,6 @@ func ProcessBlenderItem(client *mongo.Client, adminSetting Adminsetting, item It
 		if err != nil {
 			return err
 		}
-		return err
-	}
-	err = SetStatus(client, item, "createdthumbimg")
-	if err != nil {
 		return err
 	}
 	// .ogg 썸네일 동영상을 생성한다.
@@ -1002,10 +924,6 @@ func ProcessBlenderItem(client *mongo.Client, adminSetting Adminsetting, item It
 		}
 		return err
 	}
-	err = SetStatus(client, item, "createdoggmedia")
-	if err != nil {
-		return err
-	}
 	// .mov 썸네일 동영상을 생성한다.
 	err = SetStatus(client, item, "creatingmovmedia")
 	if err != nil {
@@ -1025,10 +943,6 @@ func ProcessBlenderItem(client *mongo.Client, adminSetting Adminsetting, item It
 		}
 		return err
 	}
-	err = SetStatus(client, item, "createdmovmedia")
-	if err != nil {
-		return err
-	}
 	// .mp4 썸네일 동영상을 생성한다.
 	err = SetStatus(client, item, "creatingmp4media")
 	if err != nil {
@@ -1046,10 +960,6 @@ func ProcessBlenderItem(client *mongo.Client, adminSetting Adminsetting, item It
 		if err != nil {
 			return err
 		}
-		return err
-	}
-	err = SetStatus(client, item, "createdmp4media")
-	if err != nil {
 		return err
 	}
 	err = SetStatus(client, item, "done")
@@ -1453,10 +1363,6 @@ func ProcessIesItem(client *mongo.Client, adminSetting Adminsetting, item Item) 
 		}
 		return err
 	}
-	err = SetStatus(client, item, "createdthumbdir")
-	if err != nil {
-		return err
-	}
 	// 썸네일 이미지를 생성한다.
 	err = SetStatus(client, item, "creatingthumbimg")
 	if err != nil {
@@ -1474,10 +1380,6 @@ func ProcessIesItem(client *mongo.Client, adminSetting Adminsetting, item Item) 
 		if err != nil {
 			return err
 		}
-		return err
-	}
-	err = SetStatus(client, item, "createdthumbimg")
-	if err != nil {
 		return err
 	}
 	err = SetStatus(client, item, "done")
@@ -1508,10 +1410,6 @@ func ProcessUnrealItem(client *mongo.Client, adminSetting Adminsetting, item Ite
 		}
 		return err
 	}
-	err = SetStatus(client, item, "createdthumbdir")
-	if err != nil {
-		return err
-	}
 	// 썸네일 이미지를 생성한다.
 	err = SetStatus(client, item, "creatingthumbimg")
 	if err != nil {
@@ -1529,10 +1427,6 @@ func ProcessUnrealItem(client *mongo.Client, adminSetting Adminsetting, item Ite
 		if err != nil {
 			return err
 		}
-		return err
-	}
-	err = SetStatus(client, item, "createdthumbimg")
-	if err != nil {
 		return err
 	}
 	// .ogg 썸네일 동영상을 생성한다.
@@ -1554,10 +1448,6 @@ func ProcessUnrealItem(client *mongo.Client, adminSetting Adminsetting, item Ite
 		}
 		return err
 	}
-	err = SetStatus(client, item, "createdoggmedia")
-	if err != nil {
-		return err
-	}
 	// .mov 썸네일 동영상을 생성한다.
 	err = SetStatus(client, item, "creatingmovmedia")
 	if err != nil {
@@ -1577,10 +1467,6 @@ func ProcessUnrealItem(client *mongo.Client, adminSetting Adminsetting, item Ite
 		}
 		return err
 	}
-	err = SetStatus(client, item, "createdmovmedia")
-	if err != nil {
-		return err
-	}
 	// .mp4 썸네일 동영상을 생성한다.
 	err = SetStatus(client, item, "creatingmp4media")
 	if err != nil {
@@ -1598,10 +1484,6 @@ func ProcessUnrealItem(client *mongo.Client, adminSetting Adminsetting, item Ite
 		if err != nil {
 			return err
 		}
-		return err
-	}
-	err = SetStatus(client, item, "createdmp4media")
-	if err != nil {
 		return err
 	}
 	err = SetStatus(client, item, "done")
