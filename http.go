@@ -158,6 +158,9 @@ func webserver() {
 	http.HandleFunc("/uploadopenvdb-file", handleUploadOpenVDBFile)
 	http.HandleFunc("/uploadopenvdb-checkdata", handleUploadOpenVDBCheckData)
 	http.HandleFunc("/addopenvdb-success", handleAddOpenVDBSuccess)
+	http.HandleFunc("/editopenvdb", handleEditOpenVDB)
+	http.HandleFunc("/editopenvdb-submit", handleEditOpenVDBSubmit)
+	http.HandleFunc("/editopenvdb-success", handleEditOpenVDBSuccess)
 
 	// Sound
 	http.HandleFunc("/addsound", handleAddSound)
