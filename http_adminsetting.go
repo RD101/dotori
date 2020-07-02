@@ -102,10 +102,18 @@ func handleAdminSettingSubmit(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	if mediaWidth < 1 {
+		http.Error(w, "mediaWidth 값은 1보다 커야합니다", http.StatusBadRequest)
+		return
+	}
 	a.MediaWidth = mediaWidth
 	mediaHeight, err := strconv.Atoi(r.FormValue("mediaheight"))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	if mediaHeight < 1 {
+		http.Error(w, "mediaHeight 값은 1보다 커야합니다", http.StatusBadRequest)
 		return
 	}
 	a.MediaHeight = mediaHeight
