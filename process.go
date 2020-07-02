@@ -417,7 +417,7 @@ func ProcessHoudiniItem(client *mongo.Client, adminSetting Adminsetting, item It
 // ProcessFootageItem 함수는 footage 아이템을 연산한다.
 func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item Item) error {
 	// thumbnail 폴더를 생성한다.
-	err := SetStatus(client, item, "creating thumbnail dir")
+	err := SetStatus(client, item, "creating thumbnail directory")
 	if err != nil {
 		return err
 	}
