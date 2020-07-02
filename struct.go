@@ -56,6 +56,7 @@ type User struct {
 type Item struct {
 	ID          primitive.ObjectID `json:"id" bson:"_id,omitempty"`        // ID
 	Author      string             `json:"author" bson:"author"`           // 에셋을 제작한 사람
+	Title       string             `json:"title" bson:"title"`             // 에셋 타이틀
 	Tags        []string           `json:"tags" bson:"tags"`               // 태그리스트
 	Description string             `json:"description" bson:"description"` // 에셋에 대한 추가 정보. 에셋의 제약, 사용전 알아야 할 특징
 	ItemType    string             `json:"itemtype" bson:"itemtype"`       // maya, source, houdini, blender, nuke ..  같은 형태인가.

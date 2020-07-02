@@ -1,12 +1,12 @@
-{{define "addmaya-item"}}
+{{define "addopenvdb-item"}}
 {{template "head"}}
 <body>
 {{template "navbar" .}}
-<form action="/uploadmaya-item" method="post" onsubmit="return addPageBlankCheck()">
+<form action="/uploadopenvdb-item" method="post" onsubmit="return addPageBlankCheck()">
 <div class="container py-5 px-2">
     <div class="col-lg-6 col-md-8 col-sm-12 mx-auto">
         <div class="pt-3 pb-3">
-            <h2 class="text-muted">Add Maya Asset</h2>
+            <h2 class="text-muted">Add OpenVDB Asset</h2>
         </div>
         <div class="row">
             <div class="col-sm">
@@ -20,18 +20,9 @@
         <div class="row">
             <div class="col-sm">
                 <div class="form-group">
-                    <label class="text-muted">Title</label>
-                    <input id="addTitle" type="text" name="title" class="form-control" placeholder="에셋 타이틀">
-                    <small class="form-text text-muted">에셋 타이틀을 적어주세요.</small>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm">
-                <div class="form-group">
                     <label class="text-muted">Description</label>
                     <textarea id="addDescription" name="description" class="form-control" rows="5"></textarea>
-                    <small class="form-text text-muted">에셋 사용시 참고해야할 사항</small>
+                    <small class="form-text text-muted">에셋 사용 시 참고해야 할 사항</small>
                 </div>
             </div>
         </div>
@@ -58,15 +49,14 @@
                             <div class="col">
                                 <div class="form-group p-0 m-0">
                                     <input type="text" class="form-control" placeholder="value" value="" id="value0" name="value0">
-                                </div>          
+                                </div>
                             </div>
                         </div>
                     </div>
-                    
                     <div class="row">
-                        <input type="hidden" id="attributesNum" name="attributesNum" value="1">
+                        <input type="hidden" id="attributesNum"  name="attributesNum" value="1">
                         <div class="col">
-                            <small class="form-text text-muted float-right">필요시 속성을 추가해 주세요.</small>
+                            <small class="form-text text-muted float-right">필요시 속성을 추가해주세요.</small>
                             <br>
                             <span class="add float-right" onclick="addAttribute();">+</span>
                         </div>
@@ -80,13 +70,11 @@
     </div>
 </div>
 </form>
-
 {{template "footer"}}
 </body>
 <!--add javascript-->
 <script src="/assets/js/jquery-3.1.1.min.js"></script>
 <script src="/assets/bootstrap-4/js/bootstrap.min.js"></script>
-<script src="/assets/js/dropzone.js"></script>
 <script src="/assets/js/dotori.js"></script>
 </html>
 {{end}}

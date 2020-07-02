@@ -18,19 +18,19 @@ import (
 	"golang.org/x/sys/unix"
 )
 
-// handleAddMaya 함수는 URL에 objectID를 붙여서 /addmaya-item 페이지로 redirect한다.
-func handleAddMaya(w http.ResponseWriter, r *http.Request) {
+//handleAddOpenVDB 함수는 URL에 objectID를 붙여서 /addopenvdb-item 페이지로 redirect 한다.
+func handleAddOpenVDB(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
 		return
 	}
 	objectID := primitive.NewObjectID().Hex()
-	http.Redirect(w, r, fmt.Sprintf("/addmaya-item?objectid=%s", objectID), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/addopenvdb-item?objectid=%s", objectID), http.StatusSeeOther)
 }
 
-// handleAddMayaItem 함수는 DB에 저장할 Maya 파일의 정보를 입력하는 페이지 이다.
-func handleAddMayaItem(w http.ResponseWriter, r *http.Request) {
+// handleAddOpenVDBItem 함수는 DB에 저장할 vdb 파일의 정보를 입력하는 페이지이다.
+func handleAddOpenVDBItem(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -68,15 +68,16 @@ func handleAddMayaItem(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Adminsetting = adminsetting
 	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "addmaya-item", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "addopenvdb-item", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
 }
 
-// handleUploadMayaItem 함수는 /addmaya-item에서 입력한 정보를 DB에 저장하는 함수이다.
-func handleUploadMayaItem(w http.ResponseWriter, r *http.Request) {
+// handleUploadOpenVDBItem 함수는 /addopenvdb-item에서 입력한 정보를 DB에 저장하는 함수이다.
+func handleUploadOpenVDBItem(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -94,11 +95,10 @@ func handleUploadMayaItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	item.Author = r.FormValue("author")
-	item.Title = r.FormValue("title")
 	item.Description = r.FormValue("description")
 	tags := SplitBySpace(r.FormValue("tag"))
 	item.Tags = tags
-	item.ItemType = "maya"
+	item.ItemType = "openvdb"
 	attr := make(map[string]string)
 	attrNum, err := strconv.Atoi(r.FormValue("attributesNum"))
 	if err != nil {
@@ -121,7 +121,6 @@ func handleUploadMayaItem(w http.ResponseWriter, r *http.Request) {
 	item.ThumbImgUploaded = false
 	item.ThumbClipUploaded = false
 	item.DataUploaded = false
-
 	//mongoDB client 연결
 	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 	if err != nil {
@@ -141,7 +140,7 @@ func handleUploadMayaItem(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	// admin settin에서 rootpath를 가져와서 경로를 생성한다.
+	// admin setting에서 rootpath를 가져와서 경로를 생성한다.
 	rootpath, err := GetRootPath(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -167,17 +166,17 @@ func handleUploadMayaItem(w http.ResponseWriter, r *http.Request) {
 	err = AddItem(client, item)
 	if err != nil {
 		if IsDup(err) { // 동일한 ID의 도큐먼트를 업로드하려고 하면, 새로운 ID의 페이지로 리다이렉트한다.
-			http.Redirect(w, r, "/addmaya", http.StatusSeeOther)
+			http.Redirect(w, r, "/addopenvdb", http.StatusSeeOther)
 			return
 		}
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	http.Redirect(w, r, fmt.Sprintf("/addmaya-file?objectid=%s", objectID), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/addopenvdb-file?objectid=%s", objectID), http.StatusSeeOther)
 }
 
-// handleAddMayaFile 함수는 Maya 파일을 추가하는 페이지 이다.
-func handleAddMayaFile(w http.ResponseWriter, r *http.Request) {
+// handleAddOpenVDBFile 함수는 OpenVDB 파일을 추가하는 페이지 이다.
+func handleAddOpenVDBFile(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -215,15 +214,15 @@ func handleAddMayaFile(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Adminsetting = adminsetting
 	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "addmaya-file", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "addopenvdb-file", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
 
-// handleUploadMaya 함수는 Maya파일을 DB에 업로드하는 페이지를 연다. dropzone에 파일을 올릴 경우 실행된다.
-func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
+// handleUploadOpenVDBFile 함수는 OpenVDB 파일을 DB에 업로드하는 페이지를 연다. dropzone에 파일을 올릴 경우 실행된다.
+func handleUploadOpenVDBFile(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -387,7 +386,7 @@ func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
 				item.ThumbClipUploaded = true
 			case "application/octet-stream":
 				ext := filepath.Ext(f.Filename)
-				if ext != ".mb" && ext != ".ma" { // .ma .mb 외에는 허용하지 않는다.
+				if ext != ".vdb" { // .vdb 외에는 허용하지 않는다.
 					http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
 					return
 				}
@@ -461,7 +460,8 @@ func handleUploadMayaFile(w http.ResponseWriter, r *http.Request) {
 	UpdateItem(client, item)
 }
 
-func handleUploadMayaCheckData(w http.ResponseWriter, r *http.Request) {
+// handleUploadOpenVDBCheckData 함수는 필요한 파일(썸네일, data 파일 등)을 추가했는지 체크한다.
+func handleUploadOpenVDBCheckData(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -514,17 +514,18 @@ func handleUploadMayaCheckData(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Item = item
 	if !item.ThumbImgUploaded || !item.ThumbClipUploaded || !item.DataUploaded {
-		err = TEMPLATES.ExecuteTemplate(w, "checkmaya-file", rcp)
+		err = TEMPLATES.ExecuteTemplate(w, "checkopenvdb-file", rcp)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		return
 	}
-	http.Redirect(w, r, "/addmaya-success", http.StatusSeeOther)
+	http.Redirect(w, r, "/addopenvdb-success", http.StatusSeeOther)
 }
 
-func handleAddMayaSuccess(w http.ResponseWriter, r *http.Request) {
+// handleAddOpenVDBSuccess 함수는 add openvdb item을 성공했다는 페이지를 연다.
+func handleAddOpenVDBSuccess(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -562,14 +563,15 @@ func handleAddMayaSuccess(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Adminsetting = adminsetting
 	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "addmaya-success", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "addopenvdb-success", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
 
-func handleEditMaya(w http.ResponseWriter, r *http.Request) {
+// handleEditOpenVDB 함수는 OpenVDB item 정보를 수정할 수 있는 페이지를 연다. edit 버튼을 누를 때 실행된다.
+func handleEditOpenVDB(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -579,7 +581,6 @@ func handleEditMaya(w http.ResponseWriter, r *http.Request) {
 	type recipe struct {
 		ID          primitive.ObjectID `json:"id" bson:"id"`
 		ItemType    string             `json:"itemtype" bson:"itemtype"`
-		Title       string             `json:"title" bson:"title"`
 		Author      string             `json:"author" bson:"author"`
 		Description string             `json:"description" bson:"description"`
 		Tags        []string           `json:"tags" bson:"tags"`
@@ -632,7 +633,6 @@ func handleEditMaya(w http.ResponseWriter, r *http.Request) {
 		ID:           item.ID,
 		ItemType:     item.ItemType,
 		Author:       item.Author,
-		Title:        item.Title,
 		Description:  item.Description,
 		Tags:         item.Tags,
 		Attributes:   item.Attributes,
@@ -640,15 +640,15 @@ func handleEditMaya(w http.ResponseWriter, r *http.Request) {
 		Adminsetting: adminsetting,
 	}
 
-	err = TEMPLATES.ExecuteTemplate(w, "editmaya", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "editopenvdb", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
 
-//handleEditMayaSubmit 함수는 maya아이템을 수정하는 페이지에서 UPDATE버튼을 누르면 작동하는 함수다.
-func handleEditMayaSubmit(w http.ResponseWriter, r *http.Request) {
+//handleEditOpenVDBSubmit 함수는 OpenVDB 아이템을 수정하는 페이지에서 UPDATE 버튼을 누르면 작동하는 함수다.
+func handleEditOpenVDBSubmit(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -694,7 +694,6 @@ func handleEditMayaSubmit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	item.Author = r.FormValue("author")
-	item.Title = r.FormValue("title")
 	item.Description = r.FormValue("description")
 	item.Tags = SplitBySpace(r.FormValue("tags"))
 	item.Attributes = attr
@@ -703,11 +702,11 @@ func handleEditMayaSubmit(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	http.Redirect(w, r, "/editmaya-success", http.StatusSeeOther)
+	http.Redirect(w, r, "/editopenvdb-success", http.StatusSeeOther)
 }
 
-//handleEditMayaSuccess 함수는 maya아이템 수정이 정상적으로 완료되었다고 안내하는 페이지를 띄우는 함수이다.
-func handleEditMayaSuccess(w http.ResponseWriter, r *http.Request) {
+// handleEditOpenVDBSuccess 함수는 OpenVDB item 정보 수정을 성공했다는 페이지를 연다.
+func handleEditOpenVDBSuccess(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -745,7 +744,7 @@ func handleEditMayaSuccess(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Adminsetting = adminsetting
 	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "editmaya-success", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "editopenvdb-success", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
