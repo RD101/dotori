@@ -30,6 +30,7 @@ var (
 	flagDebug             = flag.Bool("debug", false, "debug mode")                      // debug모드
 
 	flagAuthor      = flag.String("author", "", "author")
+	flagTitle       = flag.String("title", "", "title")
 	flagTag         = flag.String("tag", "", "tag")
 	flagDescription = flag.String("description", "", "description")
 	flagInputpath   = flag.String("inputpath", "", "input path")
@@ -96,6 +97,7 @@ func main() {
 		i := Item{}
 		i.ID = primitive.NewObjectID()
 		i.Author = *flagAuthor
+		i.Title = *flagTitle
 		i.Tags = SplitBySpace(*flagTag)
 		i.Description = *flagDescription
 		i.ItemType = *flagItemType
