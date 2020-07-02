@@ -85,6 +85,16 @@ export GOBIN=$HOME/bin
 export PATH=$PATH:$GOBIN
 ```
 
+dotori는 sudo로 실행해야 합니다. 그러나 linux의 경우, sudo가 현재 계정의 PATH를 다 가져오지 못하는 경우가 있습니다. 그럴 때는 /etc/visudoers 파일을 아래처럼 변경해주세요.
+
+```bash
+$ sudo visudo
+...
+
+#Default secure_path="/usr/local/sbin:/usr/local/bin:/usr/bin" # 기존 부분 주석 처리
+Default env_keep=PATH # 새로 추가
+```
+
 ### 예제파일
 - 에셋 라이브러리 개발에 사용된 예제 파일은 `examples` 폴더에 들어있습니다.
 - footage 데이터
