@@ -496,6 +496,7 @@ func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item It
 	if err != nil {
 		return err
 	}
+
 	err = genProxySequence(adminSetting, item)
 	if err != nil {
 		// 상태를 error로 바꾼다.
@@ -510,6 +511,7 @@ func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item It
 		}
 		return err
 	}
+
 	// 썸네일 동영상 생성
 
 	// .ogg 썸네일 동영상을 생성한다.
