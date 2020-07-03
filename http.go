@@ -198,6 +198,18 @@ func webserver() {
 	http.HandleFunc("/edithwp-submit", handleEditHwpSubmit)
 	http.HandleFunc("/edithwp-success", handleEditHwpSuccess)
 
+	// unreal
+	http.HandleFunc("/addunreal", handleAddUnreal)
+	http.HandleFunc("/addunreal-item", handleAddUnrealItem)
+	http.HandleFunc("/addunreal-file", handleAddUnrealFile)
+	http.HandleFunc("/uploadunreal-item", handleUploadUnrealItem)
+	http.HandleFunc("/uploadunreal-file", handleUploadUnrealFile)
+	http.HandleFunc("/uploadunreal-checkdata", handleUploadUnrealCheckData)
+	http.HandleFunc("/addunreal-success", handleAddUnrealSuccess)
+	http.HandleFunc("/editunreal", handleEditUnreal)
+	http.HandleFunc("/editunreal-submit", handleEditUnrealSubmit)
+	http.HandleFunc("/editunreal-success", handleEditUnrealSuccess)
+
 	// ies
 	http.HandleFunc("/addies", handleAddIes)
 	http.HandleFunc("/addies-item", handleAddIesItem)
