@@ -512,7 +512,7 @@ func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item It
 	if err != nil {
 		return err
 	}
-	err = SetThumbImgUploaded(client, item, true) // 모든 썸네일 동영상을 생성하였다. 썸네일 동영상이 업로드 되었다고 체크한다.
+	err = SetThumbClipUploaded(client, item, true) // 모든 썸네일 동영상을 생성하였다. 썸네일 동영상이 업로드 되었다고 체크한다.
 	if err != nil {
 		return err
 	}
