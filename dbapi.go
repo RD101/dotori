@@ -579,3 +579,20 @@ func SetThumbImgUploaded(client *mongo.Client, item Item, status bool) error {
 	}
 	return nil
 }
+
+//SetThumbClipUploaded 함수는 인수로 받은 item의 ThumbClipUploaded 값을 바꾼다.
+func SetThumbClipUploaded(client *mongo.Client, item Item, status bool) error {
+	collection := client.Database(*flagDBName).Collection("items")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	// item의 Status를 업데이트 한다.
+	filter := bson.M{"_id": item.ID}
+	update := bson.M{
+		"$set": bson.M{"thumbclipuploaded": status},
+	}
+	err := collection.FindOneAndUpdate(ctx, filter, update).Err()
+	if err != nil {
+		return err
+	}
+	return nil
+}

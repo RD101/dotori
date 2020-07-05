@@ -90,14 +90,17 @@ func processingItem() {
 	case "footage": // Footage 소스, 시퀀스
 		err = ProcessFootageItem(client, adminSetting, item)
 		if err != nil {
-			log.Println(err)
+			err = SetStatus(client, item, "error")
+			if err != nil {
+				log.Println(err)
+			}
 			err = SetLog(client, item.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
-				return
 			}
 			return
 		}
+		return
 	case "nuke": // 뉴크파일
 		err = ProcessNukeItem(client, adminSetting, item)
 		if err != nil {
@@ -426,23 +429,13 @@ func ProcessHoudiniItem(client *mongo.Client, adminSetting Adminsetting, item It
 
 // ProcessFootageItem 함수는 footage 아이템을 연산한다.
 func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item Item) error {
-	// thumbnail 폴더를 생성한다.
+	// Thumbnail 폴더를 생성한다.
 	err := SetStatus(client, item, "creating thumbnail directory")
 	if err != nil {
 		return err
 	}
 	err = genThumbDir(adminSetting, item)
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 
@@ -453,41 +446,20 @@ func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item It
 	}
 	err = genThumbFootage(adminSetting, item)
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
-	// 썸네일을 생성하였다. 썸네일이 업로드 되었다고 체크한다.
-	err = SetThumbImgUploaded(client, item, true)
+	err = SetThumbImgUploaded(client, item, true) // 썸네일이 생성되었으니 썸네일이 업로드 되었다고 체크한다.
 	if err != nil {
 		return err
 	}
 
+	// 프록시 폴더를 생성
 	err = SetStatus(client, item, "creating proxy dir")
 	if err != nil {
 		return err
 	}
-
 	err = genProxyDir(adminSetting, item)
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 
@@ -496,24 +468,12 @@ func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item It
 	if err != nil {
 		return err
 	}
-
 	err = genProxySequence(adminSetting, item)
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 
 	// 썸네일 동영상 생성
-
 	// .ogg 썸네일 동영상을 생성한다.
 	err = SetStatus(client, item, "creating .ogg media")
 	if err != nil {
@@ -521,16 +481,6 @@ func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item It
 	}
 	err = genProxyToOggMedia(adminSetting, item)
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 
@@ -541,16 +491,6 @@ func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item It
 	}
 	err = genProxyToMovMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 
@@ -561,16 +501,10 @@ func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item It
 	}
 	err = genProxyToMp4Media(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
+		return err
+	}
+	err = SetThumbClipUploaded(client, item, true) // 모든 썸네일 동영상을 생성하였다. 썸네일 동영상이 업로드 되었다고 체크한다.
+	if err != nil {
 		return err
 	}
 
@@ -579,7 +513,6 @@ func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item It
 	if err != nil {
 		return err
 	}
-
 	err = os.RemoveAll(item.OutputProxyImgPath)
 	if err != nil {
 		return err
@@ -1174,6 +1107,9 @@ func genThumbFootage(adminSetting Adminsetting, item Item) error {
 		return errors.New("admin 셋팅에서 OCIOConfig 값을 설정해주세요")
 	}
 	os.Setenv("OCIO", adminSetting.OCIOConfig)
+	if *flagDebug {
+		fmt.Println(args)
+	}
 	err = exec.Command(adminSetting.OpenImageIO, args...).Run()
 	if err != nil {
 		return err
@@ -1333,48 +1269,54 @@ func genProxyToOggMedia(adminSetting Adminsetting, item Item) error {
 	if err != nil {
 		return err
 	}
-	for _, seq := range seqs {
-		args := []string{
-			"-f",
-			"image2",
-			"-start_number",
-			strconv.Itoa(seq.FrameIn),
-			"-r",
-			"24",
-			"-y",
-			"-i",
-			fmt.Sprintf("%s/%s", seq.Dir, seq.Base),
-			"-pix_fmt",
-			"yuv420p",
-			"-c:v",
-			adminSetting.VideoCodecOgg,
-			"-qscale:v",
-			"7",
-			"-vf",
-			fmt.Sprintf("scale=%d:%d,crop=%d:%d:0:0,setsar=1",
-				adminSetting.MediaWidth,
-				adminSetting.MediaHeight,
-				adminSetting.MediaWidth,
-				adminSetting.MediaHeight,
-			),
-		}
-		if adminSetting.AudioCodec == "nosound" {
-			// nosound라면 사운드를 넣지 않는 옵션을 추가한다.
-			args = append(args, "-an")
-		} else {
-			// 다른 사운드 코덱이라면 사운드클 체크한다.
-			args = append(args, "-c:a")
-			args = append(args, adminSetting.AudioCodec)
-		}
-		args = append(args, item.OutputThumbnailOggPath)
-		if *flagDebug {
-			fmt.Println(adminSetting.FFmpeg, strings.Join(args, " "))
-		}
-		err := exec.Command(adminSetting.FFmpeg, args...).Run()
-		if err != nil {
-			return err
-		}
+	if len(seqs) != 1 {
+		return errors.New("해당 경로에 여러 소스가 존재합니다")
 	}
+	target := seqs[0]
+	if target.Length != target.FrameOut-target.FrameIn+1 {
+		return errors.New("중간에 빈 프레임이 존재합니다")
+	}
+	args := []string{
+		"-f",
+		"image2",
+		"-start_number",
+		strconv.Itoa(target.FrameIn),
+		"-r",
+		"24",
+		"-y",
+		"-i",
+		fmt.Sprintf("%s/%s", target.Dir, target.Base),
+		"-pix_fmt",
+		"yuv420p",
+		"-c:v",
+		adminSetting.VideoCodecOgg,
+		"-qscale:v",
+		"7",
+		"-vf",
+		fmt.Sprintf("scale=%d:%d,crop=%d:%d:0:0,setsar=1",
+			adminSetting.MediaWidth,
+			adminSetting.MediaHeight,
+			adminSetting.MediaWidth,
+			adminSetting.MediaHeight,
+		),
+	}
+	if adminSetting.AudioCodec == "nosound" {
+		// nosound라면 사운드를 넣지 않는 옵션을 추가한다.
+		args = append(args, "-an")
+	} else {
+		// 다른 사운드 코덱이라면 사운드클 체크한다.
+		args = append(args, "-c:a")
+		args = append(args, adminSetting.AudioCodec)
+	}
+	args = append(args, item.OutputThumbnailOggPath)
+	if *flagDebug {
+		fmt.Println(adminSetting.FFmpeg, strings.Join(args, " "))
+	}
+	err = exec.Command(adminSetting.FFmpeg, args...).Run()
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -1384,48 +1326,55 @@ func genProxyToMovMedia(adminSetting Adminsetting, item Item) error {
 	if err != nil {
 		return err
 	}
-	for _, seq := range seqs {
-		args := []string{
-			"-f",
-			"image2",
-			"-start_number",
-			strconv.Itoa(seq.FrameIn),
-			"-r",
-			"24",
-			"-y",
-			"-i",
-			fmt.Sprintf("%s/%s", seq.Dir, seq.Base),
-			"-pix_fmt",
-			"yuv420p",
-			"-c:v",
-			adminSetting.VideoCodecMov,
-			"-qscale:v",
-			"7",
-			"-vf",
-			fmt.Sprintf("scale=%d:%d,crop=%d:%d:0:0,setsar=1",
-				adminSetting.MediaWidth,
-				adminSetting.MediaHeight,
-				adminSetting.MediaWidth,
-				adminSetting.MediaHeight,
-			),
-		}
-		if adminSetting.AudioCodec == "nosound" {
-			// nosound라면 사운드를 넣지 않는 옵션을 추가한다.
-			args = append(args, "-an")
-		} else {
-			// 다른 사운드 코덱이라면 사운드클 체크한다.
-			args = append(args, "-c:a")
-			args = append(args, adminSetting.AudioCodec)
-		}
-		args = append(args, item.OutputThumbnailMovPath)
-		if *flagDebug {
-			fmt.Println(adminSetting.FFmpeg, strings.Join(args, " "))
-		}
-		err := exec.Command(adminSetting.FFmpeg, args...).Run()
-		if err != nil {
-			return err
-		}
+	if len(seqs) != 1 {
+		return errors.New("해당 경로에 여러 소스가 존재합니다")
 	}
+	target := seqs[0]
+	if target.Length != target.FrameOut-target.FrameIn+1 {
+		return errors.New("중간에 빈 프레임이 존재합니다")
+	}
+
+	args := []string{
+		"-f",
+		"image2",
+		"-start_number",
+		strconv.Itoa(target.FrameIn),
+		"-r",
+		"24",
+		"-y",
+		"-i",
+		fmt.Sprintf("%s/%s", target.Dir, target.Base),
+		"-pix_fmt",
+		"yuv420p",
+		"-c:v",
+		adminSetting.VideoCodecMov,
+		"-qscale:v",
+		"7",
+		"-vf",
+		fmt.Sprintf("scale=%d:%d,crop=%d:%d:0:0,setsar=1",
+			adminSetting.MediaWidth,
+			adminSetting.MediaHeight,
+			adminSetting.MediaWidth,
+			adminSetting.MediaHeight,
+		),
+	}
+	if adminSetting.AudioCodec == "nosound" {
+		// nosound라면 사운드를 넣지 않는 옵션을 추가한다.
+		args = append(args, "-an")
+	} else {
+		// 다른 사운드 코덱이라면 사운드클 체크한다.
+		args = append(args, "-c:a")
+		args = append(args, adminSetting.AudioCodec)
+	}
+	args = append(args, item.OutputThumbnailMovPath)
+	if *flagDebug {
+		fmt.Println(adminSetting.FFmpeg, strings.Join(args, " "))
+	}
+	err = exec.Command(adminSetting.FFmpeg, args...).Run()
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -1435,47 +1384,52 @@ func genProxyToMp4Media(adminSetting Adminsetting, item Item) error {
 	if err != nil {
 		return err
 	}
-	for _, seq := range seqs {
-		args := []string{
-			"-f",
-			"image2",
-			"-start_number",
-			strconv.Itoa(seq.FrameIn),
-			"-r",
-			"24",
-			"-y",
-			"-i",
-			fmt.Sprintf("%s/%s", seq.Dir, seq.Base),
-			"-pix_fmt",
-			"yuv420p",
-			"-c:v",
-			adminSetting.VideoCodecMp4,
-			"-qscale:v",
-			"7",
-			"-vf",
-			fmt.Sprintf("scale=%d:%d,crop=%d:%d:0:0,setsar=1",
-				adminSetting.MediaWidth,
-				adminSetting.MediaHeight,
-				adminSetting.MediaWidth,
-				adminSetting.MediaHeight,
-			),
-		}
-		if adminSetting.AudioCodec == "nosound" {
-			// nosound라면 사운드를 넣지 않는 옵션을 추가한다.
-			args = append(args, "-an")
-		} else {
-			// 다른 사운드 코덱이라면 사운드클 체크한다.
-			args = append(args, "-c:a")
-			args = append(args, adminSetting.AudioCodec)
-		}
-		args = append(args, item.OutputThumbnailMp4Path)
-		if *flagDebug {
-			fmt.Println(adminSetting.FFmpeg, strings.Join(args, " "))
-		}
-		err := exec.Command(adminSetting.FFmpeg, args...).Run()
-		if err != nil {
-			return err
-		}
+	if len(seqs) != 1 {
+		return errors.New("해당 경로에 여러 소스가 존재합니다")
+	}
+	target := seqs[0]
+	if target.Length != target.FrameOut-target.FrameIn+1 {
+		return errors.New("중간에 빈 프레임이 존재합니다")
+	}
+	args := []string{
+		"-f",
+		"image2",
+		"-start_number",
+		strconv.Itoa(target.FrameIn),
+		"-r",
+		"24",
+		"-y",
+		"-i",
+		fmt.Sprintf("%s/%s", target.Dir, target.Base),
+		"-pix_fmt",
+		"yuv420p",
+		"-c:v",
+		adminSetting.VideoCodecMp4,
+		"-qscale:v",
+		"7",
+		"-vf",
+		fmt.Sprintf("scale=%d:%d,crop=%d:%d:0:0,setsar=1",
+			adminSetting.MediaWidth,
+			adminSetting.MediaHeight,
+			adminSetting.MediaWidth,
+			adminSetting.MediaHeight,
+		),
+	}
+	if adminSetting.AudioCodec == "nosound" {
+		// nosound라면 사운드를 넣지 않는 옵션을 추가한다.
+		args = append(args, "-an")
+	} else {
+		// 다른 사운드 코덱이라면 사운드클 체크한다.
+		args = append(args, "-c:a")
+		args = append(args, adminSetting.AudioCodec)
+	}
+	args = append(args, item.OutputThumbnailMp4Path)
+	if *flagDebug {
+		fmt.Println(adminSetting.FFmpeg, strings.Join(args, " "))
+	}
+	err = exec.Command(adminSetting.FFmpeg, args...).Run()
+	if err != nil {
+		return err
 	}
 	return nil
 }
