@@ -136,6 +136,13 @@ func (i Item) CheckError() error {
 			return errors.New("tag에는 한자리의 단어를 사용할 수 없습니다")
 		}
 	}
+	if len(i.Title) == 1 {
+		return errors.New("title에는 한 자리의 단어를 사용할 수 없습니다")
+	}
+	if !regexTitle.MatchString(i.Title) {
+		return errors.New("title에는 특수문자를 사용할 수 없습니다")
+	}
+
 	return nil
 }
 
