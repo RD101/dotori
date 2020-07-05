@@ -399,10 +399,10 @@ func Test_Title(t *testing.T) {
 		Title: "title타이틀", // 영문 + 한글 조합
 		want:  true,
 	}, {
-		Title: "tag@", // 특수문자가 포함된 경우
+		Title: "title@", // 특수문자가 포함된 경우
 		want:  false,
 	}, {
-		Title: ",tag", // 특수문자로 시작하는 경우
+		Title: ",title", // 특수문자로 시작하는 경우
 		want:  false,
 	},
 	}
