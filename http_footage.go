@@ -615,6 +615,11 @@ func handleEditFootageSubmit(w http.ResponseWriter, r *http.Request) {
 	item.InColorspace = r.FormValue("incolorspace")
 	item.OutColorspace = r.FormValue("outcolorspace")
 	item.Attributes = attr
+	err = item.CheckError()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 	err = UpdateItem(client, item)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
