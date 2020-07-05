@@ -377,3 +377,40 @@ func Test_SplitBySign(t *testing.T) {
 		}
 	}
 }
+
+// title를 테스트하기위한 함수
+func Test_Title(t *testing.T) {
+	cases := []struct {
+		Title string
+		want  bool
+	}{{
+		Title: "title", // 영문만 있는 경우
+		want:  true,
+	}, {
+		Title: "123", // 숫자만 있는 경우
+		want:  true,
+	}, {
+		Title: "title2", // 영문 + 숫자 조합
+		want:  true,
+	}, {
+		Title: "타이틀", // 한글만 있는 경우
+		want:  true,
+	}, {
+		Title: "title타이틀", // 영문 + 한글 조합
+		want:  true,
+	}, {
+		Title: "title@", // 특수문자가 포함된 경우
+		want:  false,
+	}, {
+		Title: ",title", // 특수문자로 시작하는 경우
+		want:  false,
+	},
+	}
+
+	for _, c := range cases {
+		b := regexTitle.MatchString(c.Title)
+		if c.want != b {
+			t.Fatalf("Test_Title(): 입력 값: %v, 원하는 값: %v, 얻은 값: %v\n", c.Title, c.want, b)
+		}
+	}
+}
