@@ -13,6 +13,15 @@
             <div class="row">
                 <div class="col-sm">
                     <div class="form-group">
+                        <label class="text-muted">Title</label>
+                        <input type="text" name="title" class="form-control" placeholder="에셋 제목" value="{{.Title}}">
+                        <small class="form-text text-muted">에셋 제목을 입력해주세요.</small>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm">
+                    <div class="form-group">
                         <label class="text-muted">Author</label>
                         <input id="addAuthor" type="text" name="author" class="form-control" placeholder="에셋 제작자 이름" value="{{.Author}}">
                         <small class="form-text text-muted">에셋 제작자 이름을 적어주세요.</small>
@@ -34,6 +43,24 @@
                         <label class="text-muted">Tag</label>
                         <input id="addTag" type="text" name="tag" class="form-control" placeholder="자동차 하늘" value="{{Tags2str .Tags}}">
                         <small class="form-text text-muted">태그를 입력하세요. 태그는 띄어쓰기로 구분합니다.</small>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm">
+                    <div class="form-group">
+                        <label class="text-muted">FPS</label>
+                        <select name="fps" class="form-control">
+                            <option value="24" {{if eq .Fps "24" }}selected{{end}}>24</option>
+                            <option value="23.976" {{if eq .Fps "23.976" }}selected{{end}}>23.976</option>
+                            <option value="23.98" {{if eq .Fps "23.98" }}selected{{end}}>23.98</option>
+                            <option value="30" {{if eq .Fps "30" }}selected{{end}}>30</option>
+                            <option value="25" {{if eq .Fps "25" }}selected{{end}}>25</option>
+                            <option value="29.97" {{if eq .Fps "29.97" }}selected{{end}}>29.97</option>
+                            <option value="60" {{if eq .Fps "60" }}selected{{end}}>60</option>
+                            <option value="59.94" {{if eq .Fps "59.94" }}selected{{end}}>59.94</option>
+                        </select>
+                        <small class="form-text text-muted">촬영 Footage의 FPS를 입력해주세요.</small>
                     </div>
                 </div>
             </div>

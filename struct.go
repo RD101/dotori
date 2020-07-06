@@ -82,6 +82,7 @@ type Item struct {
 
 	InColorspace  string `json:"incolorspace" bson:"incolorspace"`   // InColorspace
 	OutColorspace string `json:"outcolorspace" bson:"outcolorspace"` // OutColorspace
+	Fps           string `json:"fps" bson:"fps"`                     // fps값 ffmpeg 연산에 사용되는 값이기 때문에 문자열로 처리함.
 
 	KindOfUSD string `json:"kindofusd" bson:"kindofusd"` // Kind Of USD
 }
