@@ -99,10 +99,12 @@ func handleUploadFootageItem(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	item.Title = r.FormValue("title")
 	item.Author = r.FormValue("author")
 	item.Description = r.FormValue("description")
 	item.InColorspace = r.FormValue("incolorspace")
 	item.OutColorspace = r.FormValue("outcolorspace")
+	item.Fps = r.FormValue("fps")
 	tags := SplitBySpace(r.FormValue("tag"))
 	item.Tags = tags
 	item.ItemType = "footage"

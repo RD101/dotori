@@ -11,6 +11,15 @@
         <div class="row">
             <div class="col-sm">
                 <div class="form-group">
+                    <label class="text-muted">Title</label>
+                    <input type="text" name="title" class="form-control" placeholder="에셋 제목">
+                    <small class="form-text text-muted">에셋 제목을 입력해주세요.</small>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <div class="form-group">
                     <label class="text-muted">Author</label>
                     <input id="addAuthor" type="text" name="author" class="form-control" placeholder="에셋 제작자 이름">
                     <small class="form-text text-muted">에셋 제작자 이름을 적어주세요.</small>
@@ -32,6 +41,24 @@
                     <label class="text-muted">Tag</label>
                     <input id="addTag" type="text" name="tag" class="form-control" placeholder="자동차 하늘">
                     <small class="form-text text-muted">태그를 입력하세요. 태그는 띄어쓰기로 구분합니다.</small>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <div class="form-group">
+                    <label class="text-muted">FPS</label>
+                    <select name="fps" class="form-control">
+                        <option value="24">24</option>
+                        <option value="23.976">23.976</option>
+                        <option value="23.98">23.98</option>
+                        <option value="30">30</option>
+                        <option value="25">25</option>
+                        <option value="29.97">29.97</option>
+                        <option value="60">60</option>
+                        <option value="59.94">59.94</option>
+                    </select>
+                    <small class="form-text text-muted">촬영 Footage의 FPS를 입력해주세요.</small>
                 </div>
             </div>
         </div>
