@@ -2,11 +2,13 @@ package main
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"fmt"
 	"html/template"
 	"log"
 	"os"
+	"os/user"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -25,9 +27,10 @@ var (
 	flagSearch            = flag.Bool("search", false, "search mode")
 	flagSearchWord        = flag.String("searchword", "", "search word") // DB를 검색할 때 사용합니다.
 	flagSearchID          = flag.Bool("searchid", false, "search a item by its id")
-	flagGetOngoingProcess = flag.Bool("getongoingprocess", false, "get ongoing process") // 완료되지 않은 프로세스를 가져옵니다.
-	flagProcess           = flag.Bool("process", false, "start processing item")         // 프로세스를 실행시킨다
-	flagDebug             = flag.Bool("debug", false, "debug mode")                      // debug모드
+	flagGetOngoingProcess = flag.Bool("getongoingprocess", false, "get ongoing process")  // 완료되지 않은 프로세스를 가져옵니다.
+	flagProcess           = flag.Bool("process", false, "start processing item")          // 프로세스를 실행시킨다
+	flagDebug             = flag.Bool("debug", false, "debug mode")                       // debug모드
+	flagAccesslevel       = flag.String("accesslevel", "default", "access level of user") // 사용자의 accesslevel을 지정합니다. admin, manager, default
 
 	flagAuthor      = flag.String("author", "", "author")
 	flagTitle       = flag.String("title", "", "title")
@@ -36,6 +39,7 @@ var (
 	flagInputpath   = flag.String("inputpath", "", "input path")
 	flagItemType    = flag.String("itemtype", "", "type of asset")
 	flagAttributes  = flag.String("attributes", "", "detail info of file") // "key:value,key:value"
+	flagUserID      = flag.String("userid", "", "ID of user")
 
 	// 서비스에 필요한 인수
 	flagMongoDBURI      = flag.String("mongodburi", "mongodb://localhost:27017", "mongoDB URI ex)mongodb://localhost:27017")
@@ -55,6 +59,11 @@ func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	log.SetPrefix("dotori: ")
 	flag.Parse()
+
+	user, err := user.Current()
+	if err != nil {
+		log.Fatal(err)
+	}
 	if *flagSeek {
 		items, err := searchSeq(*flagInputpath)
 		if err != nil {
@@ -233,9 +242,40 @@ func main() {
 	} else if *flagProcess {
 		processingItem()
 		fmt.Println("done")
+	} else if *flagAccesslevel != "" && *flagUserID != "" {
+		if user.Username != "root" {
+			log.Fatal(errors.New("사용자의 레벨을 수정하기 위해서는 root 권한이 필요합니다"))
+		}
+		//mongoDB client 연결
+		client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+		if err != nil {
+			log.Fatal(err)
+		}
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		err = client.Connect(ctx)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer client.Disconnect(ctx)
+		err = client.Ping(ctx, readpref.Primary())
+		if err != nil {
+			log.Fatal(err)
+		}
+		// userID를 이용해서 사용자정보를 가져온다.
+		u, err := GetUser(client, *flagUserID)
+		if err != nil {
+			log.Fatal(err)
+		}
+		u.AccessLevel = *flagAccesslevel
+		//수정된 사용자 정보를 DB에 업데이트한다.
+		err = SetUser(client, u)
+		if err != nil {
+			log.Fatal(err)
+		}
+		return
 	} else {
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
-
 }
