@@ -269,6 +269,7 @@ func main() {
 		}
 		u.AccessLevel = *flagAccesslevel
 		//수정된 사용자 정보를 DB에 업데이트한다.
+		u.CreateToken()
 		err = SetUser(client, u)
 		if err != nil {
 			log.Fatal(err)
