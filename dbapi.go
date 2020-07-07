@@ -306,14 +306,7 @@ func SetUser(client *mongo.Client, u User) error {
 	collection := client.Database(*flagDBName).Collection("users")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	n, err := collection.CountDocuments(ctx, bson.M{"id": u.ID})
-	if err != nil {
-		return err
-	}
-	if n != 0 {
-		return errors.New("already exists user ID")
-	}
-	_, err = collection.UpdateOne(
+	_, err := collection.UpdateOne(
 		ctx,
 		bson.M{"id": u.ID},
 		bson.D{{Key: "$set", Value: u}},
