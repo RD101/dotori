@@ -93,6 +93,7 @@ func handleUploadAlembicItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	item.Author = r.FormValue("author")
+	item.Title = r.FormValue("title")
 	item.Description = r.FormValue("description")
 	tags := SplitBySpace(r.FormValue("tag"))
 	item.Tags = tags
@@ -579,6 +580,7 @@ func handleEditAlembic(w http.ResponseWriter, r *http.Request) {
 	type recipe struct {
 		ID          primitive.ObjectID `json:"id" bson:"id"`
 		ItemType    string             `json:"itemtype" bson:"itemtype"`
+		Title       string             `json:"title" bson:"title"`
 		Author      string             `json:"author" bson:"author"`
 		Description string             `json:"description" bson:"description"`
 		Tags        []string           `json:"tags" bson:"tags"`
@@ -631,6 +633,7 @@ func handleEditAlembic(w http.ResponseWriter, r *http.Request) {
 		ID:           item.ID,
 		ItemType:     item.ItemType,
 		Author:       item.Author,
+		Title:        item.Title,
 		Description:  item.Description,
 		Tags:         item.Tags,
 		Attributes:   item.Attributes,
@@ -692,6 +695,7 @@ func handleEditAlembicSubmit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	item.Author = r.FormValue("author")
+	item.Title = r.FormValue("title")
 	item.Description = r.FormValue("description")
 	item.Tags = SplitBySpace(r.FormValue("tags"))
 	item.Attributes = attr

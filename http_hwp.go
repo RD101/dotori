@@ -93,6 +93,7 @@ func handleUploadHwpItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	item.Author = r.FormValue("author")
+	item.Title = r.FormValue("title")
 	item.Description = r.FormValue("description")
 	tags := SplitBySpace(r.FormValue("tag"))
 	item.Tags = tags
@@ -515,6 +516,7 @@ func handleEditHwp(w http.ResponseWriter, r *http.Request) {
 		ID          primitive.ObjectID `json:"id" bson:"id"`
 		ItemType    string             `json:"itemtype" bson:"itemtype"`
 		Author      string             `json:"author" bson:"author"`
+		Title       string             `json:"title" bson:"title"`
 		Description string             `json:"description" bson:"description"`
 		Tags        []string           `json:"tags" bson:"tags"`
 		Attributes  map[string]string  `json:"attributes" bson:"attributes"`
@@ -566,6 +568,7 @@ func handleEditHwp(w http.ResponseWriter, r *http.Request) {
 		ID:           item.ID,
 		ItemType:     item.ItemType,
 		Author:       item.Author,
+		Title:        item.Title,
 		Description:  item.Description,
 		Tags:         item.Tags,
 		Attributes:   item.Attributes,
@@ -627,6 +630,7 @@ func handleEditHwpSubmit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	item.Author = r.FormValue("author")
+	item.Title = r.FormValue("title")
 	item.Description = r.FormValue("description")
 	item.Tags = SplitBySpace(r.FormValue("tags"))
 	item.Attributes = attr
