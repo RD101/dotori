@@ -57,13 +57,9 @@ func webserver() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	adminsetting, err := GetAdminSetting(client)
-	if err != nil {
-		log.Fatal(err)
-	}
-	http.Handle("/storage/", http.StripPrefix("/storage/", http.FileServer(http.Dir(adminsetting.Rootpath))))
 	// 웹주소 설정
 	http.HandleFunc("/", handleSearch)
+	http.HandleFunc("/mediadata", handleMediaData)
 	http.HandleFunc("/search", handleSearch)
 	http.HandleFunc("/search-submit", handleSearchSubmit)
 
