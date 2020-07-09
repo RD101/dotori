@@ -81,6 +81,11 @@ function handlerNumCheck(element){
 
 // addPageBlankCheck 은 addPage에서 빈값을 체크하는 함수이다.
 function addPageBlankCheck(){
+    var title = document.getElementById("addTitle");
+    if(title.value == ''){
+        alert("Title을 입력해주세요.");
+        return false;
+    }
     var author = document.getElementById("addAuthor");
     if(author.value == ''){
         alert("Author를 입력해주세요.");
