@@ -23,9 +23,7 @@ import (
 
 // 실제 연산을 하는 worker
 func worker(jobs <-chan Item, results chan<- int) {
-	fmt.Println("genworker")
 	for j := range jobs {
-		fmt.Println("worker processing job", j.ID.Hex())
 		//mongoDB client 연결
 		client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 		if err != nil {
@@ -197,14 +195,11 @@ func worker(jobs <-chan Item, results chan<- int) {
 		time.Sleep(time.Second * 5)
 		results <- 1
 	}
-	fmt.Println("done")
 }
 
 // 아이템을 가져와서 버퍼 채널에 채우는 함수
 func queueingItem(jobs chan<- Item) {
-	// 아이템을 계속 찾아와야 하니까 무한루프 돌리기
 	for {
-		fmt.Println("queueing")
 		//mongoDB client 연결
 		client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 		if err != nil {
@@ -227,7 +222,7 @@ func queueingItem(jobs chan<- Item) {
 		// Status가 FileUploaded인 item을 가져온다.
 		item, err := GetFileUploadedItem(client)
 		if err != nil {
-			// 가지고 올 문서가 없다면 기다렸다가 continue 한다.
+			// 가지고 올 문서가 없다면 기다렸다가 continue.
 			if err == mongo.ErrNoDocuments {
 				time.Sleep(time.Second * 10)
 				continue
@@ -236,13 +231,12 @@ func queueingItem(jobs chan<- Item) {
 			return
 		}
 		jobs <- item
-		fmt.Println("queued item")
-		// 3초 기다렸다가 다시 실행
+		// 기다렸다가 다시 실행
 		time.Sleep(time.Second * 10)
 	}
 }
 
-// ProcessMain 함수는 프로세스 전체 흐름을 만드는 메인 함수
+// ProcessMain 함수는 프로세스 전체 흐름을 만드는 함수
 func ProcessMain() {
 	// 버퍼 채널을 만든다.
 	jobs := make(chan Item, 100)
