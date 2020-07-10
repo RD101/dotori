@@ -21,6 +21,26 @@ import (
 	"golang.org/x/sys/unix"
 )
 
+// ProcessMain 함수는 프로세스 전체 흐름을 만드는 함수
+func ProcessMain() {
+	// 버퍼 채널을 만든다.
+	jobs := make(chan Item, 100)
+	results := make(chan int, 100)
+
+	// worker 프로세스를 지정한 개수만큼 실행시킨다.
+	for w := 1; w <= *flagMaxProcessNum; w++ {
+		go worker(jobs, results)
+	}
+
+	// queueingItem을 실행시킨다.
+	go queueingItem(jobs)
+
+	//results 버퍼 어쩌구. 이건 왜 필요한지 나중에 알아보기
+	for a := 1; a <= 9; a++ {
+		<-results
+	}
+}
+
 // 실제 연산을 하는 worker
 func worker(jobs <-chan Item, results chan<- int) {
 	for j := range jobs {
@@ -233,26 +253,6 @@ func queueingItem(jobs chan<- Item) {
 		jobs <- item
 		// 기다렸다가 다시 실행
 		time.Sleep(time.Second * 10)
-	}
-}
-
-// ProcessMain 함수는 프로세스 전체 흐름을 만드는 함수
-func ProcessMain() {
-	// 버퍼 채널을 만든다.
-	jobs := make(chan Item, 100)
-	results := make(chan int, 100)
-
-	// worker 프로세스를 지정한 개수만큼 실행시킨다.
-	for w := 1; w <= *flagMaxProcessNum; w++ {
-		go worker(jobs, results)
-	}
-
-	// queueingItem을 실행시킨다.
-	go queueingItem(jobs)
-
-	//results 버퍼 어쩌구. 이건 왜 필요한지 나중에 알아보기
-	for a := 1; a <= 9; a++ {
-		<-results
 	}
 }
 
