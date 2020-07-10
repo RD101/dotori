@@ -81,18 +81,19 @@ function handlerNumCheck(element){
 
 // addPageBlankCheck 은 addPage에서 빈값을 체크하는 함수이다.
 function addPageBlankCheck(){
-    var author = document.getElementById("addAuthor");
-    if(author.value == ''){
+    if(document.getElementById("addTitle").value == ''){
+        alert("Title을 입력해주세요.");
+        return false;
+    }
+    if(document.getElementById("addAuthor").value == ''){
         alert("Author를 입력해주세요.");
         return false;
     }
-    var description = document.getElementById("addDescription");
-    if(description.value == ''){
+    if(document.getElementById("addDescription").value == ''){
         alert("Description을 입력해주세요.");
         return false;
     }
-    var tag = document.getElementById("addTag");
-    if(tag.value == ''){
+    if(document.getElementById("addTag").value == ''){
         alert("Tag를 입력해주세요.");
         return false;
     }
