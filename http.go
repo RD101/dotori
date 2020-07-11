@@ -222,6 +222,18 @@ func webserver() {
 	http.HandleFunc("/edities-submit", handleEditIesSubmit)
 	http.HandleFunc("/edities-success", handleEditIesSuccess)
 
+	// Modo
+	http.HandleFunc("/addmodo", handleAddModo)
+	http.HandleFunc("/addmodo-item", handleAddModoItem)
+	http.HandleFunc("/addmodo-file", handleAddModoFile)
+	http.HandleFunc("/uploadmodo-item", handleUploadModoItem)
+	http.HandleFunc("/uploadmodo-file", handleUploadModoFile)
+	http.HandleFunc("/uploadmodo-checkdata", handleUploadModoCheckData)
+	http.HandleFunc("/addmodo-success", handleAddModoSuccess)
+	http.HandleFunc("/editmodo", handleEditModo)
+	http.HandleFunc("/editmodo-submit", handleEditModoSubmit)
+	http.HandleFunc("/editmodo-success", handleEditModoSuccess)
+
 	// Admin
 	http.HandleFunc("/adminsetting", handleAdminSetting)
 	http.HandleFunc("/adminsetting-submit", handleAdminSettingSubmit)
