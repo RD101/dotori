@@ -40,7 +40,7 @@
                             <a href="/download-item?itemtype={{.ItemType}}&id={{.ID.Hex}}" class="finger badge badge-outline-darkmode">Download</a>
                         {{end}}
                         {{if eq $.User.AccessLevel "admin"}}
-                            <button class="finger badge badge-danger" data-toggle="modal" data-target="#modal-rmitem" onclick="setRmItemModal('{{.ItemType}}','{{.ID.Hex}}')">Delete</button>
+                            <span class="finger badge badge-danger" data-toggle="modal" data-target="#modal-rmitem" onclick="setRmItemModal('{{.ItemType}}','{{.ID.Hex}}')">DELETE</span>
                         {{end}}
                         {{if eq .ItemType "usd"}}
                             <img src="/assets/img/ar.svg" class="finger">
