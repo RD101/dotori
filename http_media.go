@@ -87,7 +87,7 @@ func handleMediaData(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, item.OutputThumbnailPngPath)
 		return
 	default:
-		http.Error(w, "파일이 존재하지 않습니다", http.StatusNotFound)
+		http.Error(w, "지원하지 않는 형식입니다", http.StatusNotFound)
 		return
 	}
 }
