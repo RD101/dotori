@@ -25,196 +25,195 @@ import (
 func ProcessMain() {
 	// 버퍼 채널을 만든다.
 	jobs := make(chan Item, 100)
-	results := make(chan int, 100)
 
 	// worker 프로세스를 지정한 개수만큼 실행시킨다.
 	for w := 1; w <= *flagMaxProcessNum; w++ {
-		go worker(jobs, results)
+		go worker(jobs)
 	}
 
 	// queueingItem을 실행시킨다.
 	go queueingItem(jobs)
 
-	//results 버퍼 어쩌구. 이건 왜 필요한지 나중에 알아보기
-	for a := 1; a <= 9; a++ {
-		<-results
-	}
+	select {}
 }
 
 // 실제 연산을 하는 worker
-func worker(jobs <-chan Item, results chan<- int) {
+func worker(jobs <-chan Item) {
 	for j := range jobs {
-		//mongoDB client 연결
-		client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
-		if err != nil {
-			log.Println(err)
-			return
-		}
-		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		defer cancel()
-		err = client.Connect(ctx)
-		if err != nil {
-			log.Println(err)
-			return
-		}
-		defer client.Disconnect(ctx)
-		err = client.Ping(ctx, readpref.Primary())
-		if err != nil {
-			log.Println(err)
-			return
-		}
-		// AdminSetting을 DB에서 가지고 온다.
-		adminSetting, err := GetAdminSetting(client)
-		if err != nil {
-			log.Println(err)
-			return
-		}
-		// ItemType별로 연산한다.
-		switch j.ItemType {
-		case "maya":
-			err = ProcessMayaItem(client, adminSetting, j)
-			if err != nil {
-				log.Println(err)
-				err = SetLog(client, j.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-					return
-				}
-				return
-			}
-		case "footage": // Footage 소스, 시퀀스
-			err = ProcessFootageItem(client, adminSetting, j)
-			if err != nil {
-				err = SetStatus(client, j, "error")
-				if err != nil {
-					log.Println(err)
-				}
-				err = SetLog(client, j.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-				}
-				return
-			}
-			return
-		case "nuke": // 뉴크파일
-			err = ProcessNukeItem(client, adminSetting, j)
-			if err != nil {
-				log.Println(err)
-				err = SetLog(client, j.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-					return
-				}
-				return
-			}
-		case "usd": // Pixar USD
-			err = ProcessUSDItem(client, adminSetting, j)
-			if err != nil {
-				log.Println(err)
-				err = SetLog(client, j.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-					return
-				}
-				return
-			}
-		case "alembic": // Alembic
-			err = ProcessAlembicItem(client, adminSetting, j)
-			if err != nil {
-				log.Println(err)
-				err = SetLog(client, j.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-					return
-				}
-				return
-			}
-		case "houdini": // 후디니
-			err = ProcessHoudiniItem(client, adminSetting, j)
-			if err != nil {
-				log.Println(err)
-				err = SetLog(client, j.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-					return
-				}
-				return
-			}
-		case "openvdb": // 볼륨데이터
-			err = ProcessOpenVDBItem(client, adminSetting, j)
-			if err != nil {
-				log.Println(err)
-				err = SetLog(client, j.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-					return
-				}
-				return
-			}
-		case "pdf": // 문서
-			return
-		case "ies": // 조명파일
-			err = ProcessIesItem(client, adminSetting, j)
-			if err != nil {
-				log.Println(err)
-				err = SetLog(client, j.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-					return
-				}
-				return
-			}
-			return
-		case "hdri": // HDRI 이미지, 환경맵
-			return
-		case "blender": // 블렌더 파일
-			err = ProcessBlenderItem(client, adminSetting, j)
-			if err != nil {
-				log.Println(err)
-				err = SetLog(client, j.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-					return
-				}
-				return
-			}
-		case "texture": // 텍스쳐
-			return
-		case "psd": // 포토샵 파일
-			return
-		case "modo": // 모도
-			return
-		case "lut", "3dl", "blut", "cms", "csp", "cub", "cube", "vf", "vfz": // LUT 파일들
-			return
-		case "sound":
-			err = ProcessSoundItem(client, adminSetting, j)
-			if err != nil {
-				log.Println(err)
-				err = SetLog(client, j.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-					return
-				}
-				return
-			}
-		case "unreal":
-			err = ProcessUnrealItem(client, adminSetting, j)
-			if err != nil {
-				log.Println(err)
-				err = SetLog(client, j.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-					return
-				}
-				return
-			}
-		default:
-			log.Println("약속된 type이 아닙니다")
-			return
-		}
-		time.Sleep(time.Second * 5)
-		results <- 1
+		processingItem(j)
 	}
+}
+
+func processingItem(j Item) {
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	err = client.Connect(ctx)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	defer client.Disconnect(ctx)
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	// AdminSetting을 DB에서 가지고 온다.
+	adminSetting, err := GetAdminSetting(client)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	// ItemType별로 연산한다.
+	switch j.ItemType {
+	case "maya":
+		err = ProcessMayaItem(client, adminSetting, j)
+		if err != nil {
+			log.Println(err)
+			err = SetLog(client, j.ID.Hex(), err.Error())
+			if err != nil {
+				log.Println(err)
+				return
+			}
+			return
+		}
+	case "footage": // Footage 소스, 시퀀스
+		err = ProcessFootageItem(client, adminSetting, j)
+		if err != nil {
+			err = SetStatus(client, j, "error")
+			if err != nil {
+				log.Println(err)
+			}
+			err = SetLog(client, j.ID.Hex(), err.Error())
+			if err != nil {
+				log.Println(err)
+			}
+			return
+		}
+		return
+	case "nuke": // 뉴크파일
+		err = ProcessNukeItem(client, adminSetting, j)
+		if err != nil {
+			log.Println(err)
+			err = SetLog(client, j.ID.Hex(), err.Error())
+			if err != nil {
+				log.Println(err)
+				return
+			}
+			return
+		}
+	case "usd": // Pixar USD
+		err = ProcessUSDItem(client, adminSetting, j)
+		if err != nil {
+			log.Println(err)
+			err = SetLog(client, j.ID.Hex(), err.Error())
+			if err != nil {
+				log.Println(err)
+				return
+			}
+			return
+		}
+	case "alembic": // Alembic
+		err = ProcessAlembicItem(client, adminSetting, j)
+		if err != nil {
+			log.Println(err)
+			err = SetLog(client, j.ID.Hex(), err.Error())
+			if err != nil {
+				log.Println(err)
+				return
+			}
+			return
+		}
+	case "houdini": // 후디니
+		err = ProcessHoudiniItem(client, adminSetting, j)
+		if err != nil {
+			log.Println(err)
+			err = SetLog(client, j.ID.Hex(), err.Error())
+			if err != nil {
+				log.Println(err)
+				return
+			}
+			return
+		}
+	case "openvdb": // 볼륨데이터
+		err = ProcessOpenVDBItem(client, adminSetting, j)
+		if err != nil {
+			log.Println(err)
+			err = SetLog(client, j.ID.Hex(), err.Error())
+			if err != nil {
+				log.Println(err)
+				return
+			}
+			return
+		}
+	case "pdf": // 문서
+		return
+	case "ies": // 조명파일
+		err = ProcessIesItem(client, adminSetting, j)
+		if err != nil {
+			log.Println(err)
+			err = SetLog(client, j.ID.Hex(), err.Error())
+			if err != nil {
+				log.Println(err)
+				return
+			}
+			return
+		}
+		return
+	case "hdri": // HDRI 이미지, 환경맵
+		return
+	case "blender": // 블렌더 파일
+		err = ProcessBlenderItem(client, adminSetting, j)
+		if err != nil {
+			log.Println(err)
+			err = SetLog(client, j.ID.Hex(), err.Error())
+			if err != nil {
+				log.Println(err)
+				return
+			}
+			return
+		}
+	case "texture": // 텍스쳐
+		return
+	case "psd": // 포토샵 파일
+		return
+	case "modo": // 모도
+		return
+	case "lut", "3dl", "blut", "cms", "csp", "cub", "cube", "vf", "vfz": // LUT 파일들
+		return
+	case "sound":
+		err = ProcessSoundItem(client, adminSetting, j)
+		if err != nil {
+			log.Println(err)
+			err = SetLog(client, j.ID.Hex(), err.Error())
+			if err != nil {
+				log.Println(err)
+				return
+			}
+			return
+		}
+	case "unreal":
+		err = ProcessUnrealItem(client, adminSetting, j)
+		if err != nil {
+			log.Println(err)
+			err = SetLog(client, j.ID.Hex(), err.Error())
+			if err != nil {
+				log.Println(err)
+				return
+			}
+			return
+		}
+	default:
+		log.Println("약속된 type이 아닙니다")
+		return
+	}
+	time.Sleep(time.Second * 5)
 }
 
 // 아이템을 가져와서 버퍼 채널에 채우는 함수
