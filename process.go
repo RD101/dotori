@@ -21,15 +21,30 @@ import (
 	"golang.org/x/sys/unix"
 )
 
-// Processing 함수는 일정시간마다 프로세스를 실행시킨다.
-func Processing() {
-	for {
-		time.Sleep(time.Duration(*flagProcessInterval) * 1000 * time.Millisecond)
-		go processingItem()
+// ProcessMain 함수는 프로세스 전체 흐름을 만드는 함수
+func ProcessMain() {
+	// 버퍼 채널을 만든다.
+	jobs := make(chan Item, 100)
+
+	// worker 프로세스를 지정한 개수만큼 실행시킨다.
+	for w := 1; w <= *flagMaxProcessNum; w++ {
+		go worker(jobs)
+	}
+
+	// queueingItem을 실행시킨다.
+	go queueingItem(jobs)
+
+	select {}
+}
+
+// 실제 연산을 하는 worker
+func worker(jobs <-chan Item) {
+	for j := range jobs {
+		processingItem(j)
 	}
 }
 
-func processingItem() {
+func processingItem(j Item) {
 	//mongoDB client 연결
 	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 	if err != nil {
@@ -49,38 +64,19 @@ func processingItem() {
 		log.Println(err)
 		return
 	}
-	// 연산 갯수를 체크한다.
-	getProcessNum, err := GetProcessingItemNum(client)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	if *flagMaxProcessNum < getProcessNum {
-		return
-	}
 	// AdminSetting을 DB에서 가지고 온다.
 	adminSetting, err := GetAdminSetting(client)
 	if err != nil {
 		log.Println(err)
 		return
 	}
-	// Status가 FileUploaded인 item을 가져온다.
-	item, err := GetFileUploadedItem(client)
-	if err != nil {
-		// 가지고 올 문서가 없다면 그냥 return 한다.
-		if err == mongo.ErrNoDocuments {
-			return
-		}
-		log.Println(err)
-		return
-	}
 	// ItemType별로 연산한다.
-	switch item.ItemType {
+	switch j.ItemType {
 	case "maya":
-		err = ProcessMayaItem(client, adminSetting, item)
+		err = ProcessMayaItem(client, adminSetting, j)
 		if err != nil {
 			log.Println(err)
-			err = SetLog(client, item.ID.Hex(), err.Error())
+			err = SetLog(client, j.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 				return
@@ -88,13 +84,13 @@ func processingItem() {
 			return
 		}
 	case "footage": // Footage 소스, 시퀀스
-		err = ProcessFootageItem(client, adminSetting, item)
+		err = ProcessFootageItem(client, adminSetting, j)
 		if err != nil {
-			err = SetStatus(client, item, "error")
+			err = SetStatus(client, j, "error")
 			if err != nil {
 				log.Println(err)
 			}
-			err = SetLog(client, item.ID.Hex(), err.Error())
+			err = SetLog(client, j.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 			}
@@ -102,10 +98,10 @@ func processingItem() {
 		}
 		return
 	case "nuke": // 뉴크파일
-		err = ProcessNukeItem(client, adminSetting, item)
+		err = ProcessNukeItem(client, adminSetting, j)
 		if err != nil {
 			log.Println(err)
-			err = SetLog(client, item.ID.Hex(), err.Error())
+			err = SetLog(client, j.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 				return
@@ -113,10 +109,10 @@ func processingItem() {
 			return
 		}
 	case "usd": // Pixar USD
-		err = ProcessUSDItem(client, adminSetting, item)
+		err = ProcessUSDItem(client, adminSetting, j)
 		if err != nil {
 			log.Println(err)
-			err = SetLog(client, item.ID.Hex(), err.Error())
+			err = SetLog(client, j.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 				return
@@ -124,10 +120,10 @@ func processingItem() {
 			return
 		}
 	case "alembic": // Alembic
-		err = ProcessAlembicItem(client, adminSetting, item)
+		err = ProcessAlembicItem(client, adminSetting, j)
 		if err != nil {
 			log.Println(err)
-			err = SetLog(client, item.ID.Hex(), err.Error())
+			err = SetLog(client, j.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 				return
@@ -135,10 +131,10 @@ func processingItem() {
 			return
 		}
 	case "houdini": // 후디니
-		err = ProcessHoudiniItem(client, adminSetting, item)
+		err = ProcessHoudiniItem(client, adminSetting, j)
 		if err != nil {
 			log.Println(err)
-			err = SetLog(client, item.ID.Hex(), err.Error())
+			err = SetLog(client, j.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 				return
@@ -146,10 +142,10 @@ func processingItem() {
 			return
 		}
 	case "openvdb": // 볼륨데이터
-		err = ProcessOpenVDBItem(client, adminSetting, item)
+		err = ProcessOpenVDBItem(client, adminSetting, j)
 		if err != nil {
 			log.Println(err)
-			err = SetLog(client, item.ID.Hex(), err.Error())
+			err = SetLog(client, j.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 				return
@@ -159,10 +155,10 @@ func processingItem() {
 	case "pdf": // 문서
 		return
 	case "ies": // 조명파일
-		err = ProcessIesItem(client, adminSetting, item)
+		err = ProcessIesItem(client, adminSetting, j)
 		if err != nil {
 			log.Println(err)
-			err = SetLog(client, item.ID.Hex(), err.Error())
+			err = SetLog(client, j.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 				return
@@ -173,10 +169,10 @@ func processingItem() {
 	case "hdri": // HDRI 이미지, 환경맵
 		return
 	case "blender": // 블렌더 파일
-		err = ProcessBlenderItem(client, adminSetting, item)
+		err = ProcessBlenderItem(client, adminSetting, j)
 		if err != nil {
 			log.Println(err)
-			err = SetLog(client, item.ID.Hex(), err.Error())
+			err = SetLog(client, j.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 				return
@@ -201,10 +197,10 @@ func processingItem() {
 	case "lut", "3dl", "blut", "cms", "csp", "cub", "cube", "vf", "vfz": // LUT 파일들
 		return
 	case "sound":
-		err = ProcessSoundItem(client, adminSetting, item)
+		err = ProcessSoundItem(client, adminSetting, j)
 		if err != nil {
 			log.Println(err)
-			err = SetLog(client, item.ID.Hex(), err.Error())
+			err = SetLog(client, j.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 				return
@@ -212,10 +208,10 @@ func processingItem() {
 			return
 		}
 	case "unreal":
-		err = ProcessUnrealItem(client, adminSetting, item)
+		err = ProcessUnrealItem(client, adminSetting, j)
 		if err != nil {
 			log.Println(err)
-			err = SetLog(client, item.ID.Hex(), err.Error())
+			err = SetLog(client, j.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 				return
@@ -225,6 +221,46 @@ func processingItem() {
 	default:
 		log.Println("약속된 type이 아닙니다")
 		return
+	}
+	time.Sleep(time.Second * 5)
+}
+
+// 아이템을 가져와서 버퍼 채널에 채우는 함수
+func queueingItem(jobs chan<- Item) {
+	for {
+		//mongoDB client 연결
+		client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		err = client.Connect(ctx)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		defer client.Disconnect(ctx)
+		err = client.Ping(ctx, readpref.Primary())
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		// Status가 FileUploaded인 item을 가져온다.
+		item, err := GetFileUploadedItem(client)
+		if err != nil {
+			// 가지고 올 문서가 없다면 기다렸다가 continue.
+			if err == mongo.ErrNoDocuments {
+				time.Sleep(time.Second * 10)
+				continue
+			}
+			log.Println(err)
+			return
+		}
+		jobs <- item
+		// 기다렸다가 다시 실행
+		time.Sleep(time.Second * 10)
 	}
 }
 

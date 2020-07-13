@@ -47,7 +47,7 @@ var (
 	flagHTTPPort        = flag.String("http", "", "Web Service Port Number")
 	flagPagenum         = flag.Int64("pagenum", 9, "maximum number of items in a page")
 	flagCookieAge       = flag.Int("cookieage", 4, "cookie age (hour)") // MPAA 기준 4시간이다.
-	flagMaxProcessNum   = flag.Int64("maxprocessnum", 1, "maximum number of process")
+	flagMaxProcessNum   = flag.Int("maxprocessnum", 1, "maximum number of process")
 	flagProcessInterval = flag.Int("processinterval", 10, "seconds of interval between processes") // 기본 10초
 	flagCertFullchain   = flag.String("certfullchain", "", "certification fullchain path")
 	flagCertPrivkey     = flag.String("certprivkey", "", "certification privkey path")
@@ -193,7 +193,7 @@ func main() {
 		// 프로세스 연산을 실행한다.
 		// webserver와 같이 실행해야하기 때문에 go를 붙혀서 실행한다.
 		// go 명령어가 없다면, webserver() 함수가 실행되지 않는다.
-		go Processing()
+		go ProcessMain()
 		// 웹서버 실행
 		fmt.Printf("Service start: http://%s\n", ip)
 		webserver()
@@ -240,7 +240,7 @@ func main() {
 		items, err := GetOngoingProcess(client)
 		fmt.Println(items)
 	} else if *flagProcess {
-		processingItem()
+		ProcessMain()
 		fmt.Println("done")
 	} else if *flagAccesslevel != "" && *flagUserID != "" {
 		if user.Username != "root" {
