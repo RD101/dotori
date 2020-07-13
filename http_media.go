@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"net/http"
+	"os"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -49,24 +50,44 @@ func handleMediaData(w http.ResponseWriter, r *http.Request) {
 	}
 	item, err := GetItem(client, id)
 	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			http.Error(w, id+" ID를 가진 아이템이 존재하지 않습니다", http.StatusNotFound)
+			return
+		}
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	switch typ {
 	case "mp4":
+		if _, err := os.Stat(item.OutputThumbnailMp4Path); os.IsNotExist(err) {
+			http.Error(w, item.OutputThumbnailMp4Path+" 파일이 존재하지 않습니다", http.StatusNotFound)
+			return
+		}
 		http.ServeFile(w, r, item.OutputThumbnailMp4Path)
 		return
 	case "mov":
+		if _, err := os.Stat(item.OutputThumbnailMovPath); os.IsNotExist(err) {
+			http.Error(w, item.OutputThumbnailMovPath+" 파일이 존재하지 않습니다", http.StatusNotFound)
+			return
+		}
 		http.ServeFile(w, r, item.OutputThumbnailMovPath)
 		return
 	case "ogg":
+		if _, err := os.Stat(item.OutputThumbnailOggPath); os.IsNotExist(err) {
+			http.Error(w, item.OutputThumbnailOggPath+" 파일이 존재하지 않습니다", http.StatusNotFound)
+			return
+		}
 		http.ServeFile(w, r, item.OutputThumbnailOggPath)
 		return
 	case "png":
+		if _, err := os.Stat(item.OutputThumbnailPngPath); os.IsNotExist(err) {
+			http.Error(w, item.OutputThumbnailPngPath+" 파일이 존재하지 않습니다", http.StatusNotFound)
+			return
+		}
 		http.ServeFile(w, r, item.OutputThumbnailPngPath)
 		return
 	default:
-		http.ServeFile(w, r, item.OutputThumbnailPngPath)
+		http.Error(w, "지원하지 않는 형식입니다", http.StatusNotFound)
 		return
 	}
 }
