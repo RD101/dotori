@@ -41,6 +41,7 @@ func ProcessMain() {
 func worker(jobs <-chan Item) {
 	for j := range jobs {
 		processingItem(j)
+		time.Sleep(time.Second * 5)
 	}
 }
 
@@ -75,14 +76,17 @@ func processingItem(j Item) {
 	case "maya":
 		err = ProcessMayaItem(client, adminSetting, j)
 		if err != nil {
-			log.Println(err)
+			err = SetStatus(client, j, "error")
+			if err != nil {
+				log.Println(err)
+			}
 			err = SetLog(client, j.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
-				return
 			}
 			return
 		}
+		return
 	case "footage": // Footage 소스, 시퀀스
 		err = ProcessFootageItem(client, adminSetting, j)
 		if err != nil {
@@ -100,68 +104,85 @@ func processingItem(j Item) {
 	case "nuke": // 뉴크파일
 		err = ProcessNukeItem(client, adminSetting, j)
 		if err != nil {
-			log.Println(err)
+			err = SetStatus(client, j, "error")
+			if err != nil {
+				log.Println(err)
+			}
 			err = SetLog(client, j.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
-				return
 			}
 			return
 		}
+		return
 	case "usd": // Pixar USD
 		err = ProcessUSDItem(client, adminSetting, j)
 		if err != nil {
-			log.Println(err)
+			err = SetStatus(client, j, "error")
+			if err != nil {
+				log.Println(err)
+			}
 			err = SetLog(client, j.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
-				return
 			}
 			return
 		}
+		return
 	case "alembic": // Alembic
 		err = ProcessAlembicItem(client, adminSetting, j)
 		if err != nil {
-			log.Println(err)
+			err = SetStatus(client, j, "error")
+			if err != nil {
+				log.Println(err)
+			}
 			err = SetLog(client, j.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
-				return
 			}
 			return
 		}
+		return
 	case "houdini": // 후디니
 		err = ProcessHoudiniItem(client, adminSetting, j)
 		if err != nil {
-			log.Println(err)
+			err = SetStatus(client, j, "error")
+			if err != nil {
+				log.Println(err)
+			}
 			err = SetLog(client, j.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
-				return
 			}
 			return
 		}
+		return
 	case "openvdb": // 볼륨데이터
 		err = ProcessOpenVDBItem(client, adminSetting, j)
 		if err != nil {
-			log.Println(err)
+			err = SetStatus(client, j, "error")
+			if err != nil {
+				log.Println(err)
+			}
 			err = SetLog(client, j.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
-				return
 			}
 			return
 		}
+		return
 	case "pdf": // 문서
 		return
 	case "ies": // 조명파일
 		err = ProcessIesItem(client, adminSetting, j)
 		if err != nil {
-			log.Println(err)
+			err = SetStatus(client, j, "error")
+			if err != nil {
+				log.Println(err)
+			}
 			err = SetLog(client, j.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
-				return
 			}
 			return
 		}
@@ -171,14 +192,17 @@ func processingItem(j Item) {
 	case "blender": // 블렌더 파일
 		err = ProcessBlenderItem(client, adminSetting, j)
 		if err != nil {
-			log.Println(err)
+			err = SetStatus(client, j, "error")
+			if err != nil {
+				log.Println(err)
+			}
 			err = SetLog(client, j.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
-				return
 			}
 			return
 		}
+		return
 	case "texture": // 텍스쳐
 		return
 	case "psd": // 포토샵 파일
@@ -186,43 +210,51 @@ func processingItem(j Item) {
 	case "modo": // 모도
 		err = ProcessModoItem(client, adminSetting, j)
 		if err != nil {
-			log.Println(err)
+			err = SetStatus(client, j, "error")
+			if err != nil {
+				log.Println(err)
+			}
 			err = SetLog(client, j.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
-				return
 			}
 			return
 		}
+		return
 	case "lut", "3dl", "blut", "cms", "csp", "cub", "cube", "vf", "vfz": // LUT 파일들
 		return
 	case "sound":
 		err = ProcessSoundItem(client, adminSetting, j)
 		if err != nil {
-			log.Println(err)
+			err = SetStatus(client, j, "error")
+			if err != nil {
+				log.Println(err)
+			}
 			err = SetLog(client, j.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
-				return
 			}
 			return
 		}
+		return
 	case "unreal":
 		err = ProcessUnrealItem(client, adminSetting, j)
 		if err != nil {
-			log.Println(err)
+			err = SetStatus(client, j, "error")
+			if err != nil {
+				log.Println(err)
+			}
 			err = SetLog(client, j.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
-				return
 			}
 			return
 		}
+		return
 	default:
 		log.Println("약속된 type이 아닙니다")
 		return
 	}
-	time.Sleep(time.Second * 5)
 }
 
 // 아이템을 가져와서 버퍼 채널에 채우는 함수
@@ -273,16 +305,6 @@ func ProcessMayaItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 	}
 	err = genThumbDir(adminSetting, item)
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 	// 썸네일 이미지를 생성한다.
@@ -292,16 +314,6 @@ func ProcessMayaItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 	}
 	err = genThumbImage(adminSetting, item)
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 	// .ogg 썸네일 동영상을 생성한다.
@@ -311,16 +323,6 @@ func ProcessMayaItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 	}
 	err = genThumbOggMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 	// .mov 썸네일 동영상을 생성한다.
@@ -330,16 +332,6 @@ func ProcessMayaItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 	}
 	err = genThumbMovMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 	// .mp4 썸네일 동영상을 생성한다.
@@ -349,16 +341,6 @@ func ProcessMayaItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 	}
 	err = genThumbMp4Media(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 	err = SetStatus(client, item, "done")
@@ -377,16 +359,6 @@ func ProcessHoudiniItem(client *mongo.Client, adminSetting Adminsetting, item It
 	}
 	err = genThumbDir(adminSetting, item)
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 	// 썸네일 이미지를 생성한다.
@@ -396,16 +368,6 @@ func ProcessHoudiniItem(client *mongo.Client, adminSetting Adminsetting, item It
 	}
 	err = genThumbImage(adminSetting, item)
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 	// .ogg 썸네일 동영상을 생성한다.
@@ -415,16 +377,6 @@ func ProcessHoudiniItem(client *mongo.Client, adminSetting Adminsetting, item It
 	}
 	err = genThumbOggMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 	// .mov 썸네일 동영상을 생성한다.
@@ -434,16 +386,6 @@ func ProcessHoudiniItem(client *mongo.Client, adminSetting Adminsetting, item It
 	}
 	err = genThumbMovMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 	// .mp4 썸네일 동영상을 생성한다.
@@ -453,16 +395,6 @@ func ProcessHoudiniItem(client *mongo.Client, adminSetting Adminsetting, item It
 	}
 	err = genThumbMp4Media(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 	err = SetStatus(client, item, "done")
@@ -580,16 +512,6 @@ func ProcessNukeItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 	}
 	err = genThumbDir(adminSetting, item)
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 	// 썸네일 이미지를 생성한다.
@@ -599,16 +521,6 @@ func ProcessNukeItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 	}
 	err = genThumbImage(adminSetting, item)
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 	// .ogg 썸네일 동영상을 생성한다.
@@ -618,16 +530,6 @@ func ProcessNukeItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 	}
 	err = genThumbOggMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 	// .mov 썸네일 동영상을 생성한다.
@@ -637,16 +539,6 @@ func ProcessNukeItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 	}
 	err = genThumbMovMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 	// .mp4 썸네일 동영상을 생성한다.
@@ -656,16 +548,6 @@ func ProcessNukeItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 	}
 	err = genThumbMp4Media(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 	err = SetStatus(client, item, "done")
@@ -693,16 +575,6 @@ func ProcessUSDItem(client *mongo.Client, adminSetting Adminsetting, item Item) 
 	}
 	err = genThumbImage(adminSetting, item)
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 	// .ogg 썸네일 동영상을 생성한다.
@@ -712,16 +584,6 @@ func ProcessUSDItem(client *mongo.Client, adminSetting Adminsetting, item Item) 
 	}
 	err = genThumbOggMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 	// .mov 썸네일 동영상을 생성한다.
@@ -731,16 +593,6 @@ func ProcessUSDItem(client *mongo.Client, adminSetting Adminsetting, item Item) 
 	}
 	err = genThumbMovMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 	// .mp4 썸네일 동영상을 생성한다.
@@ -750,16 +602,6 @@ func ProcessUSDItem(client *mongo.Client, adminSetting Adminsetting, item Item) 
 	}
 	err = genThumbMp4Media(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 	err = SetStatus(client, item, "done")
@@ -796,16 +638,6 @@ func ProcessAlembicItem(client *mongo.Client, adminSetting Adminsetting, item It
 	}
 	err = genThumbOggMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 	// .mov 썸네일 동영상을 생성한다.
@@ -815,16 +647,6 @@ func ProcessAlembicItem(client *mongo.Client, adminSetting Adminsetting, item It
 	}
 	err = genThumbMovMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 	// .mp4 썸네일 동영상을 생성한다.
@@ -834,16 +656,6 @@ func ProcessAlembicItem(client *mongo.Client, adminSetting Adminsetting, item It
 	}
 	err = genThumbMp4Media(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 	err = SetStatus(client, item, "done")
@@ -880,16 +692,6 @@ func ProcessOpenVDBItem(client *mongo.Client, adminSetting Adminsetting, item It
 	}
 	err = genThumbOggMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 	// .mov 썸네일 동영상을 생성한다.
@@ -899,16 +701,6 @@ func ProcessOpenVDBItem(client *mongo.Client, adminSetting Adminsetting, item It
 	}
 	err = genThumbMovMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 	// .mp4 썸네일 동영상을 생성한다.
@@ -918,16 +710,6 @@ func ProcessOpenVDBItem(client *mongo.Client, adminSetting Adminsetting, item It
 	}
 	err = genThumbMp4Media(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 	err = SetStatus(client, item, "done")
@@ -982,16 +764,6 @@ func ProcessBlenderItem(client *mongo.Client, adminSetting Adminsetting, item It
 	}
 	err = genThumbImage(adminSetting, item)
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 	// .ogg 썸네일 동영상을 생성한다.
@@ -1001,16 +773,6 @@ func ProcessBlenderItem(client *mongo.Client, adminSetting Adminsetting, item It
 	}
 	err = genThumbOggMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 	// .mov 썸네일 동영상을 생성한다.
@@ -1020,16 +782,6 @@ func ProcessBlenderItem(client *mongo.Client, adminSetting Adminsetting, item It
 	}
 	err = genThumbMovMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 	// .mp4 썸네일 동영상을 생성한다.
@@ -1039,16 +791,6 @@ func ProcessBlenderItem(client *mongo.Client, adminSetting Adminsetting, item It
 	}
 	err = genThumbMp4Media(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 	err = SetStatus(client, item, "done")
@@ -1488,16 +1230,6 @@ func ProcessIesItem(client *mongo.Client, adminSetting Adminsetting, item Item) 
 	}
 	err = genThumbDir(adminSetting, item)
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 	// 썸네일 이미지를 생성한다.
@@ -1507,16 +1239,6 @@ func ProcessIesItem(client *mongo.Client, adminSetting Adminsetting, item Item) 
 	}
 	err = genThumbImage(adminSetting, item)
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 	err = SetStatus(client, item, "done")
@@ -1535,16 +1257,6 @@ func ProcessUnrealItem(client *mongo.Client, adminSetting Adminsetting, item Ite
 	}
 	err = genThumbDir(adminSetting, item)
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 	// 썸네일 이미지를 생성한다.
@@ -1554,16 +1266,6 @@ func ProcessUnrealItem(client *mongo.Client, adminSetting Adminsetting, item Ite
 	}
 	err = genThumbImage(adminSetting, item)
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 	// .ogg 썸네일 동영상을 생성한다.
@@ -1573,16 +1275,6 @@ func ProcessUnrealItem(client *mongo.Client, adminSetting Adminsetting, item Ite
 	}
 	err = genThumbOggMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 	// .mov 썸네일 동영상을 생성한다.
@@ -1592,16 +1284,6 @@ func ProcessUnrealItem(client *mongo.Client, adminSetting Adminsetting, item Ite
 	}
 	err = genThumbMovMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 	// .mp4 썸네일 동영상을 생성한다.
@@ -1611,16 +1293,6 @@ func ProcessUnrealItem(client *mongo.Client, adminSetting Adminsetting, item Ite
 	}
 	err = genThumbMp4Media(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 	err = SetStatus(client, item, "done")
@@ -1657,16 +1329,6 @@ func ProcessModoItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 	}
 	err = genThumbOggMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 	// .mov 썸네일 동영상을 생성한다.
@@ -1676,16 +1338,6 @@ func ProcessModoItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 	}
 	err = genThumbMovMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 	// .mp4 썸네일 동영상을 생성한다.
@@ -1695,16 +1347,6 @@ func ProcessModoItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 	}
 	err = genThumbMp4Media(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
-		// 상태를 error로 바꾼다.
-		err = SetStatus(client, item, "error")
-		if err != nil {
-			return err
-		}
-		// 에러 내용을 로그로 남긴다.
-		err = SetLog(client, item.ID.Hex(), err.Error())
-		if err != nil {
-			return err
-		}
 		return err
 	}
 	err = SetStatus(client, item, "done")
