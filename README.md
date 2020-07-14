@@ -101,6 +101,10 @@ Default env_keep=PATH # 새로 추가
     - footage 데이터는 95메가 정도의 용량을 가지고 있습니다.
     - 리포지터리에는 최대한 가벼운 파일, 코드만 올리기 위해 위 폴더에 footage 데이터는 들어가 있지 않습니다.
     - footage 예제파일은 https://github.com/lazypic/tdcourse_examples/tree/master/footage 에서 다운받을 수 있습니다.
+- HDRI 데이터
+    - HDRI 데이터는 55메가 정도의 용량을 가지고 있습니다.
+    - 리포지터리에는 최대한 가벼운 파일, 코드만 올리기 위해 위 폴더에 HDRI 데이터는 들어가 있지 않습니다.
+    - HDRI 예제파일은 https://github.com/lazypic/tdcourse_examples/tree/master/hdri 에서 다운받을 수 있습니다.
 
 ### Infomation / History
 - '19.9 RD101에서 오픈소스로 시작
