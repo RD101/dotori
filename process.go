@@ -184,10 +184,10 @@ func processingItem(j Item) {
 	case "psd": // 포토샵 파일
 		return
 	case "modo": // 모도
-		err = ProcessModoItem(client, adminSetting, item)
+		err = ProcessModoItem(client, adminSetting, j)
 		if err != nil {
 			log.Println(err)
-			err = SetLog(client, item.ID.Hex(), err.Error())
+			err = SetLog(client, j.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 				return
