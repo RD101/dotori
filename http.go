@@ -254,6 +254,15 @@ func webserver() {
 	http.HandleFunc("/editkatana-submit", handleEditKatanaSubmit)
 	http.HandleFunc("/editkatana-success", handleEditKatanaSuccess)
 
+	// lut
+	http.HandleFunc("/addlut", handleAddLut)
+	http.HandleFunc("/addlut-item", handleAddLutItem)
+	http.HandleFunc("/uploadlut-item", handleUploadLutItem)
+	http.HandleFunc("/addlut-file", handleAddLutFile)
+	http.HandleFunc("/uploadlut-file", handleUploadLutFile)
+	http.HandleFunc("/uploadlut-checkdata", handleUploadLutCheckData)
+	http.HandleFunc("/addlut-success", handleAddLutSuccess)
+
 	// Admin
 	http.HandleFunc("/adminsetting", handleAdminSetting)
 	http.HandleFunc("/adminsetting-submit", handleAdminSettingSubmit)
