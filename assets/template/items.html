@@ -7,11 +7,13 @@
             <div class="col-sm-4 text-center">
                 <div class="thumbnail">
                     {{if eq .ItemType "pdf"}}
-                        <img width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="/assets/img/pdfthumbnail.svg" alt="/assets/img/noimage.svg">
+                        <img width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="/assets/img/pdfthumbnail.svg">
                     {{else if eq .ItemType "hwp"}}
-                        <img width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="/assets/img/hwpthumbnail.svg" alt="/assets/img/noimage.svg">
+                        <img width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="/assets/img/hwpthumbnail.svg">
                     {{else if eq .ItemType "sound"}}
-                        <img width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="/assets/img/soundthumbnail.svg" alt="/assets/img/noimage.svg">
+                        <img width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="/assets/img/soundthumbnail.svg">
+                    {{else if eq .ItemType "hdri"}}
+                        <img width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="{{if eq .Status "done" }}/mediadata?id={{.ID.Hex}}&type=png{{else}}/assets/img/noimage.svg{{end}}">
                     {{else}}
                         <video width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" controls poster="{{if eq .Status "done" }}/mediadata?id={{.ID.Hex}}&type=png{{else}}/assets/img/noimage.svg{{end}}">
                             <source src="/mediadata?id={{.ID.Hex}}&type=mp4" type="video/mp4">
