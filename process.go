@@ -41,7 +41,6 @@ func ProcessMain() {
 func worker(jobs <-chan Item) {
 	for j := range jobs {
 		processingItem(j)
-		time.Sleep(time.Second * 5)
 	}
 }
 
