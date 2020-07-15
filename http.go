@@ -87,6 +87,18 @@ func webserver() {
 	http.HandleFunc("/editfootage-submit", handleEditFootageSubmit)
 	http.HandleFunc("/editfootage-success", handleEditFootageSuccess)
 
+	// HDRI
+	http.HandleFunc("/addhdri", handleAddHDRI)
+	http.HandleFunc("/addhdri-item", handleAddHDRIItem)
+	http.HandleFunc("/uploadhdri-item", handleUploadHDRIItem)
+	http.HandleFunc("/addhdri-file", handleAddHDRIFile)
+	http.HandleFunc("/uploadhdri-file", handleUploadHDRIFile)
+	http.HandleFunc("/uploadhdri-checkdata", handleUploadHDRICheckData)
+	http.HandleFunc("/addhdri-success", handleAddHDRISuccess)
+	http.HandleFunc("/edithdri", handleEditHDRI)
+	http.HandleFunc("/edithdri-submit", handleEditHDRISubmit)
+	http.HandleFunc("/edithdri-success", handleEditHDRISuccess)
+
 	// Nuke
 	http.HandleFunc("/addnuke", handleAddNuke)
 	http.HandleFunc("/addnuke-item", handleAddNukeItem)
