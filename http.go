@@ -242,6 +242,15 @@ func webserver() {
 	http.HandleFunc("/editmodo-submit", handleEditModoSubmit)
 	http.HandleFunc("/editmodo-success", handleEditModoSuccess)
 
+	// lut
+	http.HandleFunc("/addlut", handleAddLut)
+	http.HandleFunc("/addlut-item", handleAddLutItem)
+	http.HandleFunc("/uploadlut-item", handleUploadLutItem)
+	http.HandleFunc("/addlut-file", handleAddLutFile)
+	http.HandleFunc("/uploadlut-file", handleUploadLutFile)
+	http.HandleFunc("/uploadlut-checkdata", handleUploadLutCheckData)
+	http.HandleFunc("/addlut-success", handleAddLutSuccess)
+
 	// Admin
 	http.HandleFunc("/adminsetting", handleAdminSetting)
 	http.HandleFunc("/adminsetting-submit", handleAdminSettingSubmit)
