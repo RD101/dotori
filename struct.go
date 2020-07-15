@@ -34,6 +34,7 @@ type Adminsetting struct {
 	VideoCodecMp4           string `json:"videocodecmp4" bson:"videocodecmp4"`                     // 비디오 코덱
 	VideoCodecMov           string `json:"videocodecmov" bson:"videocodecmov"`                     // 비디오 코덱
 	AudioCodec              string `json:"audiocodec" bson:"audiocodec"`                           // 오디오 코덱
+	ProcessBufferSize       int    `json:"processbuffersize" bson:"processbuffersize"`             // 프로세스할 아이템을 담아둘 버퍼의 사이즈. 회사 인원 수 만큼을 추천
 }
 
 // Token 자료구조. JWT 방식을 사용한다. restAPI 사용시 보안체크를 위해 http 헤더에 들어간다.
