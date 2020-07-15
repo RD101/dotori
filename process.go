@@ -23,8 +23,33 @@ import (
 
 // ProcessMain 함수는 프로세스 전체 흐름을 만드는 함수
 func ProcessMain() {
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	err = client.Connect(ctx)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	// AdminSetting을 DB에서 가지고 온다.
+	adminSetting, err := GetAdminSetting(client)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	client.Disconnect(ctx)
+
 	// 버퍼 채널을 만든다.
-	jobs := make(chan Item, 100)
+	jobs := make(chan Item, adminSetting.ProcessBufferSize)
 
 	// worker 프로세스를 지정한 개수만큼 실행시킨다.
 	for w := 1; w <= *flagMaxProcessNum; w++ {
@@ -41,7 +66,6 @@ func ProcessMain() {
 func worker(jobs <-chan Item) {
 	for j := range jobs {
 		processingItem(j)
-		time.Sleep(time.Second * 5)
 	}
 }
 

@@ -75,6 +75,12 @@ func handleAdminSettingSubmit(w http.ResponseWriter, r *http.Request) {
 	a.FilePermission = r.FormValue("filepermission")
 	a.UID = r.FormValue("uid")
 	a.GID = r.FormValue("gid")
+	pbsize, err := strconv.Atoi(r.FormValue("processbuffersize"))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	a.ProcessBufferSize = pbsize
 	a.FFmpeg = r.FormValue("ffmpeg")
 	a.OCIOConfig = r.FormValue("ocioconfig")
 	a.OpenImageIO = r.FormValue("openimageio")

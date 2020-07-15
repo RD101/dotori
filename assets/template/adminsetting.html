@@ -95,6 +95,15 @@
                 <div class="row">
                     <div class="col-sm">
                         <div class="form-group">
+                            <label class="text-muted">Process Buffer Size</label>
+                            <input type="text" name="processbuffersize" class="form-control" placeholder="50" value="{{.Adminsetting.ProcessBufferSize}}">
+                            <small class="form-text text-muted">프로세스의 버퍼 사이즈를 설정해주세요. 회사의 인원수로 설정하는 것을 권장합니다.</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm">
+                        <div class="form-group">
                             <label class="text-muted">FFmpeg</label>
                             <input type="text" name="ffmpeg" class="form-control" placeholder="/path/ffmpeg" value="{{.Adminsetting.FFmpeg}}">
                             <small class="form-text text-muted">동영상 변환을 위한 FFmpeg 명령어 위치를 설정해주세요.</small>
