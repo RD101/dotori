@@ -221,6 +221,20 @@ func processingItem(item Item) {
 			return
 		}
 		return
+	case "katana": //katana
+		err = ProcessKatanaItem(client, adminSetting, item)
+		if err != nil {
+			err = SetStatus(client, item, "error")
+			if err != nil {
+				log.Println(err)
+			}
+			err = SetLog(client, item.ID.Hex(), err.Error())
+			if err != nil {
+				log.Println(err)
+			}
+			return
+		}
+		return
 	case "lut", "3dl", "blut", "cms", "csp", "cub", "cube", "vf", "vfz": // LUT 파일들
 		return
 	case "sound":
@@ -1304,6 +1318,60 @@ func ProcessUnrealItem(client *mongo.Client, adminSetting Adminsetting, item Ite
 
 // ProcessModoItem 함수는 modo 아이템을 연산한다.
 func ProcessModoItem(client *mongo.Client, adminSetting Adminsetting, item Item) error {
+	// thumbnail 폴더를 생성한다.
+	err := SetStatus(client, item, "creating thumbnail directory")
+	if err != nil {
+		return err
+	}
+	err = genThumbDir(adminSetting, item)
+	if err != nil {
+		return err
+	}
+	// 썸네일 이미지를 생성한다.
+	err = SetStatus(client, item, "creating thumbnail image")
+	if err != nil {
+		return err
+	}
+	err = genThumbImage(adminSetting, item)
+	if err != nil {
+		return err
+	}
+	// .ogg 썸네일 동영상을 생성한다.
+	err = SetStatus(client, item, "creating .ogg media")
+	if err != nil {
+		return err
+	}
+	err = genThumbOggMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+	if err != nil {
+		return err
+	}
+	// .mov 썸네일 동영상을 생성한다.
+	err = SetStatus(client, item, "creating .mov media")
+	if err != nil {
+		return err
+	}
+	err = genThumbMovMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+	if err != nil {
+		return err
+	}
+	// .mp4 썸네일 동영상을 생성한다.
+	err = SetStatus(client, item, "creating .mp4 media")
+	if err != nil {
+		return err
+	}
+	err = genThumbMp4Media(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+	if err != nil {
+		return err
+	}
+	err = SetStatus(client, item, "done")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// ProcessKatanaItem 함수는 katana 아이템을 연산한다.
+func ProcessKatanaItem(client *mongo.Client, adminSetting Adminsetting, item Item) error {
 	// thumbnail 폴더를 생성한다.
 	err := SetStatus(client, item, "creating thumbnail directory")
 	if err != nil {
