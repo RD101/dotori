@@ -385,7 +385,7 @@ func handleUploadBlenderFile(w http.ResponseWriter, r *http.Request) {
 				}
 				item.InputThumbnailClipPath = path + f.Filename
 				item.ThumbClipUploaded = true
-			case "application/octet-stream":
+			case "application/octet-stream", "application/x-blender":
 				ext := filepath.Ext(f.Filename)
 				if ext != ".blend" { // blender 파일 외에는 허용하지 않는다.
 					http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
