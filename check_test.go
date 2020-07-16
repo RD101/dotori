@@ -396,6 +396,9 @@ func Test_Title(t *testing.T) {
 		Title: "타이틀", // 한글만 있는 경우
 		want:  true,
 	}, {
+		Title: "타이틀 생성", // 공백 포함
+		want:  true,
+	}, {
 		Title: "title타이틀", // 영문 + 한글 조합
 		want:  true,
 	}, {
