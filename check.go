@@ -13,5 +13,5 @@ var (
 	regexTag         = regexp.MustCompile(`^[가-힣a-zA-Z0-9]+$`)                                                                                                         // 태그, tag, tag1
 	regexPermission  = regexp.MustCompile(`^[0][0-7][0-7][0-7]$`)                                                                                                      //0775, 0440 (권한은 0000~7777까지 가능하지만 보안상 0000~0777까지만 허용한다)
 	regexSplitBySign = regexp.MustCompile(`[,/ _]+`)
-	regexTitle       = regexp.MustCompile(`^[가-힣\w]+$`)
+	regexTitle       = regexp.MustCompile(`^[가-힣\w\s]+$`)
 )
