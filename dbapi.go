@@ -475,7 +475,7 @@ func GetIncompleteItems(client *mongo.Client) ([]Item, error) {
 	defer cancel()
 
 	filter := bson.M{"$or": []interface{}{
-		// sound, pdf, hwp를 제외한 itemtype의 조건
+		// sound, pdf, hwp, hdri 를 제외한 itemtype의 조건
 		bson.M{"$and": []interface{}{
 			// 아이템 타입
 			bson.M{"$or": []interface{}{
@@ -494,13 +494,14 @@ func GetIncompleteItems(client *mongo.Client) ([]Item, error) {
 				bson.M{"datauploaded": false},
 			}},
 		}},
-		// sound, pdf, hwp 타입 아이템의 조건
+		// sound, pdf, hwp, hdri 타입 아이템의 조건
 		bson.M{"$and": []interface{}{
 			// 아이템 타입
 			bson.M{"$or": []interface{}{
 				bson.M{"itemtype": "sound"},
 				bson.M{"itemtype": "pdf"},
 				bson.M{"itemtype": "hwp"},
+				bson.M{"itemtype": "hdri"},
 			}},
 			// 조건
 			bson.M{"datauploaded": false},

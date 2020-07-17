@@ -578,10 +578,6 @@ func ProcessHDRIItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 	if err != nil {
 		return err
 	}
-	err = SetThumbClipUploaded(client, item, true) // HDRI는 썸네일 동영상이 필요없다. true로 변환한다.
-	if err != nil {
-		return err
-	}
 	// 완료
 	err = SetStatus(client, item, "done")
 	if err != nil {
