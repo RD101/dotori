@@ -99,6 +99,18 @@ func webserver() {
 	http.HandleFunc("/edithdri-submit", handleEditHDRISubmit)
 	http.HandleFunc("/edithdri-success", handleEditHDRISuccess)
 
+	// Texture
+	http.HandleFunc("/addtexture", handleAddTexture)
+	http.HandleFunc("/addtexture-item", handleAddTextureItem)
+	http.HandleFunc("/uploadtexture-item", handleUploadTextureItem)
+	http.HandleFunc("/addtexture-file", handleAddTextureFile)
+	http.HandleFunc("/uploadtexture-file", handleUploadTextureFile)
+	http.HandleFunc("/uploadtexture-checkdata", handleUploadTextureCheckData)
+	http.HandleFunc("/addtexture-success", handleAddTextureSuccess)
+	http.HandleFunc("/edittexture", handleEditTexture)
+	http.HandleFunc("/edittexture-submit", handleEditTextureSubmit)
+	http.HandleFunc("/edittexture-success", handleEditTextureSuccess)
+
 	// Nuke
 	http.HandleFunc("/addnuke", handleAddNuke)
 	http.HandleFunc("/addnuke-item", handleAddNukeItem)

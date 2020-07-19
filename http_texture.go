@@ -18,18 +18,18 @@ import (
 	"golang.org/x/sys/unix"
 )
 
-// handleAddHDRI 함수는 URL에 objectID를 붙여서 /addhdri-item 페이지로 redirect한다.
-func handleAddHDRI(w http.ResponseWriter, r *http.Request) {
+// handleAddTexture 함수는 URL에 objectID를 붙여서 /addTexture-item 페이지로 redirect한다.
+func handleAddTexture(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
 		return
 	}
 	objectID := primitive.NewObjectID().Hex()
-	http.Redirect(w, r, fmt.Sprintf("/addhdri-item?objectid=%s", objectID), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/addTexture-item?objectid=%s", objectID), http.StatusSeeOther)
 }
 
-func handleAddHDRIItem(w http.ResponseWriter, r *http.Request) {
+func handleAddTextureItem(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -74,15 +74,15 @@ func handleAddHDRIItem(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Colorspaces = ocioConfig.Colorspaces
 	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "addhdri-item", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "addtexture-item", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
 
-// handleUploadHDRIItem 핸들러는 HDRI 아이템을 생성한다.
-func handleUploadHDRIItem(w http.ResponseWriter, r *http.Request) {
+// handleUploadTextureItem 핸들러는 Texture 아이템을 생성한다.
+func handleUploadTextureItem(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -106,7 +106,7 @@ func handleUploadHDRIItem(w http.ResponseWriter, r *http.Request) {
 	item.OutColorspace = r.FormValue("outcolorspace")
 	tags := SplitBySpace(r.FormValue("tag"))
 	item.Tags = tags
-	item.ItemType = "hdri"
+	item.ItemType = "texture"
 	attr := make(map[string]string)
 	attrNum, err := strconv.Atoi(r.FormValue("attributesNum"))
 	if err != nil {
@@ -175,11 +175,11 @@ func handleUploadHDRIItem(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	http.Redirect(w, r, fmt.Sprintf("/addhdri-file?objectid=%s", objectID), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/addtexture-file?objectid=%s", objectID), http.StatusSeeOther)
 }
 
-// handleAddHDRIFile 함수는 HDRI 파일을 추가하는 페이지 이다.
-func handleAddHDRIFile(w http.ResponseWriter, r *http.Request) {
+// handleAddTextureFile 함수는 Texture 파일을 추가하는 페이지 이다.
+func handleAddTextureFile(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -217,15 +217,15 @@ func handleAddHDRIFile(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Adminsetting = adminsetting
 	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "addhdri-file", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "addTexture-file", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
 
-// handleUploadHDRIFile 함수는 HDRI 파일을 DB에 업로드하는 페이지를 연다. dropzone에 파일을 올릴 경우 실행된다.
-func handleUploadHDRIFile(w http.ResponseWriter, r *http.Request) {
+// handleUploadTextureFile 함수는 Texture 파일을 DB에 업로드하는 페이지를 연다. dropzone에 파일을 올릴 경우 실행된다.
+func handleUploadTextureFile(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -326,7 +326,7 @@ func handleUploadHDRIFile(w http.ResponseWriter, r *http.Request) {
 
 			case "application/octet-stream":
 				ext := strings.ToLower(filepath.Ext(f.Filename))
-				if ext != ".hdr" && ext != ".hdri" && ext != ".exr" { // .hdr .hdri .exr 외에는 허용하지 않는다.
+				if !(ext == ".exr" || ext == ".png" || ext != ".jpg" || ext == ".tga") {
 					http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
 					return
 				}
@@ -365,8 +365,8 @@ func handleUploadHDRIFile(w http.ResponseWriter, r *http.Request) {
 	UpdateItem(client, item)
 }
 
-// handleUploadHDRICheckData 함수는 필요한 파일들을 모두 업로드했는지 체크하고, /addhdri-success 페이지로 redirect한다.
-func handleUploadHDRICheckData(w http.ResponseWriter, r *http.Request) {
+// handleUploadTextureCheckData 함수는 필요한 파일들을 모두 업로드했는지 체크하고, /addTexture-success 페이지로 redirect한다.
+func handleUploadTextureCheckData(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -419,17 +419,17 @@ func handleUploadHDRICheckData(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Item = item
 	if !item.DataUploaded {
-		err = TEMPLATES.ExecuteTemplate(w, "checkhdri-file", rcp)
+		err = TEMPLATES.ExecuteTemplate(w, "checktexture-file", rcp)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		return
 	}
-	http.Redirect(w, r, "/addhdri-success", http.StatusSeeOther)
+	http.Redirect(w, r, "/addtexture-success", http.StatusSeeOther)
 }
 
-func handleAddHDRISuccess(w http.ResponseWriter, r *http.Request) {
+func handleAddTextureSuccess(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -467,14 +467,14 @@ func handleAddHDRISuccess(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Adminsetting = adminsetting
 	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "addhdri-success", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "addtexture-success", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
 
-func handleEditHDRI(w http.ResponseWriter, r *http.Request) {
+func handleEditTexture(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -556,15 +556,15 @@ func handleEditHDRI(w http.ResponseWriter, r *http.Request) {
 		Adminsetting:  adminsetting,
 	}
 
-	err = TEMPLATES.ExecuteTemplate(w, "edithdri", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "edittexture", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
 
-//handleEditHDRISubmit 함수는 HDRI 아이템을 수정하는 페이지에서 UPDATE버튼을 누르면 작동하는 함수다.
-func handleEditHDRISubmit(w http.ResponseWriter, r *http.Request) {
+//handleEditTextureSubmit 함수는 Texture 아이템을 수정하는 페이지에서 UPDATE버튼을 누르면 작동하는 함수다.
+func handleEditTextureSubmit(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -626,10 +626,10 @@ func handleEditHDRISubmit(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	http.Redirect(w, r, "/edithdri-success", http.StatusSeeOther)
+	http.Redirect(w, r, "/edittexture-success", http.StatusSeeOther)
 }
 
-func handleEditHDRISuccess(w http.ResponseWriter, r *http.Request) {
+func handleEditTextureSuccess(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -667,7 +667,7 @@ func handleEditHDRISuccess(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Adminsetting = adminsetting
 	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "edithdri-success", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "edittexture-success", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
