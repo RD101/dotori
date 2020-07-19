@@ -1,0 +1,113 @@
+{{define "addtexture-item"}}
+{{template "head"}}
+<body>
+{{template "navbar" .}}
+<form action="/uploadtexture-item" method="post" onsubmit="return addPageBlankCheck()">
+<div class="container py-5 px-2">
+    <div class="col-lg-6 col-md-8 col-sm-12 mx-auto">
+        <div class="pt-3 pb-3">
+            <h2 class="text-muted">Add Texture Asset</h2>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <div class="form-group">
+                    <label class="text-muted">Title</label>
+                    <input type="text" name="title" class="form-control" placeholder="에셋 제목">
+                    <small class="form-text text-muted">에셋 제목을 입력해주세요.</small>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <div class="form-group">
+                    <label class="text-muted">Author</label>
+                    <input id="addAuthor" type="text" name="author" class="form-control" placeholder="에셋 제작자 이름">
+                    <small class="form-text text-muted">에셋 제작자 이름을 적어주세요.</small>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <div class="form-group">
+                    <label class="text-muted">Description</label>
+                    <textarea id="addDescription" name="description" class="form-control" rows="5"></textarea>
+                    <small class="form-text text-muted">에셋 사용시 참고해야할 사항</small>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <div class="form-group">
+                    <label class="text-muted">Tag</label>
+                    <input id="addTag" type="text" name="tag" class="form-control" placeholder="자동차 하늘">
+                    <small class="form-text text-muted">태그를 입력하세요. 태그는 띄어쓰기로 구분합니다.</small>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <div class="form-group">
+                    <label class="text-muted">Colorspace</label>
+                    <div class="row">
+                        <div class="col">
+                            <select name="incolorspace" class="form-control">
+                                {{range .Colorspaces}}<option value="{{.Name}}">{{.Name}}</option>{{end}}
+                            </select>
+                            <small class="form-text text-muted">In Colorspace</small>
+                        </div>
+                        <div class="col">
+                            <select name="outcolorspace" class="form-control">
+                                {{range .Colorspaces}}<option value="{{.Name}}">{{.Name}}</option>{{end}}
+                            </select>
+                            <small class="form-text text-muted">Out Colorspace</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <div class="form-group">
+                    <label class="text-muted">Attributes</label>
+                    <div id="attributes">
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group p-0 m-0">
+                                    <input type="text" class="form-control" placeholder="key" value="" id="key0" name="key0">
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group p-0 m-0">
+                                    <input type="text" class="form-control" placeholder="value" value="" id="value0" name="value0">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <input type="hidden" id="attributesNum" name="attributesNum" value="1">
+                        <div class="col">
+                            <small class="form-text text-muted float-right">필요시 속성을 추가해 주세요.</small>
+                            <br>
+                            <span class="add float-right" onclick="addAttribute();">+</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="text-center pt-5">
+        <button type="submit" class="btn btn-outline-warning">NEXT</button>
+    </div>
+</div>
+</form>
+
+{{template "footer"}}
+</body>
+<!--add javascript-->
+<script src="/assets/js/jquery-3.1.1.min.js"></script>
+<script src="/assets/bootstrap-4/js/bootstrap.min.js"></script>
+<script src="/assets/js/dropzone.js"></script>
+<script src="/assets/js/dotori.js"></script>
+</html>
+{{end}}

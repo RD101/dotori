@@ -26,7 +26,7 @@ func handleAddTexture(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	objectID := primitive.NewObjectID().Hex()
-	http.Redirect(w, r, fmt.Sprintf("/addTexture-item?objectid=%s", objectID), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/addtexture-item?objectid=%s", objectID), http.StatusSeeOther)
 }
 
 func handleAddTextureItem(w http.ResponseWriter, r *http.Request) {
