@@ -324,7 +324,7 @@ func handleUploadTextureFile(w http.ResponseWriter, r *http.Request) {
 			mimeType := f.Header.Get("Content-Type")
 			switch mimeType {
 
-			case "application/octet-stream":
+			case "application/octet-stream", "image/jpeg", "image/png":
 				ext := strings.ToLower(filepath.Ext(f.Filename))
 				if !(ext == ".exr" || ext == ".png" || ext != ".jpg" || ext == ".tga") {
 					http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
