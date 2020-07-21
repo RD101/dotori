@@ -11,7 +11,6 @@ import (
 	"os/user"
 	"time"
 
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
@@ -36,7 +35,7 @@ var (
 	flagTitle       = flag.String("title", "", "title")
 	flagTag         = flag.String("tag", "", "tag")
 	flagDescription = flag.String("description", "", "description")
-	flagInputpath   = flag.String("inputpath", "", "input path")
+	flagInputPath   = flag.String("inputpath", "", "input path")
 	flagItemType    = flag.String("itemtype", "", "type of asset")
 	flagAttributes  = flag.String("attributes", "", "detail info of file") // "key:value,key:value"
 	flagUserID      = flag.String("userid", "", "ID of user")
@@ -65,7 +64,7 @@ func main() {
 		log.Fatal(err)
 	}
 	if *flagSeek {
-		items, err := searchSeq(*flagInputpath)
+		items, err := searchSeq(*flagInputPath)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -102,61 +101,15 @@ func main() {
 		if *flagItemType == "" {
 			log.Fatal("itemtype이 빈 문자열입니다")
 		}
-
-		i := Item{}
-		i.ID = primitive.NewObjectID()
-		i.Author = *flagAuthor
-		i.Title = *flagTitle
-		i.Tags = SplitBySpace(*flagTag)
-		i.Description = *flagDescription
-		i.ItemType = *flagItemType
-		i.Attributes = StringToMap(*flagAttributes)
-
-		//mongoDB client 연결
-		client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
-		if err != nil {
-			log.Fatal(err)
-		}
-		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		defer cancel()
-		err = client.Connect(ctx)
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer client.Disconnect(ctx)
-		err = client.Ping(ctx, readpref.Primary())
-		if err != nil {
-			log.Fatal(err)
-		}
-		// admin settin에서 rootpath를 가져와서 경로를 생성한다.
-		rootpath, err := GetRootPath(client)
-		if err != nil {
-			log.Fatal(err)
-		}
-		objIDpath, err := idToPath(i.ID.Hex())
-		if err != nil {
-			log.Fatal(err)
-		}
-		i.InputThumbnailImgPath = rootpath + objIDpath + "/originalthumbimg/"
-		i.InputThumbnailClipPath = rootpath + objIDpath + "/originalthumbmov/"
-		i.OutputThumbnailPngPath = rootpath + objIDpath + "/thumbnail/thumbnail.png"
-		i.OutputThumbnailMp4Path = rootpath + objIDpath + "/thumbnail/thumbnail.mp4"
-		i.OutputThumbnailOggPath = rootpath + objIDpath + "/thumbnail/thumbnail.ogg"
-		i.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/thumbnail.mov"
-		i.OutputDataPath = rootpath + objIDpath + "/data/"
-
-		err = i.CheckError()
-		if err != nil {
-			log.Fatal(err)
-		}
 		if *flagDBName != "" {
 			if !regexLower.MatchString(*flagDBName) { // 입력받은 dbname이 소문자인지 확인
 				log.Fatal(err)
 			}
 		}
-		err = AddItem(client, i)
-		if err != nil {
-			log.Print(err)
+		switch *flagItemType {
+		case "maya":
+			addMayaItemCmd()
+		default:
 		}
 	} else if *flagRm {
 		if *flagItemType == "" {

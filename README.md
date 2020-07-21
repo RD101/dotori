@@ -50,7 +50,7 @@ $ sudo dotori -http :80
 - [Windows](https://github.com/RD101/dotori/releases/download/v0.0.1/dotori_windows_x86-64.tgz)
 
 ### Command-line
-
+command를 통해 dotori를 제어할 수 있습니다.
 #### Item 추가
 ```bash
 $ dotori -add -inputpath /project/path -author woong -tag asset,3D -description 설명 -type maya
