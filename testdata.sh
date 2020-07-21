@@ -13,6 +13,9 @@ dotori -add -itemtype maya -title example -author bailey -description "descripti
 dotori -add -itemtype usd -title example -author bailey -description "description10 about some details" -tag "기차 무궁화호"
 dotori -add -itemtype sound -title example -author bailey -description "description10 about some details" -tag "bgm"
 
+#아이템 삭제 커맨드를 실행 전에 직접 id를 입력해준 후 테스트한다.
+#sudo dotori -remove -itemid 
+
 #REST API
 curl -X POST -d "author=bae&itemtype=maya" http://127.0.0.1/api/item
 #DELETE는 실행 전에 직접 id를 넣어준 후 테스트한다.

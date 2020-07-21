@@ -110,34 +110,13 @@ func main() {
 		case "maya":
 			addMayaItemCmd()
 		default:
+			log.Fatal("command를 지원하지 않는 아이템타입입니다.")
 		}
 	} else if *flagRm {
-		if *flagItemType == "" {
-			log.Fatal("flagType이 빈 문자열 입니다")
+		if user.Username != "root" {
+			log.Fatal(errors.New("item을 삭제하기 위해서는 root 권한이 필요합니다"))
 		}
-		if *flagItemID == "" {
-			log.Fatal("id가 빈 문자열 입니다")
-		}
-		//mongoDB client 연결
-		client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
-		if err != nil {
-			log.Fatal(err)
-		}
-		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		defer cancel()
-		err = client.Connect(ctx)
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer client.Disconnect(ctx)
-		err = client.Ping(ctx, readpref.Primary())
-		if err != nil {
-			log.Fatal(err)
-		}
-		err = RmItem(client, *flagItemID)
-		if err != nil {
-			log.Print(err)
-		}
+		rmItemCmd()
 	} else if *flagHTTPPort != "" {
 		ip, err := serviceIP()
 		if err != nil {
