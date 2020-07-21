@@ -217,7 +217,7 @@ func handleAddTextureFile(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Adminsetting = adminsetting
 	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "addTexture-file", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "addtexture-file", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -326,7 +326,7 @@ func handleUploadTextureFile(w http.ResponseWriter, r *http.Request) {
 
 			case "application/octet-stream", "image/jpeg", "image/png":
 				ext := strings.ToLower(filepath.Ext(f.Filename))
-				if !(ext == ".exr" || ext == ".png" || ext != ".jpg" || ext == ".tga") {
+				if !(ext == ".exr" || ext == ".png" || ext == ".jpg" || ext == ".tga") {
 					http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
 					return
 				}

@@ -227,6 +227,20 @@ func processingItem(item Item) {
 			return
 		}
 		return
+	case "texture": // Texture 파일
+		err = ProcessTextureItem(client, adminSetting, item)
+		if err != nil {
+			err = SetStatus(client, item, "error")
+			if err != nil {
+				log.Println(err)
+			}
+			err = SetLog(client, item.ID.Hex(), err.Error())
+			if err != nil {
+				log.Println(err)
+			}
+			return
+		}
+		return
 	case "blender": // 블렌더 파일
 		err = ProcessBlenderItem(client, adminSetting, item)
 		if err != nil {
@@ -240,8 +254,6 @@ func processingItem(item Item) {
 			}
 			return
 		}
-		return
-	case "texture": // 텍스쳐
 		return
 	case "psd": // 포토샵 파일
 		return
@@ -573,6 +585,39 @@ func ProcessHDRIItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 		return err
 	}
 	err = genThumbHDRI(adminSetting, item)
+	if err != nil {
+		return err
+	}
+	err = SetThumbImgUploaded(client, item, true) // 썸네일이 생성되었으니 썸네일이 업로드 되었다고 체크한다.
+	if err != nil {
+		return err
+	}
+	// 완료
+	err = SetStatus(client, item, "done")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// ProcessTextureItem 함수는 Texture 아이템을 연산한다.
+func ProcessTextureItem(client *mongo.Client, adminSetting Adminsetting, item Item) error {
+	// Thumbnail 폴더를 생성한다.
+	err := SetStatus(client, item, "creating thumbnail directory")
+	if err != nil {
+		return err
+	}
+	err = genThumbDir(adminSetting, item)
+	if err != nil {
+		return err
+	}
+
+	// 썸네일 이미지를 생성한다.
+	err = SetStatus(client, item, "creating thumbnail image")
+	if err != nil {
+		return err
+	}
+	err = genThumbTexture(adminSetting, item)
 	if err != nil {
 		return err
 	}
@@ -991,6 +1036,50 @@ func genThumbFootage(adminSetting Adminsetting, item Item) error {
 
 // genThumbHDRI 함수는 HDRI 아이템정보를 이용하여 oiiotool 명령어로 썸네일 이미지를 만든다.
 func genThumbHDRI(adminSetting Adminsetting, item Item) error {
+	// 변환할 이미지를 한프레임 가지고온다.
+	path := item.OutputDataPath
+	files, err := ioutil.ReadDir(path)
+	if err != nil {
+		return err
+	}
+	input := ""
+	// 연산할 파일을 하나 구한다.
+	switch len(files) {
+	case 0: // 파일이 없을 때
+		return errors.New("no files")
+	case 1: // 파일이 한개일 때
+		input = files[0].Name()
+	default: // 중간프레임 파일명을 구한다.
+		return errors.New("파일이 여러개가 존재합니다")
+	}
+	args := []string{
+		path + "/" + input,
+		"--colorconvert",
+		item.InColorspace,
+		item.OutColorspace,
+		"--fit",
+		fmt.Sprintf("%dx%d", adminSetting.ThumbnailImageWidth, adminSetting.ThumbnailImageHeight),
+		"-o",
+		item.OutputThumbnailPngPath,
+	}
+	// OIIO 이미지 연산을 위해 OCIO 환경변수를 설정한다.
+	_, err = os.Stat(adminSetting.OCIOConfig)
+	if os.IsNotExist(err) {
+		return errors.New("admin 셋팅에서 OCIOConfig 값을 설정해주세요")
+	}
+	os.Setenv("OCIO", adminSetting.OCIOConfig)
+	if *flagDebug {
+		fmt.Println(args)
+	}
+	err = exec.Command(adminSetting.OpenImageIO, args...).Run()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// genThumbTexture 함수는 Texture 아이템정보를 이용하여 oiiotool 명령어로 썸네일 이미지를 만든다.
+func genThumbTexture(adminSetting Adminsetting, item Item) error {
 	// 변환할 이미지를 한프레임 가지고온다.
 	path := item.OutputDataPath
 	files, err := ioutil.ReadDir(path)
