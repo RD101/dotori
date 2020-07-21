@@ -58,7 +58,7 @@ $ dotori -add -inputpath /project/path -author woong -tag asset,3D -description 
 
 #### Item 삭제
 ```bash
-$ sudo dotori -remove -itemtype maya -itemid 5e89cef7cd1747fd5eacf256
+$ sudo dotori -remove -itemid 5e89cef7cd1747fd5eacf256
 ```
 
 #### 웹서버 실행
