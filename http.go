@@ -274,9 +274,6 @@ func webserver() {
 	http.HandleFunc("/uploadlut-file", handleUploadLutFile)
 	http.HandleFunc("/uploadlut-checkdata", handleUploadLutCheckData)
 	http.HandleFunc("/addlut-success", handleAddLutSuccess)
-	http.HandleFunc("/editlut", handleEditLut)
-	http.HandleFunc("/editlut-submit", handleEditLutSubmit)
-	http.HandleFunc("/editlut-success", handleEditLutSuccess)
 
 	// Admin
 	http.HandleFunc("/adminsetting", handleAdminSetting)
