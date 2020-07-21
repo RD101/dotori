@@ -29,8 +29,8 @@ func ProcessMain() {
 		log.Println(err)
 		return
 	}
-	ctx, cancle := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancle()
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 	err = client.Connect(ctx)
 	if err != nil {
 		log.Println(err)
@@ -48,7 +48,7 @@ func ProcessMain() {
 		return
 	}
 	client.Disconnect(ctx)
-	cancle()
+	cancel()
 
 	// 버퍼 채널을 만든다.
 	jobs := make(chan Item, adminSetting.ProcessBufferSize)
