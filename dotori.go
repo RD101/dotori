@@ -31,14 +31,16 @@ var (
 	flagDebug             = flag.Bool("debug", false, "debug mode")                       // debug모드
 	flagAccesslevel       = flag.String("accesslevel", "default", "access level of user") // 사용자의 accesslevel을 지정합니다. admin, manager, default
 
-	flagAuthor      = flag.String("author", "", "author")
-	flagTitle       = flag.String("title", "", "title")
-	flagTag         = flag.String("tag", "", "tag")
-	flagDescription = flag.String("description", "", "description")
-	flagInputPath   = flag.String("inputpath", "", "input path")
-	flagItemType    = flag.String("itemtype", "", "type of asset")
-	flagAttributes  = flag.String("attributes", "", "detail info of file") // "key:value,key:value"
-	flagUserID      = flag.String("userid", "", "ID of user")
+	flagAuthor             = flag.String("author", "", "author")
+	flagTitle              = flag.String("title", "", "title")
+	flagTag                = flag.String("tag", "", "tag")
+	flagDescription        = flag.String("description", "", "description")
+	flagInputThumbImgPath  = flag.String("inputthumbimgpath", "", "input path of thumbnail image")
+	flagInputThumbClipPath = flag.String("inputthumbclippath", "", "input path of thumbnail clip")
+	flagInputDataPath      = flag.String("inputdatapath", "", "input path of data")
+	flagItemType           = flag.String("itemtype", "", "type of asset")
+	flagAttributes         = flag.String("attributes", "", "detail info of file") // "key:value,key:value"
+	flagUserID             = flag.String("userid", "", "ID of user")
 
 	// 서비스에 필요한 인수
 	flagMongoDBURI      = flag.String("mongodburi", "mongodb://localhost:27017", "mongoDB URI ex)mongodb://localhost:27017")
@@ -64,7 +66,7 @@ func main() {
 		log.Fatal(err)
 	}
 	if *flagSeek {
-		items, err := searchSeq(*flagInputPath)
+		items, err := searchSeq(*flagInputDataPath)
 		if err != nil {
 			log.Fatal(err)
 		}

@@ -24,6 +24,15 @@ func addMayaItemCmd() {
 	if *flagTag == "" {
 		log.Fatal("tag가 빈 문자열입니다")
 	}
+	if *flagInputThumbImgPath == "" {
+		log.Fatal("inputthumbimgpath가 빈 문자열입니다")
+	}
+	if *flagInputThumbClipPath == "" {
+		log.Fatal("inputthumbimgpath가 빈 문자열입니다")
+	}
+	if *flagInputDataPath == "" {
+		log.Fatal("inputthumbimgpath가 빈 문자열입니다")
+	}
 	i := Item{}
 	i.ID = primitive.NewObjectID()
 	i.ItemType = *flagItemType
@@ -32,6 +41,8 @@ func addMayaItemCmd() {
 	i.Description = *flagDescription
 	i.Tags = SplitBySpace(*flagTag)
 	i.Attributes = StringToMap(*flagAttributes)
+	i.InputThumbnailImgPath = *flagInputThumbImgPath
+	i.InputThumbnailClipPath = *flagInputThumbClipPath
 
 	//mongoDB client 연결
 	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
@@ -58,8 +69,7 @@ func addMayaItemCmd() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	i.InputThumbnailImgPath = rootpath + objIDpath + "/originalthumbimg/"
-	i.InputThumbnailClipPath = rootpath + objIDpath + "/originalthumbmov/"
+
 	i.OutputThumbnailPngPath = rootpath + objIDpath + "/thumbnail/thumbnail.png"
 	i.OutputThumbnailMp4Path = rootpath + objIDpath + "/thumbnail/thumbnail.mp4"
 	i.OutputThumbnailOggPath = rootpath + objIDpath + "/thumbnail/thumbnail.ogg"
