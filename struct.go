@@ -138,6 +138,9 @@ func (i Item) CheckError() error {
 			return errors.New("tag에는 한자리의 단어를 사용할 수 없습니다")
 		}
 	}
+	if i.Title == "" {
+		return errors.New("title을 입력해주세요")
+	}
 	if len(i.Title) == 1 {
 		return errors.New("title에는 한 자리의 단어를 사용할 수 없습니다")
 	}
