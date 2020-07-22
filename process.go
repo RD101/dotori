@@ -102,16 +102,22 @@ func processingItem(item Item) {
 	case "maya":
 		err = ProcessMayaItem(client, adminSetting, item)
 		if err != nil {
-			err = SetStatus(client, item, "error")
-			if err != nil {
-				log.Println(err)
-			}
-			err = SetLog(client, item.ID.Hex(), err.Error())
-			if err != nil {
-				log.Println(err)
-			}
-			return
+			log.Println(err)
 		}
+
+		/*
+			if err != nil {
+				err = SetStatus(client, item, "error")
+				if err != nil {
+					log.Println(err)
+				}
+				err = SetLog(client, item.ID.Hex(), err.Error())
+				if err != nil {
+					log.Println(err)
+				}
+				return
+			}
+		*/
 		return
 	case "footage": // Footage 소스, 시퀀스
 		err = ProcessFootageItem(client, adminSetting, item)
