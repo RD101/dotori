@@ -43,6 +43,13 @@ func addMayaItemCmd() {
 	i.Attributes = StringToMap(*flagAttributes)
 	i.InputThumbnailImgPath = *flagInputThumbImgPath
 	i.InputThumbnailClipPath = *flagInputThumbClipPath
+	i.Status = "ready"
+	i.Logs = append(i.Logs, "아이템이 생성되었습니다.")
+	currentTime := time.Now()
+	i.CreateTime = currentTime.Format("2006-01-02 15:04:05")
+	i.ThumbImgUploaded = false
+	i.ThumbClipUploaded = false
+	i.DataUploaded = false
 
 	// 1. 썸네일 이미지
 	// 썸네일 이미지 경로에 실재 파일이 존재하는지 체크. 유효한 파일인지 체크.
@@ -99,7 +106,6 @@ func addMayaItemCmd() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	err = AddItem(client, i)
 	if err != nil {
 		log.Print(err)
