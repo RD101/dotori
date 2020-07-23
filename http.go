@@ -58,7 +58,7 @@ func webserver() {
 		log.Fatal(err)
 	}
 	// 웹주소 설정
-	http.HandleFunc("/", handleSearch)
+	http.HandleFunc("/", handleInit)
 	http.HandleFunc("/mediadata", handleMediaData)
 	http.HandleFunc("/search", handleSearch)
 	http.HandleFunc("/search-submit", handleSearchSubmit)

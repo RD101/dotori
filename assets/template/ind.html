@@ -1,0 +1,34 @@
+{{define "ind"}}
+    {{template "head"}}
+    <body>
+        {{template "navbar" .}}
+        {{template "search" .}}
+    	<div class="row justify-content-center align-items-center m-3">
+		    <div class="col-lg-7">
+			    <div class="input-group mb-3">
+                    <span class="text-muted">총 {{$.AllItemCount}} 건의 에셋이 등록되어 있습니다.</span><br>
+			    </div>
+            </div>
+        </div>
+        <div class="row justify-content-center align-items-center m-3">
+		    <div class="col-lg-7">
+			    <div class="input-group mb-3">
+                    <span class="text-muted">최근에 올라온 에셋 100건</span><br>
+			    </div>
+            </div>
+        </div>
+        <div class="row justify-content-center align-items-center m-3">
+		    <div class="col-lg-7">
+			    <div class="input-group mb-3">
+                    <span class="text-muted">가장 많이 사용되는 에셋</span><br>
+			    </div>
+            </div>
+        </div>
+        {{template "footer"}}
+    </body>
+    <!--add javascript-->
+    <script src="/assets/js/jquery-3.1.1.min.js"></script>
+    <script src="/assets/bootstrap-4/js/bootstrap.min.js"></script>
+    <script src="/assets/js/dotori.js"></script>
+    </html>
+{{end}}

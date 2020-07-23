@@ -94,6 +94,38 @@ func AllItems(client *mongo.Client) ([]Item, error) {
 	return results, nil
 }
 
+// Recently100Items 는 DB에서 전체 아이템 정보를 가져오는 함수입니다.
+func Recently100Items(client *mongo.Client) ([]Item, error) {
+	collection := client.Database(*flagDBName).Collection("items")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	var results []Item
+	findOptions := options.Find()
+	findOptions.SetSort(bson.M{"createtime": -1})
+	findOptions.SetLimit(5)
+	cursor, err := collection.Find(ctx, bson.M{}, findOptions)
+	if err != nil {
+		return results, err
+	}
+	err = cursor.All(ctx, &results)
+	if err != nil {
+		return results, err
+	}
+	return results, nil
+}
+
+// AllItems 는 DB에서 전체 아이템 정보를 가져오는 함수입니다.
+func AllItemsCount(client *mongo.Client) (int64, error) {
+	collection := client.Database(*flagDBName).Collection("items")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	n, err := collection.CountDocuments(ctx, bson.M{})
+	if err != nil {
+		return n, err
+	}
+	return n, nil
+}
+
 // UpdateItem 은 컬렉션 이름과 Item을 받아서, Item을 업데이트한다.
 func UpdateItem(client *mongo.Client, i Item) error {
 	i.Updatetime = time.Now().Format(time.RFC3339)
@@ -138,14 +170,11 @@ func Search(client *mongo.Client, itemType, words string) ([]Item, error) {
 			querys = append(querys, bson.M{"tags": strings.TrimPrefix(word, "tag:")})
 		} else if strings.HasPrefix(word, "author:") {
 			querys = append(querys, bson.M{"author": strings.TrimPrefix(word, "author:")})
-		} else if strings.HasPrefix(word, "title:") {
-			querys = append(querys, bson.M{"title": strings.TrimPrefix(word, "title:")})
 		} else if strings.Contains(word, ":") {
 			key := strings.Split(word, ":")[0]
 			value := strings.Split(word, ":")[1]
 			querys = append(querys, bson.M{"attributes." + key: primitive.Regex{Pattern: value, Options: "i"}})
 		} else {
-			querys = append(querys, bson.M{"title": primitive.Regex{Pattern: word, Options: "i"}})
 			querys = append(querys, bson.M{"author": primitive.Regex{Pattern: word, Options: "i"}})
 			querys = append(querys, bson.M{"tags": primitive.Regex{Pattern: word, Options: "i"}})
 			querys = append(querys, bson.M{"description": primitive.Regex{Pattern: word, Options: "i"}})
@@ -202,14 +231,11 @@ func SearchPage(client *mongo.Client, itemType, words string, page, limitnum int
 			querys = append(querys, bson.M{"tags": strings.TrimPrefix(word, "tag:")})
 		} else if strings.HasPrefix(word, "author:") {
 			querys = append(querys, bson.M{"author": strings.TrimPrefix(word, "author:")})
-		} else if strings.HasPrefix(word, "title:") {
-			querys = append(querys, bson.M{"title": strings.TrimPrefix(word, "title:")})
 		} else if strings.Contains(word, ":") {
 			key := strings.Split(word, ":")[0]
 			value := strings.Split(word, ":")[1]
 			querys = append(querys, bson.M{"attributes." + key: primitive.Regex{Pattern: value, Options: "i"}})
 		} else {
-			querys = append(querys, bson.M{"title": primitive.Regex{Pattern: word, Options: "i"}})
 			querys = append(querys, bson.M{"author": primitive.Regex{Pattern: word, Options: "i"}})
 			querys = append(querys, bson.M{"tags": primitive.Regex{Pattern: word, Options: "i"}})
 			querys = append(querys, bson.M{"description": primitive.Regex{Pattern: word, Options: "i"}})
@@ -508,7 +534,6 @@ func GetIncompleteItems(client *mongo.Client) ([]Item, error) {
 				bson.M{"itemtype": "pdf"},
 				bson.M{"itemtype": "hwp"},
 				bson.M{"itemtype": "hdri"},
-				bson.M{"itemtype": "texture"},
 			}},
 			// 조건
 			bson.M{"datauploaded": false},
