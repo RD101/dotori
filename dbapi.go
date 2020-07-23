@@ -203,7 +203,7 @@ func SearchPage(client *mongo.Client, itemType, words string, page, limitnum int
 		} else if strings.HasPrefix(word, "author:") {
 			querys = append(querys, bson.M{"author": strings.TrimPrefix(word, "author:")})
 		} else if strings.HasPrefix(word, "title:") {
-			querys = append(querys, bson.M{"title": strings.TrimPrefix(word, "title: ")})
+			querys = append(querys, bson.M{"title": strings.TrimPrefix(word, "title:")})
 		} else if strings.Contains(word, ":") {
 			key := strings.Split(word, ":")[0]
 			value := strings.Split(word, ":")[1]
