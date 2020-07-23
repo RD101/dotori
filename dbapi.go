@@ -138,11 +138,14 @@ func Search(client *mongo.Client, itemType, words string) ([]Item, error) {
 			querys = append(querys, bson.M{"tags": strings.TrimPrefix(word, "tag:")})
 		} else if strings.HasPrefix(word, "author:") {
 			querys = append(querys, bson.M{"author": strings.TrimPrefix(word, "author:")})
+		} else if strings.HasPrefix(word, "title:") {
+			querys = append(querys, bson.M{"title": strings.TrimPrefix(word, "title:")})
 		} else if strings.Contains(word, ":") {
 			key := strings.Split(word, ":")[0]
 			value := strings.Split(word, ":")[1]
 			querys = append(querys, bson.M{"attributes." + key: primitive.Regex{Pattern: value, Options: "i"}})
 		} else {
+			querys = append(querys, bson.M{"title": primitive.Regex{Pattern: word, Options: "i"}})
 			querys = append(querys, bson.M{"author": primitive.Regex{Pattern: word, Options: "i"}})
 			querys = append(querys, bson.M{"tags": primitive.Regex{Pattern: word, Options: "i"}})
 			querys = append(querys, bson.M{"description": primitive.Regex{Pattern: word, Options: "i"}})
@@ -199,11 +202,14 @@ func SearchPage(client *mongo.Client, itemType, words string, page, limitnum int
 			querys = append(querys, bson.M{"tags": strings.TrimPrefix(word, "tag:")})
 		} else if strings.HasPrefix(word, "author:") {
 			querys = append(querys, bson.M{"author": strings.TrimPrefix(word, "author:")})
+		} else if strings.HasPrefix(word, "title:") {
+			querys = append(querys, bson.M{"title": strings.TrimPrefix(word, "title:")})
 		} else if strings.Contains(word, ":") {
 			key := strings.Split(word, ":")[0]
 			value := strings.Split(word, ":")[1]
 			querys = append(querys, bson.M{"attributes." + key: primitive.Regex{Pattern: value, Options: "i"}})
 		} else {
+			querys = append(querys, bson.M{"title": primitive.Regex{Pattern: word, Options: "i"}})
 			querys = append(querys, bson.M{"author": primitive.Regex{Pattern: word, Options: "i"}})
 			querys = append(querys, bson.M{"tags": primitive.Regex{Pattern: word, Options: "i"}})
 			querys = append(querys, bson.M{"description": primitive.Regex{Pattern: word, Options: "i"}})
