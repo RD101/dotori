@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"strings"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -73,19 +74,30 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 				i.Description = values[0]
 			case "tags":
 				if len(values) != 1 {
-					http.Error(w, "URL에 tag를 입력해주세요", http.StatusBadRequest)
+					http.Error(w, "URL에 tags를 입력해주세요", http.StatusBadRequest)
 					return
 				}
 				tags := SplitBySpace(values[0])
 				i.Tags = tags
+			case "attributes":
+				if len(values) != 1 {
+					http.Error(w, "URL에 attributes를 입력해주세요", http.StatusBadRequest)
+					return
+				}
+				attr := make(map[string]string)
+				for _, attribute := range SplitBySpace(values[0]) {
+					key := strings.Split(attribute, ":")[0]
+					value := strings.Split(attribute, ":")[1]
+					attr[key] = value
+				}
+				i.Attributes = attr
 			}
-
 		}
 		i.Status = "ready"
 		i.Logs = append(i.Logs, "아이템이 생성되었습니다.")
 		currentTime := time.Now()
 		i.CreateTime = currentTime.Format("2006-01-02 15:04:05")
-		// admin settin에서 rootpath를 가져와서 경로를 생성한다.
+		// admin setting에서 rootpath를 가져와 경로를 생성한다.
 		rootpath, err := GetRootPath(client)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
