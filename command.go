@@ -52,8 +52,12 @@ func addMayaItemCmd() {
 	i.DataUploaded = false
 
 	// 1. 썸네일 이미지
-	// 썸네일 이미지 경로에 실재 파일이 존재하는지 체크. 유효한 파일인지 체크.
-	// 있으면 ThumbImgUploaded true로 바꾸기
+	// 썸네일 이미지 경로에 실재 파일이 존재하는지 체크.
+	if err := FileExists(*flagInputThumbImgPath); err != nil {
+		log.Fatal(err)
+	}
+	// 유효한 파일인지 체크.
+	// 존재하고 유효하면 ThumbImgUploaded true로 바꾸기
 	i.ThumbImgUploaded = true
 
 	// 2. 썸네일 클립
