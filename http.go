@@ -87,6 +87,18 @@ func webserver() {
 	http.HandleFunc("/editfootage-submit", handleEditFootageSubmit)
 	http.HandleFunc("/editfootage-success", handleEditFootageSuccess)
 
+	// Clip
+	http.HandleFunc("/addclip", handleAddClip)
+	http.HandleFunc("/addclip-item", handleAddClipItem)
+	http.HandleFunc("/uploadclip-item", handleUploadClipItem)
+	http.HandleFunc("/addclip-file", handleAddClipFile)
+	http.HandleFunc("/uploadclip-file", handleUploadClipFile)
+	http.HandleFunc("/uploadclip-checkdata", handleUploadClipCheckData)
+	http.HandleFunc("/addclip-success", handleAddClipSuccess)
+	http.HandleFunc("/editclip", handleEditClip)
+	http.HandleFunc("/editclip-submit", handleEditClipSubmit)
+	http.HandleFunc("/editclip-success", handleEditClipSuccess)
+
 	// HDRI
 	http.HandleFunc("/addhdri", handleAddHDRI)
 	http.HandleFunc("/addhdri-item", handleAddHDRIItem)
