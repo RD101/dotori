@@ -218,6 +218,18 @@ func webserver() {
 	http.HandleFunc("/edithwp-submit", handleEditHwpSubmit)
 	http.HandleFunc("/edithwp-success", handleEditHwpSuccess)
 
+	// ppt
+	http.HandleFunc("/addppt", handleAddPpt)
+	http.HandleFunc("/addppt-item", handleAddPptItem)
+	http.HandleFunc("/addppt-file", handleAddPptFile)
+	http.HandleFunc("/uploadppt-item", handleUploadPptItem)
+	http.HandleFunc("/uploadppt-file", handleUploadPptFile)
+	http.HandleFunc("/uploadppt-checkdata", handleUploadPptCheckData)
+	http.HandleFunc("/addppt-success", handleAddPptSuccess)
+	http.HandleFunc("/editppt", handleEditPpt)
+	http.HandleFunc("/editppt-submit", handleEditPptSubmit)
+	http.HandleFunc("/editppt-success", handleEditPptSuccess)
+
 	// unreal
 	http.HandleFunc("/addunreal", handleAddUnreal)
 	http.HandleFunc("/addunreal-item", handleAddUnrealItem)
