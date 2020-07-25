@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"os"
 	"path"
@@ -182,6 +183,65 @@ func RmData(client *mongo.Client, id string) error {
 		if splitpath == rootpath {
 			break
 		}
+	}
+	return nil
+}
+
+func copyFile(inputpath, outputpath string) error {
+	fmt.Println(inputpath)
+	fmt.Println(outputpath)
+	src, err := os.Stat(inputpath)
+	if err != nil {
+		return err
+	}
+	if !src.Mode().IsRegular() {
+		// cannot copy non-regular files (e.g., directories,
+		// symlinks, devices, etc.)
+		return fmt.Errorf("CopyFile: non-regular source file %s (%q)", src.Name(), src.Mode().String())
+	}
+	dst, err := os.Stat(outputpath)
+	if err != nil {
+		if !os.IsNotExist(err) {
+			return err
+		}
+		return err
+	} else {
+		if !(dst.Mode().IsRegular()) {
+			return fmt.Errorf("CopyFile: non-regular destination file %s (%q)", dst.Name(), dst.Mode().String())
+		}
+		if os.SameFile(src, dst) {
+			return nil
+		}
+	}
+	if err = os.Link(inputpath, outputpath); err == nil {
+		return nil
+	}
+	err = copyFileContents(inputpath, outputpath)
+	return nil
+}
+
+func copyFileContents(inputpath, outputpath string) error {
+	in, err := os.Open(inputpath)
+	if err != nil {
+		return err
+	}
+	defer in.Close()
+	out, err := os.Create(outputpath)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		cerr := out.Close()
+		if err == nil {
+			err = cerr
+		}
+	}()
+	if _, err = io.Copy(out, in); err != nil {
+		return err
+	}
+	err = out.Sync()
+	if err != nil {
+		return err
 	}
 	return nil
 }

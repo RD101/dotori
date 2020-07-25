@@ -51,25 +51,6 @@ func addMayaItemCmd() {
 	i.ThumbClipUploaded = false
 	i.DataUploaded = false
 
-	// 1. 썸네일 이미지
-	// 썸네일 이미지 경로에 실재 파일이 존재하는지 체크. 유효한 파일인지 체크.
-	// 있으면 ThumbImgUploaded true로 바꾸기
-	i.ThumbImgUploaded = true
-
-	// 2. 썸네일 클립
-	// 썸네일 클립 경로에 실재 파일이 존재하는지 체크. 유효한 파일인지 체크.
-	// 있으면 ThumbClipUploaded true로 바꾸기
-	i.ThumbClipUploaded = true
-
-	// 3. 데이터
-	// 데이터 경로에 실재 파일이 존재하는지 체크. 유효한 파일인지 체크.
-	// 있으면 OutputData 경로로 복사하기
-	// DataUploaded true로 바꾸기
-	i.DataUploaded = true
-
-	// 다 잘 업로드 됐으면 status바꾸기
-	i.Status = "fileuploaded"
-
 	//mongoDB client 연결
 	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 	if err != nil {
@@ -101,6 +82,29 @@ func addMayaItemCmd() {
 	i.OutputThumbnailOggPath = rootpath + objIDpath + "/thumbnail/thumbnail.ogg"
 	i.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/thumbnail.mov"
 	i.OutputDataPath = rootpath + objIDpath + "/data/"
+
+	// 1. 썸네일 이미지
+	// 썸네일 이미지 경로에 실재 파일이 존재하는지 체크. 유효한 파일인지 체크.
+	// 있으면 ThumbImgUploaded true로 바꾸기
+	i.ThumbImgUploaded = true
+
+	// 2. 썸네일 클립
+	// 썸네일 클립 경로에 실재 파일이 존재하는지 체크. 유효한 파일인지 체크.
+	// 있으면 ThumbClipUploaded true로 바꾸기
+	i.ThumbClipUploaded = true
+
+	// 3. 데이터
+	// 데이터 경로에 실재 파일이 존재하는지 체크. 유효한 파일인지 체크.
+	// 있으면 OutputData 경로로 복사하기
+	err = copyFile(*flagInputDataPath, i.OutputDataPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	// DataUploaded true로 바꾸기
+	i.DataUploaded = true
+
+	// 다 잘 업로드 됐으면 status바꾸기
+	i.Status = "fileuploaded"
 
 	err = i.CheckError()
 	if err != nil {
