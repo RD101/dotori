@@ -74,7 +74,7 @@ func addMayaItemCmd() {
 	}
 	// 유효한 파일인지 체크.
 	ext = filepath.Ext(*flagInputThumbClipPath)
-	if ext != ".mov" && ext != ".mp4" && ext != ".ogg" {
+	if ext != ".mov" && ext != ".mp4" && ext != ".ogg" && ext != ".zip" {
 		log.Fatal("지원하지 않는 썸네일 클립 포맷입니다.")
 	}
 	// 존재하고 유효하면 ThumbClipUploaded true로 바꾸기
