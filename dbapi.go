@@ -509,6 +509,7 @@ func GetIncompleteItems(client *mongo.Client) ([]Item, error) {
 				bson.M{"itemtype": "hwp"},
 				bson.M{"itemtype": "hdri"},
 				bson.M{"itemtype": "texture"},
+				bson.M{"itemtype": "lut"},
 			}},
 			// 조건
 			bson.M{"datauploaded": false},
