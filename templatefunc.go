@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"strings"
 )
 
@@ -31,4 +32,10 @@ func LastLog(logs []string) string {
 		return ""
 	}
 	return logs[len(logs)-1]
+}
+
+func CreateDataSplite(data string) string {
+	splitData := strings.Split(data, "T")
+	fmt.Println(splitData)
+	return splitData[0]
 }

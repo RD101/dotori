@@ -24,7 +24,9 @@ func handleInit(w http.ResponseWriter, r *http.Request) {
 	itemType := q.Get("itemtype")
 	searchword := q.Get("searchword")
 	type recipe struct {
-		Recently100Items []Item
+		RecentlyCreateItems []Item
+		TopUsingItems       []Item
+		RecentlyTagItems    []Item
 		Token
 		Adminsetting Adminsetting
 		Searchword   string
@@ -79,12 +81,26 @@ func handleInit(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.AllItemCount = humanize.Comma(num) // 숫자를 1000단위마다 comma를 찍음(string형으로 변경)
 
-	items, err := Recently100Items(client)
+	RecentlyTagItems, err := RecentlyCreateItems(client, 20)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	rcp.Recently100Items = items
+	rcp.RecentlyTagItems = RecentlyTagItems
+
+	RecentlyCreateItems, err := RecentlyCreateItems(client, 100)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp.RecentlyCreateItems = RecentlyCreateItems
+
+	TopUsingItems, err := TopUsingItems(client, 20)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp.TopUsingItems = TopUsingItems
 
 	err = TEMPLATES.ExecuteTemplate(w, "ind", rcp)
 	if err != nil {

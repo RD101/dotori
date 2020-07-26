@@ -1,0 +1,17 @@
+{{define "ItemsRecentlyTag"}}
+    <div class="row mx-auto mb-5">
+        {{range .RecentlyTagItems}}
+            {{$itemtype := .ItemType}}
+                <div class="info mb-3">
+                    <div class="text-muted">
+                        Tags:
+                        {{$OrganizedTag := ""}}
+                        {{range .Tags}}
+                            {$OrganizedTag = {.}}
+                        {{end}}
+                        <a href="/search?itemtype={{$itemtype}}&searchword=tag:{{$OrganizedTag}}" class="badge badge-outline-darkmode">{{$OrganizedTag}}</a>
+                    </div>
+                </div>
+        {{end}}
+    </div>
+{{end}}

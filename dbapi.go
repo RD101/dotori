@@ -94,15 +94,35 @@ func AllItems(client *mongo.Client) ([]Item, error) {
 	return results, nil
 }
 
-// Recently100Items 는 DB에서 전체 아이템 정보를 가져오는 함수입니다.
-func Recently100Items(client *mongo.Client) ([]Item, error) {
+// RecentlyCreateItems 는 DB에서 최근생성 된 num건의 아이템 정보를 가져오는 함수입니다.
+func RecentlyCreateItems(client *mongo.Client, num int64) ([]Item, error) {
 	collection := client.Database(*flagDBName).Collection("items")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	var results []Item
 	findOptions := options.Find()
 	findOptions.SetSort(bson.M{"createtime": -1})
-	findOptions.SetLimit(5)
+	findOptions.SetLimit(num)
+	cursor, err := collection.Find(ctx, bson.M{}, findOptions)
+	if err != nil {
+		return results, err
+	}
+	err = cursor.All(ctx, &results)
+	if err != nil {
+		return results, err
+	}
+	return results, nil
+}
+
+// TopUsingItems 는 DB에서 Using숫자가 높은 순서, num건의 아이템 정보를 가져오는 함수입니다.
+func TopUsingItems(client *mongo.Client, num int64) ([]Item, error) {
+	collection := client.Database(*flagDBName).Collection("items")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	var results []Item
+	findOptions := options.Find()
+	findOptions.SetSort(bson.M{"usingrate": -1})
+	findOptions.SetLimit(num)
 	cursor, err := collection.Find(ctx, bson.M{}, findOptions)
 	if err != nil {
 		return results, err
