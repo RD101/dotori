@@ -286,10 +286,6 @@ func processingItem(item Item) {
 		}
 		return
 	case "lut", "3dl", "blut", "cms", "csp", "cub", "cube", "vf", "vfz": // LUT 파일들
-		if !item.ThumbImgUploaded {
-			return
-		}
-
 		err = ProcessLutItem(client, adminSetting, item)
 		if err != nil {
 			err = SetStatus(client, item, "error")
