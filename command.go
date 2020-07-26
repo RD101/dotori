@@ -92,7 +92,7 @@ func addMayaItemCmd() {
 		log.Fatal(err)
 	}
 	// 유효한 파일인지 체크.
-	ext = filepath.Ext(*flagInputThumbImgPath)
+	ext := filepath.Ext(*flagInputThumbImgPath)
 	if ext != ".jpg" && ext != ".png" {
 		log.Fatal("지원하지 않는 썸네일 이미지 포맷입니다.")
 	}
