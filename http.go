@@ -87,6 +87,18 @@ func webserver() {
 	http.HandleFunc("/editfootage-submit", handleEditFootageSubmit)
 	http.HandleFunc("/editfootage-success", handleEditFootageSuccess)
 
+	// Clip
+	http.HandleFunc("/addclip", handleAddClip)
+	http.HandleFunc("/addclip-item", handleAddClipItem)
+	http.HandleFunc("/uploadclip-item", handleUploadClipItem)
+	http.HandleFunc("/addclip-file", handleAddClipFile)
+	http.HandleFunc("/uploadclip-file", handleUploadClipFile)
+	http.HandleFunc("/uploadclip-checkdata", handleUploadClipCheckData)
+	http.HandleFunc("/addclip-success", handleAddClipSuccess)
+	http.HandleFunc("/editclip", handleEditClip)
+	http.HandleFunc("/editclip-submit", handleEditClipSubmit)
+	http.HandleFunc("/editclip-success", handleEditClipSuccess)
+
 	// HDRI
 	http.HandleFunc("/addhdri", handleAddHDRI)
 	http.HandleFunc("/addhdri-item", handleAddHDRIItem)
@@ -217,6 +229,18 @@ func webserver() {
 	http.HandleFunc("/edithwp", handleEditHwp)
 	http.HandleFunc("/edithwp-submit", handleEditHwpSubmit)
 	http.HandleFunc("/edithwp-success", handleEditHwpSuccess)
+
+	// ppt
+	http.HandleFunc("/addppt", handleAddPpt)
+	http.HandleFunc("/addppt-item", handleAddPptItem)
+	http.HandleFunc("/addppt-file", handleAddPptFile)
+	http.HandleFunc("/uploadppt-item", handleUploadPptItem)
+	http.HandleFunc("/uploadppt-file", handleUploadPptFile)
+	http.HandleFunc("/uploadppt-checkdata", handleUploadPptCheckData)
+	http.HandleFunc("/addppt-success", handleAddPptSuccess)
+	http.HandleFunc("/editppt", handleEditPpt)
+	http.HandleFunc("/editppt-submit", handleEditPptSubmit)
+	http.HandleFunc("/editppt-success", handleEditPptSuccess)
 
 	// unreal
 	http.HandleFunc("/addunreal", handleAddUnreal)
