@@ -8,7 +8,6 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
-	"strings"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -18,18 +17,19 @@ import (
 	"golang.org/x/sys/unix"
 )
 
-// handleAddTexture 함수는 URL에 objectID를 붙여서 /addTexture-item 페이지로 redirect한다.
-func handleAddTexture(w http.ResponseWriter, r *http.Request) {
+// handleAddPpt 함수는 URL에 objectID를 붙여서 /addppt-item 페이지로 redirect한다.
+func handleAddPpt(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
 		return
 	}
 	objectID := primitive.NewObjectID().Hex()
-	http.Redirect(w, r, fmt.Sprintf("/addtexture-item?objectid=%s", objectID), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/addppt-item?objectid=%s", objectID), http.StatusSeeOther)
 }
 
-func handleAddTextureItem(w http.ResponseWriter, r *http.Request) {
+// handleAddPptItem 함수는 DB에 저장할 ppt 파일의 정보를 입력하는 페이지 이다.
+func handleAddPptItem(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -38,7 +38,6 @@ func handleAddTextureItem(w http.ResponseWriter, r *http.Request) {
 	type recipe struct {
 		Token
 		Adminsetting Adminsetting
-		Colorspaces  []Colorspace
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -67,22 +66,16 @@ func handleAddTextureItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rcp.Adminsetting = adminsetting
-	ocioConfig, err := loadOCIOConfig(rcp.Adminsetting.OCIOConfig)
-	if err != nil {
-		http.Redirect(w, r, "/error-ocio", http.StatusSeeOther)
-		return
-	}
-	rcp.Colorspaces = ocioConfig.Colorspaces
 	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "addtexture-item", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "addppt-item", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
 
-// handleUploadTextureItem 핸들러는 Texture 아이템을 생성한다.
-func handleUploadTextureItem(w http.ResponseWriter, r *http.Request) {
+// handleUploadPptItem 함수는 /addppt-item에서 입력한 정보를 DB에 저장하는 함수이다.
+func handleUploadPptItem(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -99,14 +92,12 @@ func handleUploadTextureItem(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	item.Title = r.FormValue("title")
 	item.Author = r.FormValue("author")
+	item.Title = r.FormValue("title")
 	item.Description = r.FormValue("description")
-	item.InColorspace = r.FormValue("incolorspace")
-	item.OutColorspace = r.FormValue("outcolorspace")
 	tags := SplitBySpace(r.FormValue("tag"))
 	item.Tags = tags
-	item.ItemType = "texture"
+	item.ItemType = "ppt"
 	attr := make(map[string]string)
 	attrNum, err := strconv.Atoi(r.FormValue("attributesNum"))
 	if err != nil {
@@ -126,7 +117,7 @@ func handleUploadTextureItem(w http.ResponseWriter, r *http.Request) {
 	item.Logs = append(item.Logs, "아이템이 생성되었습니다.")
 	currentTime := time.Now()
 	item.CreateTime = currentTime.Format("2006-01-02 15:04:05")
-	item.ThumbImgUploaded = false
+	item.ThumbImgUploaded = true
 	item.ThumbClipUploaded = false
 	item.DataUploaded = false
 
@@ -163,8 +154,10 @@ func handleUploadTextureItem(w http.ResponseWriter, r *http.Request) {
 	item.InputThumbnailImgPath = rootpath + objIDpath + "/originalthumbimg/"
 	item.InputThumbnailClipPath = rootpath + objIDpath + "/originalthumbmov/"
 	item.OutputThumbnailPngPath = rootpath + objIDpath + "/thumbnail/thumbnail.png"
+	item.OutputThumbnailMp4Path = rootpath + objIDpath + "/thumbnail/thumbnail.mp4"
+	item.OutputThumbnailOggPath = rootpath + objIDpath + "/thumbnail/thumbnail.ogg"
+	item.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/thumbnail.mov"
 	item.OutputDataPath = rootpath + objIDpath + "/data/"
-	item.OutputProxyImgPath = rootpath + objIDpath + "/proxy/"
 	err = item.CheckError()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -172,14 +165,18 @@ func handleUploadTextureItem(w http.ResponseWriter, r *http.Request) {
 	}
 	err = AddItem(client, item)
 	if err != nil {
+		if IsDup(err) { // 동일한 ID의 도큐먼트를 업로드하려고 하면, 새로운 ID의 페이지로 리다이렉트한다.
+			http.Redirect(w, r, "/addppt", http.StatusSeeOther)
+			return
+		}
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	http.Redirect(w, r, fmt.Sprintf("/addtexture-file?objectid=%s", objectID), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/addppt-file?objectid=%s", objectID), http.StatusSeeOther)
 }
 
-// handleAddTextureFile 함수는 Texture 파일을 추가하는 페이지 이다.
-func handleAddTextureFile(w http.ResponseWriter, r *http.Request) {
+// handleAddPptFile 함수는 Ppt 파일을 추가하는 페이지 이다.
+func handleAddPptFile(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -217,15 +214,15 @@ func handleAddTextureFile(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Adminsetting = adminsetting
 	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "addtexture-file", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "addppt-file", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
 
-// handleUploadTextureFile 함수는 Texture 파일을 DB에 업로드하는 페이지를 연다. dropzone에 파일을 올릴 경우 실행된다.
-func handleUploadTextureFile(w http.ResponseWriter, r *http.Request) {
+// handleUploadPpt 함수는 Ppt파일을 DB에 업로드하는 페이지를 연다. dropzone에 파일을 올릴 경우 실행된다.
+func handleUploadPptFile(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -323,10 +320,9 @@ func handleUploadTextureFile(w http.ResponseWriter, r *http.Request) {
 			unix.Umask(umask)
 			mimeType := f.Header.Get("Content-Type")
 			switch mimeType {
-
-			case "application/octet-stream", "image/jpeg", "image/png", "image/tiff", "image/x-tiff":
-				ext := strings.ToLower(filepath.Ext(f.Filename))
-				if !(ext == ".exr" || ext == ".png" || ext == ".jpg" || ext == ".tga" || ext == ".tif" || ext == ".tiff") {
+			case "application/octet-stream", "application/zip", "application/vnd.ms-powerpoint", "application/vnd.openxmlformats-officedocument.presentationml.presentation":
+				ext := filepath.Ext(f.Filename)
+				if ext != ".key" && ext != ".zip" && ext != ".ppt" && ext != ".pptx" { // .ma .mb 외에는 허용하지 않는다.
 					http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
 					return
 				}
@@ -357,6 +353,18 @@ func handleUploadTextureFile(w http.ResponseWriter, r *http.Request) {
 				http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
 				return
 			}
+			tags := FilenameToTags(f.Filename)
+			for _, tag := range tags {
+				has := false // 중복되는 tag가 있다면 append하지 않는다.
+				for _, t := range item.Tags {
+					if tag == t {
+						has = true
+					}
+				}
+				if !has {
+					item.Tags = append(item.Tags, tag)
+				}
+			}
 		}
 	}
 	if item.DataUploaded {
@@ -365,8 +373,8 @@ func handleUploadTextureFile(w http.ResponseWriter, r *http.Request) {
 	UpdateItem(client, item)
 }
 
-// handleUploadTextureCheckData 함수는 필요한 파일들을 모두 업로드했는지 체크하고, /addTexture-success 페이지로 redirect한다.
-func handleUploadTextureCheckData(w http.ResponseWriter, r *http.Request) {
+// handleUploadPptCheckData 함수는 필요한 파일들을 모두 업로드했는지 체크하고, /addppt-success 페이지로 redirect한다.
+func handleUploadPptCheckData(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -419,17 +427,17 @@ func handleUploadTextureCheckData(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Item = item
 	if !item.DataUploaded {
-		err = TEMPLATES.ExecuteTemplate(w, "checktexture-file", rcp)
+		err = TEMPLATES.ExecuteTemplate(w, "checkppt-file", rcp)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		return
 	}
-	http.Redirect(w, r, "/addtexture-success", http.StatusSeeOther)
+	http.Redirect(w, r, "/addppt-success", http.StatusSeeOther)
 }
 
-func handleAddTextureSuccess(w http.ResponseWriter, r *http.Request) {
+func handleAddPptSuccess(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -467,14 +475,14 @@ func handleAddTextureSuccess(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Adminsetting = adminsetting
 	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "addtexture-success", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "addppt-success", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
 
-func handleEditTexture(w http.ResponseWriter, r *http.Request) {
+func handleEditPpt(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -482,16 +490,13 @@ func handleEditTexture(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "text/html")
 	type recipe struct {
-		ID            primitive.ObjectID `json:"id" bson:"id"`
-		ItemType      string             `json:"itemtype" bson:"itemtype"`
-		Author        string             `json:"author" bson:"author"`
-		Title         string             `json:"title" bson:"title"`
-		Description   string             `json:"description" bson:"description"`
-		Tags          []string           `json:"tags" bson:"tags"`
-		Attributes    map[string]string  `json:"attributes" bson:"attributes"`
-		InColorspace  string             `json:"incolorspace"`
-		OutColorspace string             `json:"outcolorspace"`
-		Colorspaces   []Colorspace       `json:"colorspaces"`
+		ID          primitive.ObjectID `json:"id" bson:"id"`
+		ItemType    string             `json:"itemtype" bson:"itemtype"`
+		Author      string             `json:"author" bson:"author"`
+		Title       string             `json:"title" bson:"title"`
+		Description string             `json:"description" bson:"description"`
+		Tags        []string           `json:"tags" bson:"tags"`
+		Attributes  map[string]string  `json:"attributes" bson:"attributes"`
 		Token
 		Adminsetting Adminsetting
 	}
@@ -536,35 +541,27 @@ func handleEditTexture(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	ocioConfig, err := loadOCIOConfig(adminsetting.OCIOConfig)
-	if err != nil {
-		http.Redirect(w, r, "/error-ocio", http.StatusSeeOther)
-		return
-	}
 	rcp := recipe{
-		ID:            item.ID,
-		ItemType:      item.ItemType,
-		Author:        item.Author,
-		Title:         item.Title,
-		Description:   item.Description,
-		Tags:          item.Tags,
-		Attributes:    item.Attributes,
-		InColorspace:  item.InColorspace,
-		OutColorspace: item.OutColorspace,
-		Colorspaces:   ocioConfig.Colorspaces,
-		Token:         token,
-		Adminsetting:  adminsetting,
+		ID:           item.ID,
+		ItemType:     item.ItemType,
+		Author:       item.Author,
+		Title:        item.Title,
+		Description:  item.Description,
+		Tags:         item.Tags,
+		Attributes:   item.Attributes,
+		Token:        token,
+		Adminsetting: adminsetting,
 	}
 
-	err = TEMPLATES.ExecuteTemplate(w, "edittexture", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "editppt", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
 
-//handleEditTextureSubmit 함수는 Texture 아이템을 수정하는 페이지에서 UPDATE버튼을 누르면 작동하는 함수다.
-func handleEditTextureSubmit(w http.ResponseWriter, r *http.Request) {
+//handleEditPptSubmit 함수는 ppt아이템을 수정하는 페이지에서 UPDATE버튼을 누르면 작동하는 함수다.
+func handleEditPptSubmit(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -573,7 +570,7 @@ func handleEditTextureSubmit(w http.ResponseWriter, r *http.Request) {
 	id := r.FormValue("id")
 	attrNum, err := strconv.Atoi(r.FormValue("attributesNum"))
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	attr := make(map[string]string)
@@ -613,8 +610,6 @@ func handleEditTextureSubmit(w http.ResponseWriter, r *http.Request) {
 	item.Title = r.FormValue("title")
 	item.Description = r.FormValue("description")
 	item.Tags = SplitBySpace(r.FormValue("tags"))
-	item.InColorspace = r.FormValue("incolorspace")
-	item.OutColorspace = r.FormValue("outcolorspace")
 	item.Attributes = attr
 	err = item.CheckError()
 	if err != nil {
@@ -626,10 +621,10 @@ func handleEditTextureSubmit(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	http.Redirect(w, r, "/edittexture-success", http.StatusSeeOther)
+	http.Redirect(w, r, "/editppt-success", http.StatusSeeOther)
 }
 
-func handleEditTextureSuccess(w http.ResponseWriter, r *http.Request) {
+func handleEditPptSuccess(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -667,7 +662,7 @@ func handleEditTextureSuccess(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Adminsetting = adminsetting
 	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "edittexture-success", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "editppt-success", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

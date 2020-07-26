@@ -18,18 +18,18 @@ import (
 	"golang.org/x/sys/unix"
 )
 
-// handleAddTexture 함수는 URL에 objectID를 붙여서 /addTexture-item 페이지로 redirect한다.
-func handleAddTexture(w http.ResponseWriter, r *http.Request) {
+// handleAddClip 함수는 URL에 objectID를 붙여서 /addclip-item 페이지로 redirect한다.
+func handleAddClip(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
 		return
 	}
 	objectID := primitive.NewObjectID().Hex()
-	http.Redirect(w, r, fmt.Sprintf("/addtexture-item?objectid=%s", objectID), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/addclip-item?objectid=%s", objectID), http.StatusSeeOther)
 }
 
-func handleAddTextureItem(w http.ResponseWriter, r *http.Request) {
+func handleAddClipItem(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -38,7 +38,6 @@ func handleAddTextureItem(w http.ResponseWriter, r *http.Request) {
 	type recipe struct {
 		Token
 		Adminsetting Adminsetting
-		Colorspaces  []Colorspace
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -67,22 +66,16 @@ func handleAddTextureItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rcp.Adminsetting = adminsetting
-	ocioConfig, err := loadOCIOConfig(rcp.Adminsetting.OCIOConfig)
-	if err != nil {
-		http.Redirect(w, r, "/error-ocio", http.StatusSeeOther)
-		return
-	}
-	rcp.Colorspaces = ocioConfig.Colorspaces
 	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "addtexture-item", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "addfootage-item", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
 
-// handleUploadTextureItem 핸들러는 Texture 아이템을 생성한다.
-func handleUploadTextureItem(w http.ResponseWriter, r *http.Request) {
+// handleUploadClip 핸들러는 clip 아이템을 생성한다.
+func handleUploadClipItem(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -102,11 +95,10 @@ func handleUploadTextureItem(w http.ResponseWriter, r *http.Request) {
 	item.Title = r.FormValue("title")
 	item.Author = r.FormValue("author")
 	item.Description = r.FormValue("description")
-	item.InColorspace = r.FormValue("incolorspace")
-	item.OutColorspace = r.FormValue("outcolorspace")
+	item.Fps = r.FormValue("fps")
 	tags := SplitBySpace(r.FormValue("tag"))
 	item.Tags = tags
-	item.ItemType = "texture"
+	item.ItemType = "clip"
 	attr := make(map[string]string)
 	attrNum, err := strconv.Atoi(r.FormValue("attributesNum"))
 	if err != nil {
@@ -163,6 +155,9 @@ func handleUploadTextureItem(w http.ResponseWriter, r *http.Request) {
 	item.InputThumbnailImgPath = rootpath + objIDpath + "/originalthumbimg/"
 	item.InputThumbnailClipPath = rootpath + objIDpath + "/originalthumbmov/"
 	item.OutputThumbnailPngPath = rootpath + objIDpath + "/thumbnail/thumbnail.png"
+	item.OutputThumbnailMp4Path = rootpath + objIDpath + "/thumbnail/thumbnail.mp4"
+	item.OutputThumbnailOggPath = rootpath + objIDpath + "/thumbnail/thumbnail.ogg"
+	item.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/thumbnail.mov"
 	item.OutputDataPath = rootpath + objIDpath + "/data/"
 	item.OutputProxyImgPath = rootpath + objIDpath + "/proxy/"
 	err = item.CheckError()
@@ -175,11 +170,11 @@ func handleUploadTextureItem(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	http.Redirect(w, r, fmt.Sprintf("/addtexture-file?objectid=%s", objectID), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/addclip-file?objectid=%s", objectID), http.StatusSeeOther)
 }
 
-// handleAddTextureFile 함수는 Texture 파일을 추가하는 페이지 이다.
-func handleAddTextureFile(w http.ResponseWriter, r *http.Request) {
+// handleAddClipFile 함수는 Clip 파일을 추가하는 페이지 이다.
+func handleAddClipFile(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -217,15 +212,15 @@ func handleAddTextureFile(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Adminsetting = adminsetting
 	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "addtexture-file", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "addclip-file", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
 
-// handleUploadTextureFile 함수는 Texture 파일을 DB에 업로드하는 페이지를 연다. dropzone에 파일을 올릴 경우 실행된다.
-func handleUploadTextureFile(w http.ResponseWriter, r *http.Request) {
+// handleUploadClipFile 함수는 Clip 파일을 DB에 업로드하는 페이지를 연다. dropzone에 파일을 올릴 경우 실행된다.
+func handleUploadClipFile(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -324,9 +319,9 @@ func handleUploadTextureFile(w http.ResponseWriter, r *http.Request) {
 			mimeType := f.Header.Get("Content-Type")
 			switch mimeType {
 
-			case "application/octet-stream", "image/jpeg", "image/png", "image/tiff", "image/x-tiff":
+			case "application/octet-stream":
 				ext := strings.ToLower(filepath.Ext(f.Filename))
-				if !(ext == ".exr" || ext == ".png" || ext == ".jpg" || ext == ".tga" || ext == ".tif" || ext == ".tiff") {
+				if ext != ".mov" { // .mov 외에는 허용하지 않는다.
 					http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
 					return
 				}
@@ -365,8 +360,8 @@ func handleUploadTextureFile(w http.ResponseWriter, r *http.Request) {
 	UpdateItem(client, item)
 }
 
-// handleUploadTextureCheckData 함수는 필요한 파일들을 모두 업로드했는지 체크하고, /addTexture-success 페이지로 redirect한다.
-func handleUploadTextureCheckData(w http.ResponseWriter, r *http.Request) {
+// handleUploadClipCheckData 함수는 필요한 파일들을 모두 업로드했는지 체크하고, /addclip-success 페이지로 redirect한다.
+func handleUploadClipCheckData(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -419,17 +414,17 @@ func handleUploadTextureCheckData(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Item = item
 	if !item.DataUploaded {
-		err = TEMPLATES.ExecuteTemplate(w, "checktexture-file", rcp)
+		err = TEMPLATES.ExecuteTemplate(w, "checkclip-file", rcp)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		return
 	}
-	http.Redirect(w, r, "/addtexture-success", http.StatusSeeOther)
+	http.Redirect(w, r, "/addclip-success", http.StatusSeeOther)
 }
 
-func handleAddTextureSuccess(w http.ResponseWriter, r *http.Request) {
+func handleAddClipSuccess(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -467,14 +462,14 @@ func handleAddTextureSuccess(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Adminsetting = adminsetting
 	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "addtexture-success", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "addclip-success", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
 
-func handleEditTexture(w http.ResponseWriter, r *http.Request) {
+func handleEditClip(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -482,16 +477,13 @@ func handleEditTexture(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "text/html")
 	type recipe struct {
-		ID            primitive.ObjectID `json:"id" bson:"id"`
-		ItemType      string             `json:"itemtype" bson:"itemtype"`
-		Author        string             `json:"author" bson:"author"`
-		Title         string             `json:"title" bson:"title"`
-		Description   string             `json:"description" bson:"description"`
-		Tags          []string           `json:"tags" bson:"tags"`
-		Attributes    map[string]string  `json:"attributes" bson:"attributes"`
-		InColorspace  string             `json:"incolorspace"`
-		OutColorspace string             `json:"outcolorspace"`
-		Colorspaces   []Colorspace       `json:"colorspaces"`
+		ID          primitive.ObjectID `json:"id" bson:"id"`
+		ItemType    string             `json:"itemtype" bson:"itemtype"`
+		Author      string             `json:"author" bson:"author"`
+		Title       string             `json:"title" bson:"title"`
+		Description string             `json:"description" bson:"description"`
+		Tags        []string           `json:"tags" bson:"tags"`
+		Attributes  map[string]string  `json:"attributes" bson:"attributes"`
 		Token
 		Adminsetting Adminsetting
 	}
@@ -536,35 +528,27 @@ func handleEditTexture(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	ocioConfig, err := loadOCIOConfig(adminsetting.OCIOConfig)
-	if err != nil {
-		http.Redirect(w, r, "/error-ocio", http.StatusSeeOther)
-		return
-	}
 	rcp := recipe{
-		ID:            item.ID,
-		ItemType:      item.ItemType,
-		Author:        item.Author,
-		Title:         item.Title,
-		Description:   item.Description,
-		Tags:          item.Tags,
-		Attributes:    item.Attributes,
-		InColorspace:  item.InColorspace,
-		OutColorspace: item.OutColorspace,
-		Colorspaces:   ocioConfig.Colorspaces,
-		Token:         token,
-		Adminsetting:  adminsetting,
+		ID:           item.ID,
+		ItemType:     item.ItemType,
+		Author:       item.Author,
+		Title:        item.Title,
+		Description:  item.Description,
+		Tags:         item.Tags,
+		Attributes:   item.Attributes,
+		Token:        token,
+		Adminsetting: adminsetting,
 	}
 
-	err = TEMPLATES.ExecuteTemplate(w, "edittexture", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "editclip", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
 
-//handleEditTextureSubmit 함수는 Texture 아이템을 수정하는 페이지에서 UPDATE버튼을 누르면 작동하는 함수다.
-func handleEditTextureSubmit(w http.ResponseWriter, r *http.Request) {
+//handleEditClipSubmit 함수는 clip 아이템을 수정하는 페이지에서 UPDATE버튼을 누르면 작동하는 함수다.
+func handleEditClipSubmit(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -613,8 +597,6 @@ func handleEditTextureSubmit(w http.ResponseWriter, r *http.Request) {
 	item.Title = r.FormValue("title")
 	item.Description = r.FormValue("description")
 	item.Tags = SplitBySpace(r.FormValue("tags"))
-	item.InColorspace = r.FormValue("incolorspace")
-	item.OutColorspace = r.FormValue("outcolorspace")
 	item.Attributes = attr
 	err = item.CheckError()
 	if err != nil {
@@ -626,10 +608,10 @@ func handleEditTextureSubmit(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	http.Redirect(w, r, "/edittexture-success", http.StatusSeeOther)
+	http.Redirect(w, r, "/editclip-success", http.StatusSeeOther)
 }
 
-func handleEditTextureSuccess(w http.ResponseWriter, r *http.Request) {
+func handleEditClipSuccess(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -667,7 +649,7 @@ func handleEditTextureSuccess(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Adminsetting = adminsetting
 	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "edittexture-success", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "editclip-success", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
