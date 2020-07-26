@@ -115,8 +115,6 @@ func handlUploadNukeItem(w http.ResponseWriter, r *http.Request) {
 	item.Attributes = attr
 	item.Status = "ready"
 	item.Logs = append(item.Logs, "아이템이 생성되었습니다.")
-	currentTime := time.Now()
-	item.CreateTime = currentTime.Format("2006-01-02 15:04:05")
 	item.ThumbImgUploaded = false
 	item.ThumbClipUploaded = false
 	item.DataUploaded = false
