@@ -52,51 +52,6 @@ func addMayaItemCmd() {
 	i.ThumbClipUploaded = false
 	i.DataUploaded = false
 
-	// 1. 썸네일 이미지
-	// 썸네일 이미지 경로에 실재 파일이 존재하는지 체크.
-	err := FileExists(*flagInputThumbImgPath)
-	if err != nil {
-		log.Fatal(err)
-	}
-	// 유효한 파일인지 체크.
-	ext := filepath.Ext(*flagInputThumbImgPath)
-	if ext != ".jpg" && ext != ".png" {
-		log.Fatal("지원하지 않는 썸네일 이미지 포맷입니다.")
-	}
-	// 존재하고 유효하면 ThumbImgUploaded true로 바꾸기
-	i.ThumbImgUploaded = true
-
-	// 2. 썸네일 클립
-	// 썸네일 클립 경로에 실재 파일이 존재하는지 체크.
-	err = FileExists(*flagInputThumbClipPath)
-	if err != nil {
-		log.Fatal(err)
-	}
-	// 유효한 파일인지 체크.
-	ext = filepath.Ext(*flagInputThumbClipPath)
-	if ext != ".mov" && ext != ".mp4" && ext != ".ogg" && ext != ".zip" {
-		log.Fatal("지원하지 않는 썸네일 클립 포맷입니다.")
-	}
-	// 존재하고 유효하면 ThumbClipUploaded true로 바꾸기
-	i.ThumbClipUploaded = true
-
-	// 3. 데이터
-	// 데이터 경로에 실재 파일이 존재하는지 체크.
-	err = FileExists(*flagInputDataPath)
-	if err != nil {
-		log.Fatal(err)
-	}
-	// 유효한 파일인지 체크.
-	ext = filepath.Ext(*flagInputDataPath)
-	if ext != ".ma" && ext != ".mb" {
-		log.Fatal("지원하지 않는 데이터 포맷입니다.")
-	}
-	// 있으면 OutputData 경로로 복사하기
-	// DataUploaded true로 바꾸기
-	i.DataUploaded = true
-
-	// 다 잘 업로드 됐으면 status바꾸기
-	i.Status = "fileuploaded"
 
 	//mongoDB client 연결
 	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
@@ -129,6 +84,56 @@ func addMayaItemCmd() {
 	i.OutputThumbnailOggPath = rootpath + objIDpath + "/thumbnail/thumbnail.ogg"
 	i.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/thumbnail.mov"
 	i.OutputDataPath = rootpath + objIDpath + "/data/"
+
+	// 1. 썸네일 이미지
+	// 썸네일 이미지 경로에 실재 파일이 존재하는지 체크.
+	err = FileExists(*flagInputThumbImgPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	// 유효한 파일인지 체크.
+	ext := filepath.Ext(*flagInputThumbImgPath)
+	if ext != ".jpg" && ext != ".png" {
+		log.Fatal("지원하지 않는 썸네일 이미지 포맷입니다.")
+	}
+	// 존재하고 유효하면 ThumbImgUploaded true로 바꾸기
+	i.ThumbImgUploaded = true
+
+	// 2. 썸네일 클립
+	// 썸네일 클립 경로에 실재 파일이 존재하는지 체크.
+	err = FileExists(*flagInputThumbClipPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	// 유효한 파일인지 체크.
+	ext = filepath.Ext(*flagInputThumbClipPath)
+	if ext != ".mov" && ext != ".mp4" && ext != ".ogg" {
+		log.Fatal("지원하지 않는 썸네일 클립 포맷입니다.")
+	}
+	// 존재하고 유효하면 ThumbClipUploaded true로 바꾸기
+	i.ThumbClipUploaded = true
+
+	// 3. 데이터
+	// 데이터 경로에 실재 파일이 존재하는지 체크.
+	err = FileExists(*flagInputDataPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	// 유효한 파일인지 체크.
+	ext = filepath.Ext(*flagInputDataPath)
+	if ext != ".ma" && ext != ".mb" && ext != ".zip"{
+		log.Fatal("지원하지 않는 데이터 포맷입니다.")
+	}
+	// 있으면 OutputData 경로로 복사하기
+  err = copyFile(*flagInputDataPath, i.OutputDataPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	// DataUploaded true로 바꾸기
+	i.DataUploaded = true
+
+	// 다 잘 업로드 됐으면 status바꾸기
+	i.Status = "fileuploaded"
 
 	err = i.CheckError()
 	if err != nil {

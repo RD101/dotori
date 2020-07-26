@@ -1,8 +1,10 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"os"
 	"path"
@@ -10,8 +12,12 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
+	"golang.org/x/sys/unix"
 )
 
 // searchSeq 함수는 탐색할 경로를 입력받고 dpx, exr, png, mov 정보를 수집 반환한다.
@@ -182,6 +188,125 @@ func RmData(client *mongo.Client, id string) error {
 		if splitpath == rootpath {
 			break
 		}
+	}
+	return nil
+}
+
+// 참고한 코드: https://stackoverflow.com/a/21067803
+// copyFile 함수는 inputpath경로의 파일을 outputpath로 복사한다.
+func copyFile(inputpath, outputpath string) error {
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+	if err != nil {
+		return err
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	err = client.Connect(ctx)
+	if err != nil {
+		return err
+	}
+	defer client.Disconnect(ctx)
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		return err
+	}
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		return err
+	}
+
+	// adminsetting을 가져온다,
+	adminsetting, err := GetAdminSetting(client)
+	if err != nil {
+		return err
+	}
+	// adminsetting에서 폴더 생성에 필요한 값들을 가져온다.
+	// umask, 권한 셋팅
+	umask, err := strconv.Atoi(adminsetting.Umask)
+	if err != nil {
+		return err
+	}
+	unix.Umask(umask)
+	folderP := adminsetting.FolderPermission
+	folderPerm, err := strconv.ParseInt(folderP, 8, 64)
+	if err != nil {
+		return err
+	}
+	u := adminsetting.UID
+	uid, err := strconv.Atoi(u)
+	if err != nil {
+		return err
+	}
+	g := adminsetting.GID
+	gid, err := strconv.Atoi(g)
+	if err != nil {
+		return err
+	}
+
+	// input경로 검사
+	src, err := os.Stat(inputpath)
+	if err != nil {
+		return err
+	}
+	// 레귤러 파일이 아니면 에러처리 한다.
+	if !src.Mode().IsRegular() {
+		// cannot copy non-regular files (e.g., directories, symlinks, devices, etc.)
+		return fmt.Errorf("CopyFile: non-regular source file %s (%q)", src.Name(), src.Mode().String())
+	}
+
+	// output경로 검사.
+	dst, err := os.Stat(outputpath)
+	// 경로가 존재하지 않으면 새로 만든다.
+	if os.IsNotExist(err) {
+		err = os.MkdirAll(outputpath, os.FileMode(folderPerm))
+		if err != nil {
+			return err
+		}
+		err = os.Chown(outputpath, uid, gid)
+		if err != nil {
+			return err
+		}
+	}
+	if err != nil {
+		return err
+	}
+
+	_, filename := path.Split(inputpath)
+	outputpath = outputpath + filename
+	// src경로와 dst경로가 같으면 옮길 필요가 없다.
+	if os.SameFile(src, dst) {
+		return nil
+	}
+	err = copyFileContents(inputpath, outputpath)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func copyFileContents(inputpath, outputpath string) error {
+	in, err := os.Open(inputpath)
+	if err != nil {
+		return err
+	}
+	defer in.Close()
+	out, err := os.Create(outputpath)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		cerr := out.Close()
+		if err == nil {
+			err = cerr
+		}
+	}()
+	if _, err = io.Copy(out, in); err != nil {
+		return err
+	}
+	err = out.Sync()
+	if err != nil {
+		return err
 	}
 	return nil
 }
