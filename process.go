@@ -286,6 +286,22 @@ func processingItem(item Item) {
 		}
 		return
 	case "lut", "3dl", "blut", "cms", "csp", "cub", "cube", "vf", "vfz": // LUT 파일들
+		if !item.ThumbImgUploaded {
+			return
+		}
+
+		err = ProcessLutItem(client, adminSetting, item)
+		if err != nil {
+			err = SetStatus(client, item, "error")
+			if err != nil {
+				log.Println(err)
+			}
+			err = SetLog(client, item.ID.Hex(), err.Error())
+			if err != nil {
+				log.Println(err)
+			}
+			return
+		}
 		return
 	case "sound":
 		err = ProcessSoundItem(client, adminSetting, item)
@@ -920,6 +936,32 @@ func ProcessBlenderItem(client *mongo.Client, adminSetting Adminsetting, item It
 		return err
 	}
 	err = genThumbMp4Media(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+	if err != nil {
+		return err
+	}
+	err = SetStatus(client, item, "done")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func ProcessLutItem(client *mongo.Client, adminSetting Adminsetting, item Item) error {
+	// thumbnail 폴더를 생성한다.
+	err := SetStatus(client, item, "creatingthumbdir")
+	if err != nil {
+		return err
+	}
+	err = genThumbDir(adminSetting, item)
+	if err != nil {
+		return err
+	}
+	// 썸네일 이미지를 생성한다.
+	err = SetStatus(client, item, "creatingthumbimg")
+	if err != nil {
+		return err
+	}
+	err = genThumbImage(adminSetting, item)
 	if err != nil {
 		return err
 	}

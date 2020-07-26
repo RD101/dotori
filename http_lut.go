@@ -315,7 +315,6 @@ func handleUploadLutFile(w http.ResponseWriter, r *http.Request) {
 			defer file.Close()
 			unix.Umask(umask)
 			mimeType := f.Header.Get("Content-Type")
-			fmt.Println(mimeType)
 			switch mimeType {
 			case "image/jpeg", "image/png":
 				data, err := ioutil.ReadAll(file)
