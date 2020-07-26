@@ -46,8 +46,6 @@ func addMayaItemCmd() {
 	i.InputThumbnailClipPath = *flagInputThumbClipPath
 	i.Status = "ready"
 	i.Logs = append(i.Logs, "아이템이 생성되었습니다.")
-	currentTime := time.Now()
-	i.CreateTime = currentTime.Format("2006-01-02 15:04:05")
 	i.ThumbImgUploaded = false
 	i.ThumbClipUploaded = false
 	i.DataUploaded = false
