@@ -948,6 +948,7 @@ func ProcessBlenderItem(client *mongo.Client, adminSetting Adminsetting, item It
 	return nil
 }
 
+// ProcessLutItem 함수는 LUT 아이템을 연산한다.
 func ProcessLutItem(client *mongo.Client, adminSetting Adminsetting, item Item) error {
 	// thumbnail 폴더를 생성한다.
 	err := SetStatus(client, item, "creatingthumbdir")
