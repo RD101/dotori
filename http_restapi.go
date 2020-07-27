@@ -95,8 +95,6 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 		}
 		i.Status = "ready"
 		i.Logs = append(i.Logs, "아이템이 생성되었습니다.")
-		currentTime := time.Now()
-		i.CreateTime = currentTime.Format("2006-01-02 15:04:05")
 		// admin setting에서 rootpath를 가져와 경로를 생성한다.
 		rootpath, err := GetRootPath(client)
 		if err != nil {
