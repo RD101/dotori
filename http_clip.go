@@ -316,8 +316,7 @@ func handleUploadClipFile(w http.ResponseWriter, r *http.Request) {
 			unix.Umask(umask)
 			mimeType := f.Header.Get("Content-Type")
 			switch mimeType {
-
-			case "application/octet-stream":
+			case "application/octet-stream", "video/quicktime":
 				ext := strings.ToLower(filepath.Ext(f.Filename))
 				if ext != ".mov" { // .mov 외에는 허용하지 않는다.
 					http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
