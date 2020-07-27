@@ -50,7 +50,6 @@ func addMayaItemCmd() {
 	i.ThumbClipUploaded = false
 	i.DataUploaded = false
 
-
 	//mongoDB client 연결
 	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 	if err != nil {
@@ -119,11 +118,11 @@ func addMayaItemCmd() {
 	}
 	// 유효한 파일인지 체크.
 	ext = filepath.Ext(*flagInputDataPath)
-	if ext != ".ma" && ext != ".mb" && ext != ".zip"{
+	if ext != ".ma" && ext != ".mb" && ext != ".zip" {
 		log.Fatal("지원하지 않는 데이터 포맷입니다.")
 	}
 	// 있으면 OutputData 경로로 복사하기
-  err = copyFile(*flagInputDataPath, i.OutputDataPath)
+	err = copyFile(*flagInputDataPath, i.OutputDataPath)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -163,6 +162,12 @@ func rmItemCmd() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	// 실제 데이터를 폴더 트리에서 삭제
+	err = RmData(client, *flagItemID)
+	if err != nil {
+		log.Print(err)
+	}
+	// DB에서 데이터 삭제
 	err = RmItem(client, *flagItemID)
 	if err != nil {
 		log.Print(err)
