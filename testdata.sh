@@ -1,6 +1,7 @@
 #!/bin/sh
 #DB에 아이템 추가 테스트를 위한 명령어를 모아둔 파일
 dotori -add -itemtype maya -title example -author woong -description "description1 about some details" -tag "나무 낙엽 item1" -inputthumbimgpath /Users/seoyoungbae/git/fork/dotori/examples/maya/thumbnail.jpg -inputthumbclippath /Users/seoyoungbae/git/fork/dotori/examples/maya/thumbnail.mov -inputdatapath /Users/seoyoungbae/git/fork/dotori/examples/maya/maya_scene.ma
+dotori -add -itemtype maya -title example -author woong -description "description1 about some details" -tag "나무 낙엽 item1" -inputthumbimgpath /Users/seoyoungbae/git/fork/dotori/examples/maya/thumbnail.jpg -inputthumbclippath /Users/seoyoungbae/git/fork/dotori/examples/maya/thumbnail.mov -inputdatapath "/Users/seoyoungbae/git/fork/dotori/examples/maya/maya_scene.ma /Users/seoyoungbae/git/fork/dotori/examples/maya/maya_scene.mb"
 dotori -add -itemtype maya -title example -author woong -description "description2 about some details" -tag "나무 낙엽 item2" -inputthumbimgpath -inputthumbclippath -inputdatapath
 dotori -add -itemtype maya -title example -author woong -description "description3 about some details" -tag "나무 낙엽 item3" -inputthumbimgpath -inputthumbclippath -inputdatapath
 dotori -add -itemtype maya -title example -author woong -description "description4 about some details" -tag "자동차 트럭" -inputthumbimgpath -inputthumbclippath -inputdatapath

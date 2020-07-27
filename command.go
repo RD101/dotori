@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -49,7 +50,6 @@ func addMayaItemCmd() {
 	i.ThumbImgUploaded = false
 	i.ThumbClipUploaded = false
 	i.DataUploaded = false
-
 
 	//mongoDB client 연결
 	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
@@ -112,21 +112,28 @@ func addMayaItemCmd() {
 	i.ThumbClipUploaded = true
 
 	// 3. 데이터
+	datapaths := make([]string, 0)
+	for _, path := range strings.Split(*flagInputDataPath, " ") {
+		datapaths = append(datapaths, path)
+	}
 	// 데이터 경로에 실재 파일이 존재하는지 체크.
-	err = FileExists(*flagInputDataPath)
-	if err != nil {
-		log.Fatal(err)
+	for _, path := range datapaths {
+		err = FileExists(path)
+		if err != nil {
+			log.Fatal(err)
+		}
+		// 유효한 파일인지 체크.
+		ext = filepath.Ext(path)
+		if ext != ".ma" && ext != ".mb" && ext != ".zip" {
+			log.Fatal("지원하지 않는 데이터 포맷입니다.")
+		}
+		// 있으면 OutputData 경로로 복사하기
+		err = copyFile(path, i.OutputDataPath)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
-	// 유효한 파일인지 체크.
-	ext = filepath.Ext(*flagInputDataPath)
-	if ext != ".ma" && ext != ".mb" && ext != ".zip"{
-		log.Fatal("지원하지 않는 데이터 포맷입니다.")
-	}
-	// 있으면 OutputData 경로로 복사하기
-  err = copyFile(*flagInputDataPath, i.OutputDataPath)
-	if err != nil {
-		log.Fatal(err)
-	}
+
 	// DataUploaded true로 바꾸기
 	i.DataUploaded = true
 
