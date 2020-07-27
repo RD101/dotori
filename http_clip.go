@@ -67,7 +67,7 @@ func handleAddClipItem(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Adminsetting = adminsetting
 	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "addfootage-item", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "addclip-item", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
