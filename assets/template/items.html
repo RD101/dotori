@@ -12,8 +12,14 @@
                         <img width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="/assets/img/hwpthumbnail.svg">
                     {{else if eq .ItemType "sound"}}
                         <img width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="/assets/img/soundthumbnail.svg">
-                    {{else if eq .ItemType "hdri" "texture" }}
+                    {{else if eq .ItemType "hdri" "texture" "lut" }}
                         <img width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="{{if eq .Status "done" }}/mediadata?id={{.ID.Hex}}&type=png{{else}}/assets/img/noimage.svg{{end}}">
+                    {{else if eq .ItemType "clip"}}
+                        <video width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" controls autoplay>
+                            <source src="/mediadata?id={{.ID.Hex}}&type=mp4" type="video/mp4">
+                            <source src="/mediadata?id={{.ID.Hex}}&type=ogg" type="video/ogg">
+                            Your browser does not support the video tag.
+                        </video>
                     {{else}}
                         <video width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" controls poster="{{if eq .Status "done" }}/mediadata?id={{.ID.Hex}}&type=png{{else}}/assets/img/noimage.svg{{end}}">
                             <source src="/mediadata?id={{.ID.Hex}}&type=mp4" type="video/mp4">

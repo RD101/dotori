@@ -96,8 +96,9 @@ Default env_keep=PATH # 새로 추가
 ```
 
 ### 예제파일
-- 에셋 라이브러리 개발에 사용된 예제 파일은 `examples` 폴더에 들어있습니다.
-- footage 데이터
+- 에셋 라이브러리 개발에 사용된 작은용량의 예제 파일들은 `examples` 폴더에 들어있습니다.
+- 용량이 큰 파일은 가벼운 리포지터리 관리를 위해 TD교육에 사용된 예제파일 리포지터리에 저장되어있습니다.
+- Footage 데이터
     - footage 데이터는 95메가 정도의 용량을 가지고 있습니다.
     - 리포지터리에는 최대한 가벼운 파일, 코드만 올리기 위해 위 폴더에 footage 데이터는 들어가 있지 않습니다.
     - footage 예제파일은 https://github.com/lazypic/tdcourse_examples/tree/master/footage 에서 다운받을 수 있습니다.
@@ -105,6 +106,10 @@ Default env_keep=PATH # 새로 추가
     - HDRI 데이터는 55메가 정도의 용량을 가지고 있습니다.
     - 리포지터리에는 최대한 가벼운 파일, 코드만 올리기 위해 위 폴더에 HDRI 데이터는 들어가 있지 않습니다.
     - HDRI 예제파일은 https://github.com/lazypic/tdcourse_examples/tree/master/hdri 에서 다운받을 수 있습니다.
+- Mov 데이터
+    - Prores422HQ 코덱의 mov 데이터는 2초에 43메가 정도의 용량을 가지고 있습니다.
+    - 리포지터리에는 최대한 가벼운 파일, 코드만 올리기 위해 위 폴더에 Prores422HQ mov 데이터는 들어가 있지 않습니다.
+    - HDRI 예제파일은 https://github.com/lazypic/tdcourse_examples/tree/master/movs 에서 다운받을 수 있습니다.
 
 ### Infomation / History
 - '19.9 RD101에서 오픈소스로 시작

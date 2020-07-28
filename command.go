@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"log"
+	"path/filepath"
+	"strings"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -45,34 +47,9 @@ func addMayaItemCmd() {
 	i.InputThumbnailClipPath = *flagInputThumbClipPath
 	i.Status = "ready"
 	i.Logs = append(i.Logs, "아이템이 생성되었습니다.")
-	currentTime := time.Now()
-	i.CreateTime = currentTime.Format("2006-01-02 15:04:05")
 	i.ThumbImgUploaded = false
 	i.ThumbClipUploaded = false
 	i.DataUploaded = false
-
-	// 1. 썸네일 이미지
-	// 썸네일 이미지 경로에 실재 파일이 존재하는지 체크.
-	if err := FileExists(*flagInputThumbImgPath); err != nil {
-		log.Fatal(err)
-	}
-	// 유효한 파일인지 체크.
-	// 존재하고 유효하면 ThumbImgUploaded true로 바꾸기
-	i.ThumbImgUploaded = true
-
-	// 2. 썸네일 클립
-	// 썸네일 클립 경로에 실재 파일이 존재하는지 체크. 유효한 파일인지 체크.
-	// 있으면 ThumbClipUploaded true로 바꾸기
-	i.ThumbClipUploaded = true
-
-	// 3. 데이터
-	// 데이터 경로에 실재 파일이 존재하는지 체크. 유효한 파일인지 체크.
-	// 있으면 OutputData 경로로 복사하기
-	// DataUploaded true로 바꾸기
-	i.DataUploaded = true
-
-	// 다 잘 업로드 됐으면 status바꾸기
-	i.Status = "fileuploaded"
 
 	//mongoDB client 연결
 	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
@@ -106,6 +83,63 @@ func addMayaItemCmd() {
 	i.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/thumbnail.mov"
 	i.OutputDataPath = rootpath + objIDpath + "/data/"
 
+	// 1. 썸네일 이미지
+	// 썸네일 이미지 경로에 실재 파일이 존재하는지 체크.
+	err = FileExists(*flagInputThumbImgPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	// 유효한 파일인지 체크.
+	ext := filepath.Ext(*flagInputThumbImgPath)
+	if ext != ".jpg" && ext != ".png" {
+		log.Fatal("지원하지 않는 썸네일 이미지 포맷입니다.")
+	}
+	// 존재하고 유효하면 ThumbImgUploaded true로 바꾸기
+	i.ThumbImgUploaded = true
+
+	// 2. 썸네일 클립
+	// 썸네일 클립 경로에 실재 파일이 존재하는지 체크.
+	err = FileExists(*flagInputThumbClipPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	// 유효한 파일인지 체크.
+	ext = filepath.Ext(*flagInputThumbClipPath)
+	if ext != ".mov" && ext != ".mp4" && ext != ".ogg" {
+		log.Fatal("지원하지 않는 썸네일 클립 포맷입니다.")
+	}
+	// 존재하고 유효하면 ThumbClipUploaded true로 바꾸기
+	i.ThumbClipUploaded = true
+
+	// 3. 데이터
+	datapaths := make([]string, 0)
+	for _, path := range strings.Split(*flagInputDataPath, " ") {
+		datapaths = append(datapaths, path)
+	}
+	for _, path := range datapaths {
+    // 데이터 경로에 실재 파일이 존재하는지 체크.
+		err = FileExists(path)
+		if err != nil {
+			log.Fatal(err)
+		}
+		// 유효한 파일인지 체크.
+		ext = filepath.Ext(path)
+		if ext != ".ma" && ext != ".mb" && ext != ".zip" {
+			log.Fatal("지원하지 않는 데이터 포맷입니다.")
+		}
+		// 있으면 OutputData 경로로 복사하기
+		err = copyFile(path, i.OutputDataPath)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	// DataUploaded true로 바꾸기
+	i.DataUploaded = true
+
+	// 다 잘 업로드 됐으면 status바꾸기
+	i.Status = "fileuploaded"
+
 	err = i.CheckError()
 	if err != nil {
 		log.Fatal(err)
@@ -136,6 +170,12 @@ func rmItemCmd() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	// 실제 데이터를 폴더 트리에서 삭제
+	err = RmData(client, *flagItemID)
+	if err != nil {
+		log.Print(err)
+	}
+	// DB에서 데이터 삭제
 	err = RmItem(client, *flagItemID)
 	if err != nil {
 		log.Print(err)

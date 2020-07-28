@@ -102,22 +102,34 @@ func processingItem(item Item) {
 	case "maya":
 		err = ProcessMayaItem(client, adminSetting, item)
 		if err != nil {
-			log.Println(err)
-		}
-
-		/*
+			err = SetStatus(client, item, "error")
 			if err != nil {
-				err = SetStatus(client, item, "error")
-				if err != nil {
-					log.Println(err)
-				}
+				log.Println(err)
+			}
+			/*
 				err = SetLog(client, item.ID.Hex(), err.Error())
 				if err != nil {
 					log.Println(err)
 				}
-				return
+			*/
+			return
+		}
+		return
+	case "clip": // Clip 소스
+		err = ProcessClipItem(client, adminSetting, item)
+		if err != nil {
+			err = SetStatus(client, item, "error")
+			if err != nil {
+				log.Println(err)
 			}
-		*/
+			/*
+				err = SetLog(client, item.ID.Hex(), err.Error())
+				if err != nil {
+					log.Println(err)
+				}
+			*/
+			return
+		}
 		return
 	case "footage": // Footage 소스, 시퀀스
 		err = ProcessFootageItem(client, adminSetting, item)
@@ -126,10 +138,12 @@ func processingItem(item Item) {
 			if err != nil {
 				log.Println(err)
 			}
-			err = SetLog(client, item.ID.Hex(), err.Error())
-			if err != nil {
-				log.Println(err)
-			}
+			/*
+				err = SetLog(client, item.ID.Hex(), err.Error())
+				if err != nil {
+					log.Println(err)
+				}
+			*/
 			return
 		}
 		return
@@ -140,10 +154,12 @@ func processingItem(item Item) {
 			if err != nil {
 				log.Println(err)
 			}
-			err = SetLog(client, item.ID.Hex(), err.Error())
-			if err != nil {
-				log.Println(err)
-			}
+			/*
+				err = SetLog(client, item.ID.Hex(), err.Error())
+				if err != nil {
+					log.Println(err)
+				}
+			*/
 			return
 		}
 		return
@@ -154,10 +170,12 @@ func processingItem(item Item) {
 			if err != nil {
 				log.Println(err)
 			}
-			err = SetLog(client, item.ID.Hex(), err.Error())
-			if err != nil {
-				log.Println(err)
-			}
+			/*
+				err = SetLog(client, item.ID.Hex(), err.Error())
+				if err != nil {
+					log.Println(err)
+				}
+			*/
 			return
 		}
 		return
@@ -168,10 +186,12 @@ func processingItem(item Item) {
 			if err != nil {
 				log.Println(err)
 			}
-			err = SetLog(client, item.ID.Hex(), err.Error())
-			if err != nil {
-				log.Println(err)
-			}
+			/*
+				err = SetLog(client, item.ID.Hex(), err.Error())
+				if err != nil {
+					log.Println(err)
+				}
+			*/
 			return
 		}
 		return
@@ -182,10 +202,12 @@ func processingItem(item Item) {
 			if err != nil {
 				log.Println(err)
 			}
-			err = SetLog(client, item.ID.Hex(), err.Error())
-			if err != nil {
-				log.Println(err)
-			}
+			/*
+				err = SetLog(client, item.ID.Hex(), err.Error())
+				if err != nil {
+					log.Println(err)
+				}
+			*/
 			return
 		}
 		return
@@ -196,10 +218,12 @@ func processingItem(item Item) {
 			if err != nil {
 				log.Println(err)
 			}
-			err = SetLog(client, item.ID.Hex(), err.Error())
-			if err != nil {
-				log.Println(err)
-			}
+			/*
+				err = SetLog(client, item.ID.Hex(), err.Error())
+				if err != nil {
+					log.Println(err)
+				}
+			*/
 			return
 		}
 		return
@@ -212,10 +236,12 @@ func processingItem(item Item) {
 			if err != nil {
 				log.Println(err)
 			}
-			err = SetLog(client, item.ID.Hex(), err.Error())
-			if err != nil {
-				log.Println(err)
-			}
+			/*
+				err = SetLog(client, item.ID.Hex(), err.Error())
+				if err != nil {
+					log.Println(err)
+				}
+			*/
 			return
 		}
 		return
@@ -226,10 +252,12 @@ func processingItem(item Item) {
 			if err != nil {
 				log.Println(err)
 			}
-			err = SetLog(client, item.ID.Hex(), err.Error())
-			if err != nil {
-				log.Println(err)
-			}
+			/*
+				err = SetLog(client, item.ID.Hex(), err.Error())
+				if err != nil {
+					log.Println(err)
+				}
+			*/
 			return
 		}
 		return
@@ -240,10 +268,12 @@ func processingItem(item Item) {
 			if err != nil {
 				log.Println(err)
 			}
-			err = SetLog(client, item.ID.Hex(), err.Error())
-			if err != nil {
-				log.Println(err)
-			}
+			/*
+				err = SetLog(client, item.ID.Hex(), err.Error())
+				if err != nil {
+					log.Println(err)
+				}
+			*/
 			return
 		}
 		return
@@ -254,10 +284,12 @@ func processingItem(item Item) {
 			if err != nil {
 				log.Println(err)
 			}
-			err = SetLog(client, item.ID.Hex(), err.Error())
-			if err != nil {
-				log.Println(err)
-			}
+			/*
+				err = SetLog(client, item.ID.Hex(), err.Error())
+				if err != nil {
+					log.Println(err)
+				}
+			*/
 			return
 		}
 		return
@@ -270,10 +302,12 @@ func processingItem(item Item) {
 			if err != nil {
 				log.Println(err)
 			}
-			err = SetLog(client, item.ID.Hex(), err.Error())
-			if err != nil {
-				log.Println(err)
-			}
+			/*
+				err = SetLog(client, item.ID.Hex(), err.Error())
+				if err != nil {
+					log.Println(err)
+				}
+			*/
 			return
 		}
 		return
@@ -284,14 +318,30 @@ func processingItem(item Item) {
 			if err != nil {
 				log.Println(err)
 			}
-			err = SetLog(client, item.ID.Hex(), err.Error())
-			if err != nil {
-				log.Println(err)
-			}
+			/*
+				err = SetLog(client, item.ID.Hex(), err.Error())
+				if err != nil {
+					log.Println(err)
+				}
+			*/
 			return
 		}
 		return
 	case "lut", "3dl", "blut", "cms", "csp", "cub", "cube", "vf", "vfz": // LUT 파일들
+		err = ProcessLutItem(client, adminSetting, item)
+		if err != nil {
+			err = SetStatus(client, item, "error")
+			if err != nil {
+				log.Println(err)
+			}
+			/*
+				err = SetLog(client, item.ID.Hex(), err.Error())
+				if err != nil {
+					log.Println(err)
+				}
+			*/
+			return
+		}
 		return
 	case "sound":
 		err = ProcessSoundItem(client, adminSetting, item)
@@ -300,10 +350,12 @@ func processingItem(item Item) {
 			if err != nil {
 				log.Println(err)
 			}
-			err = SetLog(client, item.ID.Hex(), err.Error())
-			if err != nil {
-				log.Println(err)
-			}
+			/*
+				err = SetLog(client, item.ID.Hex(), err.Error())
+				if err != nil {
+					log.Println(err)
+				}
+			*/
 			return
 		}
 		return
@@ -314,10 +366,12 @@ func processingItem(item Item) {
 			if err != nil {
 				log.Println(err)
 			}
-			err = SetLog(client, item.ID.Hex(), err.Error())
-			if err != nil {
-				log.Println(err)
-			}
+			/*
+				err = SetLog(client, item.ID.Hex(), err.Error())
+				if err != nil {
+					log.Println(err)
+				}
+			*/
 			return
 		}
 		return
@@ -410,6 +464,51 @@ func ProcessMayaItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 		return err
 	}
 	err = genThumbMp4Media(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+	if err != nil {
+		return err
+	}
+	err = SetStatus(client, item, "done")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// ProcessClipItem 함수는 clip 아이템을 연산한다.
+func ProcessClipItem(client *mongo.Client, adminSetting Adminsetting, item Item) error {
+	// thumbnail 폴더를 생성한다.
+	err := SetStatus(client, item, "creatingthumbdir")
+	if err != nil {
+		return err
+	}
+	err = genThumbDir(adminSetting, item)
+	if err != nil {
+		return err
+	}
+	// .ogg 썸네일 동영상을 생성한다.
+	err = SetStatus(client, item, "creatingoggmedia")
+	if err != nil {
+		return err
+	}
+	err = genClipToOggMedia(adminSetting, item)
+	if err != nil {
+		return err
+	}
+	// .mov 썸네일 동영상을 생성한다.
+	err = SetStatus(client, item, "creatingmovmedia")
+	if err != nil {
+		return err
+	}
+	err = genClipToMovMedia(adminSetting, item)
+	if err != nil {
+		return err
+	}
+	// .mp4 썸네일 동영상을 생성한다.
+	err = SetStatus(client, item, "creatingmp4media")
+	if err != nil {
+		return err
+	}
+	err = genClipToMp4Media(adminSetting, item)
 	if err != nil {
 		return err
 	}
@@ -936,6 +1035,33 @@ func ProcessBlenderItem(client *mongo.Client, adminSetting Adminsetting, item It
 	return nil
 }
 
+// ProcessLutItem 함수는 LUT 아이템을 연산한다.
+func ProcessLutItem(client *mongo.Client, adminSetting Adminsetting, item Item) error {
+	// thumbnail 폴더를 생성한다.
+	err := SetStatus(client, item, "creatingthumbdir")
+	if err != nil {
+		return err
+	}
+	err = genThumbDir(adminSetting, item)
+	if err != nil {
+		return err
+	}
+	// 썸네일 이미지를 생성한다.
+	err = SetStatus(client, item, "creatingthumbimg")
+	if err != nil {
+		return err
+	}
+	err = genThumbImage(adminSetting, item)
+	if err != nil {
+		return err
+	}
+	err = SetStatus(client, item, "done")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 //genThumbDir 은 인수로 받은 아이템의 경로에 thumbnail 폴더를 생성한다.
 func genThumbDir(adminSetting Adminsetting, item Item) error {
 	// umask, 권한 셋팅
@@ -1331,6 +1457,54 @@ func genProxyToOggMedia(adminSetting Adminsetting, item Item) error {
 	return nil
 }
 
+// genClipToOggMedia 함수는 인수로 받은 아이템의 .ogg 동영상을 만든다.
+func genClipToOggMedia(adminSetting Adminsetting, item Item) error {
+	files, err := searchSeq(item.OutputDataPath)
+	fmt.Println(item.OutputDataPath)
+	if err != nil {
+		return err
+	}
+	if len(files) != 1 {
+		return errors.New("해당 경로에 여러 소스가 존재합니다")
+	}
+	target := files[0]
+	args := []string{
+		"-y",
+		"-i",
+		fmt.Sprintf("%s/%s", target.Dir, target.Base),
+		"-pix_fmt",
+		"yuv420p",
+		"-c:v",
+		adminSetting.VideoCodecOgg,
+		"-qscale:v",
+		"7",
+		"-vf",
+		fmt.Sprintf("scale=%d:%d,crop=%d:%d:0:0,setsar=1",
+			adminSetting.MediaWidth,
+			adminSetting.MediaHeight,
+			adminSetting.MediaWidth,
+			adminSetting.MediaHeight,
+		),
+	}
+	if adminSetting.AudioCodec == "nosound" {
+		// nosound라면 사운드를 넣지 않는 옵션을 추가한다.
+		args = append(args, "-an")
+	} else {
+		// 다른 사운드 코덱이라면 사운드클 체크한다.
+		args = append(args, "-c:a")
+		args = append(args, adminSetting.AudioCodec)
+	}
+	args = append(args, item.OutputThumbnailOggPath)
+	if *flagDebug {
+		fmt.Println(adminSetting.FFmpeg, strings.Join(args, " "))
+	}
+	err = exec.Command(adminSetting.FFmpeg, args...).Run()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // genProxyToMovMedia 함수는 인수로 받은 아이템의 .mov 동영상을 만든다.
 func genProxyToMovMedia(adminSetting Adminsetting, item Item) error {
 	seqs, err := searchSeq(item.OutputProxyImgPath)
@@ -1385,7 +1559,53 @@ func genProxyToMovMedia(adminSetting Adminsetting, item Item) error {
 	if err != nil {
 		return err
 	}
+	return nil
+}
 
+// genClipToMovMedia 함수는 인수로 받은 아이템의 .mov 동영상을 만든다.
+func genClipToMovMedia(adminSetting Adminsetting, item Item) error {
+	files, err := searchSeq(item.OutputDataPath)
+	if err != nil {
+		return err
+	}
+	if len(files) != 1 {
+		return errors.New("해당 경로에 여러 소스가 존재합니다")
+	}
+	target := files[0]
+	args := []string{
+		"-y",
+		"-i",
+		fmt.Sprintf("%s/%s", target.Dir, target.Base),
+		"-pix_fmt",
+		"yuv420p",
+		"-c:v",
+		adminSetting.VideoCodecMov,
+		"-qscale:v",
+		"7",
+		"-vf",
+		fmt.Sprintf("scale=%d:%d,crop=%d:%d:0:0,setsar=1",
+			adminSetting.MediaWidth,
+			adminSetting.MediaHeight,
+			adminSetting.MediaWidth,
+			adminSetting.MediaHeight,
+		),
+	}
+	if adminSetting.AudioCodec == "nosound" {
+		// nosound라면 사운드를 넣지 않는 옵션을 추가한다.
+		args = append(args, "-an")
+	} else {
+		// 다른 사운드 코덱이라면 사운드클 체크한다.
+		args = append(args, "-c:a")
+		args = append(args, adminSetting.AudioCodec)
+	}
+	args = append(args, item.OutputThumbnailMovPath)
+	if *flagDebug {
+		fmt.Println(adminSetting.FFmpeg, strings.Join(args, " "))
+	}
+	err = exec.Command(adminSetting.FFmpeg, args...).Run()
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -1409,6 +1629,53 @@ func genProxyToMp4Media(adminSetting Adminsetting, item Item) error {
 		strconv.Itoa(target.FrameIn),
 		"-r",
 		item.Fps,
+		"-y",
+		"-i",
+		fmt.Sprintf("%s/%s", target.Dir, target.Base),
+		"-pix_fmt",
+		"yuv420p",
+		"-c:v",
+		adminSetting.VideoCodecMp4,
+		"-qscale:v",
+		"7",
+		"-vf",
+		fmt.Sprintf("scale=%d:%d,crop=%d:%d:0:0,setsar=1",
+			adminSetting.MediaWidth,
+			adminSetting.MediaHeight,
+			adminSetting.MediaWidth,
+			adminSetting.MediaHeight,
+		),
+	}
+	if adminSetting.AudioCodec == "nosound" {
+		// nosound라면 사운드를 넣지 않는 옵션을 추가한다.
+		args = append(args, "-an")
+	} else {
+		// 다른 사운드 코덱이라면 사운드클 체크한다.
+		args = append(args, "-c:a")
+		args = append(args, adminSetting.AudioCodec)
+	}
+	args = append(args, item.OutputThumbnailMp4Path)
+	if *flagDebug {
+		fmt.Println(adminSetting.FFmpeg, strings.Join(args, " "))
+	}
+	err = exec.Command(adminSetting.FFmpeg, args...).Run()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// genClipToMp4Media 함수는 인수로 받은 아이템의 .mp4 동영상을 만든다.
+func genClipToMp4Media(adminSetting Adminsetting, item Item) error {
+	files, err := searchSeq(item.OutputDataPath)
+	if err != nil {
+		return err
+	}
+	if len(files) != 1 {
+		return errors.New("해당 경로에 여러 소스가 존재합니다")
+	}
+	target := files[0]
+	args := []string{
 		"-y",
 		"-i",
 		fmt.Sprintf("%s/%s", target.Dir, target.Base),

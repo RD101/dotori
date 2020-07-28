@@ -6,9 +6,9 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"path"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -18,18 +18,18 @@ import (
 	"golang.org/x/sys/unix"
 )
 
-// handleAddLut 함수는 URL에 objectID를 붙여서 /addlut-item 페이지로 redirect한다.
-func handleAddLut(w http.ResponseWriter, r *http.Request) {
+// handleAddClip 함수는 URL에 objectID를 붙여서 /addclip-item 페이지로 redirect한다.
+func handleAddClip(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
 		return
 	}
 	objectID := primitive.NewObjectID().Hex()
-	http.Redirect(w, r, fmt.Sprintf("/addlut-item?objectid=%s", objectID), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/addclip-item?objectid=%s", objectID), http.StatusSeeOther)
 }
 
-func handleAddLutItem(w http.ResponseWriter, r *http.Request) {
+func handleAddClipItem(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -66,16 +66,16 @@ func handleAddLutItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rcp.Adminsetting = adminsetting
-
 	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "addlut-item", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "addclip-item", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
 
-func handleUploadLutItem(w http.ResponseWriter, r *http.Request) {
+// handleUploadClip 핸들러는 clip 아이템을 생성한다.
+func handleUploadClipItem(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -95,10 +95,11 @@ func handleUploadLutItem(w http.ResponseWriter, r *http.Request) {
 	item.Title = r.FormValue("title")
 	item.Author = r.FormValue("author")
 	item.Description = r.FormValue("description")
+	item.Fps = r.FormValue("fps")
 	tags := SplitBySpace(r.FormValue("tag"))
 	tags = append(tags, item.Author) // author는 자동으로 태깅되도록 한다.
 	item.Tags = tags
-	item.ItemType = "lut"
+	item.ItemType = "clip"
 	attr := make(map[string]string)
 	attrNum, err := strconv.Atoi(r.FormValue("attributesNum"))
 	if err != nil {
@@ -157,6 +158,7 @@ func handleUploadLutItem(w http.ResponseWriter, r *http.Request) {
 	item.OutputThumbnailOggPath = rootpath + objIDpath + "/thumbnail/thumbnail.ogg"
 	item.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/thumbnail.mov"
 	item.OutputDataPath = rootpath + objIDpath + "/data/"
+	item.OutputProxyImgPath = rootpath + objIDpath + "/proxy/"
 	err = item.CheckError()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -167,11 +169,11 @@ func handleUploadLutItem(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	http.Redirect(w, r, fmt.Sprintf("/addlut-file?objectid=%s", objectID), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/addclip-file?objectid=%s", objectID), http.StatusSeeOther)
 }
 
-// handleAddLutFile 함수는 LUT 파일을 추가하는 페이지 이다.
-func handleAddLutFile(w http.ResponseWriter, r *http.Request) {
+// handleAddClipFile 함수는 Clip 파일을 추가하는 페이지 이다.
+func handleAddClipFile(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -209,15 +211,15 @@ func handleAddLutFile(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Adminsetting = adminsetting
 	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "addlut-file", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "addclip-file", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
 
-// handleUploadLutFile 함수는 Lut파일을 DB에 업로드하는 페이지를 연다. dropzone에 파일을 올릴 경우 실행된다.
-func handleUploadLutFile(w http.ResponseWriter, r *http.Request) {
+// handleUploadClipFile 함수는 Clip 파일을 DB에 업로드하는 페이지를 연다. dropzone에 파일을 올릴 경우 실행된다.
+func handleUploadClipFile(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -315,42 +317,9 @@ func handleUploadLutFile(w http.ResponseWriter, r *http.Request) {
 			unix.Umask(umask)
 			mimeType := f.Header.Get("Content-Type")
 			switch mimeType {
-			case "image/jpeg", "image/png":
-				data, err := ioutil.ReadAll(file)
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				path, filename := path.Split(item.InputThumbnailImgPath)
-				if filename != "" { // 썸네일 이미지가 이미 존재하는 경우, 지우고 경로를 새로 지정한다.
-					err = os.Remove(item.InputThumbnailImgPath)
-					if err != nil {
-						http.Error(w, err.Error(), http.StatusInternalServerError)
-						return
-					}
-					item.InputThumbnailImgPath = path
-				}
-				err = os.MkdirAll(path, os.FileMode(folderPerm))
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				err = os.Chown(path, uid, gid)
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				err = ioutil.WriteFile(path+f.Filename, data, os.FileMode(filePerm))
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				item.InputThumbnailImgPath = path + f.Filename
-				item.ThumbImgUploaded = true
-			case "application/octet-stream":
-				ext := filepath.Ext(f.Filename)
-				// "lut", "3dl", "blut", "cms", "csp", "cub", "cube", "vf", "vfz"
-				if ext != ".cube" {
+			case "application/octet-stream", "video/quicktime":
+				ext := strings.ToLower(filepath.Ext(f.Filename))
+				if ext != ".mov" { // .mov 외에는 허용하지 않는다.
 					http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
 					return
 				}
@@ -381,27 +350,16 @@ func handleUploadLutFile(w http.ResponseWriter, r *http.Request) {
 				http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
 				return
 			}
-			tags := FilenameToTags(f.Filename)
-			for _, tag := range tags {
-				has := false // 중복되는 tag가 있다면 append하지 않는다.
-				for _, t := range item.Tags {
-					if tag == t {
-						has = true
-					}
-				}
-				if !has {
-					item.Tags = append(item.Tags, tag)
-				}
-			}
 		}
 	}
-	if item.DataUploaded && item.ThumbImgUploaded {
+	if item.DataUploaded {
 		item.Status = "fileuploaded"
 	}
 	UpdateItem(client, item)
 }
 
-func handleUploadLutCheckData(w http.ResponseWriter, r *http.Request) {
+// handleUploadClipCheckData 함수는 필요한 파일들을 모두 업로드했는지 체크하고, /addclip-success 페이지로 redirect한다.
+func handleUploadClipCheckData(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -453,18 +411,18 @@ func handleUploadLutCheckData(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rcp.Item = item
-	if !item.DataUploaded || !item.ThumbImgUploaded {
-		err = TEMPLATES.ExecuteTemplate(w, "checklut-file", rcp)
+	if !item.DataUploaded {
+		err = TEMPLATES.ExecuteTemplate(w, "checkclip-file", rcp)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		return
 	}
-	http.Redirect(w, r, "/addlut-success", http.StatusSeeOther)
+	http.Redirect(w, r, "/addclip-success", http.StatusSeeOther)
 }
 
-func handleAddLutSuccess(w http.ResponseWriter, r *http.Request) {
+func handleAddClipSuccess(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -502,14 +460,14 @@ func handleAddLutSuccess(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Adminsetting = adminsetting
 	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "addlut-success", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "addclip-success", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
 
-func handleEditLut(w http.ResponseWriter, r *http.Request) {
+func handleEditClip(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -519,8 +477,8 @@ func handleEditLut(w http.ResponseWriter, r *http.Request) {
 	type recipe struct {
 		ID          primitive.ObjectID `json:"id" bson:"id"`
 		ItemType    string             `json:"itemtype" bson:"itemtype"`
-		Title       string             `json:"title" bson:"title"`
 		Author      string             `json:"author" bson:"author"`
+		Title       string             `json:"title" bson:"title"`
 		Description string             `json:"description" bson:"description"`
 		Tags        []string           `json:"tags" bson:"tags"`
 		Attributes  map[string]string  `json:"attributes" bson:"attributes"`
@@ -580,15 +538,15 @@ func handleEditLut(w http.ResponseWriter, r *http.Request) {
 		Adminsetting: adminsetting,
 	}
 
-	err = TEMPLATES.ExecuteTemplate(w, "editlut", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "editclip", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
 
-//handleEditLutSubmit 함수는 lut아이템을 수정하는 페이지에서 UPDATE버튼을 누르면 작동하는 함수다.
-func handleEditLutSubmit(w http.ResponseWriter, r *http.Request) {
+//handleEditClipSubmit 함수는 clip 아이템을 수정하는 페이지에서 UPDATE버튼을 누르면 작동하는 함수다.
+func handleEditClipSubmit(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -597,7 +555,7 @@ func handleEditLutSubmit(w http.ResponseWriter, r *http.Request) {
 	id := r.FormValue("id")
 	attrNum, err := strconv.Atoi(r.FormValue("attributesNum"))
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	attr := make(map[string]string)
@@ -648,11 +606,10 @@ func handleEditLutSubmit(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	http.Redirect(w, r, "/editlut-success", http.StatusSeeOther)
+	http.Redirect(w, r, "/editclip-success", http.StatusSeeOther)
 }
 
-//handleEditLutSuccess 함수는 lut아이템 수정이 정상적으로 완료되었다고 안내하는 페이지를 띄우는 함수이다.
-func handleEditLutSuccess(w http.ResponseWriter, r *http.Request) {
+func handleEditClipSuccess(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -690,7 +647,7 @@ func handleEditLutSuccess(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Adminsetting = adminsetting
 	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "editlut-success", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "editclip-success", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
