@@ -105,6 +105,7 @@ func handleUploadHDRIItem(w http.ResponseWriter, r *http.Request) {
 	item.InColorspace = r.FormValue("incolorspace")
 	item.OutColorspace = r.FormValue("outcolorspace")
 	tags := SplitBySpace(r.FormValue("tag"))
+	tags = append(tags, item.Author) // author는 자동으로 태깅되도록 한다.
 	item.Tags = tags
 	item.ItemType = "hdri"
 	attr := make(map[string]string)
