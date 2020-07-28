@@ -59,7 +59,7 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 		author := r.FormValue("author")
 		if author == "" {
 			http.Error(w, "author를 설정해주세요", http.StatusBadRequest)
-			return	
+			return
 		}
 		description := r.FormValue("description")
 		if description == "" {
@@ -76,10 +76,6 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 			key := strings.Split(attr, ":")[0]
 			value := strings.Split(attr, ":")[1]
 			attributes[key] = value
-		}
-		if len(attributes) == 0 {
-			http.Error(w, "attributes를 설정해주세요", http.StatusBadRequest)
-			return
 		}
 		i.ItemType = itemtype
 		i.Title = title
