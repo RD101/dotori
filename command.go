@@ -116,8 +116,8 @@ func addMayaItemCmd() {
 	for _, path := range strings.Split(*flagInputDataPath, " ") {
 		datapaths = append(datapaths, path)
 	}
-	// 데이터 경로에 실재 파일이 존재하는지 체크.
 	for _, path := range datapaths {
+    // 데이터 경로에 실재 파일이 존재하는지 체크.
 		err = FileExists(path)
 		if err != nil {
 			log.Fatal(err)
@@ -170,6 +170,12 @@ func rmItemCmd() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	// 실제 데이터를 폴더 트리에서 삭제
+	err = RmData(client, *flagItemID)
+	if err != nil {
+		log.Print(err)
+	}
+	// DB에서 데이터 삭제
 	err = RmItem(client, *flagItemID)
 	if err != nil {
 		log.Print(err)
