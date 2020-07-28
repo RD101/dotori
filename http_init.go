@@ -72,28 +72,28 @@ func handleInit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	num, err := AllItemsCount(client) // 전체아이템의 개수를 가져옴
+	num, err := GetAllItemsNum(client) // 전체아이템의 개수를 가져옴
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	rcp.AllItemCount = humanize.Comma(num) // 숫자를 1000단위마다 comma를 찍음(string형으로 변경)
 
-	RecentlyTagItems, err := RecentlyCreateItems(client, 20) // 최근생성된 20개의 아이템들을 가져옴
+	RecentlyTagItems, err := GetRecentlyCreatedItems(client, 20) // 최근생성된 20개의 아이템들을 가져옴
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	rcp.RecentlyTagItems = RecentlyTagItems
 
-	RecentlyCreateItems, err := RecentlyCreateItems(client, 100) // 최근생성된 100개의 아이템들을 가져옴
+	RecentlyCreateItems, err := GetRecentlyCreatedItems(client, 100) // 최근생성된 100개의 아이템들을 가져옴
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	rcp.RecentlyCreateItems = RecentlyCreateItems
 
-	TopUsingItems, err := TopUsingItems(client, 20) // 사용률이 높은 20개의 아이템들을 가져옴
+	TopUsingItems, err := GetTopUsingItems(client, 20) // 사용률이 높은 20개의 아이템들을 가져옴
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

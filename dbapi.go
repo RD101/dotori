@@ -94,8 +94,8 @@ func AllItems(client *mongo.Client) ([]Item, error) {
 	return results, nil
 }
 
-// RecentlyCreateItems 는 DB에서 최근생성 된 num건의 아이템 정보를 가져오는 함수입니다.
-func RecentlyCreateItems(client *mongo.Client, num int64) ([]Item, error) {
+// GetRecentlyCreatedItems 는 DB에서 최근생성 된 num건의 아이템 정보를 가져오는 함수입니다.
+func GetRecentlyCreatedItems(client *mongo.Client, num int64) ([]Item, error) {
 	collection := client.Database(*flagDBName).Collection("items")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -114,8 +114,8 @@ func RecentlyCreateItems(client *mongo.Client, num int64) ([]Item, error) {
 	return results, nil
 }
 
-// TopUsingItems 는 DB에서 Using숫자가 높은 순서, num건의 아이템 정보를 가져오는 함수입니다.
-func TopUsingItems(client *mongo.Client, num int64) ([]Item, error) {
+// GetTopUsingItems 는 DB에서 Using숫자가 높은 순서, num건의 아이템 정보를 가져오는 함수입니다.
+func GetTopUsingItems(client *mongo.Client, num int64) ([]Item, error) {
 	collection := client.Database(*flagDBName).Collection("items")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -134,8 +134,8 @@ func TopUsingItems(client *mongo.Client, num int64) ([]Item, error) {
 	return results, nil
 }
 
-// AllItemsCount 는 DB에서 전체 아이템의 개수 정보를 가져오는 함수입니다.
-func AllItemsCount(client *mongo.Client) (int64, error) {
+// GetAllItemsNum 는 DB에서 전체 아이템의 개수 정보를 가져오는 함수입니다.
+func GetAllItemsNum(client *mongo.Client) (int64, error) {
 	collection := client.Database(*flagDBName).Collection("items")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -190,6 +190,8 @@ func Search(client *mongo.Client, itemType, words string) ([]Item, error) {
 			querys = append(querys, bson.M{"tags": strings.TrimPrefix(word, "tag:")})
 		} else if strings.HasPrefix(word, "author:") {
 			querys = append(querys, bson.M{"author": strings.TrimPrefix(word, "author:")})
+		} else if strings.HasPrefix(word, "title:") {
+			querys = append(querys, bson.M{"title": strings.TrimPrefix(word, "title:")})
 		} else if strings.Contains(word, ":") {
 			key := strings.Split(word, ":")[0]
 			value := strings.Split(word, ":")[1]
