@@ -46,53 +46,47 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 		i.ID = primitive.NewObjectID()
 		//ParseForm parses the raw query from the URL and updates r.Form.
 		r.ParseForm()
-		for key, values := range r.PostForm {
-			switch key {
-			case "itemtype":
-				if len(values) != 1 {
-					http.Error(w, "URL에 itemtype을 입력해주세요", http.StatusBadRequest)
-					return
-				}
-				i.ItemType = values[0]
-			case "title":
-				if len(values) != 1 {
-					http.Error(w, "URL에 title을 입력해주세요", http.StatusBadRequest)
-					return
-				}
-				i.Title = values[0]
-			case "author":
-				if len(values) != 1 {
-					http.Error(w, "URL에 author를 입력해주세요", http.StatusBadRequest)
-					return
-				}
-				i.Author = values[0]
-			case "description":
-				if len(values) != 1 {
-					http.Error(w, "URL에 description을 입력해주세요", http.StatusBadRequest)
-					return
-				}
-				i.Description = values[0]
-			case "tags":
-				if len(values) != 1 {
-					http.Error(w, "URL에 tags를 입력해주세요", http.StatusBadRequest)
-					return
-				}
-				tags := SplitBySpace(values[0])
-				i.Tags = tags
-			case "attributes":
-				if len(values) != 1 {
-					http.Error(w, "URL에 attributes를 입력해주세요", http.StatusBadRequest)
-					return
-				}
-				attr := make(map[string]string)
-				for _, attribute := range SplitBySpace(values[0]) {
-					key := strings.Split(attribute, ":")[0]
-					value := strings.Split(attribute, ":")[1]
-					attr[key] = value
-				}
-				i.Attributes = attr
-			}
+		itemtype := r.FormValue("itemtype")
+		if itemtype == "" {
+			http.Error(w, "itemtype을 설정해주세요", http.StatusBadRequest)
+			return
 		}
+		title := r.FormValue("title")
+		if title == "" {
+			http.Error(w, "title을 설정해주세요", http.StatusBadRequest)
+			return
+		}
+		author := r.FormValue("author")
+		if author == "" {
+			http.Error(w, "author을 설정해주세요", http.StatusBadRequest)
+			return	
+		}
+		description := r.FormValue("description")
+		if description == "" {
+			http.Error(w, "description을 설정해주세요", http.StatusBadRequest)
+			return
+		}
+		tags := SplitBySpace(r.FormValue("tags"))
+		if len(tags) == 0 {
+			http.Error(w, "tags을 설정해주세요", http.StatusBadRequest)
+			return
+		}
+		attributes := make(map[string]string)
+		for _, attr := range SplitBySpace(r.FormValue("attributes")) {
+			key := strings.Split(attr, ":")[0]
+			value := strings.Split(attr, ":")[1]
+			attributes[key] = value
+		}
+		if len(attributes) == 0 {
+			http.Error(w, "attributes을 설정해주세요", http.StatusBadRequest)
+			return
+		}
+		i.ItemType = itemtype
+		i.Title = title
+		i.Author = author
+		i.Description = description
+		i.Tags = tags
+		i.Attributes = attributes
 		i.Status = "ready"
 		i.Logs = append(i.Logs, "아이템이 생성되었습니다.")
 		// admin setting에서 rootpath를 가져와 경로를 생성한다.
