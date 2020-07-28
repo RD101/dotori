@@ -58,7 +58,7 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 		}
 		author := r.FormValue("author")
 		if author == "" {
-			http.Error(w, "author을 설정해주세요", http.StatusBadRequest)
+			http.Error(w, "author를 설정해주세요", http.StatusBadRequest)
 			return	
 		}
 		description := r.FormValue("description")
@@ -68,7 +68,7 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 		}
 		tags := SplitBySpace(r.FormValue("tags"))
 		if len(tags) == 0 {
-			http.Error(w, "tags을 설정해주세요", http.StatusBadRequest)
+			http.Error(w, "tags를 설정해주세요", http.StatusBadRequest)
 			return
 		}
 		attributes := make(map[string]string)
@@ -78,7 +78,7 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 			attributes[key] = value
 		}
 		if len(attributes) == 0 {
-			http.Error(w, "attributes을 설정해주세요", http.StatusBadRequest)
+			http.Error(w, "attributes를 설정해주세요", http.StatusBadRequest)
 			return
 		}
 		i.ItemType = itemtype
