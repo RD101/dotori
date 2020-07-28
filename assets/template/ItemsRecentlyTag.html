@@ -1,17 +1,16 @@
 {{define "ItemsRecentlyTag"}}
-    <div class="row mx-auto mb-5">
-        {{range .RecentlyTagItems}}
-            {{$itemtype := .ItemType}}
-                <div class="info mb-3">
-                    <div class="text-muted">
-                        Tags:
-                        {{$OrganizedTag := ""}}
-                        {{range .Tags}}
-                            {$OrganizedTag = {.}}
-                        {{end}}
-                        <a href="/search?itemtype={{$itemtype}}&searchword=tag:{{$OrganizedTag}}" class="badge badge-outline-darkmode">{{$OrganizedTag}}</a>
-                    </div>
-                </div>
-        {{end}}
+    <div class="row justify-content-center align-items-center m-3">
+        <div class="col-lg-12">
+            <div class="text-muted mb-3">
+            Tags:
+            {{range .RecentlyTagItems}}
+                {{$itemtype := .ItemType}}
+                {{range .Tags}}
+                    <a href="/search?itemtype={{$itemtype}}&searchword=tag:{{.}}" class="badge badge-outline-darkmode">{{.}}</a>
+                {{end}}
+            {{end}}
+            </div>
+        </div>
+        </div>
     </div>
 {{end}}

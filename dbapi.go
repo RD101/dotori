@@ -134,7 +134,7 @@ func TopUsingItems(client *mongo.Client, num int64) ([]Item, error) {
 	return results, nil
 }
 
-// AllItems 는 DB에서 전체 아이템 정보를 가져오는 함수입니다.
+// AllItemsCount 는 DB에서 전체 아이템의 개수 정보를 가져오는 함수입니다.
 func AllItemsCount(client *mongo.Client) (int64, error) {
 	collection := client.Database(*flagDBName).Collection("items")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -554,6 +554,8 @@ func GetIncompleteItems(client *mongo.Client) ([]Item, error) {
 				bson.M{"itemtype": "pdf"},
 				bson.M{"itemtype": "hwp"},
 				bson.M{"itemtype": "hdri"},
+				bson.M{"itemtype": "texture"},
+				bson.M{"itemtype": "lut"},
 			}},
 			// 조건
 			bson.M{"datauploaded": false},

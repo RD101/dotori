@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -12,9 +11,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-// handleSearch는 URL을 통해 query를 할 수 있게 해주는 함수입니다.
+// handleInit는 URL을 통해 query를 할 수 있게 해주는 함수입니다.
 func handleInit(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("handleInit")
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -74,35 +72,35 @@ func handleInit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	num, err := AllItemsCount(client)
+	num, err := AllItemsCount(client) // 전체아이템의 개수를 가져옴
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	rcp.AllItemCount = humanize.Comma(num) // 숫자를 1000단위마다 comma를 찍음(string형으로 변경)
 
-	RecentlyTagItems, err := RecentlyCreateItems(client, 20)
+	RecentlyTagItems, err := RecentlyCreateItems(client, 20) // 최근생성된 20개의 아이템들을 가져옴
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	rcp.RecentlyTagItems = RecentlyTagItems
 
-	RecentlyCreateItems, err := RecentlyCreateItems(client, 100)
+	RecentlyCreateItems, err := RecentlyCreateItems(client, 100) // 최근생성된 100개의 아이템들을 가져옴
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	rcp.RecentlyCreateItems = RecentlyCreateItems
 
-	TopUsingItems, err := TopUsingItems(client, 20)
+	TopUsingItems, err := TopUsingItems(client, 20) // 사용률이 높은 20개의 아이템들을 가져옴
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	rcp.TopUsingItems = TopUsingItems
 
-	err = TEMPLATES.ExecuteTemplate(w, "ind", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "initPage", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

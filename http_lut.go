@@ -115,8 +115,6 @@ func handleUploadLutItem(w http.ResponseWriter, r *http.Request) {
 	item.Attributes = attr
 	item.Status = "ready"
 	item.Logs = append(item.Logs, "아이템이 생성되었습니다.")
-	currentTime := time.Now()
-	item.CreateTime = currentTime.Format("2006-01-02 15:04:05")
 	item.ThumbImgUploaded = false
 	item.ThumbClipUploaded = false
 	item.DataUploaded = false
@@ -315,7 +313,6 @@ func handleUploadLutFile(w http.ResponseWriter, r *http.Request) {
 			defer file.Close()
 			unix.Umask(umask)
 			mimeType := f.Header.Get("Content-Type")
-			fmt.Println(mimeType)
 			switch mimeType {
 			case "image/jpeg", "image/png":
 				data, err := ioutil.ReadAll(file)
@@ -351,6 +348,7 @@ func handleUploadLutFile(w http.ResponseWriter, r *http.Request) {
 				item.ThumbImgUploaded = true
 			case "application/octet-stream":
 				ext := filepath.Ext(f.Filename)
+				// "lut", "3dl", "blut", "cms", "csp", "cub", "cube", "vf", "vfz"
 				if ext != ".cube" {
 					http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
 					return
@@ -396,7 +394,7 @@ func handleUploadLutFile(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
-	if item.DataUploaded {
+	if item.DataUploaded && item.ThumbImgUploaded {
 		item.Status = "fileuploaded"
 	}
 	UpdateItem(client, item)
@@ -454,7 +452,7 @@ func handleUploadLutCheckData(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rcp.Item = item
-	if !item.DataUploaded {
+	if !item.DataUploaded || !item.ThumbImgUploaded {
 		err = TEMPLATES.ExecuteTemplate(w, "checklut-file", rcp)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)

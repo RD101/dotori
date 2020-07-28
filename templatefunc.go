@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"strings"
 )
 
@@ -34,8 +33,8 @@ func LastLog(logs []string) string {
 	return logs[len(logs)-1]
 }
 
+// CreateDataSplite 함수는 createData의 T를 기준으로 나누어 년,월,일 만 반환한다.
 func CreateDataSplite(data string) string {
 	splitData := strings.Split(data, "T")
-	fmt.Println(splitData)
 	return splitData[0]
 }
