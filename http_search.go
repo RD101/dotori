@@ -13,7 +13,6 @@ import (
 
 // handleSearch는 URL을 통해 query를 할 수 있게 해주는 함수입니다.
 func handleSearch(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("handleSearch")
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
