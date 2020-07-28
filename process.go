@@ -1460,7 +1460,6 @@ func genProxyToOggMedia(adminSetting Adminsetting, item Item) error {
 // genClipToOggMedia 함수는 인수로 받은 아이템의 .ogg 동영상을 만든다.
 func genClipToOggMedia(adminSetting Adminsetting, item Item) error {
 	files, err := searchSeq(item.OutputDataPath)
-	fmt.Println(item.OutputDataPath)
 	if err != nil {
 		return err
 	}
