@@ -1,38 +1,47 @@
+$('#recentlyCarousel').on('slide.bs.carousel', function (e) {
+    var $e = $(e.relatedTarget);    // object
+    var idx = $e.index();           // object Index
+    console.log(idx)
+    var itemsPerSlide = 4;
+    var totalItems = $('div[name=recentlyCarousel-item]').length;
+    
+    if (idx >= totalItems-(itemsPerSlide-1)) {
+        var it = itemsPerSlide - (totalItems - idx);
+        console.log(it)
+        for (var i=0; i<it; i++) {
+            // append slides to end
+            if (e.direction=="left") {
+                console.log("left")
+                $('div[name=recentlyCarousel-item]').eq(i).appendTo($('div[name=recentlyCarousel-inner]'));
+            }
+            else {
+                console.log("none")
+                $('div[name=recentlyCarousel-item]').eq(0).appendTo($('div[name=recentlyCarousel-inner]'));
+            }
+        }
+    }
+});
 
-$('#carouselExample').on('slide.bs.carousel', function (e) {
+$('#recentlyCarousel').carousel({interval: 2000});
+
+$('#topUsingCarousel').on('slide.bs.carousel', function (e) {
     var $e = $(e.relatedTarget);
     var idx = $e.index();
-    var itemsPerSlide = 1;
-    var totalItems = $('.carousel-item').length;
+    var itemsPerSlide = 4;
+    var totalItems = $('div[name=topUsingCarousel-item]').length;
     
     if (idx >= totalItems-(itemsPerSlide-1)) {
         var it = itemsPerSlide - (totalItems - idx);
         for (var i=0; i<it; i++) {
             // append slides to end
             if (e.direction=="left") {
-                $('.carousel-item').eq(i).appendTo('.carousel-inner');
+                $('div[name=topUsingCarousel-item]').eq(i).appendTo($('div[name=topUsingCarousel-inner]'));
             }
             else {
-                $('.carousel-item').eq(0).appendTo('.carousel-inner');
+                $('div[name=topUsingCarousel-item]').eq(0).appendTo($('div[name=topUsingCarousel-inner]'));
             }
         }
     }
 });
 
-$('#carouselExample').carousel({ 
-    interval: 2000
-});
-
-
-$(document).ready(function() {
-/* show lightbox when clicking a thumbnail */
-    $('a.thumb').click(function(event){
-        event.preventDefault();
-        var content = $('.modal-body');
-        content.empty();
-        var title = $(this).attr("title");
-        $('.modal-title').html(title);        
-        content.html($(this).html());
-        $(".modal-profile").modal({show:true});
-    });
-});
+$('#topUsingCarousel').carousel({interval: 2000});

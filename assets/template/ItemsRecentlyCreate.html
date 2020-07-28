@@ -3,13 +3,13 @@
 {{$thumbnailheight := .Adminsetting.ThumbnailImageHeight}}
 <div class="container-fluid">
     <div id="recentlyCarousel" class="carousel slide" data-ride="carousel" data-interval="3000">
-        <div class="carousel-inner row w-100 mx-auto" role="listbox">
+        <div class="carousel-inner row w-100 mx-auto" role="listbox" name="recentlyCarousel-inner">
             {{$index := 0}}
             {{range $q := .RecentlyCreateItems}}
             {{if eq $index 0}}
-                <div class="carousel-item col-md-3 active">
+                <div class="carousel-item col-md-3 active" name="recentlyCarousel-item">
             {{else}}
-                <div class="carousel-item col-md-3 ">
+                <div class="carousel-item col-md-3 " name="recentlyCarousel-item">
             {{end}}
                 <div class="panel panel-default">
                     <div class="panel-thumbnail">

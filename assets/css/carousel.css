@@ -1,10 +1,9 @@
 @media (min-width: 768px) {
-
-    /* show 4 items */
+    /* show 3 items */
     .carousel-inner .active,
     .carousel-inner .active + .carousel-item,
-	.carousel-inner .active + .carousel-item + .carousel-item,
-	.carousel-inner .active + .carousel-item + .carousel-item + .carousel-item {
+    .carousel-inner .active + .carousel-item + .carousel-item,
+    .carousel-inner .active + .carousel-item + .carousel-item + .carousel-item  {
         display: block;
     }
     
@@ -63,10 +62,10 @@
         display: block;
         visibility: visible;
     }
+
 }
 
  /* Bootstrap Lightbox using Modal */
-
 #profile-grid { overflow: auto; white-space: normal; } 
 #profile-grid .profile { padding-bottom: 40px; }
 #profile-grid .panel { padding: 0 }
