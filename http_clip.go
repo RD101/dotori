@@ -67,7 +67,7 @@ func handleAddClipItem(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Adminsetting = adminsetting
 	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "addfootage-item", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "addclip-item", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -97,6 +97,7 @@ func handleUploadClipItem(w http.ResponseWriter, r *http.Request) {
 	item.Description = r.FormValue("description")
 	item.Fps = r.FormValue("fps")
 	tags := SplitBySpace(r.FormValue("tag"))
+	tags = append(tags, item.Author) // author는 자동으로 태깅되도록 한다.
 	item.Tags = tags
 	item.ItemType = "clip"
 	attr := make(map[string]string)
@@ -316,8 +317,7 @@ func handleUploadClipFile(w http.ResponseWriter, r *http.Request) {
 			unix.Umask(umask)
 			mimeType := f.Header.Get("Content-Type")
 			switch mimeType {
-
-			case "application/octet-stream":
+			case "application/octet-stream", "video/quicktime":
 				ext := strings.ToLower(filepath.Ext(f.Filename))
 				if ext != ".mov" { // .mov 외에는 허용하지 않는다.
 					http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
