@@ -1,0 +1,24 @@
+{{define "initPage"}}
+    {{template "head"}}
+    <body>
+      {{template "navbar" .}}
+      {{template "search" .}}
+    	<div class="row justify-content-center align-items-center m-3">
+		    <div class="col-lg-12">
+			    <div class="input-group mb-3">
+                    <span class="text-white">총 {{$.AllItemCount}} 건의 에셋이 등록되어 있습니다.</span><br>
+			    </div>
+        </div>
+      </div>
+      {{template "itemsRecentlyCreate" .}}
+      {{template "itemsTopUsing" .}}
+      {{template "itemsRecentlyTag" .}}
+      {{template "footer"}}
+    </body>
+    <script src="/assets/js/jquery-3.1.1.min.js"></script>
+    <script src="/assets/bootstrap-4/js/bootstrap.min.js"></script>
+    <script src="/assets/js/dotori.js"></script>
+    <link rel="stylesheet" href="/assets/css/carousel.css">
+    <script src="/assets/js/carousel.js"></script>
+    </html>
+{{end}}

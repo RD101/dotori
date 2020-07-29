@@ -24,12 +24,13 @@ func LoadTemplates() (*template.Template, error) {
 }
 
 var funcMap = template.FuncMap{
-	"Tags2str":     Tags2str,
-	"add":          add,
-	"PreviousPage": PreviousPage,
-	"NextPage":     NextPage,
-	"RmRootpath":   RmRootpath,
-	"LastLog":      LastLog,
+	"Tags2str":      Tags2str,
+	"add":           add,
+	"PreviousPage":  PreviousPage,
+	"NextPage":      NextPage,
+	"RmRootpath":    RmRootpath,
+	"LastLog":       LastLog,
+	"SplitTimeData": SplitTimeData,
 }
 
 func webserver() {
@@ -58,7 +59,7 @@ func webserver() {
 		log.Fatal(err)
 	}
 	// 웹주소 설정
-	http.HandleFunc("/", handleSearch)
+	http.HandleFunc("/", handleInit)
 	http.HandleFunc("/mediadata", handleMediaData)
 	http.HandleFunc("/search", handleSearch)
 	http.HandleFunc("/search-submit", handleSearchSubmit)
