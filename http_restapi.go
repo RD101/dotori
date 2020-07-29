@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"strings"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -14,26 +15,6 @@ import (
 
 func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
-		i := Item{}
-		i.ID = primitive.NewObjectID()
-		//ParseForm parses the raw query from the URL and updates r.Form.
-		r.ParseForm()
-		for key, values := range r.PostForm {
-			switch key {
-			case "itemtype":
-				if len(values) != 1 {
-					http.Error(w, "URL에 itemtype을 입력해주세요", http.StatusBadRequest)
-					return
-				}
-				i.ItemType = values[0]
-			case "author":
-				if len(values) != 1 {
-					http.Error(w, "URL에 author를 입력해주세요", http.StatusBadRequest)
-					return
-				}
-				i.Author = values[0]
-			}
-		}
 		//mongoDB client 연결
 		client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 		if err != nil {
@@ -53,7 +34,58 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		// admin settin에서 rootpath를 가져와서 경로를 생성한다.
+		//accesslevel 체크
+		accesslevel, err := GetAccessLevelFromHeader(r, client)
+		if accesslevel != "default" && accesslevel != "manager" && accesslevel != "admin" {
+			http.Error(w, "등록 권한이 없는 계정입니다", http.StatusUnauthorized)
+			return
+		}
+
+		// item 정보 업로드
+		i := Item{}
+		i.ID = primitive.NewObjectID()
+		//ParseForm parses the raw query from the URL and updates r.Form.
+		r.ParseForm()
+		itemtype := r.FormValue("itemtype")
+		if itemtype == "" {
+			http.Error(w, "itemtype을 설정해주세요", http.StatusBadRequest)
+			return
+		}
+		title := r.FormValue("title")
+		if title == "" {
+			http.Error(w, "title을 설정해주세요", http.StatusBadRequest)
+			return
+		}
+		author := r.FormValue("author")
+		if author == "" {
+			http.Error(w, "author를 설정해주세요", http.StatusBadRequest)
+			return
+		}
+		description := r.FormValue("description")
+		if description == "" {
+			http.Error(w, "description을 설정해주세요", http.StatusBadRequest)
+			return
+		}
+		tags := SplitBySpace(r.FormValue("tags"))
+		if len(tags) == 0 {
+			http.Error(w, "tags를 설정해주세요", http.StatusBadRequest)
+			return
+		}
+		attributes := make(map[string]string)
+		for _, attr := range SplitBySpace(r.FormValue("attributes")) {
+			key := strings.Split(attr, ":")[0]
+			value := strings.Split(attr, ":")[1]
+			attributes[key] = value
+		}
+		i.ItemType = itemtype
+		i.Title = title
+		i.Author = author
+		i.Description = description
+		i.Tags = tags
+		i.Attributes = attributes
+		i.Status = "ready"
+		i.Logs = append(i.Logs, "아이템이 생성되었습니다.")
+		// admin setting에서 rootpath를 가져와 경로를 생성한다.
 		rootpath, err := GetRootPath(client)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -72,6 +104,7 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 		i.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/thumbnail.mov"
 		i.OutputDataPath = rootpath + objIDpath + "/data/"
 
+		// item Add
 		err = i.CheckError()
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
@@ -82,11 +115,14 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+
+		// 전송
 		data, _ := json.Marshal(i)
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(http.StatusOK)
 		w.Write(data)
 		return
+
 	} else if r.Method == http.MethodDelete {
 		q := r.URL.Query()
 		itemtype := q.Get("itemtype")
