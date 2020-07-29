@@ -12,7 +12,6 @@ $('#recentlyCarousel').on('slide.bs.carousel', function (e) {
                 $('div[name=recentlyCarousel-item]').eq(i).appendTo($('div[name=recentlyCarousel-inner]'));
             }
             else {
-                console.log("none")
                 $('div[name=recentlyCarousel-item]').eq(0).appendTo($('div[name=recentlyCarousel-inner]'));
             }
         }
