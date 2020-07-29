@@ -477,7 +477,7 @@ func ProcessMayaItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 // ProcessClipItem 함수는 clip 아이템을 연산한다.
 func ProcessClipItem(client *mongo.Client, adminSetting Adminsetting, item Item) error {
 	// thumbnail 폴더를 생성한다.
-	err := SetStatus(client, item, "creatingthumbdir")
+	err := SetStatus(client, item, "creating thumbdir")
 	if err != nil {
 		return err
 	}
@@ -486,7 +486,7 @@ func ProcessClipItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 		return err
 	}
 	// .ogg 썸네일 동영상을 생성한다.
-	err = SetStatus(client, item, "creatingoggmedia")
+	err = SetStatus(client, item, "creating ogg media")
 	if err != nil {
 		return err
 	}
@@ -495,7 +495,7 @@ func ProcessClipItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 		return err
 	}
 	// .mov 썸네일 동영상을 생성한다.
-	err = SetStatus(client, item, "creatingmovmedia")
+	err = SetStatus(client, item, "creating mov media")
 	if err != nil {
 		return err
 	}
@@ -504,7 +504,7 @@ func ProcessClipItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 		return err
 	}
 	// .mp4 썸네일 동영상을 생성한다.
-	err = SetStatus(client, item, "creatingmp4media")
+	err = SetStatus(client, item, "creating mp4 media")
 	if err != nil {
 		return err
 	}
