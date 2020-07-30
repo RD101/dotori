@@ -1,6 +1,7 @@
 package main
 
 import (
+	"strconv"
 	"strings"
 )
 
@@ -37,4 +38,13 @@ func LastLog(logs []string) string {
 func SplitTimeData(data string) string {
 	splitData := strings.Split(data, "T")
 	return splitData[0]
+}
+
+// limit100 함수는 string형을 int형으로 변경 후 100이 넘어가면 100으로 반환한다.
+func limit100(data string) int {
+	num1, _ := strconv.Atoi(data) // 문자열을 숫자로 변환
+	if num1 > 100 {
+		num1 = 100
+	}
+	return num1
 }
