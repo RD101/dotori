@@ -459,6 +459,7 @@ func GetOngoingProcess(client *mongo.Client) ([]Item, error) {
 			bson.M{"itemtype": "footage"},
 			bson.M{"itemtype": "alembic"},
 			bson.M{"itemtype": "usd"},
+			bson.M{"itemtype": "clip"},
 		}},
 		// 조건: 프로세스가 종료되지 않은 모든 아이템
 		bson.M{"status": bson.M{"$ne": "done"}},
