@@ -42,7 +42,11 @@ func addMayaItemCmd() {
 	i.Author = *flagAuthor
 	i.Description = *flagDescription
 	i.Tags = SplitBySpace(*flagTag)
-	i.Attributes = StringToMap(*flagAttributes)
+	attr, err := StringToMap(*flagAttributes)
+	if err != nil {
+		log.Fatal(err)
+	}
+	i.Attributes = attr
 	i.InputThumbnailImgPath = *flagInputThumbImgPath
 	i.InputThumbnailClipPath = *flagInputThumbClipPath
 	i.Status = "ready"
@@ -117,7 +121,7 @@ func addMayaItemCmd() {
 		datapaths = append(datapaths, path)
 	}
 	for _, path := range datapaths {
-    // 데이터 경로에 실재 파일이 존재하는지 체크.
+		// 데이터 경로에 실재 파일이 존재하는지 체크.
 		err = FileExists(path)
 		if err != nil {
 			log.Fatal(err)
