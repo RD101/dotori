@@ -1,7 +1,7 @@
 package main
 
 import (
-	"log"
+	"errors"
 	"path/filepath"
 	"strings"
 )
@@ -23,18 +23,17 @@ func SplitBySpace(str string) []string {
 }
 
 // StringToMap 함수는 "key:value,key:value" 형식의 문자열을 map 형으로 변환하는 함수이다.
-func StringToMap(str string) map[string]string {
-	str = strings.TrimSpace(str)
-	if str == "" {
-		return nil
-	}
-
+func StringToMap(str string) (map[string]string, error) {
 	var result map[string]string
 	result = make(map[string]string)
 
+	str = strings.TrimSpace(str)
+	if str == "" {
+		return result, nil
+	}
+
 	if !regexMap.MatchString(str) { // 전달받은 str이 key:value,key:value 형식이 맞는지 확인
-		log.Fatal("map 형식이 아닙니다")
-		return result
+		return result, errors.New("map 형식이 아닙니다")
 	}
 
 	for _, s := range strings.Split(str, ",") {
@@ -48,7 +47,7 @@ func StringToMap(str string) map[string]string {
 		result[key] = value
 	}
 
-	return result
+	return result, nil
 }
 
 // FilenameToTags 는 경로를 받아서 태그를 반환한다.
