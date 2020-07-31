@@ -96,7 +96,6 @@ func handlUploadNukeItem(w http.ResponseWriter, r *http.Request) {
 	item.Title = r.FormValue("title")
 	item.Description = r.FormValue("description")
 	tags := SplitBySpace(r.FormValue("tag"))
-	tags = append(tags, item.Author) // author는 자동으로 태깅되도록 한다.
 	item.Tags = tags
 	item.ItemType = "nuke"
 	attr := make(map[string]string)
@@ -429,7 +428,11 @@ func handleUploadNukeFile(w http.ResponseWriter, r *http.Request) {
 	if item.ThumbImgUploaded && item.ThumbClipUploaded && item.DataUploaded {
 		item.Status = "fileuploaded"
 	}
-	UpdateItem(client, item)
+	err = SetItem(client, item)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
 
 // handleUploadNukeCheckData 함수는 필요한 파일들을 모두 업로드했는지 체크하고, /addnuke-success 페이지로 redirect한다.
@@ -675,7 +678,7 @@ func handleEditNukeSubmit(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	err = UpdateItem(client, item)
+	err = SetItem(client, item)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

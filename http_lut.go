@@ -96,7 +96,6 @@ func handleUploadLutItem(w http.ResponseWriter, r *http.Request) {
 	item.Author = r.FormValue("author")
 	item.Description = r.FormValue("description")
 	tags := SplitBySpace(r.FormValue("tag"))
-	tags = append(tags, item.Author) // author는 자동으로 태깅되도록 한다.
 	item.Tags = tags
 	item.ItemType = "lut"
 	attr := make(map[string]string)
@@ -398,7 +397,11 @@ func handleUploadLutFile(w http.ResponseWriter, r *http.Request) {
 	if item.DataUploaded && item.ThumbImgUploaded {
 		item.Status = "fileuploaded"
 	}
-	UpdateItem(client, item)
+	err = SetItem(client, item)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
 
 func handleUploadLutCheckData(w http.ResponseWriter, r *http.Request) {
@@ -643,7 +646,7 @@ func handleEditLutSubmit(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	err = UpdateItem(client, item)
+	err = SetItem(client, item)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

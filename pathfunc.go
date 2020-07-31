@@ -211,10 +211,6 @@ func copyFile(inputpath, outputpath string) error {
 	if err != nil {
 		return err
 	}
-	err = client.Ping(ctx, readpref.Primary())
-	if err != nil {
-		return err
-	}
 
 	// adminsetting을 가져온다,
 	adminsetting, err := GetAdminSetting(client)
