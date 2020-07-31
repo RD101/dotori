@@ -77,8 +77,8 @@ func RmItem(client *mongo.Client, id string) error {
 	return nil
 }
 
-// AllItems 는 DB에서 전체 아이템 정보를 가져오는 함수입니다.
-func AllItems(client *mongo.Client) ([]Item, error) {
+// GetAllItems 는 DB에서 전체 아이템 정보를 가져오는 함수입니다.
+func GetAllItems(client *mongo.Client) ([]Item, error) {
 	collection := client.Database(*flagDBName).Collection("items")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -146,8 +146,8 @@ func GetAllItemsNum(client *mongo.Client) (int64, error) {
 	return n, nil
 }
 
-// UpdateItem 은 컬렉션 이름과 Item을 받아서, Item을 업데이트한다.
-func UpdateItem(client *mongo.Client, i Item) error {
+// SetItem 은 컬렉션 이름과 Item을 받아서, Item을 업데이트한다.
+func SetItem(client *mongo.Client, i Item) error {
 	i.Updatetime = time.Now().Format(time.RFC3339)
 	collection := client.Database(*flagDBName).Collection("items")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
