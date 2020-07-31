@@ -386,7 +386,11 @@ func handleUploadPdfFile(w http.ResponseWriter, r *http.Request) {
 	if item.DataUploaded {
 		item.Status = "fileuploaded"
 	}
-	UpdateItem(client, item)
+	err = SetItem(client, item)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
 
 // handleUploadPdfCheckData 함수는 필요한 파일들을 모두 업로드했는지 체크하고, /addpdf-success 페이지로 redirect한다.
@@ -632,7 +636,7 @@ func handleEditPdfSubmit(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	err = UpdateItem(client, item)
+	err = SetItem(client, item)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

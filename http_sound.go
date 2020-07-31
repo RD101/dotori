@@ -382,7 +382,11 @@ func handleUploadSoundFile(w http.ResponseWriter, r *http.Request) {
 	if item.DataUploaded {
 		item.Status = "fileuploaded"
 	}
-	UpdateItem(client, item)
+	err = SetItem(client, item)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
 
 func handleUploadSoundCheckData(w http.ResponseWriter, r *http.Request) {
@@ -627,7 +631,7 @@ func handleEditSoundSubmit(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	err = UpdateItem(client, item)
+	err = SetItem(client, item)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

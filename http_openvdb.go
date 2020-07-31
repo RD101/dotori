@@ -457,7 +457,11 @@ func handleUploadOpenVDBFile(w http.ResponseWriter, r *http.Request) {
 	if item.ThumbImgUploaded && item.ThumbClipUploaded && item.DataUploaded {
 		item.Status = "fileuploaded"
 	}
-	UpdateItem(client, item)
+	err = SetItem(client, item)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
 
 // handleUploadOpenVDBCheckData 함수는 필요한 파일(썸네일, data 파일 등)을 추가했는지 체크한다.
@@ -705,7 +709,7 @@ func handleEditOpenVDBSubmit(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	err = UpdateItem(client, item)
+	err = SetItem(client, item)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
