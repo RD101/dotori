@@ -97,7 +97,6 @@ func handleUploadClipItem(w http.ResponseWriter, r *http.Request) {
 	item.Description = r.FormValue("description")
 	item.Fps = r.FormValue("fps")
 	tags := SplitBySpace(r.FormValue("tag"))
-	tags = append(tags, item.Author) // author는 자동으로 태깅되도록 한다.
 	item.Tags = tags
 	item.ItemType = "clip"
 	attr := make(map[string]string)
