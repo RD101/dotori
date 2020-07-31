@@ -98,7 +98,6 @@ func handleUploadOpenVDBItem(w http.ResponseWriter, r *http.Request) {
 	item.Title = r.FormValue("title")
 	item.Description = r.FormValue("description")
 	tags := SplitBySpace(r.FormValue("tag"))
-	tags = append(tags, item.Author) // author는 자동으로 태깅되도록 한다.
 	item.Tags = tags
 	item.ItemType = "openvdb"
 	attr := make(map[string]string)
