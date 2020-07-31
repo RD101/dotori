@@ -398,7 +398,11 @@ func handleUploadLutFile(w http.ResponseWriter, r *http.Request) {
 	if item.DataUploaded && item.ThumbImgUploaded {
 		item.Status = "fileuploaded"
 	}
-	SetItem(client, item)
+	err = SetItem(client, item)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
 
 func handleUploadLutCheckData(w http.ResponseWriter, r *http.Request) {

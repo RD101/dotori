@@ -457,7 +457,11 @@ func handleUploadBlenderFile(w http.ResponseWriter, r *http.Request) {
 	if item.ThumbImgUploaded && item.ThumbClipUploaded && item.DataUploaded {
 		item.Status = "fileuploaded"
 	}
-	SetItem(client, item)
+	err = SetItem(client, item)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
 
 func handleUploadBlenderCheckData(w http.ResponseWriter, r *http.Request) {
