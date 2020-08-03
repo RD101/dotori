@@ -11,9 +11,8 @@
             <div class="text-muted mb-3">
             Tags:
             {{range .RecentlyTagItems}}
-                {{$itemtype := .ItemType}}
                 {{range .Tags}}
-                    <a href="/search?itemtype={{$itemtype}}&searchword=tag:{{.}}" class="badge badge-outline-darkmode">{{.}}</a>
+                    <a href="/search?searchword=tag:{{.}}" class="badge badge-outline-darkmode">{{.}}</a>
                 {{end}}
             {{end}}
             </div>

@@ -84,6 +84,20 @@ func handleInit(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	// RecentlyTagItems의 item들 중 tag가 중복되는 것들 제거
+	keys := make(map[string]bool)
+	for itemIndex := range RecentlyTagItems {
+		tagFilter := []string{}
+		for tagIndex := range RecentlyTagItems[itemIndex].Tags {
+			tagValue := RecentlyTagItems[itemIndex].Tags[tagIndex]
+			if _, saveValue := keys[tagValue]; !saveValue {
+				keys[tagValue] = true
+				tagFilter = append(tagFilter, RecentlyTagItems[itemIndex].Tags[tagIndex])
+			}
+		}
+		RecentlyTagItems[itemIndex].Tags = tagFilter
+	}
 	rcp.RecentlyTagItems = RecentlyTagItems
 
 	RecentlyCreateItems, err := GetRecentlyCreatedItems(client, 100) // 최근생성된 100개의 아이템들을 가져옴
