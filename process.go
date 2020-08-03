@@ -264,14 +264,6 @@ func processingItem(item Item) {
 		}
 		return
 	case "unreal":
-		err = ProcessUnrealItem(client, adminSetting, item)
-		if err != nil {
-			err = SetErrStatus(client, item.ID.Hex(), err.Error())
-			if err != nil {
-				log.Println(err)
-			}
-			return
-		}
 		return
 	default:
 		log.Println("약속된 type이 아닙니다")
@@ -285,21 +277,27 @@ func queueingItem(jobs chan<- Item) {
 		//mongoDB client 연결
 		client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 		if err != nil {
+			// DB에 접속되지 않으면 로그를 출력후 10초를 기다리고 다시 진행한다.
 			log.Println(err)
-			return
+			time.Sleep(time.Second * 10)
+			continue
 		}
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 		err = client.Connect(ctx)
 		if err != nil {
+			// DB에 접속되지 않으면 로그를 출력후 10초를 기다리고 다시 진행한다.
 			log.Println(err)
-			return
+			time.Sleep(time.Second * 10)
+			continue
 		}
 		defer client.Disconnect(ctx)
 		err = client.Ping(ctx, readpref.Primary())
 		if err != nil {
+			// DB에 접속되지 않으면 로그를 출력후 10초를 기다리고 다시 진행한다.
 			log.Println(err)
-			return
+			time.Sleep(time.Second * 10)
+			continue
 		}
 		// Status가 FileUploaded인 item을 가져온다.
 		item, err := GetFileUploadedItem(client)
@@ -309,11 +307,13 @@ func queueingItem(jobs chan<- Item) {
 				time.Sleep(time.Second * 10)
 				continue
 			}
+			// DB에 접속되지 않으면 로그를 출력후 10초를 기다리고 다시 진행한다.
 			log.Println(err)
-			return
+			time.Sleep(time.Second * 10)
+			continue
 		}
 		jobs <- item
-		// 기다렸다가 다시 실행
+		// 10초후 다시 queueing 한다.
 		time.Sleep(time.Second * 10)
 	}
 }
@@ -1653,33 +1653,6 @@ func ProcessUnrealItem(client *mongo.Client, adminSetting Adminsetting, item Ite
 		return err
 	}
 	err = genThumbImage(adminSetting, item)
-	if err != nil {
-		return err
-	}
-	// .ogg 썸네일 동영상을 생성한다.
-	err = SetStatus(client, item, "creating .ogg media")
-	if err != nil {
-		return err
-	}
-	err = genThumbOggMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
-	if err != nil {
-		return err
-	}
-	// .mov 썸네일 동영상을 생성한다.
-	err = SetStatus(client, item, "creating .mov media")
-	if err != nil {
-		return err
-	}
-	err = genThumbMovMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
-	if err != nil {
-		return err
-	}
-	// .mp4 썸네일 동영상을 생성한다.
-	err = SetStatus(client, item, "creating .mp4 media")
-	if err != nil {
-		return err
-	}
-	err = genThumbMp4Media(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
 		return err
 	}
