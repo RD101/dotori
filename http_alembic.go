@@ -225,6 +225,11 @@ func handleUploadAlembicFile(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
 		return
 	}
+	uploadAlembicFile(w, r)
+}
+
+// uploadAlembicFile 함수는 Alembic 파일 정보를 DB에 업로드하고 파일을 storage에 복사한다.
+func uploadAlembicFile(w http.ResponseWriter, r *http.Request) {
 	objectID, err := GetObjectIDfromRequestHeader(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)

@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
-	"strings"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -71,11 +70,9 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "tags를 설정해주세요", http.StatusBadRequest)
 			return
 		}
-		attributes := make(map[string]string)
-		for _, attr := range SplitBySpace(r.FormValue("attributes")) {
-			key := strings.Split(attr, ":")[0]
-			value := strings.Split(attr, ":")[1]
-			attributes[key] = value
+		attributes, err := StringToMap(r.FormValue("attributes"))
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
 		}
 		i.ItemType = itemtype
 		i.Title = title
@@ -114,6 +111,21 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
+		}
+
+		// 파일 업로드
+		switch itemtype {
+		case "alembic":
+			uploadAlembicFile(w, r)
+			objectID, err := GetObjectIDfromRequestHeader(r)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+			item, err := GetItem(client, objectID)
+			if !item.ThumbImgUploaded || !item.ThumbClipUploaded || !item.DataUploaded {
+				http.Error(w, "썸네일 이미지, 영상, 실제 데이터 3가지를 모두 업로드 했는지 확인해주세요", http.StatusBadRequest)
+				return
+			}
 		}
 
 		// 전송
