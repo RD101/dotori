@@ -29,6 +29,7 @@ var (
 	flagGetOngoingProcess = flag.Bool("getongoingprocess", false, "get ongoing process")  // 완료되지 않은 프로세스를 가져옵니다.
 	flagProcess           = flag.Bool("process", false, "start processing item")          // 프로세스를 실행시킨다
 	flagDebug             = flag.Bool("debug", false, "debug mode")                       // debug모드
+	flagDevMode           = flag.Bool("devmode", false, "devel mode")                     // 개발모드 활성화
 	flagAccesslevel       = flag.String("accesslevel", "default", "access level of user") // 사용자의 accesslevel을 지정합니다. admin, manager, default
 
 	flagAuthor             = flag.String("author", "", "author")
