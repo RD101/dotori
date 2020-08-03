@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"os"
 	"path/filepath"
 	"strings"
 	"time"
@@ -93,6 +94,15 @@ func addMayaItemCmd() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	// 레귤러 파일이 아니면 에러처리 한다.
+	stat, err := os.Stat(*flagInputThumbImgPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if !stat.Mode().IsRegular() {
+		// cannot copy non-regular files (e.g., directories, symlinks, devices, etc.)
+		log.Fatal("non-regular source file")
+	}
 	// 유효한 파일인지 체크.
 	ext := filepath.Ext(*flagInputThumbImgPath)
 	if ext != ".jpg" && ext != ".png" {
@@ -106,6 +116,15 @@ func addMayaItemCmd() {
 	err = FileExists(*flagInputThumbClipPath)
 	if err != nil {
 		log.Fatal(err)
+	}
+	// 레귤러 파일이 아니면 에러처리 한다.
+	stat, err = os.Stat(*flagInputThumbClipPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if !stat.Mode().IsRegular() {
+		// cannot copy non-regular files (e.g., directories, symlinks, devices, etc.)
+		log.Fatal("non-regular source file")
 	}
 	// 유효한 파일인지 체크.
 	ext = filepath.Ext(*flagInputThumbClipPath)
@@ -125,6 +144,15 @@ func addMayaItemCmd() {
 		err = FileExists(path)
 		if err != nil {
 			log.Fatal(err)
+		}
+		// 레귤러 파일이 아니면 에러처리 한다.
+		stat, err := os.Stat(*flagInputDataPath)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if !stat.Mode().IsRegular() {
+			// cannot copy non-regular files (e.g., directories, symlinks, devices, etc.)
+			log.Fatal("non-regular source file")
 		}
 		// 유효한 파일인지 체크.
 		ext = filepath.Ext(path)
