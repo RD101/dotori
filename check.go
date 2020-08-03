@@ -20,7 +20,7 @@ var (
 	regexTitle       = regexp.MustCompile(`^[가-힣\w\s]+$`)
 )
 
-//FileExists 함수는 해당 파일이 존재하는지 체크한다. regualar파일이 아닌 경우 에러처리 한다.
+//FileExists 함수는 해당 파일이 존재하는지 체크한다.
 func FileExists(path string) error {
 	stat, err := os.Stat(path)
 	if err != nil {
