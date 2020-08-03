@@ -31,6 +31,7 @@ var funcMap = template.FuncMap{
 	"RmRootpath":    RmRootpath,
 	"LastLog":       LastLog,
 	"SplitTimeData": SplitTimeData,
+	"ListLength":    ListLength,
 }
 
 func webserver() {
