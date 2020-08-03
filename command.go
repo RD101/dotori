@@ -100,13 +100,13 @@ func addMayaItemCmd() {
 		log.Fatal(err)
 	}
 	if !stat.Mode().IsRegular() {
-		// cannot copy non-regular files (e.g., directories, symlinks, devices, etc.)
-		log.Fatal("non-regular source file")
+		// 레귤러 파일이 아니면 복사할 수 없다.(ex. 폴더, symlinks, 디바이스 등등) cannot copy non-regular files (e.g., directories, symlinks, devices, etc.)
+		log.Fatal("폴더, 심볼릭 링크 등은 복사할 수 없습니다")
 	}
 	// 유효한 파일인지 체크.
 	ext := filepath.Ext(*flagInputThumbImgPath)
 	if ext != ".jpg" && ext != ".png" {
-		log.Fatal("지원하지 않는 썸네일 이미지 포맷입니다.")
+		log.Fatal("지원하지 않는 썸네일 이미지 포맷입니다")
 	}
 	// 존재하고 유효하면 ThumbImgUploaded true로 바꾸기
 	i.ThumbImgUploaded = true
@@ -123,8 +123,8 @@ func addMayaItemCmd() {
 		log.Fatal(err)
 	}
 	if !stat.Mode().IsRegular() {
-		// cannot copy non-regular files (e.g., directories, symlinks, devices, etc.)
-		log.Fatal("non-regular source file")
+		// 레귤러 파일이 아니면 복사할 수 없다.(ex. 폴더, symlinks, 디바이스 등등) cannot copy non-regular files (e.g., directories, symlinks, devices, etc.)
+		log.Fatal("폴더, 심볼릭 링크 등은 복사할 수 없습니다")
 	}
 	// 유효한 파일인지 체크.
 	ext = filepath.Ext(*flagInputThumbClipPath)
@@ -151,8 +151,8 @@ func addMayaItemCmd() {
 			log.Fatal(err)
 		}
 		if !stat.Mode().IsRegular() {
-			// cannot copy non-regular files (e.g., directories, symlinks, devices, etc.)
-			log.Fatal("non-regular source file")
+			// 레귤러 파일이 아니면 복사할 수 없다.(ex. 폴더, symlinks, 디바이스 등등) cannot copy non-regular files (e.g., directories, symlinks, devices, etc.)
+			log.Fatal("폴더, 심볼릭 링크 등등은 복사할 수 없습니다")
 		}
 		// 유효한 파일인지 체크.
 		ext = filepath.Ext(path)
