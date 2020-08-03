@@ -261,15 +261,20 @@ func SearchPage(client *mongo.Client, itemType, words string, page, limitnum int
 			value := strings.Split(word, ":")[1]
 			querys = append(querys, bson.M{"attributes." + key: primitive.Regex{Pattern: value, Options: "i"}})
 		} else {
-			querys = append(querys, bson.M{"title": primitive.Regex{Pattern: word, Options: "i"}})
-			querys = append(querys, bson.M{"author": primitive.Regex{Pattern: word, Options: "i"}})
-			querys = append(querys, bson.M{"tags": primitive.Regex{Pattern: word, Options: "i"}})
-			querys = append(querys, bson.M{"description": primitive.Regex{Pattern: word, Options: "i"}})
-			querys = append(querys, bson.M{"type": primitive.Regex{Pattern: word, Options: "i"}})
-			querys = append(querys, bson.M{"inputpath": primitive.Regex{Pattern: word, Options: "i"}})
-			querys = append(querys, bson.M{"outputpath": primitive.Regex{Pattern: word, Options: "i"}})
-			querys = append(querys, bson.M{"createtime": primitive.Regex{Pattern: word, Options: "i"}})
-			querys = append(querys, bson.M{"updatetime": primitive.Regex{Pattern: word, Options: "i"}})
+			switch strings.ToLower(word) {
+			case "all":
+				querys = append(querys, bson.M{})
+			default:
+				querys = append(querys, bson.M{"title": primitive.Regex{Pattern: word, Options: "i"}})
+				querys = append(querys, bson.M{"author": primitive.Regex{Pattern: word, Options: "i"}})
+				querys = append(querys, bson.M{"tags": primitive.Regex{Pattern: word, Options: "i"}})
+				querys = append(querys, bson.M{"description": primitive.Regex{Pattern: word, Options: "i"}})
+				querys = append(querys, bson.M{"type": primitive.Regex{Pattern: word, Options: "i"}})
+				querys = append(querys, bson.M{"inputpath": primitive.Regex{Pattern: word, Options: "i"}})
+				querys = append(querys, bson.M{"outputpath": primitive.Regex{Pattern: word, Options: "i"}})
+				querys = append(querys, bson.M{"createtime": primitive.Regex{Pattern: word, Options: "i"}})
+				querys = append(querys, bson.M{"updatetime": primitive.Regex{Pattern: word, Options: "i"}})
+			}
 		}
 		wordsQueries = append(wordsQueries, bson.M{"$or": querys})
 	}
