@@ -1766,33 +1766,6 @@ func ProcessUnrealItem(client *mongo.Client, adminSetting Adminsetting, item Ite
 	if err != nil {
 		return err
 	}
-	// .ogg 썸네일 동영상을 생성한다.
-	err = SetStatus(client, item, "creating .ogg media")
-	if err != nil {
-		return err
-	}
-	err = genThumbOggMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
-	if err != nil {
-		return err
-	}
-	// .mov 썸네일 동영상을 생성한다.
-	err = SetStatus(client, item, "creating .mov media")
-	if err != nil {
-		return err
-	}
-	err = genThumbMovMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
-	if err != nil {
-		return err
-	}
-	// .mp4 썸네일 동영상을 생성한다.
-	err = SetStatus(client, item, "creating .mp4 media")
-	if err != nil {
-		return err
-	}
-	err = genThumbMp4Media(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
-	if err != nil {
-		return err
-	}
 	err = SetStatus(client, item, "done")
 	if err != nil {
 		return err
