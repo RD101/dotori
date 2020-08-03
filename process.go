@@ -360,20 +360,6 @@ func processingItem(item Item) {
 		}
 		return
 	case "unreal":
-		err = ProcessUnrealItem(client, adminSetting, item)
-		if err != nil {
-			err = SetStatus(client, item, "error")
-			if err != nil {
-				log.Println(err)
-			}
-			/*
-				err = SetLog(client, item.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-				}
-			*/
-			return
-		}
 		return
 	default:
 		log.Println("약속된 type이 아닙니다")
