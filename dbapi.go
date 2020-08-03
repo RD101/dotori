@@ -497,6 +497,32 @@ func SetStatus(client *mongo.Client, item Item, status string) error {
 	return nil
 }
 
+//SetErrStatus 함수는 인수로 받은 item의 Status를 error status로 바꾼다
+func SetErrStatus(client *mongo.Client, id, errmsg string) error {
+	collection := client.Database(*flagDBName).Collection("items")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	// item의 Status를 업데이트 한다.
+	objID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return err
+	}
+	filter := bson.M{"_id": objID}
+
+	update := bson.M{
+		"$set": bson.M{
+			"status": "error",
+		},
+		"$push": bson.M{"logs": errmsg},
+	}
+	err = collection.FindOneAndUpdate(ctx, filter, update).Err()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // GetProcessingItemNum 함수는 현재 연산 중인 아이템의 개수를 구한다.
 func GetProcessingItemNum(client *mongo.Client) (int64, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)

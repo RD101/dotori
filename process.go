@@ -102,128 +102,80 @@ func processingItem(item Item) {
 	case "maya":
 		err = ProcessMayaItem(client, adminSetting, item)
 		if err != nil {
-			err = SetStatus(client, item, "error")
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 			}
-			/*
-				err = SetLog(client, item.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-				}
-			*/
 			return
 		}
 		return
 	case "clip": // Clip 소스
 		err = ProcessClipItem(client, adminSetting, item)
 		if err != nil {
-			err = SetStatus(client, item, "error")
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 			}
-			/*
-				err = SetLog(client, item.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-				}
-			*/
 			return
 		}
 		return
 	case "footage": // Footage 소스, 시퀀스
 		err = ProcessFootageItem(client, adminSetting, item)
 		if err != nil {
-			err = SetStatus(client, item, "error")
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 			}
-			/*
-				err = SetLog(client, item.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-				}
-			*/
 			return
 		}
 		return
 	case "nuke": // 뉴크파일
 		err = ProcessNukeItem(client, adminSetting, item)
 		if err != nil {
-			err = SetStatus(client, item, "error")
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 			}
-			/*
-				err = SetLog(client, item.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-				}
-			*/
 			return
 		}
 		return
 	case "usd": // Pixar USD
 		err = ProcessUSDItem(client, adminSetting, item)
 		if err != nil {
-			err = SetStatus(client, item, "error")
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 			}
-			/*
-				err = SetLog(client, item.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-				}
-			*/
 			return
 		}
 		return
 	case "alembic": // Alembic
 		err = ProcessAlembicItem(client, adminSetting, item)
 		if err != nil {
-			err = SetStatus(client, item, "error")
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 			}
-			/*
-				err = SetLog(client, item.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-				}
-			*/
 			return
 		}
 		return
 	case "houdini": // 후디니
 		err = ProcessHoudiniItem(client, adminSetting, item)
 		if err != nil {
-			err = SetStatus(client, item, "error")
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 			}
-			/*
-				err = SetLog(client, item.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-				}
-			*/
 			return
 		}
 		return
 	case "openvdb": // 볼륨데이터
 		err = ProcessOpenVDBItem(client, adminSetting, item)
 		if err != nil {
-			err = SetStatus(client, item, "error")
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 			}
-			/*
-				err = SetLog(client, item.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-				}
-			*/
 			return
 		}
 		return
@@ -232,64 +184,40 @@ func processingItem(item Item) {
 	case "ies": // 조명파일
 		err = ProcessIesItem(client, adminSetting, item)
 		if err != nil {
-			err = SetStatus(client, item, "error")
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 			}
-			/*
-				err = SetLog(client, item.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-				}
-			*/
 			return
 		}
 		return
 	case "hdri": // HDRI 이미지, 환경맵
 		err = ProcessHDRIItem(client, adminSetting, item)
 		if err != nil {
-			err = SetStatus(client, item, "error")
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 			}
-			/*
-				err = SetLog(client, item.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-				}
-			*/
 			return
 		}
 		return
 	case "texture": // Texture 파일
 		err = ProcessTextureItem(client, adminSetting, item)
 		if err != nil {
-			err = SetStatus(client, item, "error")
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 			}
-			/*
-				err = SetLog(client, item.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-				}
-			*/
 			return
 		}
 		return
 	case "blender": // 블렌더 파일
 		err = ProcessBlenderItem(client, adminSetting, item)
 		if err != nil {
-			err = SetStatus(client, item, "error")
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 			}
-			/*
-				err = SetLog(client, item.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-				}
-			*/
 			return
 		}
 		return
@@ -298,64 +226,40 @@ func processingItem(item Item) {
 	case "modo": // 모도
 		err = ProcessModoItem(client, adminSetting, item)
 		if err != nil {
-			err = SetStatus(client, item, "error")
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 			}
-			/*
-				err = SetLog(client, item.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-				}
-			*/
 			return
 		}
 		return
 	case "katana": //katana
 		err = ProcessKatanaItem(client, adminSetting, item)
 		if err != nil {
-			err = SetStatus(client, item, "error")
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 			}
-			/*
-				err = SetLog(client, item.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-				}
-			*/
 			return
 		}
 		return
 	case "lut", "3dl", "blut", "cms", "csp", "cub", "cube", "vf", "vfz": // LUT 파일들
 		err = ProcessLutItem(client, adminSetting, item)
 		if err != nil {
-			err = SetStatus(client, item, "error")
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 			}
-			/*
-				err = SetLog(client, item.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-				}
-			*/
 			return
 		}
 		return
 	case "sound":
 		err = ProcessSoundItem(client, adminSetting, item)
 		if err != nil {
-			err = SetStatus(client, item, "error")
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 			}
-			/*
-				err = SetLog(client, item.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-				}
-			*/
 			return
 		}
 		return
