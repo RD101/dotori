@@ -247,8 +247,8 @@ func copyFile(inputpath, outputpath string) error {
 	}
 	// 레귤러 파일이 아니면 에러처리 한다.
 	if !src.Mode().IsRegular() {
-		// cannot copy non-regular files (e.g., directories, symlinks, devices, etc.)
-		return fmt.Errorf("CopyFile: non-regular source file %s (%q)", src.Name(), src.Mode().String())
+		// 레귤러 파일이 아니면 복사할 수 없다.(ex. 폴더, symlinks, 디바이스 등등) cannot copy non-regular files (e.g., directories, symlinks, devices, etc.)
+		return fmt.Errorf("CopyFile: 폴더, 심볼릭 링크 등은 복사할 수 없습니다. non-regular source file %s (%q)", src.Name(), src.Mode().String())
 	}
 
 	// output경로 검사.
