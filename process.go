@@ -387,21 +387,27 @@ func queueingItem(jobs chan<- Item) {
 		//mongoDB client 연결
 		client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 		if err != nil {
+			// DB에 접속되지 않으면 로그를 출력후 10초를 기다리고 다시 진행한다.
 			log.Println(err)
-			return
+			time.Sleep(time.Second * 10)
+			continue
 		}
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 		err = client.Connect(ctx)
 		if err != nil {
+			// DB에 접속되지 않으면 로그를 출력후 10초를 기다리고 다시 진행한다.
 			log.Println(err)
-			return
+			time.Sleep(time.Second * 10)
+			continue
 		}
 		defer client.Disconnect(ctx)
 		err = client.Ping(ctx, readpref.Primary())
 		if err != nil {
+			// DB에 접속되지 않으면 로그를 출력후 10초를 기다리고 다시 진행한다.
 			log.Println(err)
-			return
+			time.Sleep(time.Second * 10)
+			continue
 		}
 		// Status가 FileUploaded인 item을 가져온다.
 		item, err := GetFileUploadedItem(client)
@@ -411,11 +417,13 @@ func queueingItem(jobs chan<- Item) {
 				time.Sleep(time.Second * 10)
 				continue
 			}
+			// DB에 접속되지 않으면 로그를 출력후 10초를 기다리고 다시 진행한다.
 			log.Println(err)
-			return
+			time.Sleep(time.Second * 10)
+			continue
 		}
 		jobs <- item
-		// 기다렸다가 다시 실행
+		// 10초후 다시 queueing 한다.
 		time.Sleep(time.Second * 10)
 	}
 }
