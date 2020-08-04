@@ -24,7 +24,7 @@ func handleInit(w http.ResponseWriter, r *http.Request) {
 	type recipe struct {
 		RecentlyCreateItems []Item
 		TopUsingItems       []Item
-		RecentlyTagItems    []Item
+		RecentTags          []string // 최근 등록된 태그 리스트
 		Token
 		Adminsetting Adminsetting
 		Searchword   string
@@ -84,7 +84,8 @@ func handleInit(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	rcp.RecentlyTagItems = RecentlyTagItems
+
+	rcp.RecentTags = ItemsTagsDeduplication(RecentlyTagItems) // 중복 태그를 정리함
 
 	RecentlyCreateItems, err := GetRecentlyCreatedItems(client, 100) // 최근생성된 100개의 아이템들을 가져옴
 	if err != nil {
