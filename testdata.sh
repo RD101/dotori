@@ -17,6 +17,9 @@ dotori -add -itemtype sound -title example -author bailey -description "descript
 #아이템 삭제 커맨드를 실행 전에 직접 id를 입력해준 후 테스트한다.
 #sudo dotori -remove -itemid 
 
+#사용자의 accesslevel을 수정하는 testdata. 실행 전에 userid를 입력해준 후 테스트한다.
+#sudo dotori -accesslevel admin -userid
+
 #REST API
 curl -X POST -d "author=bae&itemtype=maya" http://127.0.0.1/api/item
 #DELETE는 실행 전에 직접 id를 넣어준 후 테스트한다.
