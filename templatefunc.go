@@ -43,19 +43,3 @@ func SplitTimeData(data string) string {
 func ListLength(items []Item) int {
 	return len(items)
 }
-
-// ItemsTagsDeduplication 함수는 아이템들의 태그들을 중복제거한 리스트를 반환한다.
-func ItemsTagsDeduplication(items []Item) []string {
-	keys := make(map[string]bool)
-	filteredTag := []string{}
-	for itemIndex := range items {
-		for tagIndex := range items[itemIndex].Tags {
-			tagValue := items[itemIndex].Tags[tagIndex]
-			if _, saveValue := keys[tagValue]; !saveValue {
-				keys[tagValue] = true
-				filteredTag = append(filteredTag, items[itemIndex].Tags[tagIndex])
-			}
-		}
-	}
-	return filteredTag
-}
