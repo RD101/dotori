@@ -24,14 +24,15 @@ func LoadTemplates() (*template.Template, error) {
 }
 
 var funcMap = template.FuncMap{
-	"Tags2str":      Tags2str,
-	"add":           add,
-	"PreviousPage":  PreviousPage,
-	"NextPage":      NextPage,
-	"RmRootpath":    RmRootpath,
-	"LastLog":       LastLog,
-	"SplitTimeData": SplitTimeData,
-	"ListLength":    ListLength,
+	"Tags2str":         Tags2str,
+	"add":              add,
+	"PreviousPage":     PreviousPage,
+	"NextPage":         NextPage,
+	"RmRootpath":       RmRootpath,
+	"LastLog":          LastLog,
+	"SplitTimeData":    SplitTimeData,
+	"ItemListLength":   ItemListLength,
+	"StringListLength": StringListLength,
 }
 
 func webserver() {

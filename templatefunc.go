@@ -39,7 +39,12 @@ func SplitTimeData(data string) string {
 	return splitData[0]
 }
 
-// ListLength 함수는 아이템 전체의 개수를 반환한다.
-func ListLength(items []Item) int {
+// ItemListLength 함수는 Item형 리스트 전체의 개수를 반환한다.
+func ItemListLength(items []Item) int {
 	return len(items)
+}
+
+// StringListLength 함수는 string형 리스트 전체의 개수를 반환한다.
+func StringListLength(strs []string) int {
+	return len(strs)
 }
