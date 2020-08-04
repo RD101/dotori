@@ -10,10 +10,8 @@
         <div class="col-lg-12">
             <div class="text-muted mb-3">
             Tags:
-            {{range .RecentlyTagItems}}
-                {{range .Tags}}
-                    <a href="/search?searchword=tag:{{.}}" class="badge badge-outline-darkmode">{{.}}</a>
-                {{end}}
+            {{range .RecentTags}}
+                <a href="/search?searchword=tag:{{.}}" class="badge badge-outline-darkmode">{{.}}</a>
             {{end}}
             </div>
         </div>
