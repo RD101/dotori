@@ -261,15 +261,20 @@ func SearchPage(client *mongo.Client, itemType, words string, page, limitnum int
 			value := strings.Split(word, ":")[1]
 			querys = append(querys, bson.M{"attributes." + key: primitive.Regex{Pattern: value, Options: "i"}})
 		} else {
-			querys = append(querys, bson.M{"title": primitive.Regex{Pattern: word, Options: "i"}})
-			querys = append(querys, bson.M{"author": primitive.Regex{Pattern: word, Options: "i"}})
-			querys = append(querys, bson.M{"tags": primitive.Regex{Pattern: word, Options: "i"}})
-			querys = append(querys, bson.M{"description": primitive.Regex{Pattern: word, Options: "i"}})
-			querys = append(querys, bson.M{"type": primitive.Regex{Pattern: word, Options: "i"}})
-			querys = append(querys, bson.M{"inputpath": primitive.Regex{Pattern: word, Options: "i"}})
-			querys = append(querys, bson.M{"outputpath": primitive.Regex{Pattern: word, Options: "i"}})
-			querys = append(querys, bson.M{"createtime": primitive.Regex{Pattern: word, Options: "i"}})
-			querys = append(querys, bson.M{"updatetime": primitive.Regex{Pattern: word, Options: "i"}})
+			switch strings.ToLower(word) {
+			case "all":
+				querys = append(querys, bson.M{})
+			default:
+				querys = append(querys, bson.M{"title": primitive.Regex{Pattern: word, Options: "i"}})
+				querys = append(querys, bson.M{"author": primitive.Regex{Pattern: word, Options: "i"}})
+				querys = append(querys, bson.M{"tags": primitive.Regex{Pattern: word, Options: "i"}})
+				querys = append(querys, bson.M{"description": primitive.Regex{Pattern: word, Options: "i"}})
+				querys = append(querys, bson.M{"type": primitive.Regex{Pattern: word, Options: "i"}})
+				querys = append(querys, bson.M{"inputpath": primitive.Regex{Pattern: word, Options: "i"}})
+				querys = append(querys, bson.M{"outputpath": primitive.Regex{Pattern: word, Options: "i"}})
+				querys = append(querys, bson.M{"createtime": primitive.Regex{Pattern: word, Options: "i"}})
+				querys = append(querys, bson.M{"updatetime": primitive.Regex{Pattern: word, Options: "i"}})
+			}
 		}
 		wordsQueries = append(wordsQueries, bson.M{"$or": querys})
 	}
@@ -486,6 +491,32 @@ func SetStatus(client *mongo.Client, item Item, status string) error {
 		"$set": bson.M{"status": status},
 	}
 	err := collection.FindOneAndUpdate(ctx, filter, update).Err()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+//SetErrStatus 함수는 인수로 받은 item의 Status를 error status로 바꾼다
+func SetErrStatus(client *mongo.Client, id, errmsg string) error {
+	collection := client.Database(*flagDBName).Collection("items")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	// item의 Status를 업데이트 한다.
+	objID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return err
+	}
+	filter := bson.M{"_id": objID}
+
+	update := bson.M{
+		"$set": bson.M{
+			"status": "error",
+		},
+		"$push": bson.M{"logs": errmsg},
+	}
+	err = collection.FindOneAndUpdate(ctx, filter, update).Err()
 	if err != nil {
 		return err
 	}

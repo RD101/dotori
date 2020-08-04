@@ -102,128 +102,80 @@ func processingItem(item Item) {
 	case "maya":
 		err = ProcessMayaItem(client, adminSetting, item)
 		if err != nil {
-			err = SetStatus(client, item, "error")
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 			}
-			/*
-				err = SetLog(client, item.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-				}
-			*/
 			return
 		}
 		return
 	case "clip": // Clip 소스
 		err = ProcessClipItem(client, adminSetting, item)
 		if err != nil {
-			err = SetStatus(client, item, "error")
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 			}
-			/*
-				err = SetLog(client, item.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-				}
-			*/
 			return
 		}
 		return
 	case "footage": // Footage 소스, 시퀀스
 		err = ProcessFootageItem(client, adminSetting, item)
 		if err != nil {
-			err = SetStatus(client, item, "error")
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 			}
-			/*
-				err = SetLog(client, item.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-				}
-			*/
 			return
 		}
 		return
 	case "nuke": // 뉴크파일
 		err = ProcessNukeItem(client, adminSetting, item)
 		if err != nil {
-			err = SetStatus(client, item, "error")
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 			}
-			/*
-				err = SetLog(client, item.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-				}
-			*/
 			return
 		}
 		return
 	case "usd": // Pixar USD
 		err = ProcessUSDItem(client, adminSetting, item)
 		if err != nil {
-			err = SetStatus(client, item, "error")
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 			}
-			/*
-				err = SetLog(client, item.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-				}
-			*/
 			return
 		}
 		return
 	case "alembic": // Alembic
 		err = ProcessAlembicItem(client, adminSetting, item)
 		if err != nil {
-			err = SetStatus(client, item, "error")
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 			}
-			/*
-				err = SetLog(client, item.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-				}
-			*/
 			return
 		}
 		return
 	case "houdini": // 후디니
 		err = ProcessHoudiniItem(client, adminSetting, item)
 		if err != nil {
-			err = SetStatus(client, item, "error")
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 			}
-			/*
-				err = SetLog(client, item.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-				}
-			*/
 			return
 		}
 		return
 	case "openvdb": // 볼륨데이터
 		err = ProcessOpenVDBItem(client, adminSetting, item)
 		if err != nil {
-			err = SetStatus(client, item, "error")
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 			}
-			/*
-				err = SetLog(client, item.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-				}
-			*/
 			return
 		}
 		return
@@ -232,64 +184,40 @@ func processingItem(item Item) {
 	case "ies": // 조명파일
 		err = ProcessIesItem(client, adminSetting, item)
 		if err != nil {
-			err = SetStatus(client, item, "error")
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 			}
-			/*
-				err = SetLog(client, item.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-				}
-			*/
 			return
 		}
 		return
 	case "hdri": // HDRI 이미지, 환경맵
 		err = ProcessHDRIItem(client, adminSetting, item)
 		if err != nil {
-			err = SetStatus(client, item, "error")
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 			}
-			/*
-				err = SetLog(client, item.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-				}
-			*/
 			return
 		}
 		return
 	case "texture": // Texture 파일
 		err = ProcessTextureItem(client, adminSetting, item)
 		if err != nil {
-			err = SetStatus(client, item, "error")
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 			}
-			/*
-				err = SetLog(client, item.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-				}
-			*/
 			return
 		}
 		return
 	case "blender": // 블렌더 파일
 		err = ProcessBlenderItem(client, adminSetting, item)
 		if err != nil {
-			err = SetStatus(client, item, "error")
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 			}
-			/*
-				err = SetLog(client, item.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-				}
-			*/
 			return
 		}
 		return
@@ -298,82 +226,44 @@ func processingItem(item Item) {
 	case "modo": // 모도
 		err = ProcessModoItem(client, adminSetting, item)
 		if err != nil {
-			err = SetStatus(client, item, "error")
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 			}
-			/*
-				err = SetLog(client, item.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-				}
-			*/
 			return
 		}
 		return
 	case "katana": //katana
 		err = ProcessKatanaItem(client, adminSetting, item)
 		if err != nil {
-			err = SetStatus(client, item, "error")
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 			}
-			/*
-				err = SetLog(client, item.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-				}
-			*/
 			return
 		}
 		return
 	case "lut", "3dl", "blut", "cms", "csp", "cub", "cube", "vf", "vfz": // LUT 파일들
 		err = ProcessLutItem(client, adminSetting, item)
 		if err != nil {
-			err = SetStatus(client, item, "error")
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 			}
-			/*
-				err = SetLog(client, item.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-				}
-			*/
 			return
 		}
 		return
 	case "sound":
 		err = ProcessSoundItem(client, adminSetting, item)
 		if err != nil {
-			err = SetStatus(client, item, "error")
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
 			if err != nil {
 				log.Println(err)
 			}
-			/*
-				err = SetLog(client, item.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-				}
-			*/
 			return
 		}
 		return
 	case "unreal":
-		err = ProcessUnrealItem(client, adminSetting, item)
-		if err != nil {
-			err = SetStatus(client, item, "error")
-			if err != nil {
-				log.Println(err)
-			}
-			/*
-				err = SetLog(client, item.ID.Hex(), err.Error())
-				if err != nil {
-					log.Println(err)
-				}
-			*/
-			return
-		}
 		return
 	default:
 		log.Println("약속된 type이 아닙니다")
@@ -387,21 +277,27 @@ func queueingItem(jobs chan<- Item) {
 		//mongoDB client 연결
 		client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 		if err != nil {
+			// DB에 접속되지 않으면 로그를 출력후 10초를 기다리고 다시 진행한다.
 			log.Println(err)
-			return
+			time.Sleep(time.Second * 10)
+			continue
 		}
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 		err = client.Connect(ctx)
 		if err != nil {
+			// DB에 접속되지 않으면 로그를 출력후 10초를 기다리고 다시 진행한다.
 			log.Println(err)
-			return
+			time.Sleep(time.Second * 10)
+			continue
 		}
 		defer client.Disconnect(ctx)
 		err = client.Ping(ctx, readpref.Primary())
 		if err != nil {
+			// DB에 접속되지 않으면 로그를 출력후 10초를 기다리고 다시 진행한다.
 			log.Println(err)
-			return
+			time.Sleep(time.Second * 10)
+			continue
 		}
 		// Status가 FileUploaded인 item을 가져온다.
 		item, err := GetFileUploadedItem(client)
@@ -411,11 +307,13 @@ func queueingItem(jobs chan<- Item) {
 				time.Sleep(time.Second * 10)
 				continue
 			}
+			// DB에 접속되지 않으면 로그를 출력후 10초를 기다리고 다시 진행한다.
 			log.Println(err)
-			return
+			time.Sleep(time.Second * 10)
+			continue
 		}
 		jobs <- item
-		// 기다렸다가 다시 실행
+		// 10초후 다시 queueing 한다.
 		time.Sleep(time.Second * 10)
 	}
 }
@@ -1755,33 +1653,6 @@ func ProcessUnrealItem(client *mongo.Client, adminSetting Adminsetting, item Ite
 		return err
 	}
 	err = genThumbImage(adminSetting, item)
-	if err != nil {
-		return err
-	}
-	// .ogg 썸네일 동영상을 생성한다.
-	err = SetStatus(client, item, "creating .ogg media")
-	if err != nil {
-		return err
-	}
-	err = genThumbOggMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
-	if err != nil {
-		return err
-	}
-	// .mov 썸네일 동영상을 생성한다.
-	err = SetStatus(client, item, "creating .mov media")
-	if err != nil {
-		return err
-	}
-	err = genThumbMovMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
-	if err != nil {
-		return err
-	}
-	// .mp4 썸네일 동영상을 생성한다.
-	err = SetStatus(client, item, "creating .mp4 media")
-	if err != nil {
-		return err
-	}
-	err = genThumbMp4Media(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
 	if err != nil {
 		return err
 	}
