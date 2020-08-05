@@ -283,7 +283,6 @@ func queueingItem(jobs chan<- Item) {
 			continue
 		}
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		defer cancel()
 		err = client.Connect(ctx)
 		if err != nil {
 			// DB에 접속되지 않으면 로그를 출력후 10초를 기다리고 다시 진행한다.
