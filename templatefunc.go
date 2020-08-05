@@ -38,8 +38,3 @@ func SplitTimeData(data string) string {
 	splitData := strings.Split(data, "T")
 	return splitData[0]
 }
-
-// ItemListLength 함수는 Item형 리스트 전체의 개수를 반환한다.
-func ItemListLength(items []Item) int {
-	return len(items)
-}

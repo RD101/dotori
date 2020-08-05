@@ -198,3 +198,8 @@ func (u *User) CreateToken() error {
 	u.Token = tokenString
 	return nil
 }
+
+// ItemListLength 함수는 Item형 리스트 전체의 개수를 반환한다.
+func ItemListLength(items []Item) int {
+	return len(items)
+}
