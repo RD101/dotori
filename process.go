@@ -298,7 +298,7 @@ func queueingItem(jobs chan<- Item) {
 			time.Sleep(time.Second * 10)
 			continue
 		}
-		cancel()
+		cancel() // queueingItem 함수는 종료되는 함수가 아니기 때문에 수동으로 cancel 한다.
 		// Status가 FileUploaded인 item을 가져온다.
 		item, err := GetFileUploadedItem(client)
 		if err != nil {
