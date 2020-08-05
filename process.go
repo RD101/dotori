@@ -283,7 +283,6 @@ func queueingItem(jobs chan<- Item) {
 			continue
 		}
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		defer cancel()
 		err = client.Connect(ctx)
 		if err != nil {
 			// DB에 접속되지 않으면 로그를 출력후 10초를 기다리고 다시 진행한다.
@@ -299,6 +298,7 @@ func queueingItem(jobs chan<- Item) {
 			time.Sleep(time.Second * 10)
 			continue
 		}
+		cancel() // queueingItem 함수는 종료되는 함수가 아니기 때문에 수동으로 cancel 한다.
 		// Status가 FileUploaded인 item을 가져온다.
 		item, err := GetFileUploadedItem(client)
 		if err != nil {
