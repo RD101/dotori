@@ -53,12 +53,17 @@ $ sudo dotori -http :80
 command를 통해 dotori를 제어할 수 있습니다.
 #### Item 추가
 ```bash
-$ dotori -add -inputpath /project/path -author woong -tag asset,3D -description 설명 -type maya
+$ sudo dotori -add -itemtype maya -title example -author woong -description "description1 about some details" -tag "나무 낙엽 item1" -inputthumbimgpath /Users/seoyoungbae/git/fork/dotori/examples/maya/thumbnail.jpg -inputthumbclippath /Users/seoyoungbae/git/fork/dotori/examples/maya/thumbnail.mov -inputdatapath /Users/seoyoungbae/git/fork/dotori/examples/maya/maya_scene.ma
 ```
 
 #### Item 삭제
 ```bash
 $ sudo dotori -remove -itemid 5e89cef7cd1747fd5eacf256
+```
+
+#### User accesslevel 수정
+```bash
+$ sudo dotori -accesslevel admin -userid bailey
 ```
 
 #### 웹서버 실행
