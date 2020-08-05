@@ -112,6 +112,8 @@ func main() {
 		switch *flagItemType {
 		case "maya":
 			addMayaItemCmd()
+		case "houdini":
+			addHoudiniItemCmd()
 		default:
 			log.Fatal("command를 지원하지 않는 아이템타입입니다.")
 		}
