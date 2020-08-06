@@ -10,6 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
 // AddItem 은 데이터베이스에 Item을 넣는 함수이다.
@@ -422,14 +423,27 @@ func SetAdminSetting(client *mongo.Client, a Adminsetting) error {
 }
 
 // GetFileUploadedItem 은 DB에서 FileUploaded상태인 Item을 하나 가져온다.
-func GetFileUploadedItem(client *mongo.Client) (Item, error) {
+func GetFileUploadedItem() (Item, error) {
 	var result Item
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+	if err != nil {
+		return result, err
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-
+	err = client.Connect(ctx)
+	if err != nil {
+		return result, err
+	}
+	defer client.Disconnect(ctx)
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		return result, err
+	}
 	collection := client.Database(*flagDBName).Collection("items")
 	filter := bson.M{"status": "fileuploaded"}
-	err := collection.FindOne(ctx, filter).Decode(&result)
+	err = collection.FindOne(ctx, filter).Decode(&result)
 	if err != nil {
 		return result, err
 	}
