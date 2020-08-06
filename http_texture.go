@@ -104,7 +104,7 @@ func handleUploadTextureItem(w http.ResponseWriter, r *http.Request) {
 	item.Description = r.FormValue("description")
 	item.InColorspace = r.FormValue("incolorspace")
 	item.OutColorspace = r.FormValue("outcolorspace")
-	tags := SplitBySpace(r.FormValue("tag"))
+	tags := SplitBySpace(r.FormValue("tags"))
 	item.Tags = tags
 	item.ItemType = "texture"
 	attr := make(map[string]string)
