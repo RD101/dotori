@@ -276,12 +276,12 @@ func queueingItem(jobs chan<- Item) {
 	for {
 		item, err := GetFileUploadedItem()
 		if err != nil {
-			// 가지고 올 문서가 없다면 기다렸다가 continue.
+			// 가지고 올 문서가 없다면 10초 기다렸다가 continue
 			if err == mongo.ErrNoDocuments {
 				time.Sleep(time.Second * 10)
 				continue
 			}
-			// DB에 접속되지 않으면 로그를 출력후 10초를 기다리고 다시 진행한다.
+			// DB에서 아이템을 가지고 오는 과정에서 에러가 발생하면 로그 출력후 10초를 기다리고 다시 진행
 			log.Println(err)
 			time.Sleep(time.Second * 10)
 			continue
