@@ -95,7 +95,7 @@ func handleUploadLutItem(w http.ResponseWriter, r *http.Request) {
 	item.Title = r.FormValue("title")
 	item.Author = r.FormValue("author")
 	item.Description = r.FormValue("description")
-	tags := SplitBySpace(r.FormValue("tag"))
+	tags := SplitBySpace(r.FormValue("tags"))
 	item.Tags = tags
 	item.ItemType = "lut"
 	attr := make(map[string]string)

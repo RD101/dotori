@@ -105,7 +105,7 @@ func handleUploadFootageItem(w http.ResponseWriter, r *http.Request) {
 	item.InColorspace = r.FormValue("incolorspace")
 	item.OutColorspace = r.FormValue("outcolorspace")
 	item.Fps = r.FormValue("fps")
-	tags := SplitBySpace(r.FormValue("tag"))
+	tags := SplitBySpace(r.FormValue("tags"))
 	item.Tags = tags
 	item.ItemType = "footage"
 	attr := make(map[string]string)

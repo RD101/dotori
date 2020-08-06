@@ -96,7 +96,7 @@ func handleUploadClipItem(w http.ResponseWriter, r *http.Request) {
 	item.Author = r.FormValue("author")
 	item.Description = r.FormValue("description")
 	item.Fps = r.FormValue("fps")
-	tags := SplitBySpace(r.FormValue("tag"))
+	tags := SplitBySpace(r.FormValue("tags"))
 	item.Tags = tags
 	item.ItemType = "clip"
 	attr := make(map[string]string)
