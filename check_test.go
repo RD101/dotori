@@ -293,6 +293,9 @@ func Test_Tag(t *testing.T) {
 		Tag:  "tag태그", // 영문, 한글이 포함된 경우
 		want: true,
 	}, {
+		Tag:  "비밀유지서약서", // 영문, 한글이 포함된 경우
+		want: true,
+	}, {
 		Tag:  "tag2", // 숫자가 포함된 경우
 		want: true,
 	}, {
