@@ -9,7 +9,7 @@
     </div>
 </div>
 <div class="container-fluid">
-    <div id="recentlyCarousel" class="carousel slide" data-ride="carousel" data-interval="5000">
+    <div id="recentlyCarousel" class="carousel" data-interval="false">
         <div class="carousel-inner row w-100 mx-auto" role="listbox" name="recentlyCarousel-inner">
             {{$index := 0}}
             {{range $q := .RecentlyCreateItems}}
