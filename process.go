@@ -283,6 +283,7 @@ func queueingItem(jobs chan<- Item) {
 			}
 			// DB에 접속되지 않으면 로그를 출력후 10초를 기다리고 다시 진행한다.
 			log.Println(err)
+			time.Sleep(time.Second * 10)
 			continue
 		}
 		jobs <- item
