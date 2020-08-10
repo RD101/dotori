@@ -96,7 +96,7 @@ func handleUploadClipItem(w http.ResponseWriter, r *http.Request) {
 	item.Author = r.FormValue("author")
 	item.Description = r.FormValue("description")
 	item.Fps = r.FormValue("fps")
-	tags := SplitBySpace(r.FormValue("tag"))
+	tags := SplitBySpace(r.FormValue("tags"))
 	item.Tags = tags
 	item.ItemType = "clip"
 	attr := make(map[string]string)
@@ -316,9 +316,9 @@ func handleUploadClipFile(w http.ResponseWriter, r *http.Request) {
 			unix.Umask(umask)
 			mimeType := f.Header.Get("Content-Type")
 			switch mimeType {
-			case "application/octet-stream", "video/quicktime":
+			case "video/quicktime", "video/mp4":
 				ext := strings.ToLower(filepath.Ext(f.Filename))
-				if ext != ".mov" { // .mov 외에는 허용하지 않는다.
+				if !(ext == ".mov" || ext == ".mp4") { // .mov, .mp4 외에는 허용하지 않는다.
 					http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
 					return
 				}

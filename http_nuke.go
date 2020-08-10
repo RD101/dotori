@@ -95,7 +95,7 @@ func handlUploadNukeItem(w http.ResponseWriter, r *http.Request) {
 	item.Author = r.FormValue("author")
 	item.Title = r.FormValue("title")
 	item.Description = r.FormValue("description")
-	tags := SplitBySpace(r.FormValue("tag"))
+	tags := SplitBySpace(r.FormValue("tags"))
 	item.Tags = tags
 	item.ItemType = "nuke"
 	attr := make(map[string]string)

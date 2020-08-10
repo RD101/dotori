@@ -39,7 +39,7 @@ func searchSeq(searchpath string) ([]Seq, error) {
 		}
 		ext := strings.ToLower(filepath.Ext(path))
 		switch ext {
-		case ".mov":
+		case ".mov", ".mp4":
 			item := Seq{
 				Searchpath: searchpath,
 				Dir:        filepath.Dir(path),

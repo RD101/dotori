@@ -180,6 +180,14 @@ func processingItem(item Item) {
 		}
 		return
 	case "pdf": // 문서
+		err = ProcessPdfItem(client, adminSetting, item)
+		if err != nil {
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
+			if err != nil {
+				log.Println(err)
+			}
+			return
+		}
 		return
 	case "ies": // 조명파일
 		err = ProcessIesItem(client, adminSetting, item)
@@ -264,6 +272,14 @@ func processingItem(item Item) {
 		}
 		return
 	case "unreal":
+		err = ProcessPdfItem(client, adminSetting, item)
+		if err != nil {
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
+			if err != nil {
+				log.Println(err)
+			}
+			return
+		}
 		return
 	default:
 		log.Println("약속된 type이 아닙니다")
@@ -274,40 +290,14 @@ func processingItem(item Item) {
 // 아이템을 가져와서 버퍼 채널에 채우는 함수
 func queueingItem(jobs chan<- Item) {
 	for {
-		//mongoDB client 연결
-		client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+		item, err := GetFileUploadedItem()
 		if err != nil {
-			// DB에 접속되지 않으면 로그를 출력후 10초를 기다리고 다시 진행한다.
-			log.Println(err)
-			time.Sleep(time.Second * 10)
-			continue
-		}
-		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		err = client.Connect(ctx)
-		if err != nil {
-			// DB에 접속되지 않으면 로그를 출력후 10초를 기다리고 다시 진행한다.
-			log.Println(err)
-			time.Sleep(time.Second * 10)
-			continue
-		}
-		defer client.Disconnect(ctx)
-		err = client.Ping(ctx, readpref.Primary())
-		if err != nil {
-			// DB에 접속되지 않으면 로그를 출력후 10초를 기다리고 다시 진행한다.
-			log.Println(err)
-			time.Sleep(time.Second * 10)
-			continue
-		}
-		cancel() // queueingItem 함수는 종료되는 함수가 아니기 때문에 수동으로 cancel 한다.
-		// Status가 FileUploaded인 item을 가져온다.
-		item, err := GetFileUploadedItem(client)
-		if err != nil {
-			// 가지고 올 문서가 없다면 기다렸다가 continue.
+			// 가지고 올 문서가 없다면 10초 기다렸다가 continue
 			if err == mongo.ErrNoDocuments {
 				time.Sleep(time.Second * 10)
 				continue
 			}
-			// DB에 접속되지 않으면 로그를 출력후 10초를 기다리고 다시 진행한다.
+			// DB에서 아이템을 가지고 오는 과정에서 에러가 발생하면 로그 출력후 10초를 기다리고 다시 진행
 			log.Println(err)
 			time.Sleep(time.Second * 10)
 			continue
@@ -1636,27 +1626,20 @@ func ProcessIesItem(client *mongo.Client, adminSetting Adminsetting, item Item) 
 	return nil
 }
 
+// ProcessPdfItem 함수는 PDF 아이템을 연산한다.
+func ProcessPdfItem(client *mongo.Client, adminSetting Adminsetting, item Item) error {
+	// 아무 프로세스는 없지만 "done" 처리 해야한다. 그래야 프로세싱하지 않는다.
+	err := SetStatus(client, item, "done")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // ProcessUnrealItem 함수는 unreal 아이템을 연산한다.
 func ProcessUnrealItem(client *mongo.Client, adminSetting Adminsetting, item Item) error {
-	// thumbnail 폴더를 생성한다.
-	err := SetStatus(client, item, "creating thumbnail directory")
-	if err != nil {
-		return err
-	}
-	err = genThumbDir(adminSetting, item)
-	if err != nil {
-		return err
-	}
-	// 썸네일 이미지를 생성한다.
-	err = SetStatus(client, item, "creating thumbnail image")
-	if err != nil {
-		return err
-	}
-	err = genThumbImage(adminSetting, item)
-	if err != nil {
-		return err
-	}
-	err = SetStatus(client, item, "done")
+	// 아무 프로세스는 없지만 "done" 처리 해야한다. 그래야 프로세싱하지 않는다.
+	err := SetStatus(client, item, "done")
 	if err != nil {
 		return err
 	}

@@ -10,6 +10,8 @@
                         <img width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="/assets/img/pdfthumbnail.svg">
                     {{else if eq .ItemType "hwp"}}
                         <img width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="/assets/img/hwpthumbnail.svg">
+                    {{else if eq .ItemType "ppt"}}
+                        <img width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="/assets/img/pptthumbnail.svg">
                     {{else if eq .ItemType "sound"}}
                         <img width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="/assets/img/soundthumbnail.svg">
                         {{else if eq .ItemType "unreal"}}
