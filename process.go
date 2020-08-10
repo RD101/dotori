@@ -180,6 +180,14 @@ func processingItem(item Item) {
 		}
 		return
 	case "pdf": // 문서
+		err = ProcessPdfItem(client, adminSetting, item)
+		if err != nil {
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
+			if err != nil {
+				log.Println(err)
+			}
+			return
+		}
 		return
 	case "ies": // 조명파일
 		err = ProcessIesItem(client, adminSetting, item)
@@ -264,6 +272,14 @@ func processingItem(item Item) {
 		}
 		return
 	case "unreal":
+		err = ProcessPdfItem(client, adminSetting, item)
+		if err != nil {
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
+			if err != nil {
+				log.Println(err)
+			}
+			return
+		}
 		return
 	default:
 		log.Println("약속된 type이 아닙니다")
@@ -1610,27 +1626,20 @@ func ProcessIesItem(client *mongo.Client, adminSetting Adminsetting, item Item) 
 	return nil
 }
 
+// ProcessPdfItem 함수는 PDF 아이템을 연산한다.
+func ProcessPdfItem(client *mongo.Client, adminSetting Adminsetting, item Item) error {
+	// 아무 프로세스는 없지만 "done" 처리 해야한다. 그래야 프로세싱하지 않는다.
+	err := SetStatus(client, item, "done")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // ProcessUnrealItem 함수는 unreal 아이템을 연산한다.
 func ProcessUnrealItem(client *mongo.Client, adminSetting Adminsetting, item Item) error {
-	// thumbnail 폴더를 생성한다.
-	err := SetStatus(client, item, "creating thumbnail directory")
-	if err != nil {
-		return err
-	}
-	err = genThumbDir(adminSetting, item)
-	if err != nil {
-		return err
-	}
-	// 썸네일 이미지를 생성한다.
-	err = SetStatus(client, item, "creating thumbnail image")
-	if err != nil {
-		return err
-	}
-	err = genThumbImage(adminSetting, item)
-	if err != nil {
-		return err
-	}
-	err = SetStatus(client, item, "done")
+	// 아무 프로세스는 없지만 "done" 처리 해야한다. 그래야 프로세싱하지 않는다.
+	err := SetStatus(client, item, "done")
 	if err != nil {
 		return err
 	}
