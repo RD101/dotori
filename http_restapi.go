@@ -127,6 +127,10 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 		item, err := GetItem(client, i.ID.Hex())
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
+			w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("Failed to Upload Asset"))
+			return
 		}
 		data, _ := json.Marshal(item)
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
