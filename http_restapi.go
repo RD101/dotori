@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
-	"strings"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -41,41 +40,44 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// item 정보 업로드
+		// 아이템 생성
 		i := Item{}
 		i.ID = primitive.NewObjectID()
-		//ParseForm parses the raw query from the URL and updates r.Form.
-		r.ParseForm()
-		itemtype := r.FormValue("itemtype")
+		// 아이템 정보 Parsing
+		iteminfo := make(map[string]string)
+		err = json.Unmarshal([]byte(r.FormValue("iteminfo")), &iteminfo)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		itemtype := iteminfo["itemtype"]
 		if itemtype == "" {
 			http.Error(w, "itemtype을 설정해주세요", http.StatusBadRequest)
 			return
 		}
-		title := r.FormValue("title")
+		title := iteminfo["title"]
 		if title == "" {
 			http.Error(w, "title을 설정해주세요", http.StatusBadRequest)
 			return
 		}
-		author := r.FormValue("author")
+		author := iteminfo["author"]
 		if author == "" {
 			http.Error(w, "author를 설정해주세요", http.StatusBadRequest)
 			return
 		}
-		description := r.FormValue("description")
+		description := iteminfo["description"]
 		if description == "" {
 			http.Error(w, "description을 설정해주세요", http.StatusBadRequest)
 			return
 		}
-		tags := SplitBySpace(r.FormValue("tags"))
+		tags := SplitBySpace(iteminfo["tags"])
 		if len(tags) == 0 {
 			http.Error(w, "tags를 설정해주세요", http.StatusBadRequest)
 			return
 		}
-		attributes := make(map[string]string)
-		for _, attr := range SplitBySpace(r.FormValue("attributes")) {
-			key := strings.Split(attr, ":")[0]
-			value := strings.Split(attr, ":")[1]
-			attributes[key] = value
+		attributes, err := StringToMap(iteminfo["attributes"])
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
 		}
 		i.ItemType = itemtype
 		i.Title = title
@@ -104,7 +106,7 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 		i.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/thumbnail.mov"
 		i.OutputDataPath = rootpath + objIDpath + "/data/"
 
-		// item Add
+		// 아이템 추가
 		err = i.CheckError()
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
@@ -116,8 +118,17 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// 전송
-		data, _ := json.Marshal(i)
+		// 아이템에 파일 업데이트
+		if itemtype == "alembic" {
+			uploadAlembicFile(w, r, i.ID.Hex())
+		}
+
+		// Response
+		item, err := GetItem(client, i.ID.Hex())
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		data, _ := json.Marshal(item)
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(http.StatusOK)
 		w.Write(data)
