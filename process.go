@@ -378,7 +378,6 @@ func ProcessClipItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 	if err != nil {
 		return err
 	}
-	fmt.Println("here")
 	err = genClipToOggMedia(adminSetting, item)
 	if err != nil {
 		return err
