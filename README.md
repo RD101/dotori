@@ -51,10 +51,7 @@ $ sudo dotori -http :80
 
 ### Command-line
 command를 통해 dotori를 제어할 수 있습니다.
-#### Item 추가
-```bash
-$ sudo dotori -add -itemtype maya -title example -author woong -description "description1 about some details" -tag "나무 낙엽 item1" -inputthumbimgpath /Users/seoyoungbae/git/fork/dotori/examples/maya/thumbnail.jpg -inputthumbclippath /Users/seoyoungbae/git/fork/dotori/examples/maya/thumbnail.mov -inputdatapath /Users/seoyoungbae/git/fork/dotori/examples/maya/maya_scene.ma
-```
+- [아이템추가](documents/addCommand.md)
 
 #### Item 삭제
 ```bash

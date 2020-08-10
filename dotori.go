@@ -42,6 +42,7 @@ var (
 	flagItemType           = flag.String("itemtype", "", "type of asset")
 	flagAttributes         = flag.String("attributes", "", "detail info of file") // "key:value,key:value"
 	flagUserID             = flag.String("userid", "", "ID of user")
+	flagFPS                = flag.String("fps", "", "frame per second")
 
 	// 서비스에 필요한 인수
 	flagMongoDBURI      = flag.String("mongodburi", "mongodb://localhost:27017", "mongoDB URI ex)mongodb://localhost:27017")
@@ -116,6 +117,8 @@ func main() {
 			addHoudiniItemCmd()
 		case "blender":
 			addBlenderItemCmd()
+		case "clip":
+			addClipItemCmd()
 		default:
 			log.Fatal("command를 지원하지 않는 아이템타입입니다.")
 		}
