@@ -272,7 +272,7 @@ func processingItem(item Item) {
 		}
 		return
 	case "unreal":
-		err = ProcessPdfItem(client, adminSetting, item)
+		err = ProcessUnrealItem(client, adminSetting, item)
 		if err != nil {
 			err = SetErrStatus(client, item.ID.Hex(), err.Error())
 			if err != nil {
