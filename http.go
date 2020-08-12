@@ -82,6 +82,18 @@ func webserver() {
 	http.HandleFunc("/editmaya-submit", handleEditMayaSubmit)
 	http.HandleFunc("/editmaya-success", handleEditMayaSuccess)
 
+	// 3dsmax
+	http.HandleFunc("/addmax", handleAddMax)
+	http.HandleFunc("/addmax-item", handleAddMaxItem)
+	http.HandleFunc("/addmax-file", handleAddMaxFile)
+	http.HandleFunc("/uploadmax-item", handleUploadMaxItem)
+	http.HandleFunc("/uploadmax-file", handleUploadMaxFile)
+	http.HandleFunc("/uploadmax-checkdata", handleUploadMaxCheckData)
+	http.HandleFunc("/addmax-success", handleAddMaxSuccess)
+	http.HandleFunc("/editmax", handleEditMax)
+	http.HandleFunc("/editmax-submit", handleEditMaxSubmit)
+	http.HandleFunc("/editmax-success", handleEditMaxSuccess)
+
 	// Footage
 	http.HandleFunc("/addfootage", handleAddFootage)
 	http.HandleFunc("/addfootage-item", handleAddFootageItem)
