@@ -20,6 +20,11 @@ func add(a, b int) int {
 	return (a + b)
 }
 
+// mod함수는 입력받은 두 정수를 나눈 나머지을 반환한다.
+func mod(a, b int) int {
+	return (a % b)
+}
+
 // RmRootpath 템플릿함수는 path가 rootpath로 시작하면 rootpath 문자열을 제거한다.
 func RmRootpath(path, rootpath string) string {
 	return strings.TrimLeft(path, rootpath)
