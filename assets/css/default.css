@@ -110,6 +110,29 @@ body {
 	text-decoration: none;
 }
 
+.preset-button {
+	color: #A7A59C;
+	background-color: rgb(55, 54, 52);
+	border:1px solid #A7A59C;
+	border-radius: 3px;
+	padding-left: 3px;
+	padding-right: 3px;
+	font-size: 12px;
+	cursor: pointer;
+}
+
+.preset-button:hover {
+	color: #000000;
+	background-color: #FFB90B;
+	border:1px solid #FFB90B;
+	border-radius: 3px;
+	padding-left: 3px;
+	padding-right: 3px;
+	font-size: 12px;
+	cursor: pointer;
+	text-decoration: none;
+}
+
 .badge-outline-darkmode, .badge-outline-darkmode:link, .badge-outline-darkmode:active, .badge-outline-darkmode:hover {
 	background-color:  #212121!important;
 	border:1px solid #A7A59C;
@@ -148,5 +171,17 @@ body {
 }
 
 .text-darkmode, .text-darkmode:hover {
+	color: #A7A59C;
+}
+
+.modal-header {
+	border-bottom: 1px solid rgb(111, 110, 104);
+}
+
+.modal-footer{
+	border-top: 1px solid rgb(111, 110, 104);
+}
+
+.modal-title {
 	color: #A7A59C;
 }
