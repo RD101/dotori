@@ -94,6 +94,18 @@ func webserver() {
 	http.HandleFunc("/editmax-submit", handleEditMaxSubmit)
 	http.HandleFunc("/editmax-success", handleEditMaxSuccess)
 
+	// Fusion360
+	http.HandleFunc("/addfusion360", handleAddFusion360)
+	http.HandleFunc("/addfusion360-item", handleAddFusion360Item)
+	http.HandleFunc("/addfusion360-file", handleAddFusion360File)
+	http.HandleFunc("/uploadfusion360-item", handleUploadFusion360Item)
+	http.HandleFunc("/uploadfusion360-file", handleUploadFusion360File)
+	http.HandleFunc("/uploadfusion360-checkdata", handleUploadFusion360CheckData)
+	http.HandleFunc("/addfusion360-success", handleAddFusion360Success)
+	http.HandleFunc("/editfusion360", handleEditFusion360)
+	http.HandleFunc("/editfusion360-submit", handleEditFusion360Submit)
+	http.HandleFunc("/editfusion360-success", handleEditFusion360Success)
+
 	// Footage
 	http.HandleFunc("/addfootage", handleAddFootage)
 	http.HandleFunc("/addfootage-item", handleAddFootageItem)

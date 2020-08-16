@@ -18,19 +18,19 @@ import (
 	"golang.org/x/sys/unix"
 )
 
-// handleAddMax 함수는 URL에 objectID를 붙여서 /addmax-item 페이지로 redirect한다.
-func handleAddMax(w http.ResponseWriter, r *http.Request) {
+// handleAddFusion360 함수는 URL에 objectID를 붙여서 /addfusion360-item 페이지로 redirect한다.
+func handleAddFusion360(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
 		return
 	}
 	objectID := primitive.NewObjectID().Hex()
-	http.Redirect(w, r, fmt.Sprintf("/addmax-item?objectid=%s", objectID), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/addfusion360-item?objectid=%s", objectID), http.StatusSeeOther)
 }
 
-// handleAddMaxItem 함수는 DB에 저장할 Max 파일의 정보를 입력하는 페이지 이다.
-func handleAddMaxItem(w http.ResponseWriter, r *http.Request) {
+// handleAddFusion360Item 함수는 DB에 저장할 Fusion360 파일의 정보를 입력하는 페이지 이다.
+func handleAddFusion360Item(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -68,15 +68,15 @@ func handleAddMaxItem(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Adminsetting = adminsetting
 	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "addmax-item", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "addfusion360-item", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
 
-// handleUploadMaxItem 함수는 /addmax-item에서 입력한 정보를 DB에 저장하는 함수이다.
-func handleUploadMaxItem(w http.ResponseWriter, r *http.Request) {
+// handleUploadFusion360Item 함수는 /addfusion360-item에서 입력한 정보를 DB에 저장하는 함수이다.
+func handleUploadFusion360Item(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -98,7 +98,7 @@ func handleUploadMaxItem(w http.ResponseWriter, r *http.Request) {
 	item.Description = r.FormValue("description")
 	tags := SplitBySpace(r.FormValue("tags"))
 	item.Tags = tags
-	item.ItemType = "max"
+	item.ItemType = "fusion360"
 	attr := make(map[string]string)
 	attrNum, err := strconv.Atoi(r.FormValue("attributesNum"))
 	if err != nil {
@@ -165,17 +165,17 @@ func handleUploadMaxItem(w http.ResponseWriter, r *http.Request) {
 	err = AddItem(client, item)
 	if err != nil {
 		if IsDup(err) { // 동일한 ID의 도큐먼트를 업로드하려고 하면, 새로운 ID의 페이지로 리다이렉트한다.
-			http.Redirect(w, r, "/addmax", http.StatusSeeOther)
+			http.Redirect(w, r, "/addfusion360", http.StatusSeeOther)
 			return
 		}
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	http.Redirect(w, r, fmt.Sprintf("/addmax-file?objectid=%s", objectID), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/addfusion360-file?objectid=%s", objectID), http.StatusSeeOther)
 }
 
-// handleAddMaxFile 함수는 Max 파일을 추가하는 페이지 이다.
-func handleAddMaxFile(w http.ResponseWriter, r *http.Request) {
+// handleAddFusion360File 함수는 Fusion360 파일을 추가하는 페이지 이다.
+func handleAddFusion360File(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -213,15 +213,15 @@ func handleAddMaxFile(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Adminsetting = adminsetting
 	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "addmax-file", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "addfusion360-file", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
 
-// handleUploadMax 함수는 Max파일을 DB에 업로드하는 페이지를 연다. dropzone에 파일을 올릴 경우 실행된다.
-func handleUploadMaxFile(w http.ResponseWriter, r *http.Request) {
+// handleUploadFusion360 함수는 Fusion360파일을 DB에 업로드하는 페이지를 연다. dropzone에 파일을 올릴 경우 실행된다.
+func handleUploadFusion360File(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -385,7 +385,7 @@ func handleUploadMaxFile(w http.ResponseWriter, r *http.Request) {
 				item.ThumbClipUploaded = true
 			case "application/octet-stream":
 				ext := filepath.Ext(f.Filename)
-				if ext != ".max" { // .max 외에는 허용하지 않는다.
+				if ext != ".f3d" && ext != ".step" && ext != ".stp" { // .f3d .step, .stp 외에는 허용하지 않는다.
 					http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
 					return
 				}
@@ -463,7 +463,7 @@ func handleUploadMaxFile(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func handleUploadMaxCheckData(w http.ResponseWriter, r *http.Request) {
+func handleUploadFusion360CheckData(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -516,17 +516,17 @@ func handleUploadMaxCheckData(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Item = item
 	if !item.ThumbImgUploaded || !item.ThumbClipUploaded || !item.DataUploaded {
-		err = TEMPLATES.ExecuteTemplate(w, "checkmax-file", rcp)
+		err = TEMPLATES.ExecuteTemplate(w, "checkfusion360-file", rcp)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		return
 	}
-	http.Redirect(w, r, "/addmax-success", http.StatusSeeOther)
+	http.Redirect(w, r, "/addfusion360-success", http.StatusSeeOther)
 }
 
-func handleAddMaxSuccess(w http.ResponseWriter, r *http.Request) {
+func handleAddFusion360Success(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -564,14 +564,14 @@ func handleAddMaxSuccess(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Adminsetting = adminsetting
 	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "addmax-success", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "addfusion360-success", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
 
-func handleEditMax(w http.ResponseWriter, r *http.Request) {
+func handleEditFusion360(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -642,15 +642,15 @@ func handleEditMax(w http.ResponseWriter, r *http.Request) {
 		Adminsetting: adminsetting,
 	}
 
-	err = TEMPLATES.ExecuteTemplate(w, "editmax", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "editfusion360", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
 
-//handleEditMaxSubmit 함수는 max아이템을 수정하는 페이지에서 UPDATE버튼을 누르면 작동하는 함수다.
-func handleEditMaxSubmit(w http.ResponseWriter, r *http.Request) {
+//handleEditFusion360Submit 함수는 Fusion360 아이템을 수정하는 페이지에서 UPDATE버튼을 누르면 작동하는 함수다.
+func handleEditFusion360Submit(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -710,11 +710,11 @@ func handleEditMaxSubmit(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	http.Redirect(w, r, "/editmax-success", http.StatusSeeOther)
+	http.Redirect(w, r, "/editfusion360-success", http.StatusSeeOther)
 }
 
-//handleEditMaxSuccess 함수는 max아이템 수정이 정상적으로 완료되었다고 안내하는 페이지를 띄우는 함수이다.
-func handleEditMaxSuccess(w http.ResponseWriter, r *http.Request) {
+//handleEditFusion360Success 함수는 Fusion360아이템 수정이 정상적으로 완료되었다고 안내하는 페이지를 띄우는 함수이다.
+func handleEditFusion360Success(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -752,7 +752,7 @@ func handleEditMaxSuccess(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Adminsetting = adminsetting
 	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "editmax-success", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "editfusion360-success", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
