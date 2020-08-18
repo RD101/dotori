@@ -123,6 +123,8 @@ func main() {
 			addClipItemCmd()
 		case "footage":
 			addFootageItemCmd()
+		case "sound":
+			addSoundItemCmd()
 		case "openvdb":
 			addOpenVDBItemCmd()
 		case "modo":
