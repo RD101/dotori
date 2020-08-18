@@ -301,6 +301,16 @@ func processingItem(item Item) {
 			return
 		}
 		return
+	case "hwp":
+		err = ProcessHwpItem(client, adminSetting, item)
+		if err != nil {
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
+			if err != nil {
+				log.Println(err)
+			}
+			return
+		}
+		return
 	default:
 		log.Println("약속된 type이 아닙니다")
 		return
@@ -1756,6 +1766,16 @@ func ProcessIesItem(client *mongo.Client, adminSetting Adminsetting, item Item) 
 
 // ProcessPdfItem 함수는 PDF 아이템을 연산한다.
 func ProcessPdfItem(client *mongo.Client, adminSetting Adminsetting, item Item) error {
+	// 아무 프로세스는 없지만 "done" 처리 해야한다. 그래야 프로세싱하지 않는다.
+	err := SetStatus(client, item, "done")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// ProcessHwpItem 함수는 PDF 아이템을 연산한다.
+func ProcessHwpItem(client *mongo.Client, adminSetting Adminsetting, item Item) error {
 	// 아무 프로세스는 없지만 "done" 처리 해야한다. 그래야 프로세싱하지 않는다.
 	err := SetStatus(client, item, "done")
 	if err != nil {
