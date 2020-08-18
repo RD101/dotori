@@ -123,6 +123,8 @@ func main() {
 			addClipItemCmd()
 		case "footage":
 			addFootageItemCmd()
+		case "unreal":
+			addUnrealItemCmd()
 		default:
 			log.Fatal("command를 지원하지 않는 아이템타입입니다.")
 		}
