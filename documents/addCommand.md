@@ -11,9 +11,9 @@ $ sudo dotori -add -itemtype maya -title example -author woong -description "des
 - inputthumbimgpath
 - inputhumbclippath
 - inputdatapath
-### clip
+### clip, hwp
 ```bash
-$ sudo dotori -add -itemtype clip -title example -author woong -description "description1 about some details" -tag "나무 낙엽 item1" -fps 24 -inputdatapath /Users/seoyoungbae/git/fork/dotori/examples/maya/thumbnail.mov
+$ sudo dotori -add -itemtype hwp -title example -author woong -description "description1 about some details" -tag "나무 낙엽 item1" -fps 24 -inputdatapath /Users/seoyoungbae/git/fork/dotori/examples/hwp/2020-표준취업규칙.hwp
 ```
 - itemtype
 - title
