@@ -123,6 +123,8 @@ func main() {
 			addClipItemCmd()
 		case "footage":
 			addFootageItemCmd()
+		case "nuke":
+			addNukeItemCmd()
 		case "alembic":
 			addAlembicItemCmd()
 		case "usd":

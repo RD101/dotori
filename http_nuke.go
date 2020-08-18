@@ -380,7 +380,7 @@ func handleUploadNukeFile(w http.ResponseWriter, r *http.Request) {
 				item.ThumbClipUploaded = true
 			case "application/octet-stream":
 				ext := filepath.Ext(f.Filename)
-				if ext != ".nk" {
+				if ext != ".nk" && ext != ".gizmo" {
 					http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
 					return
 				}

@@ -1,5 +1,5 @@
 ## Item 추가
-### Maya, Houdini, Blender, Modo, Katana, OpenVDB, USD, Alembic
+### Maya, Houdini, Blender, Modo, Katana, OpenVDB, USD, Alembic, Nuke
 ```bash
 $ sudo dotori -add -itemtype modo -title example -author woong -description "description1 about some details" -tag "나무 낙엽 item1" -inputthumbimgpath /Users/seoyoungbae/git/fork/dotori/examples/maya/thumbnail.jpg -inputthumbclippath /Users/seoyoungbae/git/fork/dotori/examples/maya/thumbnail.mov -inputdatapath /Users/seoyoungbae/git/fork/dotori/examples/modo/data.lxo
 ```
