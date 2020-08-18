@@ -383,7 +383,7 @@ func handleUploadUnrealFile(w http.ResponseWriter, r *http.Request) {
 				item.ThumbClipUploaded = true
 			case "application/octet-stream":
 				ext := filepath.Ext(f.Filename)
-				if ext != ".abc" { // .abc 외에는 허용하지 않는다.
+				if ext != ".cpp" && ext != ".uasset" { // .abc 외에는 허용하지 않는다.
 					http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
 					return
 				}
