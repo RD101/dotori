@@ -1,7 +1,7 @@
 ## Item 추가
-### maya, houdini, blender
+### maya, houdini, blender, Modo
 ```bash
-$ sudo dotori -add -itemtype maya -title example -author woong -description "description1 about some details" -tag "나무 낙엽 item1" -inputthumbimgpath /Users/seoyoungbae/git/fork/dotori/examples/maya/thumbnail.jpg -inputthumbclippath /Users/seoyoungbae/git/fork/dotori/examples/maya/thumbnail.mov -inputdatapath /Users/seoyoungbae/git/fork/dotori/examples/maya/maya_scene.ma
+$ sudo dotori -add -itemtype modo -title example -author woong -description "description1 about some details" -tag "나무 낙엽 item1" -inputthumbimgpath /Users/seoyoungbae/git/fork/dotori/examples/maya/thumbnail.jpg -inputthumbclippath /Users/seoyoungbae/git/fork/dotori/examples/maya/thumbnail.mov -inputdatapath /Users/seoyoungbae/git/fork/dotori/examples/modo/data.lxo
 ```
 - itemtype
 - title
