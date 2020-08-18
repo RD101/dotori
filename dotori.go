@@ -123,6 +123,8 @@ func main() {
 			addClipItemCmd()
 		case "footage":
 			addFootageItemCmd()
+		case "pdf":
+			addPdfItemCmd()
 		case "texture":
 			addTextureItemCmd()
 		case "sound":
