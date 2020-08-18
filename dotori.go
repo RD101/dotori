@@ -123,6 +123,8 @@ func main() {
 			addClipItemCmd()
 		case "footage":
 			addFootageItemCmd()
+		case "unreal":
+			addUnrealItemCmd()
 		case "hwp":
 			addHwpItemCmd()
 		case "pdf":
