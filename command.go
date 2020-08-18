@@ -649,9 +649,6 @@ func addHwpItemCmd() {
 	if *flagTag == "" {
 		log.Fatal("tag가 빈 문자열입니다")
 	}
-	if *flagFPS == "" {
-		log.Fatal("fps가 빈 문자열입니다")
-	}
 	if *flagInputDataPath == "" {
 		log.Fatal("inputdatapath가 빈 문자열입니다")
 	}
@@ -661,7 +658,6 @@ func addHwpItemCmd() {
 	i.Title = *flagTitle
 	i.Author = *flagAuthor
 	i.Description = *flagDescription
-	i.Fps = *flagFPS
 	i.Tags = SplitBySpace(*flagTag)
 	attr, err := StringToMap(*flagAttributes)
 	if err != nil {
