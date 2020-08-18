@@ -125,6 +125,14 @@ func main() {
 			addFootageItemCmd()
 		case "texture":
 			addTextureItemCmd()
+		case "sound":
+			addSoundItemCmd()
+		case "openvdb":
+			addOpenVDBItemCmd()
+		case "modo":
+			addModoItemCmd()
+		case "katana":
+			addKatanaItemCmd()
 		default:
 			log.Fatal("command를 지원하지 않는 아이템타입입니다.")
 		}
