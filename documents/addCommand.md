@@ -1,7 +1,7 @@
 ## Item 추가
-### maya, houdini, blender, nuke
+### Maya, Houdini, Blender, Modo, Katana, OpenVDB, USD, Alembic, Nuke
 ```bash
-$ sudo dotori -add -itemtype maya -title example -author woong -description "description1 about some details" -tag "나무 낙엽 item1" -inputthumbimgpath /Users/seoyoungbae/git/fork/dotori/examples/maya/thumbnail.jpg -inputthumbclippath /Users/seoyoungbae/git/fork/dotori/examples/maya/thumbnail.mov -inputdatapath /Users/seoyoungbae/git/fork/dotori/examples/maya/maya_scene.ma
+$ sudo dotori -add -itemtype modo -title example -author woong -description "description1 about some details" -tag "나무 낙엽 item1" -inputthumbimgpath /Users/seoyoungbae/git/fork/dotori/examples/maya/thumbnail.jpg -inputthumbclippath /Users/seoyoungbae/git/fork/dotori/examples/maya/thumbnail.mov -inputdatapath /Users/seoyoungbae/git/fork/dotori/examples/modo/data.lxo
 ```
 - itemtype
 - title
@@ -11,7 +11,7 @@ $ sudo dotori -add -itemtype maya -title example -author woong -description "des
 - inputthumbimgpath
 - inputhumbclippath
 - inputdatapath
-### clip
+### clip, unreal
 ```bash
 $ sudo dotori -add -itemtype clip -title example -author woong -description "description1 about some details" -tag "나무 낙엽 item1" -fps 24 -inputdatapath /Users/seoyoungbae/git/fork/dotori/examples/maya/thumbnail.mov
 ```
@@ -20,6 +20,17 @@ $ sudo dotori -add -itemtype clip -title example -author woong -description "des
 - author
 - description
 - fps
+- tag
+- inputdatapath
+
+### pdf, hwp
+```bash
+$ sudo dotori -add -itemtype pdf -title example -author woong -description "description1 about some details" -tag "나무 낙엽 item1" -inputdatapath /Users/seoyoungbae/git/fork/dotori/examples/pdf/지식재산권의기초.pdf
+```
+- itemtype
+- title
+- author
+- description
 - tag
 - inputdatapath
 
