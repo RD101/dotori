@@ -348,8 +348,8 @@ func handleUploadLutFile(w http.ResponseWriter, r *http.Request) {
 				item.ThumbImgUploaded = true
 			case "application/octet-stream":
 				ext := filepath.Ext(f.Filename)
-				// "lut", "blut", "cms", "csp", "cub", "vf", "vfz"
-				if ext != ".cube" && ext != ".3dl" {
+				// "lut", "blut", "cms", "csp", "cub", "vfz"
+				if ext != ".cube" && ext != ".3dl" && ext != ".vf" {
 					http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
 					return
 				}
