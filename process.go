@@ -109,6 +109,26 @@ func processingItem(item Item) {
 			return
 		}
 		return
+	case "max":
+		err = ProcessMaxItem(client, adminSetting, item)
+		if err != nil {
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
+			if err != nil {
+				log.Println(err)
+			}
+			return
+		}
+		return
+	case "fusion360":
+		err = ProcessFusion360Item(client, adminSetting, item)
+		if err != nil {
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
+			if err != nil {
+				log.Println(err)
+			}
+			return
+		}
+		return
 	case "clip": // Clip 소스
 		err = ProcessClipItem(client, adminSetting, item)
 		if err != nil {
@@ -272,7 +292,17 @@ func processingItem(item Item) {
 		}
 		return
 	case "unreal":
-		err = ProcessPdfItem(client, adminSetting, item)
+		err = ProcessUnrealItem(client, adminSetting, item)
+		if err != nil {
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
+			if err != nil {
+				log.Println(err)
+			}
+			return
+		}
+		return
+	case "hwp":
+		err = ProcessHwpItem(client, adminSetting, item)
 		if err != nil {
 			err = SetErrStatus(client, item.ID.Hex(), err.Error())
 			if err != nil {
@@ -348,6 +378,114 @@ func ProcessMayaItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 	}
 	// .mp4 썸네일 동영상을 생성한다.
 	err = SetStatus(client, item, "creatingmp4media")
+	if err != nil {
+		return err
+	}
+	err = genThumbMp4Media(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+	if err != nil {
+		return err
+	}
+	err = SetStatus(client, item, "done")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// ProcessMaxItem 함수는 max 아이템을 연산한다.
+func ProcessMaxItem(client *mongo.Client, adminSetting Adminsetting, item Item) error {
+	// thumbnail 폴더를 생성한다.
+	err := SetStatus(client, item, "creating thumbn dir")
+	if err != nil {
+		return err
+	}
+	err = genThumbDir(adminSetting, item)
+	if err != nil {
+		return err
+	}
+	// 썸네일 이미지를 생성한다.
+	err = SetStatus(client, item, "creating thumb img")
+	if err != nil {
+		return err
+	}
+	err = genThumbImage(adminSetting, item)
+	if err != nil {
+		return err
+	}
+	// .ogg 썸네일 동영상을 생성한다.
+	err = SetStatus(client, item, "creating ogg media")
+	if err != nil {
+		return err
+	}
+	err = genThumbOggMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+	if err != nil {
+		return err
+	}
+	// .mov 썸네일 동영상을 생성한다.
+	err = SetStatus(client, item, "creating mov media")
+	if err != nil {
+		return err
+	}
+	err = genThumbMovMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+	if err != nil {
+		return err
+	}
+	// .mp4 썸네일 동영상을 생성한다.
+	err = SetStatus(client, item, "creating mp4 media")
+	if err != nil {
+		return err
+	}
+	err = genThumbMp4Media(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+	if err != nil {
+		return err
+	}
+	err = SetStatus(client, item, "done")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// ProcessFusion360Item 함수는 maya 아이템을 연산한다.
+func ProcessFusion360Item(client *mongo.Client, adminSetting Adminsetting, item Item) error {
+	// thumbnail 폴더를 생성한다.
+	err := SetStatus(client, item, "creating thumb dir")
+	if err != nil {
+		return err
+	}
+	err = genThumbDir(adminSetting, item)
+	if err != nil {
+		return err
+	}
+	// 썸네일 이미지를 생성한다.
+	err = SetStatus(client, item, "creating thumb img")
+	if err != nil {
+		return err
+	}
+	err = genThumbImage(adminSetting, item)
+	if err != nil {
+		return err
+	}
+	// .ogg 썸네일 동영상을 생성한다.
+	err = SetStatus(client, item, "creating ogg media")
+	if err != nil {
+		return err
+	}
+	err = genThumbOggMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+	if err != nil {
+		return err
+	}
+	// .mov 썸네일 동영상을 생성한다.
+	err = SetStatus(client, item, "creating mov media")
+	if err != nil {
+		return err
+	}
+	err = genThumbMovMedia(adminSetting, item) // FFmpeg는 확장자에 따라 옵션이 다양하거나 호환되지 않는다. 포멧별로 분리한다.
+	if err != nil {
+		return err
+	}
+	// .mp4 썸네일 동영상을 생성한다.
+	err = SetStatus(client, item, "creating mp4 media")
 	if err != nil {
 		return err
 	}
@@ -1628,6 +1766,16 @@ func ProcessIesItem(client *mongo.Client, adminSetting Adminsetting, item Item) 
 
 // ProcessPdfItem 함수는 PDF 아이템을 연산한다.
 func ProcessPdfItem(client *mongo.Client, adminSetting Adminsetting, item Item) error {
+	// 아무 프로세스는 없지만 "done" 처리 해야한다. 그래야 프로세싱하지 않는다.
+	err := SetStatus(client, item, "done")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// ProcessHwpItem 함수는 PDF 아이템을 연산한다.
+func ProcessHwpItem(client *mongo.Client, adminSetting Adminsetting, item Item) error {
 	// 아무 프로세스는 없지만 "done" 처리 해야한다. 그래야 프로세싱하지 않는다.
 	err := SetStatus(client, item, "done")
 	if err != nil {

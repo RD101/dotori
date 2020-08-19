@@ -472,6 +472,8 @@ func GetOngoingProcess(client *mongo.Client) ([]Item, error) {
 		// 프로세스가 필요한 아이템 타입
 		bson.M{"$or": []interface{}{
 			bson.M{"itemtype": "maya"},
+			bson.M{"itemtype": "max"},
+			bson.M{"itemtype": "fusion360"},
 			bson.M{"itemtype": "nuke"},
 			bson.M{"itemtype": "houdini"},
 			bson.M{"itemtype": "blender"},
@@ -584,6 +586,8 @@ func GetIncompleteItems(client *mongo.Client) ([]Item, error) {
 			// 아이템 타입
 			bson.M{"$or": []interface{}{
 				bson.M{"itemtype": "maya"},
+				bson.M{"itemtype": "max"},
+				bson.M{"itemtype": "fusion360"},
 				bson.M{"itemtype": "nuke"},
 				bson.M{"itemtype": "houdini"},
 				bson.M{"itemtype": "blender"},

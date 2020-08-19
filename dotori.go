@@ -43,6 +43,8 @@ var (
 	flagAttributes         = flag.String("attributes", "", "detail info of file") // "key:value,key:value"
 	flagUserID             = flag.String("userid", "", "ID of user")
 	flagFPS                = flag.String("fps", "", "frame per second")
+	flagInColorspace       = flag.String("incolorspace", "", "in color space")
+	flagOutColorspace      = flag.String("outcolorspace", "", "out color space")
 
 	// 서비스에 필요한 인수
 	flagMongoDBURI      = flag.String("mongodburi", "mongodb://localhost:27017", "mongoDB URI ex)mongodb://localhost:27017")
@@ -119,6 +121,30 @@ func main() {
 			addBlenderItemCmd()
 		case "clip":
 			addClipItemCmd()
+		case "footage":
+			addFootageItemCmd()
+		case "nuke":
+			addNukeItemCmd()
+		case "alembic":
+			addAlembicItemCmd()
+		case "usd":
+			addUSDItemCmd()
+		case "unreal":
+			addUnrealItemCmd()
+		case "hwp":
+			addHwpItemCmd()
+		case "pdf":
+			addPdfItemCmd()
+		case "texture":
+			addTextureItemCmd()
+		case "sound":
+			addSoundItemCmd()
+		case "openvdb":
+			addOpenVDBItemCmd()
+		case "modo":
+			addModoItemCmd()
+		case "katana":
+			addKatanaItemCmd()
 		default:
 			log.Fatal("command를 지원하지 않는 아이템타입입니다.")
 		}

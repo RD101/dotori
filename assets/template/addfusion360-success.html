@@ -1,0 +1,29 @@
+{{define "addfusion360-success"}}
+{{template "head"}}
+<body>
+{{template "navbar" .}}
+<div class="container p-5">
+    <div class="col-lg-6 col-md-6 col-sm-12 mx-auto">
+        <div class="pt-3 pb-5">
+            <h2 class="text-center section-heading text-muted">Add Fusion360 Asset</h2>
+        </div>
+        <div>
+            <h4 class="text-center text-muted">
+                Fusion360 에셋이 추가 되었습니다.
+            </h4>
+        </div>
+        <div class="text-center">
+            <a href="/" class="btn btn-darkmode mt-5">Home</a>
+            <a href="/addfusion360" class="btn btn-darkmode mt-5">Add Fusion360</a>
+        </div>
+    </div>
+</div>
+{{template "footer"}}
+</body>
+<!--add javascript-->
+<script src="/assets/js/jquery-3.1.1.min.js"></script>
+<script src="/assets/bootstrap-4/js/bootstrap.min.js"></script>
+<script src="/assets/js/dropzone.js"></script>
+<script src="/assets/js/dotori.js"></script>
+</html>
+{{end}}
