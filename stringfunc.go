@@ -22,6 +22,24 @@ func SplitBySpace(str string) []string {
 	return result
 }
 
+// Str2Tags 함수는 string 문자열을 " ". , 기준으로 tag 리스트를 반환하는 함수이다.
+func Str2Tags(str string) []string {
+	var result []string
+	if str == "" {
+		return result
+	}
+	str = strings.TrimSpace(str) // 앞뒤에 붙어있는 Space를 제거한다.
+	// 빈 문자열은 리스트에서 제외
+	for _, s := range strings.Split(str, " ") {
+		for _, w := range strings.Split(s, ",") {
+			if w != "" {
+				result = append(result, strings.TrimSpace(w))
+			}
+		}
+	}
+	return result
+}
+
 // StringToMap 함수는 "key:value,key:value" 형식의 문자열을 map 형으로 변환하는 함수이다.
 func StringToMap(str string) (map[string]string, error) {
 	var result map[string]string
