@@ -11,7 +11,7 @@ $ sudo dotori -add -itemtype modo -title example -author woong -description "des
 - inputthumbimgpath
 - inputhumbclippath
 - inputdatapath
-### clip, unreal
+### clip
 ```bash
 $ sudo dotori -add -itemtype clip -title example -author woong -description "description1 about some details" -tag "나무 낙엽 item1" -fps 24 -inputdatapath /Users/seoyoungbae/git/fork/dotori/examples/maya/thumbnail.mov
 ```
@@ -23,7 +23,7 @@ $ sudo dotori -add -itemtype clip -title example -author woong -description "des
 - tag
 - inputdatapath
 
-### pdf, hwp
+### PDF, HWP, Sound, Texture, Unreal
 ```bash
 $ sudo dotori -add -itemtype pdf -title example -author woong -description "description1 about some details" -tag "나무 낙엽 item1" -inputdatapath /Users/seoyoungbae/git/fork/dotori/examples/pdf/지식재산권의기초.pdf
 ```
