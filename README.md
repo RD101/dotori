@@ -51,14 +51,16 @@ $ sudo dotori -http :80
 
 ### Command-line
 command를 통해 dotori를 제어할 수 있습니다.
-#### Item 추가
-```bash
-$ dotori -add -inputpath /project/path -author woong -tag asset,3D -description 설명 -type maya
-```
+- [아이템추가](documents/addCommand.md)
 
 #### Item 삭제
 ```bash
 $ sudo dotori -remove -itemid 5e89cef7cd1747fd5eacf256
+```
+
+#### User accesslevel 수정
+```bash
+$ sudo dotori -accesslevel admin -userid bailey
 ```
 
 #### 웹서버 실행
@@ -110,6 +112,10 @@ Default env_keep=PATH # 새로 추가
     - Prores422HQ 코덱의 mov 데이터는 2초에 43메가 정도의 용량을 가지고 있습니다.
     - 리포지터리에는 최대한 가벼운 파일, 코드만 올리기 위해 위 폴더에 Prores422HQ mov 데이터는 들어가 있지 않습니다.
     - HDRI 예제파일은 https://github.com/lazypic/tdcourse_examples/tree/master/movs 에서 다운받을 수 있습니다.
+
+
+### 백업
+- [backup](documents/backup.md) 문서를 참고하세요.
 
 ### Infomation / History
 - '19.9 RD101에서 오픈소스로 시작

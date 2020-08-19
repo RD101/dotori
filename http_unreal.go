@@ -95,7 +95,7 @@ func handleUploadUnrealItem(w http.ResponseWriter, r *http.Request) {
 	item.Author = r.FormValue("author")
 	item.Title = r.FormValue("title")
 	item.Description = r.FormValue("description")
-	tags := SplitBySpace(r.FormValue("tag"))
+	tags := SplitBySpace(r.FormValue("tags"))
 	item.Tags = tags
 	item.ItemType = "unreal"
 	attr := make(map[string]string)
@@ -383,7 +383,7 @@ func handleUploadUnrealFile(w http.ResponseWriter, r *http.Request) {
 				item.ThumbClipUploaded = true
 			case "application/octet-stream":
 				ext := filepath.Ext(f.Filename)
-				if ext != ".abc" { // .abc 외에는 허용하지 않는다.
+				if ext != ".cpp" && ext != ".uasset" { // .abc 외에는 허용하지 않는다.
 					http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
 					return
 				}

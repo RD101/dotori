@@ -2,6 +2,7 @@
 {{template "head"}}
 <body>
 {{template "navbar" .}}
+{{template "modal" .}}
 <form action="/uploadfootage-item" method="post" onsubmit="return addPageBlankCheck()">
 <div class="container py-5 px-2">
     <div class="col-lg-6 col-md-8 col-sm-12 mx-auto">
@@ -38,8 +39,8 @@
         <div class="row">
             <div class="col-sm">
                 <div class="form-group">
-                    <label class="text-muted">Tag</label>
-                    <input id="addTag" type="text" name="tag" class="form-control" placeholder="자동차 하늘">
+                    <label class="text-muted">Tags</label>
+                    <input id="addTags" type="text" name="tags" class="form-control" placeholder="장소명 시간대">
                     <small class="form-text text-muted">태그를 입력하세요. 태그는 띄어쓰기로 구분합니다.</small>
                 </div>
             </div>
@@ -66,15 +67,16 @@
             <div class="col-sm">
                 <div class="form-group">
                     <label class="text-muted">Colorspace</label>
+                    <span class="preset-button float-right" data-toggle="modal" data-target="#modal-preset-colorspace">Preset</span>
                     <div class="row">
                         <div class="col">
-                            <select name="incolorspace" class="form-control">
+                            <select id="incolorspace" name="incolorspace" class="form-control">
                                 {{range .Colorspaces}}<option value="{{.Name}}">{{.Name}}</option>{{end}}
                             </select>
                             <small class="form-text text-muted">In Colorspace</small>
                         </div>
                         <div class="col">
-                            <select name="outcolorspace" class="form-control">
+                            <select id="outcolorspace" name="outcolorspace" class="form-control">
                                 {{range .Colorspaces}}<option value="{{.Name}}">{{.Name}}</option>{{end}}
                             </select>
                             <small class="form-text text-muted">Out Colorspace</small>

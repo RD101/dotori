@@ -26,6 +26,7 @@ func LoadTemplates() (*template.Template, error) {
 var funcMap = template.FuncMap{
 	"Tags2str":       Tags2str,
 	"add":            add,
+	"mod":            mod,
 	"PreviousPage":   PreviousPage,
 	"NextPage":       NextPage,
 	"RmRootpath":     RmRootpath,
@@ -80,6 +81,30 @@ func webserver() {
 	http.HandleFunc("/editmaya", handleEditMaya)
 	http.HandleFunc("/editmaya-submit", handleEditMayaSubmit)
 	http.HandleFunc("/editmaya-success", handleEditMayaSuccess)
+
+	// 3dsmax
+	http.HandleFunc("/addmax", handleAddMax)
+	http.HandleFunc("/addmax-item", handleAddMaxItem)
+	http.HandleFunc("/addmax-file", handleAddMaxFile)
+	http.HandleFunc("/uploadmax-item", handleUploadMaxItem)
+	http.HandleFunc("/uploadmax-file", handleUploadMaxFile)
+	http.HandleFunc("/uploadmax-checkdata", handleUploadMaxCheckData)
+	http.HandleFunc("/addmax-success", handleAddMaxSuccess)
+	http.HandleFunc("/editmax", handleEditMax)
+	http.HandleFunc("/editmax-submit", handleEditMaxSubmit)
+	http.HandleFunc("/editmax-success", handleEditMaxSuccess)
+
+	// Fusion360
+	http.HandleFunc("/addfusion360", handleAddFusion360)
+	http.HandleFunc("/addfusion360-item", handleAddFusion360Item)
+	http.HandleFunc("/addfusion360-file", handleAddFusion360File)
+	http.HandleFunc("/uploadfusion360-item", handleUploadFusion360Item)
+	http.HandleFunc("/uploadfusion360-file", handleUploadFusion360File)
+	http.HandleFunc("/uploadfusion360-checkdata", handleUploadFusion360CheckData)
+	http.HandleFunc("/addfusion360-success", handleAddFusion360Success)
+	http.HandleFunc("/editfusion360", handleEditFusion360)
+	http.HandleFunc("/editfusion360-submit", handleEditFusion360Submit)
+	http.HandleFunc("/editfusion360-success", handleEditFusion360Success)
 
 	// Footage
 	http.HandleFunc("/addfootage", handleAddFootage)

@@ -39,6 +39,7 @@ func handleAddFootageItem(w http.ResponseWriter, r *http.Request) {
 		Token
 		Adminsetting Adminsetting
 		Colorspaces  []Colorspace
+		User         User
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -67,6 +68,12 @@ func handleAddFootageItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rcp.Adminsetting = adminsetting
+	user, err := GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp.User = user
 	ocioConfig, err := loadOCIOConfig(rcp.Adminsetting.OCIOConfig)
 	if err != nil {
 		http.Redirect(w, r, "/error-ocio", http.StatusSeeOther)
@@ -105,7 +112,7 @@ func handleUploadFootageItem(w http.ResponseWriter, r *http.Request) {
 	item.InColorspace = r.FormValue("incolorspace")
 	item.OutColorspace = r.FormValue("outcolorspace")
 	item.Fps = r.FormValue("fps")
-	tags := SplitBySpace(r.FormValue("tag"))
+	tags := SplitBySpace(r.FormValue("tags"))
 	item.Tags = tags
 	item.ItemType = "footage"
 	attr := make(map[string]string)

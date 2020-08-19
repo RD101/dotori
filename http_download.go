@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -66,7 +67,7 @@ func handleDownloadItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer os.RemoveAll(tempDir)
-	zipFileName := item.ID.Hex() + ".zip"
+	zipFileName := strings.Join(strings.Split(item.Title, " "), "_") + ".zip"
 	zipFilePath := filepath.Join(tempDir, zipFileName)
 	err = genZipfile(zipFilePath, item)
 	if err != nil {

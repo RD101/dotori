@@ -93,8 +93,8 @@ function addPageBlankCheck(){
         alert("Description을 입력해주세요.");
         return false;
     }
-    if(document.getElementById("addTag").value == ''){
-        alert("Tag를 입력해주세요.");
+    if(document.getElementById("addTags").value == ''){
+        alert("Tags를 입력해주세요.");
         return false;
     }
     return true;
