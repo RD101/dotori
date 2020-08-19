@@ -42,15 +42,15 @@ print(data)
 ```python
 #!/usr/bin/python
 #coding:utf-8
-import requests,mimetypes
+import requests, mimetypes, os
 
-token="example.blar-blar"
-fileList=[
+token="example.blar-blar"               
+fileList=[  # Upload 할 File list                                                
     '/Users/baechaeyun/cheche/dotori/examples/abc/abc_thumbnail.jpg',
     '/Users/baechaeyun/cheche/dotori/examples/abc/abc_thumbnail.mov',
     '/Users/baechaeyun/cheche/dotori/examples/abc/data.abc'
 ]
-data = {
+data = {    # 어셋 정보 입력
     'iteminfo': (None, '{"itemtype":"alembic","title":"train test","author":"dchecheb","description":"3","tags":"test","attribute":"key1:value1,key2:value2"}'),
 }
 
@@ -59,13 +59,13 @@ session.headers.update({'Authorization': 'Basic ' + token })
 i = 0
 for file in fileList:
     key = 'file[{}]'.format(i)
-    mimetype = mimetypes.guess_type(file)[0]
+    mimetype = mimetypes.guess_type(file)[0]    # mimetype 지정
     if not mimetype:
-        mimetype = 'application/octet-stream'
-    data[key] = (open(file, 'rb'),mimetype)
+        mimetype = 'application/octet-stream'   # mimetype 인식 못할 경우 application/octet-stream을 default로 보냄
+    data[key] = (os.path.basename(file), open(file, 'rb'), mimetype)
     i += 1
 
-response = session.post('http://172.18.18.167/api/item', files=data)
+response = session.post('http://172.18.18.167/api/item', files=data)    # 전송
 print response.text
 ```
 
