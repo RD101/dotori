@@ -9,6 +9,7 @@
 ## Post
 | URI | Description | Attributes | Curl Example |
 | --- | --- | --- | --- |
+| /api/item | asset 등록하기 | itemtype, title, author, description, tags | `$curl -H "Authorization: Basic <TOKEN>" -X POST -F "file1=@abc_thumbnail.jpg;type=image/jpeg" -F "file2=@abc_thumbnail.mov;type=video/quicktime" -F "file3=@data.abc;type=application/octet-stream" -F "iteminfo={\"itemtype\":\"alembic\",\"title\":\"train test\",\"author\":\"dchecheb\",\"description\":\"3\",\"tags\":\"테스트  진행 중\",\"attribute\":\"key1:value1,key2:value2\"}" http://198.168.219.104/api/item`
 | /api/search | 검색하기 | searchword | `$ curl -X POST -d "searchword=나무" http://192.168.219.104/api/search` |
 | /api/usingrate | Using Rate 올리기 | id | `$ curl -X POST -d "id=5eaa5758eafdfd2dae3bb050" http://192.168.219.104/api/usingrate`
 
@@ -18,7 +19,10 @@
 | /api/item | 삭제하기 | id | `curl -H "Authorization: Basic <Token>" -X DELETE "http://192.168.219.104/api/item?id=5ec37a67e048d951ee46a45a"`
 
 ## Python example
-### asset 가지고 오기 
+
+### GET
+
+#### asset 가지고 오기 
 
 ```python
 #!/usr/bin/python
@@ -32,7 +36,40 @@ data = json.load(result)
 print(data)
 ```
 
-### 검색하기
+### POST
+
+#### Asset 등록하기
+```python
+#!/usr/bin/python
+#coding:utf-8
+import requests,mimetypes
+
+token="example.blar-blar"
+fileList=[
+    '/Users/baechaeyun/cheche/dotori/examples/abc/abc_thumbnail.jpg',
+    '/Users/baechaeyun/cheche/dotori/examples/abc/abc_thumbnail.mov',
+    '/Users/baechaeyun/cheche/dotori/examples/abc/data.abc'
+]
+data = {
+    'iteminfo': (None, '{"itemtype":"alembic","title":"train test","author":"dchecheb","description":"3","tags":"test","attribute":"key1:value1,key2:value2"}'),
+}
+
+session = requests.Session()
+session.headers.update({'Authorization': 'Basic ' + token })
+i = 0
+for file in fileList:
+    key = 'file[{}]'.format(i)
+    mimetype = mimetypes.guess_type(file)[0]
+    if not mimetype:
+        mimetype = 'application/octet-stream'
+    data[key] = (open(file, 'rb'),mimetype)
+    i += 1
+
+response = session.post('http://172.18.18.167/api/item', files=data)
+print response.text
+```
+
+#### 검색하기
 ```python
 #!/usr/bin/python
 #coding:utf-8

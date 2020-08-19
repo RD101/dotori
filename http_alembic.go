@@ -321,9 +321,6 @@ func uploadAlembicFile(w http.ResponseWriter, r *http.Request, objectID string) 
 			defer file.Close()
 			unix.Umask(umask)
 			mimeType := f.Header.Get("Content-Type")
-			fmt.Println("------------")
-			fmt.Println(mimeType)
-			fmt.Println(f.Filename)
 			switch mimeType {
 			case "image/jpeg", "image/png":
 				data, err := ioutil.ReadAll(file)
