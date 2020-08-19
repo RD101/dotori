@@ -9,7 +9,7 @@
 ## Post
 | URI | Description | Attributes | Curl Example |
 | --- | --- | --- | --- |
-| /api/item | asset 등록하기 | itemtype, title, author, description, tags | `$curl -H "Authorization: Basic <TOKEN>" -X POST -F "file1=@abc_thumbnail.jpg;type=image/jpeg" -F "file2=@abc_thumbnail.mov;type=video/quicktime" -F "file3=@data.abc;type=application/octet-stream" -F "iteminfo={\"itemtype\":\"alembic\",\"title\":\"train test\",\"author\":\"dchecheb\",\"description\":\"3\",\"tags\":\"테스트  진행 중\",\"attribute\":\"key1:value1,key2:value2\"}" http://198.168.219.104/api/item`
+| /api/item | asset 등록하기 | itemtype, title, author, description, tags | `$ curl -H "Authorization: Basic <TOKEN>" -X POST -F "file1=@abc_thumbnail.jpg;type=image/jpeg" -F "file2=@abc_thumbnail.mov;type=video/quicktime" -F "file3=@data.abc;type=application/octet-stream" -F "iteminfo={\"itemtype\":\"alembic\",\"title\":\"train test\",\"author\":\"dchecheb\",\"description\":\"3\",\"tags\":\"테스트  진행 중\",\"attribute\":\"key1:value1,key2:value2\"}" http://198.168.219.104/api/item`
 | /api/search | 검색하기 | searchword | `$ curl -X POST -d "searchword=나무" http://192.168.219.104/api/search` |
 | /api/usingrate | Using Rate 올리기 | id | `$ curl -X POST -d "id=5eaa5758eafdfd2dae3bb050" http://192.168.219.104/api/usingrate`
 
@@ -66,7 +66,7 @@ for file in fileList:
     i += 1
 
 response = session.post('http://172.18.18.167/api/item', files=data)    # 전송
-print response.text
+print(response.text)
 ```
 
 #### 검색하기
