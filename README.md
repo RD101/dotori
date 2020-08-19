@@ -117,6 +117,6 @@ Default env_keep=PATH # 새로 추가
 ### 백업
 - [backup](documents/backup.md) 문서를 참고하세요.
 
-### Infomation / History
+### Information / History
 - '19.9 RD101에서 오픈소스로 시작
 - License: BSD 3-Clause License
