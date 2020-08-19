@@ -450,14 +450,14 @@ func Test_Str2Tags(t *testing.T) {
 	}
 	for _, c := range cases {
 		v := Str2Tags(c.input)
-		if !testEq(c.want, v) {
+		if !testIsEqualSlice(c.want, v) {
 			t.Fatalf("Test_Str2Tags(): 입력 값: %v, 원하는 값: %v, 얻은 값: %v\n", c.input, c.want, v)
 		}
 	}
 }
 
-// testEq 함수는 2개의 리스트를 받아서 구조가 같은지 체크한다. 이 함수는 test 되면 안되기 때문에 소문자 test로 시작한다.
-func testEq(a, b []string) bool {
+// testIsEqualSlice 함수는 2개의 리스트를 받아서 구조가 같은지 체크한다. 이 함수는 test 되면 안되기 때문에 소문자 test로 시작한다.
+func testIsEqualSlice(a, b []string) bool {
 	if (a == nil) != (b == nil) {
 		return false
 	}
