@@ -63,6 +63,7 @@ func webserver() {
 	// 웹주소 설정
 	if *flagDevMode {
 		http.HandleFunc("/", handleInit)
+		http.HandleFunc("/submit", handleSubmit)
 	} else {
 		http.HandleFunc("/", handleSearch)
 	}

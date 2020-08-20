@@ -1,4 +1,5 @@
 {{define "itemsRecentlyCreate"}}
+<form action="/search-submit" method="POST">
 {{$thumbnailwidth := .Adminsetting.ThumbnailImageWidth}}
 {{$thumbnailheight := .Adminsetting.ThumbnailImageHeight}}
 <div class="row justify-content-center align-items-center m-3">
@@ -8,7 +9,7 @@
         </div>
     </div>
 </div>
-<div class="row justify-content-center align-items-right m-3">
+<div class="row justify-content-center align-recentlyCarouselitems-right m-3" value="1">
     <div class="col-lg-12">
         <div class="input-group mb-3" style="display: inline-block; width: 98%; text-align: right;">
             <a href="#recentlyCarousel" role="button" data-slide="prev" style="margin-right: 25px;">
@@ -23,55 +24,38 @@
     </div>
 </div>
 <div class="container-fluid">
-    <!-- class는 carousel slide로 설정하고 data-interval="false"로 회전이 되지 않도록 설정한다.-->
-    <div id="recentlyCarousel" class="carousel slide" data-interval="false">
-        <!-- Wrapper부분, class는 carousel-inner로 설정하고 role은 listbox에서 설정한다. -->
-        <div class="carousel-inner" role="listbox">
-            {{range $i, $q := .RecentlyCreateItems}}
-                {{$value := mod $i 4}}
-                {{if and (eq $value 0) (eq $i 0)}}
-                <div class="carousel-item row no-gutters active">
-                    <div class="row mx-auto mb-12">
-                {{else if eq $value 0}}
-                <div class="carousel-item row no-gutters">
-                    <div class="row mx-auto mb-12">
+    <div class="row mx-auto mb-12">
+        {{range $i, $q := .RecentlyCreateItems}}
+            <div class="col-sm-3 text-center">
+            <div class="panel-thumbnail">
+                <a href="#" title="image {{$i}}" class="thumb">
+                {{if eq .ItemType "pdf"}}
+                    <img width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="/assets/img/pdfthumbnail.svg">
+                {{else if eq .ItemType "hwp"}}
+                    <img width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="/assets/img/hwpthumbnail.svg">
+                {{else if eq .ItemType "sound"}}
+                    <img width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="/assets/img/soundthumbnail.svg">
+                {{else if eq .ItemType "hdri" "texture" }}
+                    <img width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="{{if eq .Status "done" }}/mediadata?id={{.ID.Hex}}&type=png{{else}}/assets/img/noimage.svg{{end}}">
+                {{else}}
+                    <video width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" controls poster="{{if eq .Status "done" }}/mediadata?id={{.ID.Hex}}&type=png{{else}}/assets/img/noimage.svg{{end}}">
+                    <source src="/mediadata?id={{.ID.Hex}}&type=mp4" type="video/mp4">
+                    <source src="/mediadata?id={{.ID.Hex}}&type=ogg" type="video/ogg">
+                    Your browser does not support the video tag.
+                    </video>
                 {{end}}
-                    <div class="col-sm-3 text-center">
-                        <div class="panel-thumbnail">
-                            <a href="#" title="image {{$i}}" class="thumb">
-                            {{if eq .ItemType "pdf"}}
-                                <img width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="/assets/img/pdfthumbnail.svg">
-                            {{else if eq .ItemType "hwp"}}
-                                <img width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="/assets/img/hwpthumbnail.svg">
-                            {{else if eq .ItemType "sound"}}
-                                <img width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="/assets/img/soundthumbnail.svg">
-                            {{else if eq .ItemType "hdri" "texture" }}
-                                <img width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="{{if eq .Status "done" }}/mediadata?id={{.ID.Hex}}&type=png{{else}}/assets/img/noimage.svg{{end}}">
-                            {{else}}
-                                <video width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" controls poster="{{if eq .Status "done" }}/mediadata?id={{.ID.Hex}}&type=png{{else}}/assets/img/noimage.svg{{end}}">
-                                <source src="/mediadata?id={{.ID.Hex}}&type=mp4" type="video/mp4">
-                                <source src="/mediadata?id={{.ID.Hex}}&type=ogg" type="video/ogg">
-                                Your browser does not support the video tag.
-                                </video>
-                            {{end}}
-                            </a>
-                        </div>
-                        <div class="info mb-3">
-                            <div>
-                                <span class="text-muted">Title: {{.Title}}</span><br>
-                                <span class="text-muted">Author: {{.Author}}</span><br>
-                                <span class="text-muted">CreateTime: {{SplitTimeData .CreateTime}}</span><br>
-                            </div>  
-                        </div>
-                    </div>
-                {{if eq $value 3}}
-                    </div>
-                </div>
-                {{end}}
-            {{end}}
-                </div>
+                </a>
             </div>
-        </div>
+            <div class="info mb-3">
+                <div>
+                    <span class="text-muted">Title: {{.Title}}</span><br>
+                    <span class="text-muted">Author: {{.Author}}</span><br>
+                    <span class="text-muted">CreateTime: {{SplitTimeData .CreateTime}}</span><br>
+                </div>  
+            </div>
+            </div>
+        {{end}}
     </div>
 </div>
 {{end}}
+</form>

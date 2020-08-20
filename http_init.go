@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -18,9 +19,6 @@ func handleInit(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
 		return
 	}
-	q := r.URL.Query()
-	itemType := q.Get("itemtype")
-	searchword := q.Get("searchword")
 	type recipe struct {
 		RecentlyCreateItems []Item
 		TopUsingItems       []Item
@@ -35,9 +33,8 @@ func handleInit(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp := recipe{}
 	rcp.Token = token
-	rcp.Searchword = searchword
-	rcp.ItemType = itemType
-	rcp.TotalNum = 0
+	rcp.ItemType = "" // search sortList all
+	rcp.TotalNum = 0  // search button totalNum
 
 	//mongoDB client 연결
 	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
@@ -79,7 +76,7 @@ func handleInit(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.AllItemCount = humanize.Comma(num) // 숫자를 1000단위마다 comma를 찍음(string형으로 변경)
 
-	RecentlyTagItems, err := GetRecentlyCreatedItems(client, 20) // 최근생성된 20개의 아이템들을 가져옴
+	RecentlyTagItems, err := GetRecentlyCreatedItems(client, 20, 1) // 최근생성된 20개의 아이템들을 가져옴
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -87,7 +84,7 @@ func handleInit(w http.ResponseWriter, r *http.Request) {
 
 	rcp.RecentTags = ItemsTagsDeduplication(RecentlyTagItems) // 중복 태그를 정리함
 
-	RecentlyCreateItems, err := GetRecentlyCreatedItems(client, 100) // 최근생성된 100개의 아이템들을 가져옴
+	RecentlyCreateItems, err := GetRecentlyCreatedItems(client, 4, 2) // 최근생성된 100개의 아이템들을 가져옴
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -106,4 +103,16 @@ func handleInit(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+}
+
+func handleSubmit(w http.ResponseWriter, r *http.Request) {
+	_, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
+	itemType := r.FormValue("itemtype")
+	searchword := r.FormValue("searchword")
+	page := PageToString(r.FormValue("page"))
+	http.Redirect(w, r, fmt.Sprintf("/?itemtype=%s&searchword=%s&page=%s", itemType, searchword, page), http.StatusSeeOther)
 }
