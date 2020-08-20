@@ -51,7 +51,7 @@ $ sudo dotori -http :80
 
 ### Command-line
 command를 통해 dotori를 제어할 수 있습니다.
-- [아이템추가](documents/addCommand.md)
+- [아이템추가](documents/add_command.md)
 
 #### Item 삭제
 ```bash
