@@ -2123,7 +2123,7 @@ func addUSDItemCmd() {
 	}
 }
 
-func dItemCmd() {
+func addAlembicItemCmd() {
 	if *flagTitle == "" {
 		log.Fatal("title이 빈 문자열입니다")
 	}
