@@ -54,6 +54,7 @@
                         {{if eq $.User.AccessLevel "admin"}}
                             <span class="finger badge badge-danger" data-toggle="modal" data-target="#modal-rmitem" onclick="setRmItemModal('{{.ItemType}}','{{.ID.Hex}}')">DELETE</span>
                         {{end}}
+                        <span class="finger badge badge-outline-darkmode" data-toggle="modal" data-target="#modal-detailview" onclick="setDetailViewModal('{{.ID.Hex}}')">Detail View</span>
                         {{if eq .ItemType "usd"}}
                             <img src="/assets/img/ar.svg" class="finger">
                         {{end}}

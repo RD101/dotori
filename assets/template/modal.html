@@ -24,10 +24,37 @@
                     <button type="button" class="btn btn-outline-danger" onclick="rmItemModal(document.getElementById('modal-rmitem-itemtype').value,getElementById('modal-rmitem-itemid').value)">Delete</button>
                 </div>
             </div>
-
         </div>
     </div>
-
+    <!-- Modal : Remove Item -->
+    <div class="modal fade" id="modal-detailview" tabindex="-1" role="dialog" aria-labeledby="modal-detailview" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content text-white" style="background-color: #2e2d2d">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-detailview-title">Detail View</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" class="text-darkmode">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- <input type="hidden" class="form-control" id="modal-detailview-itemtype"> -->
+                    <!-- <input type="hidden" class="form-control" id="modal-detailview-"> -->
+                    <div class="container-fluid row">
+                        <div class="col-lg-6 col-md-12">
+                            <h5 class="ignore-css">Title</h5>
+                            <img src="/assets/img/pdfthumbnail.svg">
+                        </div>
+                        <div class="col-lg-6 col-md-12">
+                            <p>id</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-darkmode" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Modal : Prset Colorspace -->
     <div class="modal fade" id="modal-preset-colorspace" tabindex="-1" role="dialog" aria-labeledby="modal-preset-colorspace" aria-hidden="true">
         <div class="modal-dialog" role="document">

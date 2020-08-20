@@ -50,6 +50,14 @@ function setRmItemModal(itemtype, itemId) {
     document.getElementById("modal-rmitem-itemid").value = itemId;
 }
 
+// setRmItemModal 은 아이템 삭제 버튼을 누르면 id값을 받아 modal창에 보여주는 함수이다.
+function setDetailViewModal(itemid) {
+    document.getElementById("modal-detailview-itemid").value = id;
+    $.ajax({
+        url: `/api/item?id=${itemid}`
+    })
+}
+
 // rmItemModal 은 삭제 modal창에서 Delete 버튼을 누르면 실행되는 아이템 삭제 함수이다. 
 function rmItemModal(itemtype,itemId) {
     let token = document.getElementById("token").value;
