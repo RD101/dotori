@@ -95,7 +95,7 @@ func handleUploadLutItem(w http.ResponseWriter, r *http.Request) {
 	item.Title = r.FormValue("title")
 	item.Author = r.FormValue("author")
 	item.Description = r.FormValue("description")
-	tags := SplitBySpace(r.FormValue("tags"))
+	tags := Str2Tags(r.FormValue("tags"))
 	item.Tags = tags
 	item.ItemType = "lut"
 	attr := make(map[string]string)
@@ -348,8 +348,8 @@ func handleUploadLutFile(w http.ResponseWriter, r *http.Request) {
 				item.ThumbImgUploaded = true
 			case "application/octet-stream":
 				ext := filepath.Ext(f.Filename)
-				// "lut", "3dl", "blut", "cms", "csp", "cub", "cube", "vf", "vfz"
-				if ext != ".cube" {
+				// "lut", "blut", "cms", "csp", "cub", "vfz"
+				if ext != ".cube" && ext != ".3dl" && ext != ".vf" {
 					http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
 					return
 				}
@@ -639,7 +639,7 @@ func handleEditLutSubmit(w http.ResponseWriter, r *http.Request) {
 	item.Author = r.FormValue("author")
 	item.Title = r.FormValue("title")
 	item.Description = r.FormValue("description")
-	item.Tags = SplitBySpace(r.FormValue("tags"))
+	item.Tags = Str2Tags(r.FormValue("tags"))
 	item.Attributes = attr
 	err = item.CheckError()
 	if err != nil {

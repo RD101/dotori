@@ -271,7 +271,7 @@ func processingItem(item Item) {
 			return
 		}
 		return
-	case "lut", "3dl", "blut", "cms", "csp", "cub", "cube", "vf", "vfz": // LUT 파일들
+	case "lut": // LUT 파일들
 		err = ProcessLutItem(client, adminSetting, item)
 		if err != nil {
 			err = SetErrStatus(client, item.ID.Hex(), err.Error())
