@@ -51,11 +51,31 @@ function setRmItemModal(itemtype, itemId) {
 }
 
 // setRmItemModal 은 아이템 삭제 버튼을 누르면 id값을 받아 modal창에 보여주는 함수이다.
-function setDetailViewModal(itemid) {
-    document.getElementById("modal-detailview-itemid").value = id;
+function setDetailViewModal(itemtype, itemid) {
+    document.getElementById("modal-detailview-itemid").innerHTML = itemid;
+    if (itemtype == "footage") {
+        document.getElementById("modal-detailview-download-button").type="hidden"        
+    } else {
+        document.getElementById("modal-detailview-download-button").onclick=`location.href='/download-item?itemtype=${itemtype}&id=${itemid}'`
+    }
     $.ajax({
-        url: `/api/item?id=${itemid}`
-    })
+        url: `/api/item?itemtype=${itemtype}&id=${itemid}`,
+        type: "get",
+        dataType: "json",
+        success: function(response) {
+            document.getElementById("modal-detailview-title").innerHTML = response["title"];
+            document.getElementById("modal-detailview-itemid").innerHTML = itemid;
+            document.getElementById("modal-detailview-author").innerHTML = response["author"];
+            document.getElementById("modal-detailview-description").innerHTML = response["description"];
+            document.getElementById("modal-detailview-copypath-button").onclick = copyButton(response["outputdatapath"]);
+            console.log("success");
+        },
+        error: function(result) {
+            alert(result);
+            console.log("failed");
+            
+        }
+    });
 }
 
 // rmItemModal 은 삭제 modal창에서 Delete 버튼을 누르면 실행되는 아이템 삭제 함수이다. 
