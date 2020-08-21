@@ -318,7 +318,7 @@ func handleUploadIesFile(w http.ResponseWriter, r *http.Request) {
 			switch mimeType {
 			case "application/octet-stream":
 				ext := filepath.Ext(f.Filename)
-				if ext != ".ies" { // .abc 외에는 허용하지 않는다.
+				if ext != ".ies" { // .ies 외에는 허용하지 않는다.
 					http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
 					return
 				}
