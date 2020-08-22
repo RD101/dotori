@@ -581,7 +581,7 @@ func GetIncompleteItems(client *mongo.Client) ([]Item, error) {
 	defer cancel()
 
 	filter := bson.M{"$or": []interface{}{
-		// sound, pdf, hwp, hdri 를 제외한 itemtype의 조건
+		// maya, max, fusion360, nuke, houdini, blender, footage, alembic, usd 아이템타입의 조건
 		bson.M{"$and": []interface{}{
 			// 아이템 타입
 			bson.M{"$or": []interface{}{
@@ -602,7 +602,7 @@ func GetIncompleteItems(client *mongo.Client) ([]Item, error) {
 				bson.M{"datauploaded": false},
 			}},
 		}},
-		// sound, pdf, hwp, hdri 타입 아이템의 조건
+		// sound, pdf, hwp, hdri, texture, lut, clip, ies 타입 아이템의 조건
 		bson.M{"$and": []interface{}{
 			// 아이템 타입
 			bson.M{"$or": []interface{}{
@@ -613,6 +613,7 @@ func GetIncompleteItems(client *mongo.Client) ([]Item, error) {
 				bson.M{"itemtype": "texture"},
 				bson.M{"itemtype": "lut"},
 				bson.M{"itemtype": "clip"},
+				bson.M{"itemtype": "ies"},
 			}},
 			// 조건
 			bson.M{"datauploaded": false},
