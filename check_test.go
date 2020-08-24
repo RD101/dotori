@@ -157,8 +157,8 @@ func Test_Itemtype(t *testing.T) {
 		Itemtype: "ma야", // 한글포함
 		want:     false,
 	}, {
-		Itemtype: "maya2", // 숫자포함
-		want:     false,
+		Itemtype: "fusion360", // 숫자포함
+		want:     true,
 	},
 	}
 
@@ -182,8 +182,8 @@ func Test_Dbname(t *testing.T) {
 		Dbname: "doto리", // 한글포함
 		want:   false,
 	}, {
-		Dbname: "doto2", // 숫자포함
-		want:   false,
+		Dbname: "fusion360", // 숫자포함
+		want:   true,
 	},
 	}
 
