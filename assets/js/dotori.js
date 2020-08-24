@@ -36,12 +36,12 @@ document.onkeydown = function(e) {
 
 // copyButton 은 아이디값을 받아서, 클립보드로 복사하는 기능이다.
 function copyButton(elementId) {
-    let id = document.createElement("input");   // input요소를 만듬
-    id.setAttribute("value", elementId);        // input요소에 값을 추가
-    document.body.appendChild(id);              // body에 요소 추가
-    id.select();                                // input요소를 선택
-    document.execCommand("copy");               // 복사기능 실행
-    document.body.removeChild(id);              // body에 요소 삭제
+    let id = document.createElement("input");                       // input요소를 만듬
+    id.setAttribute("value", elementId);                            // input요소에 값을 추가
+    document.getElementById("modal-detailview").appendChild(id);    // modal에 요소 추가
+    id.select();                                                    // input요소를 선택
+    document.execCommand("copy");                                   // 복사기능 실행
+    document.getElementById("modal-detailview").removeChild(id);    // modal에서 요소 삭제
 }
 
 // setRmItemModal 은 아이템 삭제 버튼을 누르면 id값을 받아 modal창에 보여주는 함수이다.
@@ -64,7 +64,7 @@ function setDetailViewModal(itemtype, itemid) {
             let outputdatapath=response["outputdatapath"]
             let footerHtml=`
             <button type="button" class="btn btn-outline-darkmode" id="modal-detailview-download-button" onclick="location.href='/download-item?itemtype=${itemtype}&id=${itemid}'">Download</a>
-            <button type="button" class="btn btn-outline-darkmode" id="modal-detailview-copypath-button" onclick=copyButton('${outputdatapath}')>Copy Path</a>
+            <button type="button" class="btn btn-outline-darkmode" id="modal-detailview-copypath-button" onclick="copyButton('${outputdatapath}')">Copy Path</a>
             <button type="button" class="btn btn-outline-darkmode" data-dismiss="modal">Close</button>
             `
             document.getElementById("modal-detailview-footer").innerHTML = footerHtml
@@ -74,8 +74,6 @@ function setDetailViewModal(itemtype, itemid) {
         },
         error: function(result) {
             alert(result);
-            console.log("failed");
-            
         }
     });
 
