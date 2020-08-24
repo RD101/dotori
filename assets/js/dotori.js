@@ -44,12 +44,6 @@ function copyButton(elementId) {
     document.getElementById("modal-detailview").removeChild(id);    // modal에서 요소 삭제
 }
 
-// setRmItemModal 은 아이템 삭제 버튼을 누르면 id값을 받아 modal창에 보여주는 함수이다.
-function setRmItemModal(itemtype, itemId) {
-    document.getElementById("modal-rmitem-itemtype").value = itemtype;
-    document.getElementById("modal-rmitem-itemid").value = itemId;
-}
-
 // setDetailViewModal 은 아이템을 선택했을 때 볼 수 있는 detailview 모달창에 detail 정보를 세팅해주는 함수이다.
 function setDetailViewModal(itemid) {
     $.ajax({
@@ -69,9 +63,10 @@ function setDetailViewModal(itemid) {
             let footerHtmlForAdmin=`
             <button type="button" class="btn btn-outline-darkmode" id="modal-detailview-download-button" onclick="location.href='/download-item?id=${itemid}'">Download</button>
             <button type="button" class="btn btn-outline-darkmode" id="modal-detailview-copypath-button" onclick="copyButton('${outputdatapath}')">Copy Path</button>
-            <button type="button" class="btn btn-outline-danger" id="modal-detailview-delete-button" data-dismiss="modal" data-toggle="modal" data-target="#modal-rmitem" onclick="setRmItemModal('${itemtype}','${itemid}')">Delete</button>
+            <button type="button" class="btn btn-outline-danger" id="modal-detailview-delete-button" data-dismiss="modal" data-toggle="modal" data-target="#modal-rmitem">Delete</button>
             `
             if (document.getElementById("accesslevel").value == "admin") {
+                document.getElementById("modal-rmitem-itemid").value = itemid;
                 document.getElementById("modal-detailview-footer").innerHTML = footerHtmlForAdmin
             } else {
                 document.getElementById("modal-detailview-footer").innerHTML = footerHtml
@@ -88,21 +83,21 @@ function setDetailViewModal(itemid) {
 }
 
 // rmItemModal 은 삭제 modal창에서 Delete 버튼을 누르면 실행되는 아이템 삭제 함수이다. 
-function rmItemModal(itemtype,itemId) {
+function rmItemModal(itemId) {
     let token = document.getElementById("token").value;
     $.ajax({
-        url: `/api/item?itemtype=${itemtype}&id=${itemId}`,
+        url: `/api/item?id=${itemId}`,
         type: "delete",
         headers: {
             "Authorization": "Basic " + token
         },
         dataType: "json",
         success: function() {
-            alert("itemtype: "+itemtype+"\nid: "+itemId+"\n\n아이템 삭제를 성공했습니다."); 
+            alert("id: "+itemId+"\n\n아이템 삭제를 성공했습니다."); 
             location.reload();
         },
         error: function(){
-            alert("itemtype: "+itemtype+"\nid: "+itemId+"\n\n아이템 삭제를 실패했습니다.");  
+            alert("id: "+itemId+"\n\n아이템 삭제를 실패했습니다.");  
         }
     });
 }
