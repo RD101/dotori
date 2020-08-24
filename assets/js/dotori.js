@@ -46,6 +46,7 @@ function copyButton(elementId) {
 
 // setRmItemModal 은 아이템 삭제 버튼을 누르면 id값을 받아 modal창에 보여주는 함수이다.
 function setRmItemModal(itemtype, itemId) {
+    console.log("setRmItemModal")
     document.getElementById("modal-rmitem-itemtype").value = itemtype;
     document.getElementById("modal-rmitem-itemid").value = itemId;
 }
@@ -62,14 +63,22 @@ function setDetailViewModal(itemtype, itemid) {
             document.getElementById("modal-detailview-author").innerHTML = response["author"];
             document.getElementById("modal-detailview-description").innerHTML = response["description"];
             let outputdatapath=response["outputdatapath"]
-            let footerHtml=`
-            <button type="button" class="btn btn-outline-darkmode" id="modal-detailview-download-button" onclick="location.href='/download-item?itemtype=${itemtype}&id=${itemid}'">Download</a>
-            <button type="button" class="btn btn-outline-darkmode" id="modal-detailview-copypath-button" onclick="copyButton('${outputdatapath}')">Copy Path</a>
-            <button type="button" class="btn btn-outline-darkmode" data-dismiss="modal">Close</button>
+            let footerHtml = `
+            <button type="button" class="btn btn-outline-darkmode" id="modal-detailview-download-button" onclick="location.href='/download-item?itemtype=${itemtype}&id=${itemid}'">Download</button>
+            <button type="button" class="btn btn-outline-darkmode" id="modal-detailview-copypath-button" onclick="copyButton('${outputdatapath}')">Copy Path</button>
             `
-            document.getElementById("modal-detailview-footer").innerHTML = footerHtml
+            let footerHtmlForAdmin=`
+            <button type="button" class="btn btn-outline-darkmode" id="modal-detailview-download-button" onclick="location.href='/download-item?itemtype=${itemtype}&id=${itemid}'">Download</button>
+            <button type="button" class="btn btn-outline-darkmode" id="modal-detailview-copypath-button" onclick="copyButton('${outputdatapath}')">Copy Path</button>
+            <button type="button" class="btn btn-outline-danger" id="modal-detailview-delete-button" data-dismiss="modal" data-toggle="modal" data-target="#modal-rmitem" onclick="setRmItemModal('${itemtype}','${itemid}')">Delete</button>
+            `
+            if (document.getElementById("accesslevel").value == "admin") {
+                document.getElementById("modal-detailview-footer").innerHTML = footerHtmlForAdmin
+            } else {
+                document.getElementById("modal-detailview-footer").innerHTML = footerHtml
+            }
             if (itemtype == "footage") {
-                document.getElementById("modal-detailview-download-button").type="hidden"        
+                document.getElementById("modal-detailview-download-button").style.visibility="hidden"        
             }
         },
         error: function(result) {
