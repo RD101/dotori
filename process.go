@@ -1739,25 +1739,7 @@ func genClipToMp4Media(adminSetting Adminsetting, item Item) error {
 
 // ProcessIesItem 함수는 ies 아이템을 연산한다.
 func ProcessIesItem(client *mongo.Client, adminSetting Adminsetting, item Item) error {
-	// thumbnail 폴더를 생성한다.
-	err := SetStatus(client, item, "creating thumbnail directory")
-	if err != nil {
-		return err
-	}
-	err = genThumbDir(adminSetting, item)
-	if err != nil {
-		return err
-	}
-	// 썸네일 이미지를 생성한다.
-	err = SetStatus(client, item, "creating thumbnail image")
-	if err != nil {
-		return err
-	}
-	err = genThumbImage(adminSetting, item)
-	if err != nil {
-		return err
-	}
-	err = SetStatus(client, item, "done")
+	err := SetStatus(client, item, "done")
 	if err != nil {
 		return err
 	}
