@@ -52,12 +52,6 @@ function setRmItemModal(itemtype, itemId) {
 
 // setRmItemModal 은 아이템 삭제 버튼을 누르면 id값을 받아 modal창에 보여주는 함수이다.
 function setDetailViewModal(itemtype, itemid) {
-    document.getElementById("modal-detailview-itemid").innerHTML = itemid;
-    if (itemtype == "footage") {
-        document.getElementById("modal-detailview-download-button").type="hidden"        
-    } else {
-        document.getElementById("modal-detailview-download-button").onclick=`location.href='/download-item?itemtype=${itemtype}&id=${itemid}'`
-    }
     $.ajax({
         url: `/api/item?itemtype=${itemtype}&id=${itemid}`,
         type: "get",
@@ -67,8 +61,16 @@ function setDetailViewModal(itemtype, itemid) {
             document.getElementById("modal-detailview-itemid").innerHTML = itemid;
             document.getElementById("modal-detailview-author").innerHTML = response["author"];
             document.getElementById("modal-detailview-description").innerHTML = response["description"];
-            document.getElementById("modal-detailview-copypath-button").onclick = copyButton(response["outputdatapath"]);
-            console.log("success");
+            let outputdatapath=response["outputdatapath"]
+            let footerHtml=`
+            <button type="button" class="btn btn-outline-darkmode" id="modal-detailview-download-button" onclick="location.href='/download-item?itemtype=${itemtype}&id=${itemid}'">Download</a>
+            <button type="button" class="btn btn-outline-darkmode" id="modal-detailview-copypath-button" onclick=copyButton('${outputdatapath}')>Copy Path</a>
+            <button type="button" class="btn btn-outline-darkmode" data-dismiss="modal">Close</button>
+            `
+            document.getElementById("modal-detailview-footer").innerHTML = footerHtml
+            if (itemtype == "footage") {
+                document.getElementById("modal-detailview-download-button").type="hidden"        
+            }
         },
         error: function(result) {
             alert(result);
@@ -76,6 +78,7 @@ function setDetailViewModal(itemtype, itemid) {
             
         }
     });
+
 }
 
 // rmItemModal 은 삭제 modal창에서 Delete 버튼을 누르면 실행되는 아이템 삭제 함수이다. 
