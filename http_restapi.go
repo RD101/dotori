@@ -199,12 +199,7 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 		return
 	} else if r.Method == http.MethodGet {
 		q := r.URL.Query()
-		itemtype := q.Get("itemtype")
 		id := q.Get("id")
-		if itemtype == "" {
-			http.Error(w, "URL에 itemtype을 입력해주세요", http.StatusBadRequest)
-			return
-		}
 		if id == "" {
 			http.Error(w, "URL에 id를 입력해주세요", http.StatusBadRequest)
 			return

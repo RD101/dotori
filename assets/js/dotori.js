@@ -51,9 +51,9 @@ function setRmItemModal(itemtype, itemId) {
 }
 
 // setDetailViewModal 은 아이템을 선택했을 때 볼 수 있는 detailview 모달창에 detail 정보를 세팅해주는 함수이다.
-function setDetailViewModal(itemtype, itemid) {
+function setDetailViewModal(itemid) {
     $.ajax({
-        url: `/api/item?itemtype=${itemtype}&id=${itemid}`,
+        url: `/api/item?id=${itemid}`,
         type: "get",
         dataType: "json",
         success: function(response) {
@@ -63,11 +63,11 @@ function setDetailViewModal(itemtype, itemid) {
             document.getElementById("modal-detailview-description").innerHTML = response["description"];
             let outputdatapath=response["outputdatapath"]
             let footerHtml = `
-            <button type="button" class="btn btn-outline-darkmode" id="modal-detailview-download-button" onclick="location.href='/download-item?itemtype=${itemtype}&id=${itemid}'">Download</button>
+            <button type="button" class="btn btn-outline-darkmode" id="modal-detailview-download-button" onclick="location.href='/download-item?id=${itemid}'">Download</button>
             <button type="button" class="btn btn-outline-darkmode" id="modal-detailview-copypath-button" onclick="copyButton('${outputdatapath}')">Copy Path</button>
             `
             let footerHtmlForAdmin=`
-            <button type="button" class="btn btn-outline-darkmode" id="modal-detailview-download-button" onclick="location.href='/download-item?itemtype=${itemtype}&id=${itemid}'">Download</button>
+            <button type="button" class="btn btn-outline-darkmode" id="modal-detailview-download-button" onclick="location.href='/download-item?id=${itemid}'">Download</button>
             <button type="button" class="btn btn-outline-darkmode" id="modal-detailview-copypath-button" onclick="copyButton('${outputdatapath}')">Copy Path</button>
             <button type="button" class="btn btn-outline-danger" id="modal-detailview-delete-button" data-dismiss="modal" data-toggle="modal" data-target="#modal-rmitem" onclick="setRmItemModal('${itemtype}','${itemid}')">Delete</button>
             `
@@ -76,7 +76,7 @@ function setDetailViewModal(itemtype, itemid) {
             } else {
                 document.getElementById("modal-detailview-footer").innerHTML = footerHtml
             }
-            if (itemtype == "footage") {
+            if (response["itemtype"] == "footage") {
                 document.getElementById("modal-detailview-download-button").style.visibility="hidden"        
             }
         },
