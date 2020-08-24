@@ -307,7 +307,7 @@ func copyFileContents(inputpath, outputpath string) error {
 	return nil
 }
 
-// HasWildcard 함수는 경로를 받아서 태그를 반환한다.
+// HasWildCard 함수는 경로를 받아서 Wildcard를 포함한다면 true, Wildcard를 포함하지 않는다면 false를 반환한다.
 func HasWildcard(path string) bool {
 	if strings.Contains(path, "*") || strings.Contains(path, "?") {
 		return true
