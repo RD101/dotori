@@ -46,12 +46,11 @@ function copyButton(elementId) {
 
 // setRmItemModal 은 아이템 삭제 버튼을 누르면 id값을 받아 modal창에 보여주는 함수이다.
 function setRmItemModal(itemtype, itemId) {
-    console.log("setRmItemModal")
     document.getElementById("modal-rmitem-itemtype").value = itemtype;
     document.getElementById("modal-rmitem-itemid").value = itemId;
 }
 
-// setRmItemModal 은 아이템 삭제 버튼을 누르면 id값을 받아 modal창에 보여주는 함수이다.
+// setDetailViewModal 은 아이템을 선택했을 때 볼 수 있는 detailview 모달창에 detail 정보를 세팅해주는 함수이다.
 function setDetailViewModal(itemtype, itemid) {
     $.ajax({
         url: `/api/item?itemtype=${itemtype}&id=${itemid}`,
