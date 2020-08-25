@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -24,12 +23,14 @@ func handleInit(w http.ResponseWriter, r *http.Request) {
 		TopUsingItems       []Item
 		RecentTags          []string // 최근 등록된 태그 리스트
 		Token
-		Adminsetting Adminsetting
-		Searchword   string
-		ItemType     string
-		TotalNum     int64
-		AllItemCount string
-		User         User
+		Adminsetting         Adminsetting
+		Searchword           string
+		ItemType             string
+		TotalNum             int64
+		AllItemCount         string
+		RecentlyTotalItemNum int64
+		TopUsingTotalItemNum int64
+		User                 User
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -76,6 +77,18 @@ func handleInit(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.AllItemCount = humanize.Comma(num) // 숫자를 1000단위마다 comma를 찍음(string형으로 변경)
 
+	if num > 100 {
+		rcp.RecentlyTotalItemNum = 100
+	} else {
+		rcp.RecentlyTotalItemNum = num
+	}
+
+	if num > 20 {
+		rcp.TopUsingTotalItemNum = 20
+	} else {
+		rcp.TopUsingTotalItemNum = num
+	}
+
 	RecentlyTagItems, err := GetRecentlyCreatedItems(client, 20, 1) // 최근생성된 20개의 아이템들을 가져옴
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -84,14 +97,14 @@ func handleInit(w http.ResponseWriter, r *http.Request) {
 
 	rcp.RecentTags = ItemsTagsDeduplication(RecentlyTagItems) // 중복 태그를 정리함
 
-	RecentlyCreateItems, err := GetRecentlyCreatedItems(client, 4, 2) // 최근생성된 100개의 아이템들을 가져옴
+	RecentlyCreateItems, err := GetRecentlyCreatedItems(client, 4, 1) // 최근생성된 100개의 아이템들을 가져옴
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	rcp.RecentlyCreateItems = RecentlyCreateItems
 
-	TopUsingItems, err := GetTopUsingItems(client, 20) // 사용률이 높은 20개의 아이템들을 가져옴
+	TopUsingItems, err := GetTopUsingItems(client, 4, 1) // 사용률이 높은 20개의 아이템들을 가져옴
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -103,16 +116,4 @@ func handleInit(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-}
-
-func handleSubmit(w http.ResponseWriter, r *http.Request) {
-	_, err := GetTokenFromHeader(w, r)
-	if err != nil {
-		http.Redirect(w, r, "/signin", http.StatusSeeOther)
-		return
-	}
-	itemType := r.FormValue("itemtype")
-	searchword := r.FormValue("searchword")
-	page := PageToString(r.FormValue("page"))
-	http.Redirect(w, r, fmt.Sprintf("/?itemtype=%s&searchword=%s&page=%s", itemType, searchword, page), http.StatusSeeOther)
 }

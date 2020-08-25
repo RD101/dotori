@@ -63,7 +63,6 @@ func webserver() {
 	// 웹주소 설정
 	if *flagDevMode {
 		http.HandleFunc("/", handleInit)
-		http.HandleFunc("/submit", handleSubmit)
 	} else {
 		http.HandleFunc("/", handleSearch)
 	}
@@ -368,6 +367,8 @@ func webserver() {
 	http.HandleFunc("/api/search", handleAPISearch)
 	http.HandleFunc("/api/adminsetting", handleAPIAdminSetting)
 	http.HandleFunc("/api/usingrate", handleAPIUsingRate)
+	http.HandleFunc("/api/recentlycreate", handleAPIRecentlyCreate)
+	http.HandleFunc("/api/topusing", handleAPITopUsing)
 
 	// 웹서버 실행
 	if *flagCertFullchain != "" || *flagCertPrivkey != "" {

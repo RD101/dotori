@@ -117,13 +117,14 @@ func GetRecentlyCreatedItems(client *mongo.Client, limitnum int64, page int64) (
 }
 
 // GetTopUsingItems 는 DB에서 Using숫자가 높은 순서, num건의 아이템 정보를 가져오는 함수입니다.
-func GetTopUsingItems(client *mongo.Client, limitnum int64) ([]Item, error) {
+func GetTopUsingItems(client *mongo.Client, limitnum int64, page int64) ([]Item, error) {
 	collection := client.Database(*flagDBName).Collection("items")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	var results []Item
 	opts := options.Find()
 	opts.SetSort(bson.M{"usingrate": -1})
+	opts.SetSkip(int64((page - 1) * limitnum))
 	opts.SetLimit(int64(limitnum))
 	cursor, err := collection.Find(ctx, bson.M{}, opts)
 	if err != nil {

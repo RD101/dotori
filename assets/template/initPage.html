@@ -6,12 +6,12 @@
     	<div class="row justify-content-center align-items-center m-3">
 		    <div class="col-lg-12">
 			    <div class="input-group mb-3">
-                    <span class="text-white">총 {{$.AllItemCount}} 건의 에셋이 등록되어 있습니다.</span><br>
+                    <span class="text-white">총 {{$.AllItemCount}} 건의 에셋이 등록되어 있습니다.</span>
 			    </div>
         </div>
       </div>
       {{template "itemsRecentlyCreate" .}}
-      <!-- {{template "itemsTopUsing" .}} -->
+      {{template "itemsTopUsing" .}}
       {{template "itemsRecentlyTag" .}}
       {{template "footer"}}
     </body>
