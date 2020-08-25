@@ -153,6 +153,8 @@ func main() {
 			addLutItemCmd()
 		case "hdri":
 			addHdriItemCmd()
+		case "fusion360":
+			addFusion360ItemCmd()
 		default:
 			log.Fatal("command를 지원하지 않는 아이템타입입니다.")
 		}
