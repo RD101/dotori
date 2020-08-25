@@ -23,7 +23,7 @@ $ sudo dotori -add -itemtype clip -title example -author woong -description "des
 - inputdatapath
 - fps
 
-### PDF, HWP, PPT, Sound, Texture, Unreal, IES, HDRI
+### PDF, HWP, PPT, Sound, Texture, Unreal, IES
 ```bash
 $ sudo dotori -add -itemtype pdf -title example -author woong -description "description1 about some details" -tag "나무 낙엽 item1" -inputdatapath /Users/seoyoungbae/git/fork/dotori/examples/pdf/지식재산권의기초.pdf
 ```
@@ -58,5 +58,18 @@ $ sudo dotori -add -itemtype lut -title example -author woong -description "desc
 - tag
 - inputthumbimgpath
 - inputdatapath
+### HDRI
+```bash
+$ sudo dotori -add -itemtype hdri -title example -author woong -description "description1 about some details" -tag "나무 낙엽 item1" -incolorspace "ACES - ACES2065-1" -outcolorspace "Output - Rec.709" -inputdatapath "/Users/seoyoungbae/git/lazypic/tdcourse_examples/hdri/night_city.hdr /Users/seoyoungbae/git/lazypic/tdcourse_examples/hdri/night_city.exr"
+```
+- itemtype
+- title
+- author
+- description
+- tag
+- inputdatapath
+- incolorspace
+- outcolorspace
+
 
 

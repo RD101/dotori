@@ -1982,6 +1982,12 @@ func addHdriItemCmd() {
 	if *flagInputDataPath == "" {
 		log.Fatal("inputdatapath가 빈 문자열입니다")
 	}
+	if *flagInColorspace == "" {
+		log.Fatal("incolorspace가 빈 문자열입니다")
+	}
+	if *flagOutColorspace == "" {
+		log.Fatal("outcolorspace가 빈 문자열입니다")
+	}
 	i := Item{}
 	i.ID = primitive.NewObjectID()
 	i.ItemType = *flagItemType
@@ -1994,6 +2000,8 @@ func addHdriItemCmd() {
 		log.Fatal(err)
 	}
 	i.Attributes = attr
+	i.InColorspace = *flagInColorspace
+	i.OutColorspace = *flagOutColorspace
 	i.Status = "ready"
 	i.Logs = append(i.Logs, "아이템이 생성되었습니다.")
 	i.ThumbImgUploaded = false
