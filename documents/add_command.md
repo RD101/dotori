@@ -19,11 +19,11 @@ $ sudo dotori -add -itemtype clip -title example -author woong -description "des
 - title
 - author
 - description
-- fps
 - tag
 - inputdatapath
+- fps
 
-### PDF, HWP, PPT, Sound, Texture, Unreal
+### PDF, HWP, PPT, Sound, Texture, Unreal, IES
 ```bash
 $ sudo dotori -add -itemtype pdf -title example -author woong -description "description1 about some details" -tag "나무 낙엽 item1" -inputdatapath /Users/seoyoungbae/git/fork/dotori/examples/pdf/지식재산권의기초.pdf
 ```
@@ -42,8 +42,9 @@ $ sudo dotori -add -itemtype footage -title example -author woong -description "
 - title
 - author
 - description
+- tag
+- inputdatapath
 - fps
 - incolorspace
 - outcolorspace
-- tag
-- inputdatapath
+
