@@ -47,4 +47,16 @@ $ sudo dotori -add -itemtype footage -title example -author woong -description "
 - fps
 - incolorspace
 - outcolorspace
+### LUT
+```bash
+$ sudo dotori -add -itemtype lut -title example -author woong -description "description1 about some details" -tag "나무 낙엽 item1" -inputthumbimgpath /Users/seoyoungbae/git/fork/dotori/examples/maya/thumbnail.jpg -inputdatapath /Users/seoyoungbae/git/fork/dotori/examples/lut/ARRI_LogC2Video_709_adobe3d_33.cube
+```
+- itemtype
+- title
+- author
+- description
+- tag
+- inputthumbimgpath
+- inputdatapath
+
 

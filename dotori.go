@@ -149,6 +149,8 @@ func main() {
 			addPptItemCmd()
 		case "ies":
 			addIesItemCmd()
+		case "lut":
+			addLutItemCmd()
 		default:
 			log.Fatal("command를 지원하지 않는 아이템타입입니다.")
 		}
