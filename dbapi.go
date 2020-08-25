@@ -590,14 +590,13 @@ func GetIncompleteItems(client *mongo.Client) ([]Item, error) {
 				bson.M{"datauploaded": false},
 			}},
 		}},
-		// sound, pdf, hwp, hdri, texture, clip, ies, ppt, unreal 타입 아이템의 조건
+		// sound, pdf, hwp, texture, clip, ies, ppt, unreal 타입 아이템의 조건
 		bson.M{"$and": []interface{}{
 			// 아이템 타입
 			bson.M{"$or": []interface{}{
 				bson.M{"itemtype": "sound"},
 				bson.M{"itemtype": "pdf"},
 				bson.M{"itemtype": "hwp"},
-				bson.M{"itemtype": "hdri"},
 				bson.M{"itemtype": "texture"},
 				bson.M{"itemtype": "lut"},
 				bson.M{"itemtype": "clip"},
@@ -608,11 +607,12 @@ func GetIncompleteItems(client *mongo.Client) ([]Item, error) {
 			// 조건
 			bson.M{"datauploaded": false},
 		}},
-		// lut 타입 아이템의 조건
+		// lut, hdri 타입 아이템의 조건
 		bson.M{"$and": []interface{}{
 			// 아이템 타입
 			bson.M{"$or": []interface{}{
 				bson.M{"itemtype": "lut"},
+				bson.M{"itemtype": "hdri"},
 			}},
 			// 조건
 			bson.M{"$or": []interface{}{
