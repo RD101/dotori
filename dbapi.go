@@ -560,7 +560,7 @@ func SetLog(client *mongo.Client, id, msg string) error {
 	return nil
 }
 
-//GetIncompleteItems 함수는 썸네일 이미지, 썸네일 클립, 데이터 중 하나라도 없는 아이템을 모두 가져온다.
+//GetIncompleteItems 함수는 프로세스 이후 필요한 정보(썸네일 이미지, 썸네일 클립, 데이터 등)가 없는 아이템을 가지고 온다.
 func GetIncompleteItems(client *mongo.Client) ([]Item, error) {
 	var results []Item
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -568,6 +568,7 @@ func GetIncompleteItems(client *mongo.Client) ([]Item, error) {
 
 	filter := bson.M{"$or": []interface{}{
 		// maya, max, fusion360, nuke, houdini, blender, footage, alembic, usd, modo, katana, openvdb 아이템타입의 조건
+		// 필요 조건: 썸네일 이미지, 썸네일 클립, 데이터
 		bson.M{"$and": []interface{}{
 			// 아이템 타입
 			bson.M{"$or": []interface{}{
@@ -591,14 +592,14 @@ func GetIncompleteItems(client *mongo.Client) ([]Item, error) {
 				bson.M{"datauploaded": false},
 			}},
 		}},
-		// sound, pdf, hwp, hdri, texture, clip, ies, ppt, unreal 타입 아이템의 조건
+		// sound, pdf, hwp, texture, clip, ies, ppt, unreal 타입 아이템의 조건
+		// 필요 조건: 데이터
 		bson.M{"$and": []interface{}{
 			// 아이템 타입
 			bson.M{"$or": []interface{}{
 				bson.M{"itemtype": "sound"},
 				bson.M{"itemtype": "pdf"},
 				bson.M{"itemtype": "hwp"},
-				bson.M{"itemtype": "hdri"},
 				bson.M{"itemtype": "texture"},
 				bson.M{"itemtype": "lut"},
 				bson.M{"itemtype": "clip"},
@@ -609,11 +610,13 @@ func GetIncompleteItems(client *mongo.Client) ([]Item, error) {
 			// 조건
 			bson.M{"datauploaded": false},
 		}},
-		// lut 타입 아이템의 조건
+		// lut, hdri 타입 아이템의 조건
+		// 필요 조건: 썸네일 이미지, 데이터
 		bson.M{"$and": []interface{}{
 			// 아이템 타입
 			bson.M{"$or": []interface{}{
 				bson.M{"itemtype": "lut"},
+				bson.M{"itemtype": "hdri"},
 			}},
 			// 조건
 			bson.M{"$or": []interface{}{
