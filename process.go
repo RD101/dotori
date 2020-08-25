@@ -249,8 +249,6 @@ func processingItem(item Item) {
 			return
 		}
 		return
-	case "psd": // 포토샵 파일
-		return
 	case "modo": // 모도
 		err = ProcessModoItem(client, adminSetting, item)
 		if err != nil {
@@ -303,6 +301,16 @@ func processingItem(item Item) {
 		return
 	case "hwp":
 		err = ProcessHwpItem(client, adminSetting, item)
+		if err != nil {
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
+			if err != nil {
+				log.Println(err)
+			}
+			return
+		}
+		return
+	case "ppt":
+		err = ProcessPptItem(client, adminSetting, item)
 		if err != nil {
 			err = SetErrStatus(client, item.ID.Hex(), err.Error())
 			if err != nil {
@@ -1756,8 +1764,18 @@ func ProcessPdfItem(client *mongo.Client, adminSetting Adminsetting, item Item) 
 	return nil
 }
 
-// ProcessHwpItem 함수는 PDF 아이템을 연산한다.
+// ProcessHwpItem 함수는 Hwp 아이템을 연산한다.
 func ProcessHwpItem(client *mongo.Client, adminSetting Adminsetting, item Item) error {
+	// 아무 프로세스는 없지만 "done" 처리 해야한다. 그래야 프로세싱하지 않는다.
+	err := SetStatus(client, item, "done")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// ProcessPptItem 함수는 PPT 아이템을 연산한다.
+func ProcessPptItem(client *mongo.Client, adminSetting Adminsetting, item Item) error {
 	// 아무 프로세스는 없지만 "done" 처리 해야한다. 그래야 프로세싱하지 않는다.
 	err := SetStatus(client, item, "done")
 	if err != nil {
