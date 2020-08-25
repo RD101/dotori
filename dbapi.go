@@ -468,23 +468,8 @@ func GetOngoingProcess(client *mongo.Client) ([]Item, error) {
 	var results []Item
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	filter := bson.M{"$and": []interface{}{
-		// 프로세스가 필요한 아이템 타입
-		bson.M{"$or": []interface{}{
-			bson.M{"itemtype": "maya"},
-			bson.M{"itemtype": "max"},
-			bson.M{"itemtype": "fusion360"},
-			bson.M{"itemtype": "nuke"},
-			bson.M{"itemtype": "houdini"},
-			bson.M{"itemtype": "blender"},
-			bson.M{"itemtype": "footage"},
-			bson.M{"itemtype": "alembic"},
-			bson.M{"itemtype": "usd"},
-			bson.M{"itemtype": "clip"},
-		}},
-		// 조건: 프로세스가 종료되지 않은 모든 아이템
-		bson.M{"status": bson.M{"$ne": "done"}},
-	}}
+	// 조건: 프로세스가 종료되지 않은 모든 아이템
+	filter := bson.M{"status": bson.M{"$ne": "done"}}
 	cursor, err := client.Database(*flagDBName).Collection("items").Find(ctx, filter)
 	if err != nil {
 		return results, err
