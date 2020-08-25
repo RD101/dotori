@@ -36,36 +36,68 @@ document.onkeydown = function(e) {
 
 // copyButton 은 아이디값을 받아서, 클립보드로 복사하는 기능이다.
 function copyButton(elementId) {
-    let id = document.createElement("input");   // input요소를 만듬
-    id.setAttribute("value", elementId);        // input요소에 값을 추가
-    document.body.appendChild(id);              // body에 요소 추가
-    id.select();                                // input요소를 선택
-    document.execCommand("copy");               // 복사기능 실행
-    document.body.removeChild(id);              // body에 요소 삭제
+    let id = document.createElement("input");                       // input요소를 만듬
+    id.setAttribute("value", elementId);                            // input요소에 값을 추가
+    document.getElementById("modal-detailview").appendChild(id);    // modal에 요소 추가
+    id.select();                                                    // input요소를 선택
+    document.execCommand("copy");                                   // 복사기능 실행
+    document.getElementById("modal-detailview").removeChild(id);    // modal에서 요소 삭제
 }
 
-// setRmItemModal 은 아이템 삭제 버튼을 누르면 id값을 받아 modal창에 보여주는 함수이다.
-function setRmItemModal(itemtype, itemId) {
-    document.getElementById("modal-rmitem-itemtype").value = itemtype;
-    document.getElementById("modal-rmitem-itemid").value = itemId;
+// setDetailViewModal 은 아이템을 선택했을 때 볼 수 있는 detailview 모달창에 detail 정보를 세팅해주는 함수이다.
+function setDetailViewModal(itemid) {
+    $.ajax({
+        url: `/api/item?id=${itemid}`,
+        type: "get",
+        dataType: "json",
+        success: function(response) {
+            document.getElementById("modal-detailview-title").innerHTML = response["title"];
+            document.getElementById("modal-detailview-itemid").innerHTML = itemid;
+            document.getElementById("modal-detailview-author").innerHTML = response["author"];
+            document.getElementById("modal-detailview-description").innerHTML = response["description"];
+            let outputdatapath=response["outputdatapath"]
+            let footerHtml = `
+            <button type="button" class="btn btn-outline-darkmode" id="modal-detailview-download-button" onclick="location.href='/download-item?id=${itemid}'">Download</button>
+            <button type="button" class="btn btn-outline-darkmode" id="modal-detailview-copypath-button" onclick="copyButton('${outputdatapath}')">Copy Path</button>
+            `
+            let footerHtmlForAdmin=`
+            <button type="button" class="btn btn-outline-darkmode" id="modal-detailview-download-button" onclick="location.href='/download-item?id=${itemid}'">Download</button>
+            <button type="button" class="btn btn-outline-darkmode" id="modal-detailview-copypath-button" onclick="copyButton('${outputdatapath}')">Copy Path</button>
+            <button type="button" class="btn btn-outline-danger" id="modal-detailview-delete-button" data-dismiss="modal" data-toggle="modal" data-target="#modal-rmitem">Delete</button>
+            `
+            if (document.getElementById("accesslevel").value == "admin") {
+                document.getElementById("modal-rmitem-itemid").value = itemid;
+                document.getElementById("modal-detailview-footer").innerHTML = footerHtmlForAdmin
+            } else {
+                document.getElementById("modal-detailview-footer").innerHTML = footerHtml
+            }
+            if (response["itemtype"] == "footage") {
+                document.getElementById("modal-detailview-download-button").style.visibility="hidden"        
+            }
+        },
+        error: function(result) {
+            alert(result);
+        }
+    });
+
 }
 
 // rmItemModal 은 삭제 modal창에서 Delete 버튼을 누르면 실행되는 아이템 삭제 함수이다. 
-function rmItemModal(itemtype,itemId) {
+function rmItemModal(itemId) {
     let token = document.getElementById("token").value;
     $.ajax({
-        url: `/api/item?itemtype=${itemtype}&id=${itemId}`,
+        url: `/api/item?id=${itemId}`,
         type: "delete",
         headers: {
             "Authorization": "Basic " + token
         },
         dataType: "json",
         success: function() {
-            alert("itemtype: "+itemtype+"\nid: "+itemId+"\n\n아이템 삭제를 성공했습니다."); 
+            alert("id: "+itemId+"\n\n아이템 삭제를 성공했습니다."); 
             location.reload();
         },
         error: function(){
-            alert("itemtype: "+itemtype+"\nid: "+itemId+"\n\n아이템 삭제를 실패했습니다.");  
+            alert("id: "+itemId+"\n\n아이템 삭제를 실패했습니다.");  
         }
     });
 }
