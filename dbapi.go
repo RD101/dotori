@@ -463,8 +463,9 @@ func GetFileUploadedItemsNum(client *mongo.Client) (int64, error) {
 	return n, nil
 }
 
-// GetOngoingProcess 는 처리 중인 아이템을 가져온다.
-func GetOngoingProcess(client *mongo.Client) ([]Item, error) {
+
+// GetUndoneItem 는 status가 done이 아닌 모든 아이템을 가져온다.
+func GetUndoneItem(client *mongo.Client) ([]Item, error) {
 	var results []Item
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
