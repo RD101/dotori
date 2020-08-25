@@ -560,7 +560,7 @@ func SetLog(client *mongo.Client, id, msg string) error {
 	return nil
 }
 
-//GetIncompleteItems 함수는 썸네일 이미지, 썸네일 클립, 데이터 중 하나라도 없는 아이템을 모두 가져온다.
+//GetIncompleteItems 함수는 프로세스 이후 필요한 정보(썸네일 이미지, 썸네일 클립, 데이터 등)가 없는 아이템을 가지고 온다.
 func GetIncompleteItems(client *mongo.Client) ([]Item, error) {
 	var results []Item
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
