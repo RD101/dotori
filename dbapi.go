@@ -463,8 +463,8 @@ func GetFileUploadedItemsNum(client *mongo.Client) (int64, error) {
 	return n, nil
 }
 
-// GetOngoingProcess 는 처리 중인 아이템을 가져온다.
-func GetOngoingProcess(client *mongo.Client) ([]Item, error) {
+// GetUnDoneItem 함수는 status가 done이 아닌 모든 아이템을 가져온다.
+func GetUnDoneItem(client *mongo.Client) ([]Item, error) {
 	var results []Item
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -566,7 +566,7 @@ func GetIncompleteItems(client *mongo.Client) ([]Item, error) {
 	defer cancel()
 
 	filter := bson.M{"$or": []interface{}{
-		// maya, max, fusion360, nuke, houdini, blender, footage, alembic, usd 아이템타입의 조건
+		// maya, max, fusion360, nuke, houdini, blender, footage, alembic, usd, modo, katana, openvdb 아이템타입의 조건
 		bson.M{"$and": []interface{}{
 			// 아이템 타입
 			bson.M{"$or": []interface{}{
@@ -579,6 +579,9 @@ func GetIncompleteItems(client *mongo.Client) ([]Item, error) {
 				bson.M{"itemtype": "footage"},
 				bson.M{"itemtype": "alembic"},
 				bson.M{"itemtype": "usd"},
+				bson.M{"itemtype": "modo"},
+				bson.M{"itemtype": "katana"},
+				bson.M{"itemtype": "openvdb"},
 			}},
 			// 조건
 			bson.M{"$or": []interface{}{
@@ -587,7 +590,7 @@ func GetIncompleteItems(client *mongo.Client) ([]Item, error) {
 				bson.M{"datauploaded": false},
 			}},
 		}},
-		// sound, pdf, hwp, hdri, texture, lut, clip, ies 타입 아이템의 조건
+		// sound, pdf, hwp, hdri, texture, clip, ies, ppt, unreal 타입 아이템의 조건
 		bson.M{"$and": []interface{}{
 			// 아이템 타입
 			bson.M{"$or": []interface{}{
@@ -599,9 +602,23 @@ func GetIncompleteItems(client *mongo.Client) ([]Item, error) {
 				bson.M{"itemtype": "lut"},
 				bson.M{"itemtype": "clip"},
 				bson.M{"itemtype": "ies"},
+				bson.M{"itemtype": "ppt"},
+				bson.M{"itemtype": "unreal"},
 			}},
 			// 조건
 			bson.M{"datauploaded": false},
+		}},
+		// lut 타입 아이템의 조건
+		bson.M{"$and": []interface{}{
+			// 아이템 타입
+			bson.M{"$or": []interface{}{
+				bson.M{"itemtype": "lut"},
+			}},
+			// 조건
+			bson.M{"$or": []interface{}{
+				bson.M{"thumbimguploaded": false},
+				bson.M{"datauploaded": false},
+			}},
 		}},
 	}}
 
