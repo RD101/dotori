@@ -1207,7 +1207,7 @@ func genThumbHDRI(adminSetting Adminsetting, item Item) error {
 		return errors.New("no files")
 	case 1: // 파일이 한개일 때
 		input = files[0].Name()
-	default: // 중간프레임 파일명을 구한다.
+	default: // 파일이 2개 이상인 경우 에러처리 한다.
 		return errors.New("파일이 여러개가 존재합니다")
 	}
 	args := []string{
