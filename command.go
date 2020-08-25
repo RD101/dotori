@@ -324,7 +324,7 @@ func addFusion360ItemCmd() {
 		}
 		// 유효한 파일인지 체크.
 		ext = filepath.Ext(path)
-		if ext != ".ma" && ext != ".mb" && ext != ".zip" {
+		if ext != ".f3d" && ext != ".step" && ext != ".stp" && ext != ".zip" {
 			log.Fatal("지원하지 않는 데이터 포맷입니다.")
 		}
 		// 있으면 OutputData 경로로 복사하기
