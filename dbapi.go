@@ -567,6 +567,7 @@ func GetIncompleteItems(client *mongo.Client) ([]Item, error) {
 
 	filter := bson.M{"$or": []interface{}{
 		// maya, max, fusion360, nuke, houdini, blender, footage, alembic, usd, modo, katana, openvdb 아이템타입의 조건
+		// 필요 조건: 썸네일 이미지, 썸네일 클립, 데이터
 		bson.M{"$and": []interface{}{
 			// 아이템 타입
 			bson.M{"$or": []interface{}{
@@ -591,6 +592,7 @@ func GetIncompleteItems(client *mongo.Client) ([]Item, error) {
 			}},
 		}},
 		// sound, pdf, hwp, texture, clip, ies, ppt, unreal 타입 아이템의 조건
+		// 필요 조건: 데이터
 		bson.M{"$and": []interface{}{
 			// 아이템 타입
 			bson.M{"$or": []interface{}{
@@ -608,6 +610,7 @@ func GetIncompleteItems(client *mongo.Client) ([]Item, error) {
 			bson.M{"datauploaded": false},
 		}},
 		// lut, hdri 타입 아이템의 조건
+		// 필요 조건: 썸네일 이미지, 데이터
 		bson.M{"$and": []interface{}{
 			// 아이템 타입
 			bson.M{"$or": []interface{}{
