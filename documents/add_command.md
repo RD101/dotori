@@ -60,7 +60,7 @@ $ sudo dotori -add -itemtype lut -title example -author woong -description "desc
 - inputdatapath
 ### HDRI
 ```bash
-$ sudo dotori -add -itemtype hdri -title example -author woong -description "description1 about some details" -tag "나무 낙엽 item1" -incolorspace "ACES - ACES2065-1" -outcolorspace "Output - Rec.709" -inputdatapath "/Users/seoyoungbae/git/lazypic/tdcourse_examples/hdri/night_city.hdr /Users/seoyoungbae/git/lazypic/tdcourse_examples/hdri/night_city.exr"
+$ sudo dotori -add -itemtype hdri -title example -author woong -description "description1 about some details" -tag "나무 낙엽 item1" -incolorspace "ACES - ACES2065-1" -outcolorspace "Output - Rec.709" -inputdatapath /Users/seoyoungbae/git/lazypic/tdcourse_examples/hdri/night_city.hdr
 ```
 - itemtype
 - title
