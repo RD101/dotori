@@ -155,6 +155,8 @@ func main() {
 			addHdriItemCmd()
 		case "fusion360":
 			addFusion360ItemCmd()
+		case "max":
+			addMaxItemCmd()
 		default:
 			log.Fatal("command를 지원하지 않는 아이템타입입니다.")
 		}
