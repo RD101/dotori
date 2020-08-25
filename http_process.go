@@ -46,7 +46,7 @@ func handleItemProcess(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp := recipe{}
 	// 완료되지 않은 아이템을 가져온다
-	rcp.Items, err = GetOngoingProcess(client)
+	rcp.Items, err = GetUnDoneItem(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
