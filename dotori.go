@@ -217,7 +217,8 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		items, err := GetUnDoneItem(client)
+    
+		items, err := GetUndoneItem(client)
 		fmt.Println(items)
 	} else if *flagProcess {
 		ProcessMain()
