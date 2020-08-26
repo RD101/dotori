@@ -382,8 +382,8 @@ func handleAPIUsingRate(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-// handleAPIRecentlyCreate 는 최근생성된 아이템들을 반환하는 함수임니다.
-func handleAPIRecentlyCreate(w http.ResponseWriter, r *http.Request) {
+// handleAPIRecentItem 는 최근생성된 아이템들을 반환하는 함수임니다.
+func handleAPIRecentItem(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		r.ParseForm()
 		recentlypage, err := strconv.ParseInt(r.FormValue("recentlypage"), 10, 64)
@@ -429,8 +429,8 @@ func handleAPIRecentlyCreate(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-// handleAPITopUsing 는 많이 사용되는 아이템들을 반환하는 함수임니다.
-func handleAPITopUsing(w http.ResponseWriter, r *http.Request) {
+// handleAPITopUsingItem 는 많이 사용되는 아이템들을 반환하는 함수임니다.
+func handleAPITopUsingItem(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		r.ParseForm()
 		topusingpage, err := strconv.ParseInt(r.FormValue("usingpage"), 10, 64)

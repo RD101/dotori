@@ -151,11 +151,19 @@ function recentlyClick(totalItemNum, buttonState) {
     let currentPageNum = parseInt(document.getElementById("recentlyPage").getAttribute('value')); // 현재 보고있는 페이지
     
     if (buttonState=="next"){
-        currentPageNum = currentPageNum==totalPageNum ? 1 : currentPageNum+1;
+        if (currentPageNum===totalPageNum){
+            currentPageNum = 1;
+        }else{
+            currentPageNum++;
+        }
     }else{
-        currentPageNum = currentPageNum==1 ? currentPageNum = totalPageNum : currentPageNum-1;
+        if (currentPageNum===1){
+            currentPageNum = totalPageNum;
+        }else{
+            currentPageNum--;
+        }
     }
-    if(clearItemNum!=0 && currentPageNum==totalPageNum){
+    if(clearItemNum!==0 && currentPageNum===totalPageNum){
         for(let i = 3; clearItemNum!=0; i--, clearItemNum--){
             document.getElementById("recentlyImageForm"+i).innerHTML = ""
             document.getElementById("recentlyTitle"+i).innerHTML = ""
@@ -165,7 +173,7 @@ function recentlyClick(totalItemNum, buttonState) {
     }
     document.getElementById("recentlyPage").setAttribute('value', currentPageNum);
     $.ajax({
-        url: `/api/recentlycreate?recentlypage=${currentPageNum}`,
+        url: `/api/recentitem?recentlypage=${currentPageNum}`,
         type: "get",
         dataType: "json",
         success: function(data) {
@@ -242,7 +250,7 @@ function topUsingClick(totalItemNum, buttonState) {
     }
     document.getElementById("topUsingPage").setAttribute('value', currentPageNum);
     $.ajax({
-        url: `/api/topusing?usingpage=${currentPageNum}`,
+        url: `/api/topusingitem?usingpage=${currentPageNum}`,
         type: "get",
         dataType: "json",
         success: function(data) {
