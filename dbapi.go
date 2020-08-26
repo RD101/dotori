@@ -96,15 +96,16 @@ func GetAllItems(client *mongo.Client) ([]Item, error) {
 }
 
 // GetRecentlyCreatedItems 는 DB에서 최근생성 된 num건의 아이템 정보를 가져오는 함수입니다.
-func GetRecentlyCreatedItems(client *mongo.Client, num int64) ([]Item, error) {
+func GetRecentlyCreatedItems(client *mongo.Client, limitnum int64, page int64) ([]Item, error) {
 	collection := client.Database(*flagDBName).Collection("items")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	var results []Item
-	findOptions := options.Find()
-	findOptions.SetSort(bson.M{"createtime": -1})
-	findOptions.SetLimit(num)
-	cursor, err := collection.Find(ctx, bson.M{}, findOptions)
+	opts := options.Find()
+	opts.SetSort(bson.M{"createtime": -1})
+	opts.SetSkip(int64((page - 1) * limitnum))
+	opts.SetLimit(int64(limitnum))
+	cursor, err := collection.Find(ctx, bson.M{}, opts)
 	if err != nil {
 		return results, err
 	}
@@ -116,15 +117,16 @@ func GetRecentlyCreatedItems(client *mongo.Client, num int64) ([]Item, error) {
 }
 
 // GetTopUsingItems 는 DB에서 Using숫자가 높은 순서, num건의 아이템 정보를 가져오는 함수입니다.
-func GetTopUsingItems(client *mongo.Client, num int64) ([]Item, error) {
+func GetTopUsingItems(client *mongo.Client, limitnum int64, page int64) ([]Item, error) {
 	collection := client.Database(*flagDBName).Collection("items")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	var results []Item
-	findOptions := options.Find()
-	findOptions.SetSort(bson.M{"usingrate": -1})
-	findOptions.SetLimit(num)
-	cursor, err := collection.Find(ctx, bson.M{}, findOptions)
+	opts := options.Find()
+	opts.SetSort(bson.M{"usingrate": -1})
+	opts.SetSkip(int64((page - 1) * limitnum))
+	opts.SetLimit(int64(limitnum))
+	cursor, err := collection.Find(ctx, bson.M{}, opts)
 	if err != nil {
 		return results, err
 	}
@@ -463,28 +465,14 @@ func GetFileUploadedItemsNum(client *mongo.Client) (int64, error) {
 	return n, nil
 }
 
-// GetOngoingProcess 는 처리 중인 아이템을 가져온다.
-func GetOngoingProcess(client *mongo.Client) ([]Item, error) {
+
+// GetUndoneItem 는 status가 done이 아닌 모든 아이템을 가져온다.
+func GetUndoneItem(client *mongo.Client) ([]Item, error) {
 	var results []Item
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	filter := bson.M{"$and": []interface{}{
-		// 프로세스가 필요한 아이템 타입
-		bson.M{"$or": []interface{}{
-			bson.M{"itemtype": "maya"},
-			bson.M{"itemtype": "max"},
-			bson.M{"itemtype": "fusion360"},
-			bson.M{"itemtype": "nuke"},
-			bson.M{"itemtype": "houdini"},
-			bson.M{"itemtype": "blender"},
-			bson.M{"itemtype": "footage"},
-			bson.M{"itemtype": "alembic"},
-			bson.M{"itemtype": "usd"},
-			bson.M{"itemtype": "clip"},
-		}},
-		// 조건: 프로세스가 종료되지 않은 모든 아이템
-		bson.M{"status": bson.M{"$ne": "done"}},
-	}}
+	// 조건: 프로세스가 종료되지 않은 모든 아이템
+	filter := bson.M{"status": bson.M{"$ne": "done"}}
 	cursor, err := client.Database(*flagDBName).Collection("items").Find(ctx, filter)
 	if err != nil {
 		return results, err
@@ -574,14 +562,15 @@ func SetLog(client *mongo.Client, id, msg string) error {
 	return nil
 }
 
-//GetIncompleteItems 함수는 썸네일 이미지, 썸네일 클립, 데이터 중 하나라도 없는 아이템을 모두 가져온다.
+//GetIncompleteItems 함수는 프로세스 이후 필요한 정보(썸네일 이미지, 썸네일 클립, 데이터 등)가 없는 아이템을 가지고 온다.
 func GetIncompleteItems(client *mongo.Client) ([]Item, error) {
 	var results []Item
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	filter := bson.M{"$or": []interface{}{
-		// maya, max, fusion360, nuke, houdini, blender, footage, alembic, usd 아이템타입의 조건
+		// maya, max, fusion360, nuke, houdini, blender, footage, alembic, usd, modo, katana, openvdb 아이템타입의 조건
+		// 필요 조건: 썸네일 이미지, 썸네일 클립, 데이터
 		bson.M{"$and": []interface{}{
 			// 아이템 타입
 			bson.M{"$or": []interface{}{
@@ -594,6 +583,9 @@ func GetIncompleteItems(client *mongo.Client) ([]Item, error) {
 				bson.M{"itemtype": "footage"},
 				bson.M{"itemtype": "alembic"},
 				bson.M{"itemtype": "usd"},
+				bson.M{"itemtype": "modo"},
+				bson.M{"itemtype": "katana"},
+				bson.M{"itemtype": "openvdb"},
 			}},
 			// 조건
 			bson.M{"$or": []interface{}{
@@ -602,21 +594,37 @@ func GetIncompleteItems(client *mongo.Client) ([]Item, error) {
 				bson.M{"datauploaded": false},
 			}},
 		}},
-		// sound, pdf, hwp, hdri, texture, lut, clip, ies 타입 아이템의 조건
+		// sound, pdf, hwp, texture, clip, ies, ppt, unreal 타입 아이템의 조건
+		// 필요 조건: 데이터
 		bson.M{"$and": []interface{}{
 			// 아이템 타입
 			bson.M{"$or": []interface{}{
 				bson.M{"itemtype": "sound"},
 				bson.M{"itemtype": "pdf"},
 				bson.M{"itemtype": "hwp"},
-				bson.M{"itemtype": "hdri"},
 				bson.M{"itemtype": "texture"},
 				bson.M{"itemtype": "lut"},
 				bson.M{"itemtype": "clip"},
 				bson.M{"itemtype": "ies"},
+				bson.M{"itemtype": "ppt"},
+				bson.M{"itemtype": "unreal"},
 			}},
 			// 조건
 			bson.M{"datauploaded": false},
+		}},
+		// lut, hdri 타입 아이템의 조건
+		// 필요 조건: 썸네일 이미지, 데이터
+		bson.M{"$and": []interface{}{
+			// 아이템 타입
+			bson.M{"$or": []interface{}{
+				bson.M{"itemtype": "lut"},
+				bson.M{"itemtype": "hdri"},
+			}},
+			// 조건
+			bson.M{"$or": []interface{}{
+				bson.M{"thumbimguploaded": false},
+				bson.M{"datauploaded": false},
+			}},
 		}},
 	}}
 
