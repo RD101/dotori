@@ -41,11 +41,11 @@
                         <div class="col-lg-6 col-md-12">
                             <img src="/assets/img/pdfthumbnail.svg">
                         </div>
-                        <div class="col-lg-6 col-md-12">
-                            <p style="text-align: left;">
-                                <h5 id="modal-detailview-title" style="font-weight: 600;"></h5>
-                            </p>
-                            <p style="text-align: left;">
+                        <div class="iteminfo col-lg-6 col-md-12">
+                            <h3 id="modal-detailview-title" style="font-weight: 600;">
+                                <a class="btn btn-outline-warning" id="modal-detailview-edit-button">Edit</a>
+                            </h3>
+                            <p class="test" style="text-align: left;">
                                 <strong>ID</strong>
                                 <span id="modal-detailview-itemid" style="float: right;"></span>
                             </p>
@@ -53,10 +53,14 @@
                                 <strong>Author</strong>
                                 <span id="modal-detailview-author" style="float: right;"></span>
                             </p>
-                            <p style="text-align: left;">
-                                <strong>Description</strong>
-                                <span id="modal-detailview-description" style="float: right;"></span>
-                            </p>
+                            <div class="form-group">
+                                <strong for="modal-detailview-description" class="col-form-label mb-2">Description</strong>
+                                <textarea id="modal-detailview-description" class="form-control" style="color:#fff;" rows="2" onclick="" disabled></textarea>
+                            </div>
+                            <div id="modal-detailview-tags">
+                            </div>
+                            <div id="modal-detailview-attributes">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -102,3 +106,4 @@
     </div>
 </div>
 {{end}}
+
