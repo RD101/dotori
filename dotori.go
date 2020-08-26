@@ -147,6 +147,16 @@ func main() {
 			addKatanaItemCmd()
 		case "ppt":
 			addPptItemCmd()
+		case "ies":
+			addIesItemCmd()
+		case "lut":
+			addLutItemCmd()
+		case "hdri":
+			addHdriItemCmd()
+		case "fusion360":
+			addFusion360ItemCmd()
+		case "max":
+			addMaxItemCmd()
 		default:
 			log.Fatal("command를 지원하지 않는 아이템타입입니다.")
 		}
@@ -207,7 +217,8 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		items, err := GetOngoingProcess(client)
+    
+		items, err := GetUndoneItem(client)
 		fmt.Println(items)
 	} else if *flagProcess {
 		ProcessMain()
