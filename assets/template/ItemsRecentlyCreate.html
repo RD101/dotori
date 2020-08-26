@@ -30,6 +30,8 @@
                             <img width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="/assets/img/hwpthumbnail.svg">
                         {{else if eq .ItemType "sound"}}
                             <img width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="/assets/img/soundthumbnail.svg">
+                        {{else if eq .ItemType "ies"}}
+                              <img class="card-img" width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="/assets/img/iesthumbnail.svg">
                         {{else if eq .ItemType "hdri" "texture" }}
                             <img width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="{{if eq .Status "done" }}/mediadata?id={{.ID.Hex}}&type=png{{else}}/assets/img/noimage.svg{{end}}">
                         {{else}}
