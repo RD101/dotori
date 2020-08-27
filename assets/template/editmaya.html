@@ -30,7 +30,7 @@
                         {{$dIndex := 0}}
                         {{range $file := .DataFiles}}
                             <div class="input-group mb-2" id="data{{$dIndex}}">
-                                <input id="data{{$dIndex}}" name="data{{$dIndex}}" type="text" class="form-control" value="{{$file}}" readonly>
+                                <input id="dataFile{{$dIndex}}" name="dataFile{{$dIndex}}" type="text" class="form-control" value="{{$file}}" readonly>
                                 <div class="input-group-append">
                                     <span class="add input-group-text" onclick="document.getElementById('data{{$dIndex}}').remove();">X</span>
                                 </div>

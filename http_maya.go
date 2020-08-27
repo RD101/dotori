@@ -681,7 +681,7 @@ func handleEditMayaSubmit(w http.ResponseWriter, r *http.Request) {
 	dataNum, err := strconv.Atoi(r.FormValue("dataFileNum"))
 	var dataFiles []string
 	for i := 0; i < dataNum; i++ {
-		file := r.FormValue(fmt.Sprintf("data%d", i))
+		file := r.FormValue(fmt.Sprintf("dataFile%d", i))
 		if file != "" {
 			dataFiles = append(dataFiles, file)
 		}
