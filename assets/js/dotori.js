@@ -36,36 +36,68 @@ document.onkeydown = function(e) {
 
 // copyButton 은 아이디값을 받아서, 클립보드로 복사하는 기능이다.
 function copyButton(elementId) {
-    let id = document.createElement("input");   // input요소를 만듬
-    id.setAttribute("value", elementId);        // input요소에 값을 추가
-    document.body.appendChild(id);              // body에 요소 추가
-    id.select();                                // input요소를 선택
-    document.execCommand("copy");               // 복사기능 실행
-    document.body.removeChild(id);              // body에 요소 삭제
+    let id = document.createElement("input");                       // input요소를 만듬
+    id.setAttribute("value", elementId);                            // input요소에 값을 추가
+    document.getElementById("modal-detailview").appendChild(id);    // modal에 요소 추가
+    id.select();                                                    // input요소를 선택
+    document.execCommand("copy");                                   // 복사기능 실행
+    document.getElementById("modal-detailview").removeChild(id);    // modal에서 요소 삭제
 }
 
-// setRmItemModal 은 아이템 삭제 버튼을 누르면 id값을 받아 modal창에 보여주는 함수이다.
-function setRmItemModal(itemtype, itemId) {
-    document.getElementById("modal-rmitem-itemtype").value = itemtype;
-    document.getElementById("modal-rmitem-itemid").value = itemId;
+// setDetailViewModal 은 아이템을 선택했을 때 볼 수 있는 detailview 모달창에 detail 정보를 세팅해주는 함수이다.
+function setDetailViewModal(itemid) {
+    $.ajax({
+        url: `/api/item?id=${itemid}`,
+        type: "get",
+        dataType: "json",
+        success: function(response) {
+            document.getElementById("modal-detailview-title").innerHTML = response["title"];
+            document.getElementById("modal-detailview-itemid").innerHTML = itemid;
+            document.getElementById("modal-detailview-author").innerHTML = response["author"];
+            document.getElementById("modal-detailview-description").innerHTML = response["description"];
+            let outputdatapath=response["outputdatapath"]
+            let footerHtml = `
+            <button type="button" class="btn btn-outline-darkmode" id="modal-detailview-download-button" onclick="location.href='/download-item?id=${itemid}'">Download</button>
+            <button type="button" class="btn btn-outline-darkmode" id="modal-detailview-copypath-button" onclick="copyButton('${outputdatapath}')">Copy Path</button>
+            `
+            let footerHtmlForAdmin=`
+            <button type="button" class="btn btn-outline-darkmode" id="modal-detailview-download-button" onclick="location.href='/download-item?id=${itemid}'">Download</button>
+            <button type="button" class="btn btn-outline-darkmode" id="modal-detailview-copypath-button" onclick="copyButton('${outputdatapath}')">Copy Path</button>
+            <button type="button" class="btn btn-outline-danger" id="modal-detailview-delete-button" data-dismiss="modal" data-toggle="modal" data-target="#modal-rmitem">Delete</button>
+            `
+            if (document.getElementById("accesslevel").value == "admin") {
+                document.getElementById("modal-rmitem-itemid").value = itemid;
+                document.getElementById("modal-detailview-footer").innerHTML = footerHtmlForAdmin
+            } else {
+                document.getElementById("modal-detailview-footer").innerHTML = footerHtml
+            }
+            if (response["itemtype"] == "footage") {
+                document.getElementById("modal-detailview-download-button").style.visibility="hidden"        
+            }
+        },
+        error: function(result) {
+            alert(result);
+        }
+    });
+
 }
 
 // rmItemModal 은 삭제 modal창에서 Delete 버튼을 누르면 실행되는 아이템 삭제 함수이다. 
-function rmItemModal(itemtype,itemId) {
+function rmItemModal(itemId) {
     let token = document.getElementById("token").value;
     $.ajax({
-        url: `/api/item?itemtype=${itemtype}&id=${itemId}`,
+        url: `/api/item?id=${itemId}`,
         type: "delete",
         headers: {
             "Authorization": "Basic " + token
         },
         dataType: "json",
         success: function() {
-            alert("itemtype: "+itemtype+"\nid: "+itemId+"\n\n아이템 삭제를 성공했습니다."); 
+            alert("id: "+itemId+"\n\n아이템 삭제를 성공했습니다."); 
             location.reload();
         },
         error: function(){
-            alert("itemtype: "+itemtype+"\nid: "+itemId+"\n\n아이템 삭제를 실패했습니다.");  
+            alert("id: "+itemId+"\n\n아이템 삭제를 실패했습니다.");  
         }
     });
 }
@@ -109,4 +141,166 @@ function toggleItems(){
     for (i=0;i<checkboxes.length;i++) {
         checkboxes[i].checked = status
     }
+}
+
+// recentlyClick 은 초기페이지에서 최근등록된 아이템의 next, prev 버튼을 눌렀을때 실행하는 함수이다.
+function recentlyClick(totalItemNum, buttonState) {
+    // totalItemNum 최근에셋의 전체 아이템 수
+    let totalPageNum = Math.ceil(totalItemNum / 4); // 전체 페이지 수
+    let clearItemNum = (totalPageNum * 4) - totalItemNum; // 마지막 페이지의 공백처리할 아이템 수
+    let currentPageNum = parseInt(document.getElementById("recentlyPage").getAttribute('value')); // 현재 보고있는 페이지
+    
+    if (buttonState=="next"){
+        if (currentPageNum===totalPageNum){
+            currentPageNum = 1;
+        }else{
+            currentPageNum++;
+        }
+    }else{
+        if (currentPageNum===1){
+            currentPageNum = totalPageNum;
+        }else{
+            currentPageNum--;
+        }
+    }
+    if(clearItemNum!==0 && currentPageNum===totalPageNum){
+        for(let i = 3; clearItemNum!=0; i--, clearItemNum--){
+            document.getElementById("recentlyImageForm"+i).innerHTML = ""
+            document.getElementById("recentlyTitle"+i).innerHTML = ""
+            document.getElementById("recentlyAuthor"+i).innerHTML = ""
+            document.getElementById("recentlyCreateTime"+i).innerHTML = ""
+        }
+    }
+    document.getElementById("recentlyPage").setAttribute('value', currentPageNum);
+    $.ajax({
+        url: `/api/recentitem?recentlypage=${currentPageNum}`,
+        type: "get",
+        dataType: "json",
+        success: function(data) {
+            let thumbnailwidth = document.getElementById("thumbnailwidth").value;
+            let thumbnailheight = document.getElementById("thumbnailheight").value;
+            let img = ""
+            for (let i = 0; i < data.length; i++){
+                let recentlyImageForm = document.getElementById("recentlyImageForm"+i)
+                if (data[i].itemtype=="pdf"){
+                    img = '<img width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                                '" src="/assets/img/pdfthumbnail.svg">'
+                }else if(data[i].itemtype=="hwp"){
+                    img = '<img width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                                '" src="/assets/img/hwpthumbnail.svg">'
+                }else if(data[i].itemtype=="sound"){
+                    img = '<img width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                                '" src="/assets/img/soundthumbnail.svg">'
+                }else if(data[i].itemtype=="hdri" || data[i].itemtype=="texture"){
+                    if(data[i].status == "done"){
+                        img = '<img width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                                '" src="/mediadata?id=' + data[i].id + '&type=png">'
+                    }else{
+                        img = '<img width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                                '" src="/assets/img/noimage.svg">'
+                    }
+                }else{
+                    if(data[i].status == "done"){
+                        img = '<video width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                                '" controls poster="/mediadata?id=' + data[i].id + '&type=png">' +
+                                '<source src="/mediadata?id=' + data[i].id + '&type=mp4" type="video/mp4">' +
+                                '<source src="/mediadata?id=' + data[i].id + '&type=ogg" type="video/ogg">' +
+                                'Your browser does not support the video tag.'+
+                                '</video>'
+                    }else{
+                        img = '<video width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                                '" controls poster="/assets/img/noimage.svg">' +
+                                '<source src="/mediadata?id=' + data[i].id + '&type=mp4" type="video/mp4">' +
+                                '<source src="/mediadata?id=' + data[i].id + '&type=ogg" type="video/ogg">' +
+                                'Your browser does not support the video tag.'+
+                                '</video>'
+                    }
+                recentlyImageForm.innerHTML = img;
+                }
+                document.getElementById("recentlyTitle"+i).innerHTML = "Title: " + data[i].title;
+                document.getElementById("recentlyAuthor"+i).innerHTML = "Author: " + data[i].author;
+                document.getElementById("recentlyCreateTime"+i).innerHTML = "CreateTime: " + data[i].createtime.split('T')[0];
+            }
+        },
+        error: function(request,status,error){
+            alert("code:"+request.status+"\n"+"status:"+status+"\n"+"msg:"+request.responseText+"\n"+"error:"+error);
+        }
+    });
+}
+
+// recentlyClick 은 초기페이지에서 가장많이 사용되는 아이템의 next, prev 버튼을 눌렀을때 실행하는 함수이다.
+function topUsingClick(totalItemNum, buttonState) {
+    // RecentlyTotalNum 가장많이 사용된 에셋의 전체 아이템 수
+    let totalPageNum = Math.ceil(totalItemNum / 4); // 전체 페이지 수
+    let clearItemNum = (totalPageNum * 4) - totalItemNum; // 마지막 페이지의 공백처리할 아이템 수
+    let currentPageNum = parseInt(document.getElementById("topUsingPage").getAttribute('value'));
+
+    if (buttonState=="next"){
+        currentPageNum = currentPageNum==totalPageNum ? 1 : currentPageNum+1;
+    }else{
+        currentPageNum = currentPageNum==1 ? currentPageNum = totalPageNum : currentPageNum-1;
+    }
+    if(clearItemNum!=0 && currentPageNum==totalPageNum){
+        for(let i = 3; clearItemNum!=0; i--, clearItemNum--){
+            document.getElementById("topUsingImageForm"+i).innerHTML = ""
+            document.getElementById("topUsingTitle"+i).innerHTML = ""
+            document.getElementById("topUsingAuthor"+i).innerHTML = ""
+            document.getElementById("topUsingRate"+i).innerHTML = ""
+        }
+    }
+    document.getElementById("topUsingPage").setAttribute('value', currentPageNum);
+    $.ajax({
+        url: `/api/topusingitem?usingpage=${currentPageNum}`,
+        type: "get",
+        dataType: "json",
+        success: function(data) {
+            let thumbnailwidth = document.getElementById("thumbnailwidth").value;
+            let thumbnailheight = document.getElementById("thumbnailheight").value;
+            let img = ""
+            for (let i = 0; i < data.length; i++){
+                let topUsingImageForm = document.getElementById("topUsingImageForm"+i)
+                if (data[i].itemtype=="pdf"){
+                    img = '<img width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                                '" src="/assets/img/pdfthumbnail.svg">'
+                }else if(data[i].itemtype=="hwp"){
+                    img = '<img width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                                '" src="/assets/img/hwpthumbnail.svg">'
+                }else if(data[i].itemtype=="sound"){
+                    img = '<img width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                                '" src="/assets/img/soundthumbnail.svg">'
+                }else if(data[i].itemtype=="hdri" || data[i].itemtype=="texture"){
+                    if(data[i].status == "done"){
+                        img = '<img width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                                '" src="/mediadata?id=' + data[i].id + '&type=png">'
+                    }else{
+                        img = '<img width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                                '" src="/assets/img/noimage.svg">'
+                    }
+                }else{
+                    if(data[i].status == "done"){
+                        img = '<video width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                                '" controls poster="/mediadata?id=' + data[i].id + '&type=png">' +
+                                '<source src="/mediadata?id=' + data[i].id + '&type=mp4" type="video/mp4">' +
+                                '<source src="/mediadata?id=' + data[i].id + '&type=ogg" type="video/ogg">' +
+                                'Your browser does not support the video tag.'+
+                                '</video>'
+                    }else{
+                        img = '<video width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                                '" controls poster="/assets/img/noimage.svg">' +
+                                '<source src="/mediadata?id=' + data[i].id + '&type=mp4" type="video/mp4">' +
+                                '<source src="/mediadata?id=' + data[i].id + '&type=ogg" type="video/ogg">' +
+                                'Your browser does not support the video tag.'+
+                                '</video>'
+                    }
+                    topUsingImageForm.innerHTML = img;
+                }
+                document.getElementById("topUsingTitle"+i).innerHTML = "Title: " + data[i].title;
+                document.getElementById("topUsingAuthor"+i).innerHTML = "Author: " + data[i].author;
+                document.getElementById("topUsingRate"+i).innerHTML = "topUsingRate: " + data[i].usingrate;
+            }
+        },
+        error: function(request,status,error){
+            alert("code:"+request.status+"\n"+"status:"+status+"\n"+"msg:"+request.responseText+"\n"+"error:"+error);
+        }
+    });
 }

@@ -249,8 +249,6 @@ func processingItem(item Item) {
 			return
 		}
 		return
-	case "psd": // 포토샵 파일
-		return
 	case "modo": // 모도
 		err = ProcessModoItem(client, adminSetting, item)
 		if err != nil {
@@ -271,7 +269,7 @@ func processingItem(item Item) {
 			return
 		}
 		return
-	case "lut", "3dl", "blut", "cms", "csp", "cub", "cube", "vf", "vfz": // LUT 파일들
+	case "lut": // LUT 파일들
 		err = ProcessLutItem(client, adminSetting, item)
 		if err != nil {
 			err = SetErrStatus(client, item.ID.Hex(), err.Error())
@@ -303,6 +301,16 @@ func processingItem(item Item) {
 		return
 	case "hwp":
 		err = ProcessHwpItem(client, adminSetting, item)
+		if err != nil {
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
+			if err != nil {
+				log.Println(err)
+			}
+			return
+		}
+		return
+	case "ppt":
+		err = ProcessPptItem(client, adminSetting, item)
 		if err != nil {
 			err = SetErrStatus(client, item.ID.Hex(), err.Error())
 			if err != nil {
@@ -1207,8 +1215,8 @@ func genThumbHDRI(adminSetting Adminsetting, item Item) error {
 		return errors.New("no files")
 	case 1: // 파일이 한개일 때
 		input = files[0].Name()
-	default: // 중간프레임 파일명을 구한다.
-		return errors.New("파일이 여러개가 존재합니다")
+	default: // 파일이 2개 이상인 경우 에러처리 한다.
+		return errors.New("파일이 여러 개가 존재합니다")
 	}
 	args := []string{
 		path + "/" + input,
@@ -1739,25 +1747,7 @@ func genClipToMp4Media(adminSetting Adminsetting, item Item) error {
 
 // ProcessIesItem 함수는 ies 아이템을 연산한다.
 func ProcessIesItem(client *mongo.Client, adminSetting Adminsetting, item Item) error {
-	// thumbnail 폴더를 생성한다.
-	err := SetStatus(client, item, "creating thumbnail directory")
-	if err != nil {
-		return err
-	}
-	err = genThumbDir(adminSetting, item)
-	if err != nil {
-		return err
-	}
-	// 썸네일 이미지를 생성한다.
-	err = SetStatus(client, item, "creating thumbnail image")
-	if err != nil {
-		return err
-	}
-	err = genThumbImage(adminSetting, item)
-	if err != nil {
-		return err
-	}
-	err = SetStatus(client, item, "done")
+	err := SetStatus(client, item, "done")
 	if err != nil {
 		return err
 	}
@@ -1774,8 +1764,18 @@ func ProcessPdfItem(client *mongo.Client, adminSetting Adminsetting, item Item) 
 	return nil
 }
 
-// ProcessHwpItem 함수는 PDF 아이템을 연산한다.
+// ProcessHwpItem 함수는 Hwp 아이템을 연산한다.
 func ProcessHwpItem(client *mongo.Client, adminSetting Adminsetting, item Item) error {
+	// 아무 프로세스는 없지만 "done" 처리 해야한다. 그래야 프로세싱하지 않는다.
+	err := SetStatus(client, item, "done")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// ProcessPptItem 함수는 PPT 아이템을 연산한다.
+func ProcessPptItem(client *mongo.Client, adminSetting Adminsetting, item Item) error {
 	// 아무 프로세스는 없지만 "done" 처리 해야한다. 그래야 프로세싱하지 않는다.
 	err := SetStatus(client, item, "done")
 	if err != nil {

@@ -157,8 +157,8 @@ func Test_Itemtype(t *testing.T) {
 		Itemtype: "ma야", // 한글포함
 		want:     false,
 	}, {
-		Itemtype: "maya2", // 숫자포함
-		want:     false,
+		Itemtype: "fusion360", // 숫자포함
+		want:     true,
 	},
 	}
 
@@ -182,8 +182,8 @@ func Test_Dbname(t *testing.T) {
 		Dbname: "doto리", // 한글포함
 		want:   false,
 	}, {
-		Dbname: "doto2", // 숫자포함
-		want:   false,
+		Dbname: "fusion360", // 숫자포함
+		want:   true,
 	},
 	}
 
@@ -419,4 +419,55 @@ func Test_Title(t *testing.T) {
 			t.Fatalf("Test_Title(): 입력 값: %v, 원하는 값: %v, 얻은 값: %v\n", c.Title, c.want, b)
 		}
 	}
+}
+
+func Test_Str2Tags(t *testing.T) {
+	cases := []struct {
+		input string
+		want  []string
+	}{{
+		input: "title", // 태그가 하나일 때
+		want:  []string{"title"},
+	}, {
+		input: "tag1 tag2", // 태그가 띄어쓰기 일 때
+		want:  []string{"tag1", "tag2"},
+	}, {
+		input: "tag1,tag2", // 쉼표로 구분되어 있을 때
+		want:  []string{"tag1", "tag2"},
+	}, {
+		input: "tag1, tag2", // 쉼표와 띄어쓰기로 구분되어 있을 때
+		want:  []string{"tag1", "tag2"},
+	}, {
+		input: "tag1, tag2 tag3", // 쉼표와 띄어쓰기가 다른곳에서 구분되어 있을 때
+		want:  []string{"tag1", "tag2", "tag3"},
+	}, {
+		input: "tag1, tag2     tag3", // 다수의 스페이스가 포함된 경우
+		want:  []string{"tag1", "tag2", "tag3"},
+	}, {
+		input: "tag1, tag2     		tag3 태그", // 다수의 스페이스와 탭이 섞여있는 경우
+		want: []string{"tag1", "tag2", "tag3", "태그"},
+	},
+	}
+	for _, c := range cases {
+		v := Str2Tags(c.input)
+		if !testIsEqualSlice(c.want, v) {
+			t.Fatalf("Test_Str2Tags(): 입력 값: %v, 원하는 값: %v, 얻은 값: %v\n", c.input, c.want, v)
+		}
+	}
+}
+
+// testIsEqualSlice 함수는 2개의 리스트를 받아서 구조가 같은지 체크한다. 이 함수는 test 되면 안되기 때문에 소문자 test로 시작한다.
+func testIsEqualSlice(a, b []string) bool {
+	if (a == nil) != (b == nil) {
+		return false
+	}
+	if len(a) != len(b) {
+		return false
+	}
+	for i := range a {
+		if a[i] != b[i] {
+			return false
+		}
+	}
+	return true
 }

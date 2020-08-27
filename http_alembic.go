@@ -95,7 +95,7 @@ func handleUploadAlembicItem(w http.ResponseWriter, r *http.Request) {
 	item.Author = r.FormValue("author")
 	item.Title = r.FormValue("title")
 	item.Description = r.FormValue("description")
-	tags := SplitBySpace(r.FormValue("tags"))
+	tags := Str2Tags(r.FormValue("tags"))
 	item.Tags = tags
 	item.ItemType = "alembic"
 	attr := make(map[string]string)
@@ -230,6 +230,11 @@ func handleUploadAlembicFile(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	uploadAlembicFile(w, r, objectID)
+}
+
+// uploadAlembicFile 함수는 Alembic 파일 정보를 DB에 업로드하고 파일을 storage에 복사한다.
+func uploadAlembicFile(w http.ResponseWriter, r *http.Request, objectID string) {
 	//mongoDB client 연결
 	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 	if err != nil {
@@ -699,7 +704,7 @@ func handleEditAlembicSubmit(w http.ResponseWriter, r *http.Request) {
 	item.Author = r.FormValue("author")
 	item.Title = r.FormValue("title")
 	item.Description = r.FormValue("description")
-	item.Tags = SplitBySpace(r.FormValue("tags"))
+	item.Tags = Str2Tags(r.FormValue("tags"))
 	item.Attributes = attr
 	err = item.CheckError()
 	if err != nil {

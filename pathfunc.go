@@ -307,6 +307,14 @@ func copyFileContents(inputpath, outputpath string) error {
 	return nil
 }
 
+// HasWildcard 함수는 경로를 받아서 Wildcard를 포함한다면 true, Wildcard를 포함하지 않는다면 false를 반환한다.
+func HasWildcard(path string) bool {
+	if strings.Contains(path, "*") || strings.Contains(path, "?") {
+		return true
+	}
+	return false
+}
+
 // getFilesFromPath 함수는 입력받은 경로에 존재하는 파일들의 파일명 리스트를 반환한다.
 func getFilesFromPath(rootpath string) ([]string, error) {
 	// 경로가 존재하는지 체크한다.

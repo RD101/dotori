@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"path"
 	"path/filepath"
 	"strconv"
 	"time"
@@ -95,7 +94,7 @@ func handleUploadIesItem(w http.ResponseWriter, r *http.Request) {
 	item.Author = r.FormValue("author")
 	item.Title = r.FormValue("title")
 	item.Description = r.FormValue("description")
-	tags := SplitBySpace(r.FormValue("tags"))
+	tags := Str2Tags(r.FormValue("tags"))
 	item.Tags = tags
 	item.ItemType = "ies"
 	attr := make(map[string]string)
@@ -317,73 +316,9 @@ func handleUploadIesFile(w http.ResponseWriter, r *http.Request) {
 			unix.Umask(umask)
 			mimeType := f.Header.Get("Content-Type")
 			switch mimeType {
-			case "image/jpeg", "image/png":
-				data, err := ioutil.ReadAll(file)
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				path, filename := path.Split(item.InputThumbnailImgPath)
-				if filename != "" { // 썸네일 이미지가 이미 존재하는 경우, 지우고 경로를 새로 지정한다.
-					err = os.Remove(item.InputThumbnailImgPath)
-					if err != nil {
-						http.Error(w, err.Error(), http.StatusInternalServerError)
-						return
-					}
-					item.InputThumbnailImgPath = path
-				}
-				err = os.MkdirAll(path, os.FileMode(folderPerm))
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				err = os.Chown(path, uid, gid)
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				err = ioutil.WriteFile(path+f.Filename, data, os.FileMode(filePerm))
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				item.InputThumbnailImgPath = path + f.Filename
-				item.ThumbImgUploaded = true
-			case "video/quicktime", "video/mp4", "video/ogg", "application/ogg":
-				data, err := ioutil.ReadAll(file)
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				path, filename := path.Split(item.InputThumbnailClipPath)
-				if filename != "" { // 썸네일 클립이 이미 존재하는 경우, 지우고 경로를 새로 지정한다.
-					err = os.Remove(item.InputThumbnailClipPath)
-					if err != nil {
-						http.Error(w, err.Error(), http.StatusInternalServerError)
-						return
-					}
-					item.InputThumbnailClipPath = path
-				}
-				err = os.MkdirAll(path, os.FileMode(folderPerm))
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				err = os.Chown(path, uid, gid)
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				err = ioutil.WriteFile(path+f.Filename, data, os.FileMode(filePerm))
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				item.InputThumbnailClipPath = path + f.Filename
-				item.ThumbClipUploaded = true
 			case "application/octet-stream":
 				ext := filepath.Ext(f.Filename)
-				if ext != ".abc" { // .abc 외에는 허용하지 않는다.
+				if ext != ".ies" { // .ies 외에는 허용하지 않는다.
 					http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
 					return
 				}
@@ -514,7 +449,7 @@ func handleUploadIesCheckData(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rcp.Item = item
-	if !item.ThumbImgUploaded || !item.ThumbClipUploaded || !item.DataUploaded {
+	if !item.DataUploaded {
 		err = TEMPLATES.ExecuteTemplate(w, "checkies-file", rcp)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -699,7 +634,7 @@ func handleEditIesSubmit(w http.ResponseWriter, r *http.Request) {
 	item.Author = r.FormValue("author")
 	item.Title = r.FormValue("title")
 	item.Description = r.FormValue("description")
-	item.Tags = SplitBySpace(r.FormValue("tags"))
+	item.Tags = Str2Tags(r.FormValue("tags"))
 	item.Attributes = attr
 	err = item.CheckError()
 	if err != nil {

@@ -111,7 +111,7 @@ func handleUploadTextureItem(w http.ResponseWriter, r *http.Request) {
 	item.Description = r.FormValue("description")
 	item.InColorspace = r.FormValue("incolorspace")
 	item.OutColorspace = r.FormValue("outcolorspace")
-	tags := SplitBySpace(r.FormValue("tags"))
+	tags := Str2Tags(r.FormValue("tags"))
 	item.Tags = tags
 	item.ItemType = "texture"
 	attr := make(map[string]string)
@@ -621,7 +621,7 @@ func handleEditTextureSubmit(w http.ResponseWriter, r *http.Request) {
 	item.Author = r.FormValue("author")
 	item.Title = r.FormValue("title")
 	item.Description = r.FormValue("description")
-	item.Tags = SplitBySpace(r.FormValue("tags"))
+	item.Tags = Str2Tags(r.FormValue("tags"))
 	item.InColorspace = r.FormValue("incolorspace")
 	item.OutColorspace = r.FormValue("outcolorspace")
 	item.Attributes = attr

@@ -368,6 +368,8 @@ func webserver() {
 	http.HandleFunc("/api/search", handleAPISearch)
 	http.HandleFunc("/api/adminsetting", handleAPIAdminSetting)
 	http.HandleFunc("/api/usingrate", handleAPIUsingRate)
+	http.HandleFunc("/api/recentitem", handleAPIRecentItem)
+	http.HandleFunc("/api/topusingitem", handleAPITopUsingItem)
 
 	// 웹서버 실행
 	if *flagCertFullchain != "" || *flagCertPrivkey != "" {

@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
-	"strings"
+	"strconv"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -41,41 +41,44 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// item 정보 업로드
+		// 아이템 생성
 		i := Item{}
 		i.ID = primitive.NewObjectID()
-		//ParseForm parses the raw query from the URL and updates r.Form.
-		r.ParseForm()
-		itemtype := r.FormValue("itemtype")
+		// 아이템 정보 Parsing
+		iteminfo := make(map[string]string)
+		err = json.Unmarshal([]byte(r.FormValue("iteminfo")), &iteminfo)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		itemtype := iteminfo["itemtype"]
 		if itemtype == "" {
 			http.Error(w, "itemtype을 설정해주세요", http.StatusBadRequest)
 			return
 		}
-		title := r.FormValue("title")
+		title := iteminfo["title"]
 		if title == "" {
 			http.Error(w, "title을 설정해주세요", http.StatusBadRequest)
 			return
 		}
-		author := r.FormValue("author")
+		author := iteminfo["author"]
 		if author == "" {
 			http.Error(w, "author를 설정해주세요", http.StatusBadRequest)
 			return
 		}
-		description := r.FormValue("description")
+		description := iteminfo["description"]
 		if description == "" {
 			http.Error(w, "description을 설정해주세요", http.StatusBadRequest)
 			return
 		}
-		tags := SplitBySpace(r.FormValue("tags"))
+		tags := Str2Tags(r.FormValue("tags"))
 		if len(tags) == 0 {
 			http.Error(w, "tags를 설정해주세요", http.StatusBadRequest)
 			return
 		}
-		attributes := make(map[string]string)
-		for _, attr := range SplitBySpace(r.FormValue("attributes")) {
-			key := strings.Split(attr, ":")[0]
-			value := strings.Split(attr, ":")[1]
-			attributes[key] = value
+		attributes, err := StringToMap(iteminfo["attributes"])
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
 		}
 		i.ItemType = itemtype
 		i.Title = title
@@ -104,7 +107,7 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 		i.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/thumbnail.mov"
 		i.OutputDataPath = rootpath + objIDpath + "/data/"
 
-		// item Add
+		// 아이템 추가
 		err = i.CheckError()
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
@@ -116,8 +119,21 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// 전송
-		data, _ := json.Marshal(i)
+		// 아이템에 파일 업데이트
+		if itemtype == "alembic" {
+			uploadAlembicFile(w, r, i.ID.Hex())
+		}
+
+		// Response
+		item, err := GetItem(client, i.ID.Hex())
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		data, err := json.Marshal(item)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(http.StatusOK)
 		w.Write(data)
@@ -125,12 +141,7 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 
 	} else if r.Method == http.MethodDelete {
 		q := r.URL.Query()
-		itemtype := q.Get("itemtype")
 		id := q.Get("id")
-		if itemtype == "" {
-			http.Error(w, "URL에 itemtype을 입력해주세요", http.StatusBadRequest)
-			return
-		}
 		if id == "" {
 			http.Error(w, "URL에 id를 입력해주세요", http.StatusBadRequest)
 			return
@@ -184,12 +195,7 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 		return
 	} else if r.Method == http.MethodGet {
 		q := r.URL.Query()
-		itemtype := q.Get("itemtype")
 		id := q.Get("id")
-		if itemtype == "" {
-			http.Error(w, "URL에 itemtype을 입력해주세요", http.StatusBadRequest)
-			return
-		}
 		if id == "" {
 			http.Error(w, "URL에 id를 입력해주세요", http.StatusBadRequest)
 			return
@@ -231,7 +237,6 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Not Supported Method", http.StatusMethodNotAllowed)
 		return
 	}
-
 }
 
 // handleAPISearch 는 아이템을 검색하는 함수입니다.
@@ -359,6 +364,100 @@ func handleAPIUsingRate(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		usingrate, err := UpdateUsingRate(client, id)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		data, err := json.Marshal(usingrate)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(http.StatusOK)
+		w.Write(data)
+		return
+	}
+	http.Error(w, "Not Supported Method", http.StatusMethodNotAllowed)
+	return
+}
+
+// handleAPIRecentItem 는 최근생성된 아이템들을 반환하는 함수임니다.
+func handleAPIRecentItem(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet {
+		r.ParseForm()
+		recentlypage, err := strconv.ParseInt(r.FormValue("recentlypage"), 10, 64)
+		if err != nil {
+			http.Error(w, "recentlypage를 입력해주세요", http.StatusBadRequest)
+			return
+		}
+		//mongoDB client 연결
+		client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		err = client.Connect(ctx)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		defer client.Disconnect(ctx)
+		err = client.Ping(ctx, readpref.Primary())
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		usingrate, err := GetRecentlyCreatedItems(client, 4, recentlypage) // 해당페이지(recentlypage)의 4개 아이템을 가져온다.
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		data, err := json.Marshal(usingrate)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(http.StatusOK)
+		w.Write(data)
+		return
+	}
+	http.Error(w, "Not Supported Method", http.StatusMethodNotAllowed)
+	return
+}
+
+// handleAPITopUsingItem 는 많이 사용되는 아이템들을 반환하는 함수임니다.
+func handleAPITopUsingItem(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet {
+		r.ParseForm()
+		topusingpage, err := strconv.ParseInt(r.FormValue("usingpage"), 10, 64)
+		if err != nil {
+			http.Error(w, "usingpage를 입력해주세요", http.StatusBadRequest)
+			return
+		}
+		//mongoDB client 연결
+		client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		err = client.Connect(ctx)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		defer client.Disconnect(ctx)
+		err = client.Ping(ctx, readpref.Primary())
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		usingrate, err := GetTopUsingItems(client, 4, topusingpage) // 해당페이지(topusingpage)의 4개 아이템을 가져온다.
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return

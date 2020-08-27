@@ -95,7 +95,7 @@ func handlUploadNukeItem(w http.ResponseWriter, r *http.Request) {
 	item.Author = r.FormValue("author")
 	item.Title = r.FormValue("title")
 	item.Description = r.FormValue("description")
-	tags := SplitBySpace(r.FormValue("tags"))
+	tags := Str2Tags(r.FormValue("tags"))
 	item.Tags = tags
 	item.ItemType = "nuke"
 	attr := make(map[string]string)
@@ -671,7 +671,7 @@ func handleEditNukeSubmit(w http.ResponseWriter, r *http.Request) {
 	item.Author = r.FormValue("author")
 	item.Title = r.FormValue("title")
 	item.Description = r.FormValue("description")
-	item.Tags = SplitBySpace(r.FormValue("tags"))
+	item.Tags = Str2Tags(r.FormValue("tags"))
 	item.Attributes = attr
 	err = item.CheckError()
 	if err != nil {
