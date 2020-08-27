@@ -2,13 +2,44 @@
 {{template "head"}}
 <body>
 {{template "navbar" .}}
+<!--dropzone-->
+<div class="container p-5">
+    <div class="col-lg-6 col-md-8 col-sm-12 mx-auto">
+        <div class="pt-3 pb-3">
+            <h2 class="text-muted">Edit Maya Details</h2>
+        </div>
+        <div class="">
+            <form action="/editmaya-file" method="post" class="dropzone" enctype="multipart/form-data">
+                <div class="fallback">
+                    <input name="file" type="file"/>
+                </div>
+            </form>
+            <small class="form-text text-muted">업로드할 마야파일, 썸네일, 동영상을 Drag & Drop 해주세요.</small>
+        </div>
+    </div>
+</div>
 <form action="/editmaya-submit" method="post">
     <input type="hidden" id="id" name="id" value="{{.ID.Hex}}">
     <input type="hidden" id="itemtype" name="itemtype" value="{{.ItemType}}">
     <div class="container p-5">
         <div class="col-lg-6 col-md-8 col-sm-12 mx-auto">
-            <div class="pt-3 pb-3">
-                <h2 class="section-heading text-muted">Edit Maya Details</h2>
+            <div class="row">
+                <div class="col-sm">
+                    <div class="form-group" id="datafiles">
+                        <label class="text-muted">Data Files</label>
+                        {{$dIndex := 0}}
+                        {{range $file := .DataFiles}}
+                            <div class="input-group mb-2" id="data{{$dIndex}}">
+                                <input id="data{{$dIndex}}" name="data{{$dIndex}}" type="text" class="form-control" value="{{$file}}" readonly>
+                                <div class="input-group-append">
+                                    <span class="add input-group-text" onclick="document.getElementById('data{{$dIndex}}').remove();">X</span>
+                                </div>
+                            </div>
+                            {{$dIndex = add $dIndex 1}}
+                        {{end}}
+                    </div>
+                </div>
+                <input type="hidden" id="dataFileNum" name="dataFileNum" value="{{$dIndex}}">
             </div>
             <div class="row">
                 <div class="col-sm">

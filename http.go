@@ -81,6 +81,7 @@ func webserver() {
 	http.HandleFunc("/editmaya", handleEditMaya)
 	http.HandleFunc("/editmaya-submit", handleEditMayaSubmit)
 	http.HandleFunc("/editmaya-success", handleEditMayaSuccess)
+	http.HandleFunc("/editmaya-file", handleEditMayaFile)
 
 	// 3dsmax
 	http.HandleFunc("/addmax", handleAddMax)

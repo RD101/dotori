@@ -306,3 +306,30 @@ func copyFileContents(inputpath, outputpath string) error {
 	}
 	return nil
 }
+
+// getFilesFromPath 함수는 입력받은 경로에 존재하는 파일들의 파일명 리스트를 반환한다.
+func getFilesFromPath(rootpath string) ([]string, error) {
+	// 경로가 존재하는지 체크한다.
+	_, err := os.Stat(rootpath)
+	if err != nil {
+		return nil, err
+	}
+	var result []string
+	files, err := ioutil.ReadDir(rootpath)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, file := range files {
+		// 숨김파일
+		if strings.HasPrefix(file.Name(), ".") {
+			continue
+		}
+		result = append(result, file.Name())
+	}
+
+	if len(result) == 0 {
+		return nil, errors.New("파일이 존재하지 않습니다")
+	}
+	return result, nil
+}

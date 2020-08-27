@@ -586,18 +586,19 @@ func handleEditMaya(w http.ResponseWriter, r *http.Request) {
 		Description string             `json:"description" bson:"description"`
 		Tags        []string           `json:"tags" bson:"tags"`
 		Attributes  map[string]string  `json:"attributes" bson:"attributes"`
+		DataFiles   []string           `json:"datafiles" bson:"datafiles"`
 		Token
 		Adminsetting Adminsetting
 	}
 	q := r.URL.Query()
 	itemtype := q.Get("itemtype")
-	id := q.Get("id")
+	id := q.Get("objectid")
 	if itemtype == "" {
 		http.Error(w, "URL에 itemtype을 입력해주세요", http.StatusBadRequest)
 		return
 	}
 	if id == "" {
-		http.Error(w, "URL에 id를 입력해주세요", http.StatusBadRequest)
+		http.Error(w, "URL에 objectid를 입력해주세요", http.StatusBadRequest)
 		return
 	}
 	//mongoDB client 연결
@@ -642,6 +643,12 @@ func handleEditMaya(w http.ResponseWriter, r *http.Request) {
 		Adminsetting: adminsetting,
 	}
 
+	rcp.DataFiles, err = getFilesFromPath(item.OutputDataPath)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	err = TEMPLATES.ExecuteTemplate(w, "editmaya", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -671,6 +678,19 @@ func handleEditMayaSubmit(w http.ResponseWriter, r *http.Request) {
 		}
 		attr[key] = value
 	}
+	dataNum, err := strconv.Atoi(r.FormValue("dataFileNum"))
+	var dataFiles []string
+	for i := 0; i < dataNum; i++ {
+		file := r.FormValue(fmt.Sprintf("data%d", i))
+		if file != "" {
+			dataFiles = append(dataFiles, file)
+		}
+	}
+	if len(dataFiles) == 0 {
+		http.Error(w, "데이터 파일은 최소 1개 이상이어야 합니다", http.StatusBadRequest)
+		return
+	}
+
 	//mongoDB client 연결
 	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 	if err != nil {
@@ -695,6 +715,29 @@ func handleEditMayaSubmit(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	// 데이터 파일 수정
+	files, err := getFilesFromPath(item.OutputDataPath)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	for _, file := range files {
+		found := false
+		for _, df := range dataFiles {
+			if file == df {
+				found = true
+			}
+		}
+		if !found {
+			err = os.Remove(item.OutputDataPath + file)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+		}
+	}
+
 	item.Author = r.FormValue("author")
 	item.Title = r.FormValue("title")
 	item.Description = r.FormValue("description")
@@ -753,6 +796,181 @@ func handleEditMayaSuccess(w http.ResponseWriter, r *http.Request) {
 	rcp.Adminsetting = adminsetting
 	w.Header().Set("Content-Type", "text/html")
 	err = TEMPLATES.ExecuteTemplate(w, "editmaya-success", rcp)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func handleEditMayaFile(w http.ResponseWriter, r *http.Request) {
+	_, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
+	objectID, err := GetObjectIDfromRequestHeader(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer client.Disconnect(ctx)
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	item, err := GetItem(client, objectID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	adminsetting, err := GetAdminSetting(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	//admin setting에서 폴더권한에 관련된 옵션값을 가져온다
+	um := adminsetting.Umask
+	umask, err := strconv.Atoi(um)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	folderP := adminsetting.FolderPermission
+	folderPerm, err := strconv.ParseInt(folderP, 8, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	fileP := adminsetting.FilePermission
+	filePerm, err := strconv.ParseInt(fileP, 8, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	u := adminsetting.UID
+	uid, err := strconv.Atoi(u)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	g := adminsetting.GID
+	gid, err := strconv.Atoi(g)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	buffer := adminsetting.MultipartFormBufferSize
+	err = r.ParseMultipartForm(int64(buffer)) // grab the multipart form
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	for _, files := range r.MultipartForm.File {
+		for _, f := range files {
+			if f.Size == 0 {
+				http.Error(w, "파일사이즈가 0 바이트입니다", http.StatusInternalServerError)
+				return
+			}
+			file, err := f.Open()
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				continue
+			}
+			defer file.Close()
+			unix.Umask(umask)
+			mimeType := f.Header.Get("Content-Type")
+			switch mimeType {
+			case "application/octet-stream":
+				ext := filepath.Ext(f.Filename)
+				if ext != ".mb" && ext != ".ma" { // .ma .mb 외에는 허용하지 않는다.
+					http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
+					return
+				}
+				data, err := ioutil.ReadAll(file)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				path := item.OutputDataPath
+				err = os.MkdirAll(path, os.FileMode(folderPerm))
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				err = os.Chown(path, uid, gid)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				err = ioutil.WriteFile(path+"/"+f.Filename, data, os.FileMode(filePerm))
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				item.DataUploaded = true
+			case "application/zip":
+				data, err := ioutil.ReadAll(file)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				path := item.OutputDataPath
+				err = os.MkdirAll(path, os.FileMode(folderPerm))
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				err = os.Chown(path, uid, gid)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				err = ioutil.WriteFile(path+"/"+f.Filename, data, os.FileMode(filePerm))
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				item.DataUploaded = true
+			default:
+				//허용하지 않는 파일 포맷입니다.
+				http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
+				return
+			}
+			tags := FilenameToTags(f.Filename)
+			for _, tag := range tags {
+				has := false // 중복되는 tag가 있다면 append하지 않는다.
+				for _, t := range item.Tags {
+					if tag == t {
+						has = true
+					}
+				}
+				if !has {
+					item.Tags = append(item.Tags, tag)
+				}
+			}
+		}
+	}
+	err = SetItem(client, item)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
