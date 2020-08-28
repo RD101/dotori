@@ -164,7 +164,10 @@ func RmData(client *mongo.Client, id string) error {
 	}
 	rmpath := rootpath + idpath
 	splitpath, _ := path.Split(rmpath)
-	//delete
+	if _, err := os.Stat(splitpath); os.IsNotExist(err) {
+		return nil // 삭제할 경로가 존재하지 않는것은 에러가 아니다.
+	}
+	// 데이터가 존재한다. 데이터를 삭제한다.
 	err = os.RemoveAll(rmpath) // idpath와 정확히 일치하는 최하단 경로만 강제로 삭제
 	if err != nil {
 		return err
