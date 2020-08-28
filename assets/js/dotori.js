@@ -163,6 +163,8 @@ function recentlyClick(totalItemNum, buttonState) {
             currentPageNum--;
         }
     }
+
+    document.getElementById("recentlyPage").innerHTML = currentPageNum + " / " + totalPageNum;
     if(clearItemNum!==0 && currentPageNum===totalPageNum){
         for(let i = 3; clearItemNum!=0; i--, clearItemNum--){
             document.getElementById("recentlyImageForm"+i).innerHTML = ""
@@ -236,10 +238,20 @@ function topUsingClick(totalItemNum, buttonState) {
     let currentPageNum = parseInt(document.getElementById("topUsingPage").getAttribute('value'));
 
     if (buttonState=="next"){
-        currentPageNum = currentPageNum==totalPageNum ? 1 : currentPageNum+1;
+        if (currentPageNum===totalPageNum){
+            currentPageNum = 1;
+        }else{
+            currentPageNum++;
+        }
     }else{
-        currentPageNum = currentPageNum==1 ? currentPageNum = totalPageNum : currentPageNum-1;
+        if (currentPageNum===1){
+            currentPageNum = totalPageNum;
+        }else{
+            currentPageNum--;
+        }
     }
+    
+    document.getElementById("topUsingPage").innerHTML = currentPageNum + " / " + totalPageNum;
     if(clearItemNum!=0 && currentPageNum==totalPageNum){
         for(let i = 3; clearItemNum!=0; i--, clearItemNum--){
             document.getElementById("topUsingImageForm"+i).innerHTML = ""
