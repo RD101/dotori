@@ -356,7 +356,7 @@ var Dropzone = function (_Emitter) {
          * See the [enqueuing file uploads](#enqueuing-file-uploads) documentation
          * section for more information.
          */
-        autoProcessQueue: false,
+        autoProcessQueue: true,
 
         /**
          * If false, files added to the dropzone will not be queued by default.
@@ -3534,9 +3534,10 @@ function __guardMethod__(obj, methodName, transform) {
 Dropzone.options.fileDropzone = {
   //url: '/uploadhdri-file',
   //업로드할 url (ex)컨트롤러)
+  autoProcessQueue: false,
   init: function () {
       /* 최초 dropzone 설정시 init을 통해 호출 */
-      var submitButton = document.querySelector("#btn-upload-file");
+      var submitButton = document.getElementById("btn-upload-file");
       var myDropzone = this; //closure
       submitButton.addEventListener("click",
       function () {
