@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"strconv"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -170,14 +171,14 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "삭제 권한이 없는 계정입니다", http.StatusUnauthorized)
 			return
 		}
-
-		// 삭제 함수 호출
-		err = RmItem(client, id) // db 에서 삭제
+		// 실제 데이터 삭제
+		err = RmData(client, id)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		err = RmData(client, id) // 실제 데이터 삭제
+		// 삭제 함수 호출
+		err = RmItem(client, id)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -236,7 +237,6 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Not Supported Method", http.StatusMethodNotAllowed)
 		return
 	}
-
 }
 
 // handleAPISearch 는 아이템을 검색하는 함수입니다.
@@ -364,6 +364,100 @@ func handleAPIUsingRate(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		usingrate, err := UpdateUsingRate(client, id)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		data, err := json.Marshal(usingrate)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(http.StatusOK)
+		w.Write(data)
+		return
+	}
+	http.Error(w, "Not Supported Method", http.StatusMethodNotAllowed)
+	return
+}
+
+// handleAPIRecentItem 는 최근생성된 아이템들을 반환하는 함수임니다.
+func handleAPIRecentItem(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet {
+		r.ParseForm()
+		recentlypage, err := strconv.ParseInt(r.FormValue("recentlypage"), 10, 64)
+		if err != nil {
+			http.Error(w, "recentlypage를 입력해주세요", http.StatusBadRequest)
+			return
+		}
+		//mongoDB client 연결
+		client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		err = client.Connect(ctx)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		defer client.Disconnect(ctx)
+		err = client.Ping(ctx, readpref.Primary())
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		usingrate, err := GetRecentlyCreatedItems(client, 4, recentlypage) // 해당페이지(recentlypage)의 4개 아이템을 가져온다.
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		data, err := json.Marshal(usingrate)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(http.StatusOK)
+		w.Write(data)
+		return
+	}
+	http.Error(w, "Not Supported Method", http.StatusMethodNotAllowed)
+	return
+}
+
+// handleAPITopUsingItem 는 많이 사용되는 아이템들을 반환하는 함수임니다.
+func handleAPITopUsingItem(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet {
+		r.ParseForm()
+		topusingpage, err := strconv.ParseInt(r.FormValue("usingpage"), 10, 64)
+		if err != nil {
+			http.Error(w, "usingpage를 입력해주세요", http.StatusBadRequest)
+			return
+		}
+		//mongoDB client 연결
+		client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		err = client.Connect(ctx)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		defer client.Disconnect(ctx)
+		err = client.Ping(ctx, readpref.Primary())
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		usingrate, err := GetTopUsingItems(client, 4, topusingpage) // 해당페이지(topusingpage)의 4개 아이템을 가져온다.
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
