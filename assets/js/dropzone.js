@@ -3528,3 +3528,19 @@ function __guardMethod__(obj, methodName, transform) {
     return undefined;
   }
 }
+
+
+// 업로드 버튼을 눌렀을 때 실행되는 코드부
+Dropzone.options.fileDropzone = {
+  autoProcessQueue: false,
+  init: function () {
+    // 최초 dropzone 설정시 init을 통해 호출
+    var submitButton = document.getElementById("btn-upload-file");
+    var currentDropzone = this; //closure
+    submitButton.addEventListener("click",
+      function () {
+          currentDropzone.processQueue(); // 파일을 수동으로 전송한다.
+      }
+    );
+  }
+}
