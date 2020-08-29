@@ -356,7 +356,7 @@ var Dropzone = function (_Emitter) {
          * See the [enqueuing file uploads](#enqueuing-file-uploads) documentation
          * section for more information.
          */
-        autoProcessQueue: true,
+        autoProcessQueue: false,
 
         /**
          * If false, files added to the dropzone will not be queued by default.
@@ -369,7 +369,7 @@ var Dropzone = function (_Emitter) {
          * already uploading) the file. The `dictCancelUpload`, `dictCancelUploadConfirmation`
          * and `dictRemoveFile` options are used for the wording.
          */
-        addRemoveLinks: false,
+        addRemoveLinks: true,
 
         /**
          * Defines where to display the file previews – if `null` the
@@ -3526,5 +3526,22 @@ function __guardMethod__(obj, methodName, transform) {
     return transform(obj, methodName);
   } else {
     return undefined;
+  }
+}
+
+
+// 새로 추가한 코드
+Dropzone.options.fileDropzone = {
+  //url: '/uploadhdri-file',
+  //업로드할 url (ex)컨트롤러)
+  init: function () {
+      /* 최초 dropzone 설정시 init을 통해 호출 */
+      var submitButton = document.querySelector("#btn-upload-file");
+      var myDropzone = this; //closure
+      submitButton.addEventListener("click",
+      function () {
+          console.log("업로드"); //tell Dropzone to process all queued files
+          myDropzone.processQueue();
+      });
   }
 }
