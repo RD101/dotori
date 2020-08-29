@@ -3531,8 +3531,9 @@ function __guardMethod__(obj, methodName, transform) {
 
 
 // 업로드 버튼을 눌렀을 때 실행되는 코드부
-Dropzone.options.fileDropzone = {
+Dropzone.options.hdriDropzone = {
   autoProcessQueue: false,
+  maxFiles: 1,
   init: function () {
     // 최초 dropzone 설정시 init을 통해 호출
     var submitButton = document.getElementById("btn-upload-file");
