@@ -1,6 +1,7 @@
 package main
 
 import (
+	"math"
 	"strings"
 )
 
@@ -23,6 +24,11 @@ func add(a, b int) int {
 // mod함수는 입력받은 두 정수를 나눈 나머지을 반환한다.
 func mod(a, b int) int {
 	return (a % b)
+}
+
+// divCeil함수는 입력받은 두 정수를 나눈 몫을 올림하여 반환한다.
+func divCeil(a, b int64) float64 {
+	return math.Ceil(float64(a) / float64(b))
 }
 
 // RmRootpath 템플릿함수는 path가 rootpath로 시작하면 rootpath 문자열을 제거한다.
