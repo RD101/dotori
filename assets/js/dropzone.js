@@ -3532,17 +3532,15 @@ function __guardMethod__(obj, methodName, transform) {
 
 // 업로드 버튼을 눌렀을 때 실행되는 코드부
 Dropzone.options.fileDropzone = {
-  //url: '/uploadhdri-file',
-  //업로드할 url (ex)컨트롤러)
   autoProcessQueue: false,
   init: function () {
-      /* 최초 dropzone 설정시 init을 통해 호출 */
-      var submitButton = document.getElementById("btn-upload-file");
-      var myDropzone = this; //closure
-      submitButton.addEventListener("click",
+    // 최초 dropzone 설정시 init을 통해 호출
+    var submitButton = document.getElementById("btn-upload-file");
+    var currentDropzone = this; //closure
+    submitButton.addEventListener("click",
       function () {
-          console.log("업로드"); //tell Dropzone to process all queued files
-          myDropzone.processQueue();
-      });
+          currentDropzone.processQueue(); // 파일을 수동으로 전송한다.
+      }
+    );
   }
 }
