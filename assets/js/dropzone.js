@@ -3530,7 +3530,7 @@ function __guardMethod__(obj, methodName, transform) {
 }
 
 
-// 새로 추가한 코드
+// 업로드 버튼을 눌렀을 때 실행되는 코드부
 Dropzone.options.fileDropzone = {
   //url: '/uploadhdri-file',
   //업로드할 url (ex)컨트롤러)
