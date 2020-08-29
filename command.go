@@ -2619,8 +2619,18 @@ func addFootageItemCmd() {
 
 	// 3. 데이터
 	datapaths := make([]string, 0)
-	for _, path := range strings.Split(*flagInputDataPath, " ") {
-		datapaths = append(datapaths, path)
+	if HasWildcard(*flagInputDataPath) {
+		// 파일명에 와일드카드(?,*)가 존재할 때
+		matches, err := filepath.Glob(*flagInputDataPath)
+		if err != nil {
+			log.Fatal(err)
+		}
+		datapaths = matches
+	} else {
+		// 파일이 띄어쓰기로 구분되어 있다면 아래처럼 처리한다.
+		for _, path := range strings.Split(*flagInputDataPath, " ") {
+			datapaths = append(datapaths, path)
+		}
 	}
 	for _, path := range datapaths {
 		// 데이터 경로에 실재 파일이 존재하는지 체크.

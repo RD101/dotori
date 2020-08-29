@@ -13,6 +13,7 @@ dotori -add -itemtype maya -title example -author bailey -description "descripti
 dotori -add -itemtype maya -title example -author bailey -description "description10 about some details" -tag "기차 무궁화호" -inputthumbimgpath -inputthumbclippath -inputdatapath
 dotori -add -itemtype usd -title example -author bailey -description "description10 about some details" -tag "기차 무궁화호" -inputthumbimgpath -inputthumbclippath -inputdatapath
 dotori -add -itemtype sound -title example -author bailey -description "description10 about some details" -tag "bgm" -inputthumbimgpath -inputthumbclippath -inputdatapath
+dotori -add -itemtype footage -title example -author woong -description "footage wildcard test" -fps 24 -tag "wildcard" -incolorspace "ACES - ACES2065-1" -outcolorspace "Output - Rec.709" -inputdatapath "/Users/woong/tdcourse_examples/footage/exr_aces_2065_1/A005C021_150831_R0D0.*.exr"
 
 #아이템 삭제 커맨드를 실행 전에 직접 id를 입력해준 후 테스트한다.
 #sudo dotori -remove -itemid 
