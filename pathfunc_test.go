@@ -27,3 +27,55 @@ func Test_HasWildcard(t *testing.T) {
 		}
 	}
 }
+
+func Test_SingleQuotePath(t *testing.T) {
+	cases := []struct {
+		Itemtype string
+		want     bool
+	}{{
+		Itemtype: "'/show/test'", // 작은 따옴표가 들어간 경로
+		want:     true,
+	}, {
+		Itemtype: "/show/test", // 일반 문자열 경로
+		want:     false,
+	}, {
+		Itemtype: "'/show/test df'", // 띄어쓰기 포함
+		want:     true,
+	}, {
+		Itemtype: "'/show/project/assets/현장 데이터 사진/20200830'", // 띄어쓰기 및 한글포 함
+		want:     true,
+	},
+	}
+	for _, c := range cases {
+		b := regexSingleQuotePath.MatchString(c.Itemtype)
+		if c.want != b {
+			t.Fatalf("Test_SingleQuotePath(): 입력 값: %v, 원하는 값: %v, 얻은 값: %v\n", c.Itemtype, c.want, b)
+		}
+	}
+}
+
+func Test_DoubleQuotePath(t *testing.T) {
+	cases := []struct {
+		Itemtype string
+		want     bool
+	}{{
+		Itemtype: "\"/show/test\"", // 큰 따옴표가 들어간 경로
+		want:     true,
+	}, {
+		Itemtype: "/show/test", // 일반 문자열 경로
+		want:     false,
+	}, {
+		Itemtype: "\"/show/test df\"", // 띄어쓰기 포함
+		want:     true,
+	}, {
+		Itemtype: "\"/show/project/assets/현장 데이터 사진/20200830\"", // 띄어쓰기 및 한글포함
+		want:     true,
+	},
+	}
+	for _, c := range cases {
+		b := regexDoubleQuotePath.MatchString(c.Itemtype)
+		if c.want != b {
+			t.Fatalf("Test_DoubleQuotePath(): 입력 값: %v, 원하는 값: %v, 얻은 값: %v\n", c.Itemtype, c.want, b)
+		}
+	}
+}
