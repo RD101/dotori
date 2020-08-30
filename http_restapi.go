@@ -171,14 +171,14 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "삭제 권한이 없는 계정입니다", http.StatusUnauthorized)
 			return
 		}
-
-		// 삭제 함수 호출
-		err = RmItem(client, id) // db 에서 삭제
+		// 실제 데이터 삭제
+		err = RmData(client, id)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		err = RmData(client, id) // 실제 데이터 삭제
+		// 삭제 함수 호출
+		err = RmItem(client, id)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return

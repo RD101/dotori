@@ -35,20 +35,7 @@
                                 <a href="/search?itemtype={{$itemtype}}&searchword=tag:{{.}}" class="tag badge badge-outline-darkmode">{{.}}</a>
                             {{end}}
                         </div>
-                    </div>
-                    <div class="ml-1">
-                        <a href="/edit{{.ItemType}}?itemtype={{.ItemType}}&objectid={{.ID.Hex}}" class="badge badge-outline-darkmode">Edit</a>
-                        <button class="finger badge badge-outline-darkmode" onclick="copyButton(this.value)" value="{{.OutputDataPath}}">Copy Path</button>
-                        {{if ne .ItemType "footage"}}
-                            <a href="/download-item?itemtype={{.ItemType}}&id={{.ID.Hex}}" class="finger badge badge-outline-darkmode">Download</a>
-                        {{end}}
-                        {{if eq $.User.AccessLevel "admin"}}
-                            <span class="finger badge badge-danger" data-toggle="modal" data-target="#modal-rmitem" onclick="setRmItemModal('{{.ItemType}}','{{.ID.Hex}}')">DELETE</span>
-                        {{end}}
-                        {{if eq .ItemType "usd"}}
-                            <img src="/assets/img/ar.svg" class="finger">
-                        {{end}}
-                    </div>           
+                    </div>        
                 </div>
             </div>
         </div>
