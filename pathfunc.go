@@ -317,3 +317,11 @@ func HasWildcard(path string) bool {
 	}
 	return false
 }
+
+// HasQuotes 함수는 경로에 Quotes 문자가 포함되어 있는지 체크한다.
+func HasQuotes(path string) bool {
+	if strings.Contains(path, "\"") || strings.Contains(path, "'") {
+		return true
+	}
+	return false
+}

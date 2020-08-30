@@ -47,7 +47,7 @@ func Test_SingleQuotePath(t *testing.T) {
 	},
 	}
 	for _, c := range cases {
-		b := regexSingleQuotePath.MatchString(c.Itemtype)
+		b := regexSingleQuotesPath.MatchString(c.Itemtype)
 		if c.want != b {
 			t.Fatalf("Test_SingleQuotePath(): 입력 값: %v, 원하는 값: %v, 얻은 값: %v\n", c.Itemtype, c.want, b)
 		}
@@ -73,9 +73,32 @@ func Test_DoubleQuotePath(t *testing.T) {
 	},
 	}
 	for _, c := range cases {
-		b := regexDoubleQuotePath.MatchString(c.Itemtype)
+		b := regexDoubleQuotesPath.MatchString(c.Itemtype)
 		if c.want != b {
 			t.Fatalf("Test_DoubleQuotePath(): 입력 값: %v, 원하는 값: %v, 얻은 값: %v\n", c.Itemtype, c.want, b)
+		}
+	}
+}
+
+func Test_HasQuotes(t *testing.T) {
+	cases := []struct {
+		in   string
+		want bool
+	}{{
+		in:   "'/project/test.*.exr'", // 작은 따옴표 포함
+		want: true,
+	}, {
+		in:   "\"/project/test.????.exr\"", // 큰 따옴표 포함
+		want: true,
+	}, {
+		in:   "/project/test.exr", // 아무것도 없는경우
+		want: false,
+	},
+	}
+	for _, c := range cases {
+		b := HasQuotes(c.in)
+		if c.want != b {
+			t.Fatalf("Test_HasQuotes(): 입력 값: %v, 원하는 값: %v, 얻은 값: %v\n", c.in, c.want, b)
 		}
 	}
 }
