@@ -53,44 +53,71 @@ function setDetailViewModal(itemid) {
         type: "get",
         dataType: "json",
         success: function(response) {
-            // title, id, author
+
+            // thunbnail 세팅
+            let itemtype = response["itemtype"];
+            let thumbImgList = ["pdf", "ppt", "hwp", "sound", "ies", "hdri", "texture"];
+            if (thumbImgList.includes(itemtype)) {
+                let thumbnailHtml = `<img src="/assets/img/${itemtype}thumbnail.svg">`
+                document.getElementById("modal-detailview-thumbnail").innerHTML = thumbnailHtml;
+                let thumbnailObj = document.getElementById("modal-detailview-thumbnail");
+            } else {
+                let thumbnailObj = document.getElementById("modal-detailview-thumbnail");
+                let thumbnailHtml = `
+                                    <video id="modal-detailview-video">
+                                        <source src="/mediadata?id=${itemid}&type=mp4" type="video/mp4">
+                                        <source src="/mediadata?id=${itemid}&type=ogg" type="video/ogg">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                    `
+                document.getElementById("modal-detailview-thumbnail").innerHTML = thumbnailHtml;
+                if (response["status"] == "done") {
+                    document.getElementById("modal-detailview-video").setAttribute("poster", `/mediadata?id=${itemid}&type=png`) 
+                } else {
+                    document.getElementById("modal-detailview-video").setAttribute("poster", "/assets/img/noimage.svg") 
+                }
+            }
 
             // title, id, author, description 세팅
-            document.getElementById("modal-detailview-title").innerHTML = response["title"];
+            document.getElementById("modal-detailview-title").innerHTML = response["title"] + `<button type="button" onclick="location.href='/edit${itemtype}?id=${itemid}'" class="btn btn-outline-warning float-right" id="modal-detailview-edit-button">Edit</span>`;
             document.getElementById("modal-detailview-itemid").innerHTML = itemid;
             document.getElementById("modal-detailview-author").innerHTML = response["author"];
-            document.getElementById("modal-detailview-description").getAttribute('class')="wer"innerHTML = response["description"];
+            document.getElementById("modal-detailview-description").innerHTML = response["description"];
             
-            //tags, attribute 세팅
-            let itemtype = response["itemtype"];
+            // Tags 세팅
             let tagsHtml = `<strong>Tags</strong><br>`;
-            let attributesHtml = `<strong>Attributes</strong>`;
             for (let i=0; i<response["tags"].length;i++) {
                 let tag = response["tags"][i];
                 tagsHtml += `
                 <a href="/search?itemtype=${itemtype}&searchword=tag:${tag}" class="tag badge badge-outline-darkmode">${tag}</a>
                 `;
             }
-            for (key in response["attributes"]) {
-                let value = response["attributes"][key];
-                attributesHtml += `
-                <div class="row">
-                    <div class="col pt-2">
-                        <div class="form-group p-0 m-0">
-                            <input type="text" class="form-control" value=${key} readonly/>
-                        </div>
-                    </div>
-                    <div class="col pt-2">
-                        <div class="form-group p-0 m-0">
-                            <input type="text" class="form-control" value=${value} readonly/>
-                        </div>			
-                    </div>
-                </div>
-                `
-            }
             document.getElementById("modal-detailview-tags").innerHTML = tagsHtml
-            document.getElementById("modal-detailview-tags").getAttribute("onclick") = "copybuttpm()"
-            document.getElementById("modal-detailview-attributes").innerHTML = attributesHtml
+            
+            // Attributes 세팅
+            if (Object.keys(response["attributes"]).length != 0) {
+                let attributesHtml = `<strong>Attributes</strong>`;
+                for (key in response["attributes"]) {
+                    let value = response["attributes"][key];
+                    attributesHtml += `
+                                    <div class="row">
+                                        <div class="col pt-2">
+                                            <div class="form-group p-0 m-0">
+                                                <input type="text" class="form-control" value=${key} readonly/>
+                                            </div>
+                                        </div>
+                                        <div class="col pl-0 pt-2">
+                                            <div class="form-group p-0 m-0">
+                                                <input type="text" class="form-control" value=${value} readonly/>
+                                            </div>			
+                                        </div>
+                                    </div>
+                                    `
+                }
+                document.getElementById("modal-detailview-attributes").innerHTML = attributesHtml
+            } else {
+                document.getElementById("modal-detailview-attributes").innerHTML = ``
+            }
 
 
             // buttons 세팅
