@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -51,6 +52,7 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+		fmt.Println(iteminfo)
 		itemtype := iteminfo["itemtype"]
 		if itemtype == "" {
 			http.Error(w, "itemtype을 설정해주세요", http.StatusBadRequest)
@@ -71,7 +73,7 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "description을 설정해주세요", http.StatusBadRequest)
 			return
 		}
-		tags := Str2Tags(r.FormValue("tags"))
+		tags := Str2Tags(iteminfo["tags"])
 		if len(tags) == 0 {
 			http.Error(w, "tags를 설정해주세요", http.StatusBadRequest)
 			return
@@ -122,6 +124,63 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 		// 아이템에 파일 업데이트
 		if itemtype == "alembic" {
 			uploadAlembicFile(w, r, i.ID.Hex())
+		}
+		if itemtype == "blender" {
+			uploadBlenderFile(w, r, i.ID.Hex())
+		}
+		if itemtype == "footage" {
+			uploadFootageFile(w, r, i.ID.Hex())
+		}
+		if itemtype == "fusion360" {
+			uploadFusion360File(w, r, i.ID.Hex())
+		}
+		if itemtype == "hdri" {
+			uploadHDRIFile(w, r, i.ID.Hex())
+		}
+		if itemtype == "houdini" {
+			uploadHoudiniFile(w, r, i.ID.Hex())
+		}
+		if itemtype == "hwp" {
+			uploadHwpFile(w, r, i.ID.Hex())
+		}
+		if itemtype == "katana" {
+			uploadKatanaFile(w, r, i.ID.Hex())
+		}
+		if itemtype == "lut" {
+			uploadLutFile(w, r, i.ID.Hex())
+		}
+		if itemtype == "max" {
+			uploadMaxFile(w, r, i.ID.Hex())
+		}
+		if itemtype == "maya" {
+			uploadMayaFile(w, r, i.ID.Hex())
+		}
+		if itemtype == "modo" {
+			uploadModoFile(w, r, i.ID.Hex())
+		}
+		if itemtype == "nuke" {
+			uploadNukeFile(w, r, i.ID.Hex())
+		}
+		if itemtype == "openvdb" {
+			uploadOpenVDBFile(w, r, i.ID.Hex())
+		}
+		if itemtype == "pdf" {
+			uploadPdfFile(w, r, i.ID.Hex())
+		}
+		if itemtype == "ppt" {
+			uploadPptFile(w, r, i.ID.Hex())
+		}
+		if itemtype == "sound" {
+			uploadSoundFile(w, r, i.ID.Hex())
+		}
+		if itemtype == "texture" {
+			uploadClipFile(w, r, i.ID.Hex())
+		}
+		if itemtype == "unreal" {
+			uploadUnrealFile(w, r, i.ID.Hex())
+		}
+		if itemtype == "usd" {
+			uploadUSDFile(w, r, i.ID.Hex())
 		}
 
 		// Response
