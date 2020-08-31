@@ -36,6 +36,10 @@ document.onkeydown = function(e) {
 
 // copyButton 은 아이디값을 받아서, 클립보드로 복사하는 기능이다.
 function copyButton(elementId) {
+    if (navigator.userAgent.indexOf("Win") != -1) {
+        elementId = elementId.replace(/\//g, "\\")
+        elementId = "\\" + elementId
+    } 
     let id = document.createElement("input");                       // input요소를 만듬
     id.setAttribute("value", elementId);                            // input요소에 값을 추가
     document.getElementById("modal-detailview").appendChild(id);    // modal에 요소 추가
