@@ -64,7 +64,7 @@ function setDetailViewModal(itemid) {
             } else {
                 let thumbnailObj = document.getElementById("modal-detailview-thumbnail");
                 let thumbnailHtml = `
-                                    <video id="modal-detailview-video">
+                                    <video id="modal-detailview-video" controls>
                                         <source src="/mediadata?id=${itemid}&type=mp4" type="video/mp4">
                                         <source src="/mediadata?id=${itemid}&type=ogg" type="video/ogg">
                                         Your browser does not support the video tag.
