@@ -325,3 +325,34 @@ func HasQuotes(path string) bool {
 	}
 	return false
 }
+
+// QuotesPaths2Paths 함수는 따옴표로 구성된 경로들를 구분하여 path 리스트로 바꾼댜.
+func QuotesPaths2Paths(path string) []string {
+	var results []string
+	if HasQuotes(path) {
+		sq := regexSingleQuotesPath.FindAllString(path, -1)
+		for _, i := range sq {
+			results = append(results, strings.Trim(i, "'"))
+		}
+		dq := regexDoubleQuotesPath.FindAllString(path, -1)
+		for _, j := range dq {
+			if !hasSlice(results, j) {
+
+				results = append(results, strings.Trim(j, "\""))
+			}
+		}
+
+	} else {
+		results = append(results, path)
+	}
+	return results
+}
+
+func hasSlice(items []string, str string) bool {
+	for _, i := range items {
+		if i == str {
+			return true
+		}
+	}
+	return false
+}

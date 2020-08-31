@@ -102,3 +102,35 @@ func Test_HasQuotes(t *testing.T) {
 		}
 	}
 }
+
+func Test_QuotesPaths2Paths(t *testing.T) {
+	cases := []struct {
+		in   string
+		want []string
+	}{{
+		in:   "'/project/test.0010.exr'", // 작은 따옴표 포함
+		want: []string{"/project/test.0010.exr"},
+	}, {
+		in:   "\"/project/dublequotes.0010.exr\"", // 큰 따옴표 포함
+		want: []string{"/project/dublequotes.0010.exr"},
+	}, {
+		in:   "/project/test.exr", // 아무것도 없는경우
+		want: []string{"/project/test.exr"},
+	}, {
+		in:   "\"/project/case1.exr\" \"/project/case2.exr\"", // 큰 따옴표로 구성된 다중경로
+		want: []string{"/project/case1.exr", "/project/case2.exr"},
+	}, {
+		in:   "\"/project/case 1.exr\" \"/project/case2.exr\"", // 큰 따옴표 + 스페이스로 구성된 다중경로
+		want: []string{"/project/case 1.exr", "/project/case2.exr"},
+	}, {
+		in:   "'/project/case 1.exr' \"/project/case2.exr\"", // 작은 따옴표 + 큰 따옴표 + 스페이스로 구성된 다중경로
+		want: []string{"/project/case 1.exr", "/project/case2.exr"},
+	},
+	}
+	for _, c := range cases {
+		results := QuotesPaths2Paths(c.in)
+		if !testIsEqualSlice(c.want, results) {
+			t.Fatalf("Test_HasQuotes(): 입력 값: %v, 원하는 값: %v, 얻은 값: %v\n", c.in, c.want, results)
+		}
+	}
+}
