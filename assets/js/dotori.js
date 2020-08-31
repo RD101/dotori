@@ -81,6 +81,7 @@ function setDetailViewModal(itemid) {
             // title, id, author, description 세팅
             document.getElementById("modal-detailview-title").innerHTML = response["title"] + `<button type="button" onclick="location.href='/edit${itemtype}?id=${itemid}'" class="btn btn-outline-warning float-right" id="modal-detailview-edit-button">Edit</span>`;
             document.getElementById("modal-detailview-itemid").innerHTML = itemid;
+            document.getElementById("modal-detailview-itemtype").innerHTML = itemtype;
             document.getElementById("modal-detailview-author").innerHTML = response["author"];
             document.getElementById("modal-detailview-description").innerHTML = response["description"];
             
