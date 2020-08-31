@@ -58,11 +58,8 @@ function setDetailViewModal(itemid) {
             let itemtype = response["itemtype"];
             let thumbImgList = ["pdf", "ppt", "hwp", "sound", "ies", "hdri", "texture"];
             if (thumbImgList.includes(itemtype)) {
-                let thumbnailHtml = `<img src="/assets/img/${itemtype}thumbnail.svg">`
-                document.getElementById("modal-detailview-thumbnail").innerHTML = thumbnailHtml;
-                let thumbnailObj = document.getElementById("modal-detailview-thumbnail");
+                document.getElementById("modal-detailview-thumbnail").innerHTML = `<img src="/assets/img/${itemtype}thumbnail.svg">`;
             } else {
-                let thumbnailObj = document.getElementById("modal-detailview-thumbnail");
                 let thumbnailHtml = `
                                     <video id="modal-detailview-video" controls>
                                         <source src="/mediadata?id=${itemid}&type=mp4" type="video/mp4">
