@@ -56,8 +56,8 @@ func Test_CheckPath(t *testing.T) {
 		path: "Q:/LIBRARY_3D/asset/", // Q드라이브로 시작하는 경로
 		want: false,
 	}, {
-		path: "/바탕화면/LIBRARY_3D/asset/", // 경로에 한글이 섞이면 안된다.
-		want: false,
+		path: "/바탕화면/LIBRARY_3D/asset/", // 경로에 한글이 섞인경우
+		want: true,
 	}, {
 		path: "/library_3d/asset/", // 전부 소문자인 경우
 		want: true,
@@ -86,8 +86,8 @@ func Test_CheckPath(t *testing.T) {
 		path: "/LIBRARY_3D學問/asset/", // 경로에 한문이 들어간경우.
 		want: false,
 	}, {
-		path: "/LIBRARY 3D/asset/", // 경로에 공백문자가 들어간경우. 에러는 아니지만 추후 연산을 위해 파이프라인툴에서 공백을 허용하지 않는다.
-		want: false,
+		path: "/LIBRARY 3D/asset/", // 경로에 공백문자가 들어간경우.
+		want: true,
 	}, {
 		path: "/LIBRARY.3D/asset/", // 경로에 '.' 문자가 들어간경우
 		want: true,
