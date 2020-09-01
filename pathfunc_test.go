@@ -42,7 +42,7 @@ func Test_SingleQuotePath(t *testing.T) {
 		Itemtype: "'/show/test df'", // 띄어쓰기 포함
 		want:     true,
 	}, {
-		Itemtype: "'/show/project/assets/현장 데이터 사진/20200830'", // 띄어쓰기 및 한글포 함
+		Itemtype: "'/show/project/assets/현장 데이터 사진/20200830'", // 띄어쓰기 + 한글 포함
 		want:     true,
 	},
 	}
