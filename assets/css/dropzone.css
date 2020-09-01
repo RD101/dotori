@@ -224,9 +224,13 @@
       text-align: center;
       display: block;
       cursor: pointer;
-      border: none; }
-      .dropzone .dz-preview .dz-remove:hover {
-        text-decoration: underline; }
+      border: none;
+      color: rgb(255, 83, 103);
+    }
+    .dropzone .dz-preview .dz-remove:hover {
+      text-decoration: underline;
+      color: rgb(255, 83, 103);
+    }
     .dropzone .dz-preview:hover .dz-details {
       opacity: 1; }
     .dropzone .dz-preview .dz-details {

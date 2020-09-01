@@ -27,6 +27,7 @@ var funcMap = template.FuncMap{
 	"Tags2str":       Tags2str,
 	"add":            add,
 	"mod":            mod,
+	"divCeil":        divCeil,
 	"PreviousPage":   PreviousPage,
 	"NextPage":       NextPage,
 	"RmRootpath":     RmRootpath,

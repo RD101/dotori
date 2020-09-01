@@ -369,7 +369,7 @@ var Dropzone = function (_Emitter) {
          * already uploading) the file. The `dictCancelUpload`, `dictCancelUploadConfirmation`
          * and `dictRemoveFile` options are used for the wording.
          */
-        addRemoveLinks: false,
+        addRemoveLinks: true,
 
         /**
          * Defines where to display the file previews – if `null` the
@@ -3526,5 +3526,22 @@ function __guardMethod__(obj, methodName, transform) {
     return transform(obj, methodName);
   } else {
     return undefined;
+  }
+}
+
+
+// 업로드 버튼을 눌렀을 때 실행되는 코드부
+Dropzone.options.hdriDropzone = {
+  autoProcessQueue: false,
+  maxFiles: 1,
+  init: function () {
+    // 최초 dropzone 설정시 init을 통해 호출
+    var submitButton = document.getElementById("btn-upload-file");
+    var currentDropzone = this; //closure
+    submitButton.addEventListener("click",
+      function () {
+          currentDropzone.processQueue(); // 파일을 수동으로 전송한다.
+      }
+    );
   }
 }
