@@ -65,7 +65,7 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "description을 설정해주세요", http.StatusBadRequest)
 			return
 		}
-		tags := Str2Tags(iteminfo["tags"])
+		tags := Str2Tags(r.FormValue("tags"))
 		if len(tags) == 0 {
 			http.Error(w, "tags를 설정해주세요", http.StatusBadRequest)
 			return
