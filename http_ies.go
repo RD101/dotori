@@ -229,6 +229,11 @@ func handleUploadIesFile(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	uploadIesFile(w, r, objectID)
+}
+
+// uploadIesFile 함수는 Ies 파일 정보를 DB에 업로드하고 파일을 storage에 복사한다.
+func uploadIesFile(w http.ResponseWriter, r *http.Request, objectID string) {
 	//mongoDB client 연결
 	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 	if err != nil {
