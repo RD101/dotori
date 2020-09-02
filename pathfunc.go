@@ -317,3 +317,42 @@ func HasWildcard(path string) bool {
 	}
 	return false
 }
+
+// HasQuotes 함수는 경로에 Quotes 문자가 포함되어 있는지 체크한다.
+func HasQuotes(path string) bool {
+	if strings.Contains(path, "\"") || strings.Contains(path, "'") {
+		return true
+	}
+	return false
+}
+
+// QuotesPaths2Paths 함수는 따옴표로 구성된 경로들를 구분하여 path 리스트로 바꾼댜.
+func QuotesPaths2Paths(path string) []string {
+	var results []string
+	if HasQuotes(path) {
+		sq := regexSingleQuotesPath.FindAllString(path, -1)
+		for _, i := range sq {
+			results = append(results, strings.Trim(i, "'"))
+		}
+		dq := regexDoubleQuotesPath.FindAllString(path, -1)
+		for _, j := range dq {
+			if !hasSlice(results, j) {
+
+				results = append(results, strings.Trim(j, "\""))
+			}
+		}
+
+	} else {
+		results = append(results, path)
+	}
+	return results
+}
+
+func hasSlice(items []string, str string) bool {
+	for _, i := range items {
+		if i == str {
+			return true
+		}
+	}
+	return false
+}
