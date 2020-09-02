@@ -45,28 +45,22 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 		i := Item{}
 		i.ID = primitive.NewObjectID()
 		// 아이템 정보 Parsing
-		iteminfo := make(map[string]string)
-		err = json.Unmarshal([]byte(r.FormValue("iteminfo")), &iteminfo)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		itemtype := iteminfo["itemtype"]
+		itemtype := r.FormValue("itemtype")
 		if itemtype == "" {
 			http.Error(w, "itemtype을 설정해주세요", http.StatusBadRequest)
 			return
 		}
-		title := iteminfo["title"]
+		title := r.FormValue("title")
 		if title == "" {
 			http.Error(w, "title을 설정해주세요", http.StatusBadRequest)
 			return
 		}
-		author := iteminfo["author"]
+		author := r.FormValue("author")
 		if author == "" {
 			http.Error(w, "author를 설정해주세요", http.StatusBadRequest)
 			return
 		}
-		description := iteminfo["description"]
+		description := r.FormValue("description")
 		if description == "" {
 			http.Error(w, "description을 설정해주세요", http.StatusBadRequest)
 			return
@@ -76,7 +70,7 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "tags를 설정해주세요", http.StatusBadRequest)
 			return
 		}
-		attributes, err := StringToMap(iteminfo["attributes"])
+		attributes, err := StringToMap(r.FormValue("attributes"))
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 		}
