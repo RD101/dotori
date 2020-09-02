@@ -28,7 +28,7 @@
     </div>
     <!-- Modal : Item Detail View -->
     <div class="modal fade" id="modal-detailview" tabindex="-1" role="dialog" aria-labeledby="modal-detailview" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content text-white" style="background-color: #2e2d2d">
                 <div class="modal-header">
                     <h5 class="modal-title">Detail View</h5>
@@ -37,26 +37,31 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="container-fluid row mr-0">
-                        <div class="col-lg-6 col-md-12">
-                            <img src="/assets/img/pdfthumbnail.svg">
+                    <div class="row">
+                        <div class="detailview-thumbnail col-xl-6 col-lg-12 col-md-12" id="modal-detailview-thumbnail">
                         </div>
-                        <div class="col-lg-6 col-md-12">
-                            <p style="text-align: left;">
-                                <h5 id="modal-detailview-title" style="font-weight: 600;"></h5>
-                            </p>
-                            <p style="text-align: left;">
+                        <div class="iteminfo-list col-xl-6 col-lg-12 col-md-12">
+                            <div class="iteminfo">
+                                <h3 id="modal-detailview-title"></h3>
+                            </div>
+                            <p class="iteminfo">
                                 <strong>ID</strong>
-                                <span id="modal-detailview-itemid" style="float: right;"></span>
+                                <span id="modal-detailview-itemid"></span>
                             </p>
-                            <p style="text-align: left;">
+                            <p class="iteminfo">
+                                <strong>Itemtype</strong>
+                                <span id="modal-detailview-itemtype"></span>
+                            </p>
+                            <p class="iteminfo">
                                 <strong>Author</strong>
-                                <span id="modal-detailview-author" style="float: right;"></span>
+                                <span id="modal-detailview-author"></span>
                             </p>
-                            <p style="text-align: left;">
-                                <strong>Description</strong>
-                                <span id="modal-detailview-description" style="float: right;"></span>
-                            </p>
+                            <div class="iteminfo">
+                                <strong for="modal-detailview-description">Description</strong>
+                                <p id="modal-detailview-description"></p>
+                            </div>
+                            <div class="iteminfo" id="modal-detailview-tags"></div>
+                            <div class="iteminfo" id="modal-detailview-attributes"></div>
                         </div>
                     </div>
                 </div>
@@ -102,3 +107,4 @@
     </div>
 </div>
 {{end}}
+

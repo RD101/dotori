@@ -48,17 +48,75 @@ function copyButton(elementId) {
     document.getElementById("modal-detailview").removeChild(id);    // modal에서 요소 삭제
 }
 
-// setDetailViewModal 은 아이템을 선택했을 때 볼 수 있는 detailview 모달창에 detail 정보를 세팅해주는 함수이다.
+// setDetailViewModal 은 아이템을 선택했을 때 볼 수 있는 detailview 모달창에 어셋 정보를 세팅해주는 함수이다.
 function setDetailViewModal(itemid) {
+
+    // Detail View에 세팅할 아이템 정보를 RestAPI로 불러옴
     $.ajax({
         url: `/api/item?id=${itemid}`,
         type: "get",
         dataType: "json",
         success: function(response) {
-            document.getElementById("modal-detailview-title").innerHTML = response["title"];
+
+            // thunbnail 세팅
+            let itemtype = response["itemtype"];
+            let thumbImgList = ["pdf", "ppt", "hwp", "sound", "ies", "hdri", "texture"];
+            if (thumbImgList.includes(itemtype)) {
+                document.getElementById("modal-detailview-thumbnail").innerHTML = `<img src="/assets/img/${itemtype}thumbnail.svg">`;
+            } else {
+                let thumbnailHtml = `
+                                    <video id="modal-detailview-video" controls>
+                                        <source src="/mediadata?id=${itemid}&type=mp4" type="video/mp4">
+                                        <source src="/mediadata?id=${itemid}&type=ogg" type="video/ogg">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                    `
+                document.getElementById("modal-detailview-thumbnail").innerHTML = thumbnailHtml;
+                if (response["status"] == "done") {
+                    document.getElementById("modal-detailview-video").setAttribute("poster", `/mediadata?id=${itemid}&type=png`) 
+                } else {
+                    document.getElementById("modal-detailview-video").setAttribute("poster", "/assets/img/noimage.svg") 
+                }
+            }
+
+            // title, id, author, description 세팅
+            document.getElementById("modal-detailview-title").innerHTML = response["title"] + `<button type="button" onclick="location.href='/edit${itemtype}?id=${itemid}'" class="btn btn-outline-warning float-right" id="modal-detailview-edit-button">Edit</span>`;
             document.getElementById("modal-detailview-itemid").innerHTML = itemid;
+            document.getElementById("modal-detailview-itemtype").innerHTML = itemtype;
             document.getElementById("modal-detailview-author").innerHTML = response["author"];
             document.getElementById("modal-detailview-description").innerHTML = response["description"];
+            
+            // Tags 세팅
+            let tagsHtml = `<strong>Tags</strong><br>`;
+            for (let i=0; i<response["tags"].length;i++) {
+                let tag = response["tags"][i];
+                tagsHtml += `
+                <a href="/search?itemtype=${itemtype}&searchword=tag:${tag}" class="tag badge badge-outline-darkmode">${tag}</a>
+                `;
+            }
+            document.getElementById("modal-detailview-tags").innerHTML = tagsHtml
+            
+            // Attributes 세팅
+            if (Object.keys(response["attributes"]).length != 0) {
+                let attributesHtml = `<strong>Attributes</strong>
+                                      <dl class="attributes">`;
+                for (key in response["attributes"]) {
+                    let value = response["attributes"][key];
+                    attributesHtml += `
+                                    <div class="row no-gutters">
+                                        <dt>${key}</dt>
+                                        <dd>${value}</dd>
+                                    </div>
+                                    `
+                }
+                attributesHtml += `</dl>`
+                document.getElementById("modal-detailview-attributes").innerHTML = attributesHtml
+            } else {
+                document.getElementById("modal-detailview-attributes").innerHTML = ``
+            }
+            
+            // buttons 세팅
+            document.getElementById("modal-detailview-edit-button").href=`/edit${itemtype}?itemtype=${itemtype}&id=${itemid}`
             let outputdatapath=response["outputdatapath"]
             let footerHtml = `
             <button type="button" class="btn btn-outline-darkmode" id="modal-detailview-download-button" onclick="location.href='/download-item?id=${itemid}'">Download</button>
@@ -71,22 +129,23 @@ function setDetailViewModal(itemid) {
             `
             if (document.getElementById("accesslevel").value == "admin") {
                 document.getElementById("modal-rmitem-itemid").value = itemid;
-                document.getElementById("modal-detailview-footer").innerHTML = footerHtmlForAdmin
+                document.getElementById("modal-detailview-footer").innerHTML = footerHtmlForAdmin       // admin 계정일 때만 delete 버튼이 보인다.
             } else {
                 document.getElementById("modal-detailview-footer").innerHTML = footerHtml
             }
-            if (response["itemtype"] == "footage") {
-                document.getElementById("modal-detailview-download-button").style.visibility="hidden"        
+            if (itemtype == "footage") {
+                document.getElementById("modal-detailview-download-button").style.visibility="hidden"   // footage는 download 버튼이 보이지 않는다.  
             }
         },
-        error: function(result) {
-            alert(result);
+        error: function() {
+            alert("어셋 정보를 가져오는 데 실패했습니다");
+            document.getElementById("modal-detailview").style.display="none";
         }
     });
 
 }
 
-// rmItemModal 은 삭제 modal창에서 Delete 버튼을 누르면 실행되는 아이템 삭제 함수이다. 
+// rmItemModal 은 삭제 modal창에서 Delete 버튼을 누르면 실행되는 아이템 삭제 함수이다.
 function rmItemModal(itemId) {
     let token = document.getElementById("token").value;
     $.ajax({
