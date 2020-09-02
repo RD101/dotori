@@ -94,30 +94,23 @@ function setDetailViewModal(itemid) {
             
             // Attributes 세팅
             if (Object.keys(response["attributes"]).length != 0) {
-                let attributesHtml = `<strong>Attributes</strong>`;
+                let attributesHtml = `<strong>Attributes</strong>
+                                      <dl class="attributes">`;
                 for (key in response["attributes"]) {
                     let value = response["attributes"][key];
                     attributesHtml += `
-                                    <div class="row">
-                                        <div class="col pt-2">
-                                            <div class="form-group p-0 m-0">
-                                                <input type="text" class="form-control" value=${key} readonly/>
-                                            </div>
-                                        </div>
-                                        <div class="col pl-0 pt-2">
-                                            <div class="form-group p-0 m-0">
-                                                <input type="text" class="form-control" value=${value} readonly/>
-                                            </div>			
-                                        </div>
+                                    <div class="row no-gutters">
+                                        <dt>${key}</dt>
+                                        <dd>${value}</dd>
                                     </div>
                                     `
                 }
+                attributesHtml += `</dl>`
                 document.getElementById("modal-detailview-attributes").innerHTML = attributesHtml
             } else {
                 document.getElementById("modal-detailview-attributes").innerHTML = ``
             }
-
-
+            
             // buttons 세팅
             document.getElementById("modal-detailview-edit-button").href=`/edit${itemtype}?itemtype=${itemtype}&id=${itemid}`
             let outputdatapath=response["outputdatapath"]

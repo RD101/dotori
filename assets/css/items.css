@@ -42,6 +42,10 @@
 /*---- item in Detail View ----*/
 /*-----------------------------*/
 
+.modal-dialog {
+	max-width: 70%;
+}
+
 .modal-header {
 	border-bottom: 1px solid rgb(111, 110, 104);
 }
@@ -64,10 +68,16 @@
 /* id, itemtype, author */
 .iteminfo-list .iteminfo span {
     float: right;
+    font-size: 15px;
 }
 
 .iteminfo {
     margin-bottom: 1rem;
+}
+
+/* description */
+#modal-detailview-description {
+	font-size: 14px;
 }
 
 .detailview-thumbnail > * {
@@ -76,4 +86,19 @@
     transform: translateY(-50%);
     width: 100%;
     vertical-align: middle;
+}
+
+.attributes {
+    margin-top: 10px;
+    font-size: 13px;
+}
+
+/* attribute의 key */
+.attributes dt {
+    width: 12%;
+}
+
+/* attribute의 value */
+.attributes dd {
+    margin-left: 20px;
 }
