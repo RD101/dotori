@@ -75,7 +75,7 @@ func handleAddNukeItem(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func handlUploadNukeItem(w http.ResponseWriter, r *http.Request) {
+func handleUploadNukeItem(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -227,6 +227,11 @@ func handleUploadNukeFile(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	uploadNukeFile(w, r, objectID)
+}
+
+// uploadNukeFile 함수는 Nuke 파일 정보를 DB에 업로드하고 파일을 storage에 복사한다.
+func uploadNukeFile(w http.ResponseWriter, r *http.Request, objectID string) {
 	//mongoDB client 연결
 	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 	if err != nil {

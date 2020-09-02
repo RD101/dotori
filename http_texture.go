@@ -241,6 +241,11 @@ func handleUploadTextureFile(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	uploadTextureFile(w, r, objectID)
+}
+
+// uploadTextureFile 함수는 Texture 파일 정보를 DB에 업로드하고 파일을 storage에 복사한다.
+func uploadTextureFile(w http.ResponseWriter, r *http.Request, objectID string) {
 	//mongoDB client 연결
 	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 	if err != nil {
