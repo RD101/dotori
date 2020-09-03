@@ -2,14 +2,36 @@
 {{template "head"}}
 <body>
 {{template "navbar" .}}
+<!--dropzone-->
+<div class="container p-4">
+    <div class="col-lg-6 col-md-8 col-sm-12 mx-auto">
+        <div class="pt-3 pb-3">
+            <h2 class="text-muted">Edit Maya Details</h2>
+        </div>
+        <div class="">
+            {{$dIndex := 0}}
+            {{range $dataFile := .DataFiles}}
+                <input type="hidden" id="datafile{{$dIndex}}" name="datafile{{$dIndex}}" value="{{$dataFile}}">
+                {{$dIndex = add $dIndex 1}}
+            {{end}}
+            <input type="hidden" id="datafileNum" name="datafileNum" value="{{$dIndex}}">
+            <button id="btn-upload-file" class="btn btn-sm btn-outline-secondary float-right">업로드</button>
+            <form id="mayaDropzone" action="/editmaya-datafile" method="post" class="dropzone" enctype="multipart/form-data">
+                <div class="fallback">
+                    <input name="file" type="file"/>
+                </div>
+            </form>
+            <small class="form-text text-muted">업로드할 마야파일, 썸네일, 동영상을 Drag & Drop 해주세요.</small>
+        </div>
+    </div>
+</div>
 <form action="/editmaya-submit" method="post">
     <input type="hidden" id="id" name="id" value="{{.ID.Hex}}">
     <input type="hidden" id="itemtype" name="itemtype" value="{{.ItemType}}">
-    <div class="container p-5">
+    <input type="hidden" id="rmdatafilesNum" name="rmdatafilesNum" value="0">
+    <div id="rmdatafiles"></div>
+    <div class="container p-4">
         <div class="col-lg-6 col-md-8 col-sm-12 mx-auto">
-            <div class="pt-3 pb-3">
-                <h2 class="section-heading text-muted">Edit Maya Details</h2>
-            </div>
             <div class="row">
                 <div class="col-sm">
                     <div class="form-group">

@@ -3545,3 +3545,51 @@ Dropzone.options.hdriDropzone = {
     );
   }
 }
+
+// 업로드 버튼을 눌렀을 때 실행되는 코드부
+Dropzone.options.mayaDropzone = {
+  autoProcessQueue: false,
+  init: function () {
+    // 최초 dropzone 설정시 init을 통해 호출
+    var submitButton = document.getElementById("btn-upload-file");
+    var currentDropzone = this; //closure
+    submitButton.addEventListener("click",
+      function () {
+        currentDropzone.processQueue(); // 파일을 수동으로 전송한다.
+        
+        // 업로드한 파일이 삭제할 파일 리스트에 포함되어 있다면 리스트에서 삭제
+        var childNum = document.getElementById("rmdatafiles").childElementCount;
+        start: for (var i = 0; i < currentDropzone.files.length; i++) {
+          var uploadedFile = currentDropzone.files[i].name;
+          for (var j = 0; j < childNum; j++) {
+            var element = document.getElementById("rmdatafile" + j);
+            if (element == null) {
+              continue;
+            }
+            var fileName = element.value;
+            if (uploadedFile == fileName) {
+              element.parentNode.removeChild(element);
+              continue start;
+            }
+          }
+        }
+      }
+    );
+    // 데이터 파일들을 드롭존에 추가
+    var datafileNum = document.getElementById("datafileNum").value;
+    for (var i = 0; i < datafileNum; i++) {
+      var dataFile = document.getElementById("datafile" + i).value;
+      let mockFile = { name: dataFile, size: 12345};
+      currentDropzone.options.addedfile.call(currentDropzone, mockFile);
+    }
+    // remove file 링크를 클릭했을 때
+    this.on("removedfile", function(data) {
+      var childNum = document.getElementById("rmdatafiles").childElementCount;
+      let html = `
+        <input type="hidden" id="rmdatafile${childNum}" name="rmdatafile${childNum}" value="${data.name}">
+      `
+      document.getElementById("rmdatafiles").innerHTML += html;
+      document.getElementById("rmdatafilesNum").value = document.getElementById("rmdatafiles").childElementCount;
+    });
+  }
+}
