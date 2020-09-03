@@ -13,6 +13,7 @@ type Adminsetting struct {
 	LinuxProtocolPath       string `json:"linuxprotocolpath" bson:"linuxprotocolpath"`             // 웹에서 클릭시 사용하는 Linux 경로
 	WindowsProtocolPath     string `json:"windowsprotocolpath" bson:"windowsprotocolpath"`         // 웹에서 클릭시 사용하는 Windows 경로
 	MacosProtocolPath       string `json:"macosprotocolpath" bson:"macosprotocolpath"`             // 웹에서 클릭시 사용하는 macOS 경로
+	WindowsUNCPrefix        string `json:"windowsuncprefix" bson:"windowsuncprefix"`               // CopyPath를 실행할 때 윈도우즈의 경우 경로 앞에 붙는 문자열
 	Umask                   string `json:"umask" bson:"umask"`                                     // Umask 값
 	FolderPermission        string `json:"folderpermission" bson:"folderpermission"`               // 폴더 생성시 사용하는 권한
 	FilePermission          string `json:"filepermission" bson:"filepermission"`                   // 파일 생성시 사용하는 권한

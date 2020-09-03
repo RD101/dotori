@@ -36,10 +36,26 @@ document.onkeydown = function(e) {
 
 // copyButton 은 아이디값을 받아서, 클립보드로 복사하는 기능이다.
 function copyButton(elementId) {
-    if (navigator.userAgent.indexOf("Win") != -1) {
+    let windowsUNCPrefix = "";
+    $.ajax({
+        url: `/api/adminsetting`,
+        type: "get",
+        headers: {
+            "Authorization": "Basic " + document.getElementById("token").value
+        },
+        dataType: "json",
+        async: false,
+        success: function(data) {
+            windowsUNCPrefix = data.windowsuncprefix;
+        },
+        error: function(){
+            alert("admin 셋팅에서 Windows UNC Prefix 값을 가지고 올 수 없습니다.");  
+        }
+    });
+    if (navigator.userAgent.indexOf("Win") != -1) { // windows 경우
         elementId = elementId.replace(/\//g, "\\")
-        elementId = "\\" + elementId
-    } 
+        elementId = windowsUNCPrefix + elementId
+    }
     let id = document.createElement("input");                       // input요소를 만듬
     id.setAttribute("value", elementId);                            // input요소에 값을 추가
     document.getElementById("modal-detailview").appendChild(id);    // modal에 요소 추가
