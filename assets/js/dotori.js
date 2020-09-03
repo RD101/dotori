@@ -60,9 +60,14 @@ function setDetailViewModal(itemid) {
 
             // thunbnail 세팅
             let itemtype = response["itemtype"];
-            let thumbImgList = ["pdf", "ppt", "hwp", "sound", "ies", "hdri", "texture"];
-            if (thumbImgList.includes(itemtype)) {
+            if (itemtype == "pdf" || itemtype == "ppt" || itemtype == "hwp" || itemtype == "sound" || itemtype == "ies") {
                 document.getElementById("modal-detailview-thumbnail").innerHTML = `<img src="/assets/img/${itemtype}thumbnail.svg">`;
+            } else if (itemtype == "hdri" || itemtype == "lut" || itemtype == "texture") {
+                if (response["status"] == "done") {
+                document.getElementById("modal-detailview-thumbnail").innerHTML = `<img src="/mediadata?id=${itemid}&type=png`
+                } else {
+                    document.getElementById("modal-detailview-thumbnail").innerHTML = `<img src="/assets/img/noimage.svg">`
+                }
             } else {
                 let thumbnailHtml = `
                                     <video id="modal-detailview-video" controls>
@@ -228,15 +233,19 @@ function recentlyClick(totalItemNum, buttonState) {
     }
 
     document.getElementById("recentlyPage").innerHTML = currentPageNum + " / " + totalPageNum;
+    document.getElementById("recentlyPage").setAttribute('value', currentPageNum);
+    // 마지막 페이지일 때
     if(clearItemNum!==0 && currentPageNum===totalPageNum){
         for(let i = 3; clearItemNum!=0; i--, clearItemNum--){
-            document.getElementById("recentlyImageForm"+i).innerHTML = ""
-            document.getElementById("recentlyTitle"+i).innerHTML = ""
-            document.getElementById("recentlyAuthor"+i).innerHTML = ""
-            document.getElementById("recentlyCreateTime"+i).innerHTML = ""
+            document.getElementById("recentCard"+i).style.visibility="hidden"
         }
     }
-    document.getElementById("recentlyPage").setAttribute('value', currentPageNum);
+    // 마지막 페이지가 아닐 때
+    if (currentPageNum != totalPageNum) {
+        for(let i = 0; i<4; i++){
+            document.getElementById("recentCard"+i).style.visibility="visible"
+        }
+    }
     $.ajax({
         url: `/api/recentitem?recentlypage=${currentPageNum}`,
         type: "get",
@@ -247,44 +256,37 @@ function recentlyClick(totalItemNum, buttonState) {
             let img = ""
             for (let i = 0; i < data.length; i++){
                 let recentlyImageForm = document.getElementById("recentlyImageForm"+i)
-                if (data[i].itemtype=="pdf"){
-                    img = '<img width="' + thumbnailwidth + '" height="'+ thumbnailheight +
-                                '" src="/assets/img/pdfthumbnail.svg">'
-                }else if(data[i].itemtype=="hwp"){
-                    img = '<img width="' + thumbnailwidth + '" height="'+ thumbnailheight +
-                                '" src="/assets/img/hwpthumbnail.svg">'
-                }else if(data[i].itemtype=="sound"){
-                    img = '<img width="' + thumbnailwidth + '" height="'+ thumbnailheight +
-                                '" src="/assets/img/soundthumbnail.svg">'
-                }else if(data[i].itemtype=="hdri" || data[i].itemtype=="texture"){
+                if (data[i].itemtype == "pdf" || data[i].itemtype == "ppt" || data[i].itemtype == "hwp" || data[i].itemtype == "sound" || data[i].itemtype == "ies") {
+                    img = '<img class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                    '" src="/assets/img/' + data[i].itemtype + 'thumbnail.svg">'
+                }else if(data[i].itemtype=="hdri" || data[i].itemtype == "lut" || data[i].itemtype=="texture"){
                     if(data[i].status == "done"){
-                        img = '<img width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                        img = '<img class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
                                 '" src="/mediadata?id=' + data[i].id + '&type=png">'
                     }else{
-                        img = '<img width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                        img = '<img class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
                                 '" src="/assets/img/noimage.svg">'
                     }
                 }else{
                     if(data[i].status == "done"){
-                        img = '<video width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                        img = '<video class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
                                 '" controls poster="/mediadata?id=' + data[i].id + '&type=png">' +
                                 '<source src="/mediadata?id=' + data[i].id + '&type=mp4" type="video/mp4">' +
                                 '<source src="/mediadata?id=' + data[i].id + '&type=ogg" type="video/ogg">' +
                                 'Your browser does not support the video tag.'+
                                 '</video>'
                     }else{
-                        img = '<video width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                        img = '<video class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
                                 '" controls poster="/assets/img/noimage.svg">' +
                                 '<source src="/mediadata?id=' + data[i].id + '&type=mp4" type="video/mp4">' +
                                 '<source src="/mediadata?id=' + data[i].id + '&type=ogg" type="video/ogg">' +
                                 'Your browser does not support the video tag.'+
                                 '</video>'
                     }
-                recentlyImageForm.innerHTML = img;
                 }
-                document.getElementById("recentlyTitle"+i).innerHTML = "Title: " + data[i].title;
-                document.getElementById("recentlyAuthor"+i).innerHTML = "Author: " + data[i].author;
-                document.getElementById("recentlyCreateTime"+i).innerHTML = "CreateTime: " + data[i].createtime.split('T')[0];
+                recentlyImageForm.innerHTML = img;
+                document.getElementById("recentlyTitle"+i).innerHTML = data[i].title;
+                document.getElementById("recentlyCreateTime"+i).innerHTML = data[i].createtime.split('T')[0];
             }
         },
         error: function(request,status,error){
