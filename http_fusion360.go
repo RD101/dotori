@@ -232,6 +232,11 @@ func handleUploadFusion360File(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	uploadFusion360File(w, r, objectID)
+}
+
+// uploadFusion360File 함수는 Fusion360 파일 정보를 DB에 업로드하고 파일을 storage에 복사한다.
+func uploadFusion360File(w http.ResponseWriter, r *http.Request, objectID string) {
 	//mongoDB client 연결
 	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 	if err != nil {

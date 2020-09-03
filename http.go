@@ -154,7 +154,7 @@ func webserver() {
 	// Nuke
 	http.HandleFunc("/addnuke", handleAddNuke)
 	http.HandleFunc("/addnuke-item", handleAddNukeItem)
-	http.HandleFunc("/uploadnuke-item", handlUploadNukeItem)
+	http.HandleFunc("/uploadnuke-item", handleUploadNukeItem)
 	http.HandleFunc("/addnuke-file", handleAddNukeFile)
 	http.HandleFunc("/uploadnuke-file", handleUploadNukeFile)
 	http.HandleFunc("/uploadnuke-checkdata", handleUploadNukeCheckData)
