@@ -245,6 +245,11 @@ func handleUploadFootageFile(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	uploadFootageFile(w, r, objectID)
+}
+
+// uploadFootageFile 함수는 Footage 파일 정보를 DB에 업로드하고 파일을 storage에 복사한다.
+func uploadFootageFile(w http.ResponseWriter, r *http.Request, objectID string) {
 	//mongoDB client 연결
 	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 	if err != nil {

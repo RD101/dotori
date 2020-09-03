@@ -3530,7 +3530,7 @@ function __guardMethod__(obj, methodName, transform) {
 }
 
 
-// 업로드 버튼을 눌렀을 때 실행되는 코드부
+// hdri dropzone 페이지에서 업로드 버튼을 눌렀을 때 실행되는 코드부
 Dropzone.options.hdriDropzone = {
   autoProcessQueue: false,
   maxFiles: 1,

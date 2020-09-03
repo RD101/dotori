@@ -45,28 +45,22 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 		i := Item{}
 		i.ID = primitive.NewObjectID()
 		// 아이템 정보 Parsing
-		iteminfo := make(map[string]string)
-		err = json.Unmarshal([]byte(r.FormValue("iteminfo")), &iteminfo)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		itemtype := iteminfo["itemtype"]
+		itemtype := r.FormValue("itemtype")
 		if itemtype == "" {
 			http.Error(w, "itemtype을 설정해주세요", http.StatusBadRequest)
 			return
 		}
-		title := iteminfo["title"]
+		title := r.FormValue("title")
 		if title == "" {
 			http.Error(w, "title을 설정해주세요", http.StatusBadRequest)
 			return
 		}
-		author := iteminfo["author"]
+		author := r.FormValue("author")
 		if author == "" {
 			http.Error(w, "author를 설정해주세요", http.StatusBadRequest)
 			return
 		}
-		description := iteminfo["description"]
+		description := r.FormValue("description")
 		if description == "" {
 			http.Error(w, "description을 설정해주세요", http.StatusBadRequest)
 			return
@@ -76,7 +70,7 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "tags를 설정해주세요", http.StatusBadRequest)
 			return
 		}
-		attributes, err := StringToMap(iteminfo["attributes"])
+		attributes, err := StringToMap(r.FormValue("attributes"))
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 		}
@@ -122,6 +116,63 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 		// 아이템에 파일 업데이트
 		if itemtype == "alembic" {
 			uploadAlembicFile(w, r, i.ID.Hex())
+		}
+		if itemtype == "blender" {
+			uploadBlenderFile(w, r, i.ID.Hex())
+		}
+		if itemtype == "footage" {
+			uploadFootageFile(w, r, i.ID.Hex())
+		}
+		if itemtype == "fusion360" {
+			uploadFusion360File(w, r, i.ID.Hex())
+		}
+		if itemtype == "hdri" {
+			uploadHDRIFile(w, r, i.ID.Hex())
+		}
+		if itemtype == "houdini" {
+			uploadHoudiniFile(w, r, i.ID.Hex())
+		}
+		if itemtype == "hwp" {
+			uploadHwpFile(w, r, i.ID.Hex())
+		}
+		if itemtype == "katana" {
+			uploadKatanaFile(w, r, i.ID.Hex())
+		}
+		if itemtype == "lut" {
+			uploadLutFile(w, r, i.ID.Hex())
+		}
+		if itemtype == "max" {
+			uploadMaxFile(w, r, i.ID.Hex())
+		}
+		if itemtype == "maya" {
+			uploadMayaFile(w, r, i.ID.Hex())
+		}
+		if itemtype == "modo" {
+			uploadModoFile(w, r, i.ID.Hex())
+		}
+		if itemtype == "nuke" {
+			uploadNukeFile(w, r, i.ID.Hex())
+		}
+		if itemtype == "openvdb" {
+			uploadOpenVDBFile(w, r, i.ID.Hex())
+		}
+		if itemtype == "pdf" {
+			uploadPdfFile(w, r, i.ID.Hex())
+		}
+		if itemtype == "ppt" {
+			uploadPptFile(w, r, i.ID.Hex())
+		}
+		if itemtype == "sound" {
+			uploadSoundFile(w, r, i.ID.Hex())
+		}
+		if itemtype == "texture" {
+			uploadClipFile(w, r, i.ID.Hex())
+		}
+		if itemtype == "unreal" {
+			uploadUnrealFile(w, r, i.ID.Hex())
+		}
+		if itemtype == "usd" {
+			uploadUSDFile(w, r, i.ID.Hex())
 		}
 
 		// Response
