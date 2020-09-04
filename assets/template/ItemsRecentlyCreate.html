@@ -23,7 +23,7 @@
         <div class="row mx-auto mb-12">
             {{range $i, $q := .RecentlyCreateItems}}
                 {{$itemtype := .ItemType}}
-                <div class="col-lg-3 col-sm-12">
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
                     <div class="card mx-auto" id="recentCard{{$i}}">
                         <a class="card-image" href="#" title="image {{$i}}" class="thumb" id="recentlyImageForm{{$i}}">
                             {{if eq $itemtype "hwp" "ies" "pdf" "ppt" "sound"}}
