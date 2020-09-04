@@ -301,6 +301,7 @@ function recentlyClick(totalItemNum, buttonState) {
                     }
                 }
                 recentlyImageForm.innerHTML = img;
+                document.getElementById("recentCardBody"+i).onclick = function () { setDetailViewModal(data[i].id);}
                 document.getElementById("recentlyTitle"+i).innerHTML = data[i].title;
                 document.getElementById("recentlyCreateTime"+i).innerHTML = data[i].createtime.split('T')[0];
             }
@@ -379,6 +380,7 @@ function topUsingClick(totalItemNum, buttonState) {
                     }
                 }
                 topUsingImageForm.innerHTML = img;
+                document.getElementById("topUsingCardBody"+i).onclick = function () { setDetailViewModal(data[i].id);}
                 document.getElementById("topUsingTitle"+i).innerHTML = data[i].title;
                 document.getElementById("topUsingRate"+i).innerHTML = data[i].usingrate;
             }
