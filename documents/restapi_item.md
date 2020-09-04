@@ -70,8 +70,6 @@ for file in fileList:
     data[key] = (os.path.basename(file), open(file, 'rb'), mimetype)
     i += 1
 
-print data
-
 response = session.post('http://192.168.219.104/api/item', files=data)    # 전송
 print(response.text)
 ```
