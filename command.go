@@ -135,10 +135,7 @@ func addMayaItemCmd() {
 	i.ThumbClipUploaded = true
 
 	// 3. 데이터
-	datapaths := make([]string, 0)
-	for _, path := range strings.Split(*flagInputDataPath, " ") {
-		datapaths = append(datapaths, path)
-	}
+	datapaths := QuotesPaths2Paths(*flagInputDataPath)
 	for _, path := range datapaths {
 		// 데이터 경로에 실재 파일이 존재하는지 체크.
 		err = FileExists(path)
