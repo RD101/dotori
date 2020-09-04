@@ -70,6 +70,7 @@ func handleAdminSettingSubmit(w http.ResponseWriter, r *http.Request) {
 	a.LinuxProtocolPath = r.FormValue("linuxprotocolpath")
 	a.WindowsProtocolPath = r.FormValue("windowsprotocolpath")
 	a.MacosProtocolPath = r.FormValue("macosprotocolpath")
+	a.WindowsUNCPrefix = r.FormValue("windowsuncprefix")
 	a.Umask = r.FormValue("umask")
 	a.FolderPermission = r.FormValue("folderpermission")
 	a.FilePermission = r.FormValue("filepermission")

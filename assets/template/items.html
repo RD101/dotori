@@ -7,14 +7,8 @@
             <div class="col-lg-4 col-md-6 col-sm-12">
                 <div class="card mx-auto">
                     <div class="card-image">
-                        {{if eq .ItemType "pdf"}}
-                            <img class="card-img" width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="/assets/img/pdfthumbnail.svg">
-                        {{else if eq .ItemType "hwp"}}
-                            <img class="card-img" width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="/assets/img/hwpthumbnail.svg">
-                        {{else if eq .ItemType "sound"}}
-                            <img class="card-img" width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="/assets/img/soundthumbnail.svg">
-                        {{else if eq .ItemType "ies"}}
-                            <img class="card-img" width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="/assets/img/iesthumbnail.svg">
+                        {{if eq .ItemType "hwp" "ies" "pdf" "ppt" "sound"}}
+                            <img class="card-img" width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="/assets/img/{{.ItemType}}thumbnail.svg">
                         {{else if eq .ItemType "hdri" "texture" "lut" }}
                             <img class="card-img" width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="{{if eq .Status "done" }}/mediadata?id={{.ID.Hex}}&type=png{{else}}/assets/img/noimage.svg{{end}}">
                         {{else}}
@@ -24,6 +18,7 @@
                                 Your browser does not support the video tag.
                             </video>
                         {{end}}    
+                    </div>
                     <div class="card-body" data-toggle="modal" data-target="#modal-detailview" onclick="setDetailViewModal('{{.ID.Hex}}')">
                         <h5 class="card-title">{{.Title}}</h5>
                         <div class="row m-0 mb-2"style="align-items: center;">
@@ -38,7 +33,6 @@
                     </div>
                 </div>
             </div>
-        </div>
         {{end}}
     </div>
 {{end}}
