@@ -2,7 +2,7 @@
 
 example=$(pwd)/examples
 etcExample="/home/chaeyun.bae/app/tdcourse_examples"
-TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNoYWV5dW4uYmFlIiwiYWNjZXNzbGV2ZWwiOiJhZG1pbiJ9.tI7mnGPCoYh4HTJun3tyOCd6FMGkjyQg5Z9nTfE9cGA"
+TOKEN=""
 serverIp=$1
 
 echo ""

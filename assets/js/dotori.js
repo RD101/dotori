@@ -36,10 +36,26 @@ document.onkeydown = function(e) {
 
 // copyButton 은 아이디값을 받아서, 클립보드로 복사하는 기능이다.
 function copyButton(elementId) {
-    if (navigator.userAgent.indexOf("Win") != -1) {
+    let windowsUNCPrefix = "";
+    $.ajax({
+        url: `/api/adminsetting`,
+        type: "get",
+        headers: {
+            "Authorization": "Basic " + document.getElementById("token").value
+        },
+        dataType: "json",
+        async: false,
+        success: function(data) {
+            windowsUNCPrefix = data.windowsuncprefix;
+        },
+        error: function(){
+            alert("admin 셋팅에서 Windows UNC Prefix 값을 가지고 올 수 없습니다.");  
+        }
+    });
+    if (navigator.userAgent.indexOf("Win") != -1) { // windows 경우
         elementId = elementId.replace(/\//g, "\\")
-        elementId = "\\" + elementId
-    } 
+        elementId = windowsUNCPrefix + elementId
+    }
     let id = document.createElement("input");                       // input요소를 만듬
     id.setAttribute("value", elementId);                            // input요소에 값을 추가
     document.getElementById("modal-detailview").appendChild(id);    // modal에 요소 추가
@@ -60,9 +76,14 @@ function setDetailViewModal(itemid) {
 
             // thunbnail 세팅
             let itemtype = response["itemtype"];
-            let thumbImgList = ["pdf", "ppt", "hwp", "sound", "ies", "hdri", "texture"];
-            if (thumbImgList.includes(itemtype)) {
+            if (itemtype == "pdf" || itemtype == "ppt" || itemtype == "hwp" || itemtype == "sound" || itemtype == "ies") {
                 document.getElementById("modal-detailview-thumbnail").innerHTML = `<img src="/assets/img/${itemtype}thumbnail.svg">`;
+            } else if (itemtype == "hdri" || itemtype == "lut" || itemtype == "texture") {
+                if (response["status"] == "done") {
+                    document.getElementById("modal-detailview-thumbnail").innerHTML = `<img src="/mediadata?id=${itemid}&type=png">`
+                } else {
+                    document.getElementById("modal-detailview-thumbnail").innerHTML = `<img src="/assets/img/noimage.svg">`
+                }
             } else {
                 let thumbnailHtml = `
                                     <video id="modal-detailview-video" controls>
@@ -228,15 +249,19 @@ function recentlyClick(totalItemNum, buttonState) {
     }
 
     document.getElementById("recentlyPage").innerHTML = currentPageNum + " / " + totalPageNum;
+    document.getElementById("recentlyPage").setAttribute('value', currentPageNum);
+    // 마지막 페이지일 때
     if(clearItemNum!==0 && currentPageNum===totalPageNum){
         for(let i = 3; clearItemNum!=0; i--, clearItemNum--){
-            document.getElementById("recentlyImageForm"+i).innerHTML = ""
-            document.getElementById("recentlyTitle"+i).innerHTML = ""
-            document.getElementById("recentlyAuthor"+i).innerHTML = ""
-            document.getElementById("recentlyCreateTime"+i).innerHTML = ""
+            document.getElementById("recentCard"+i).style.visibility="hidden"
         }
     }
-    document.getElementById("recentlyPage").setAttribute('value', currentPageNum);
+    // 마지막 페이지가 아닐 때
+    if (currentPageNum != totalPageNum) {
+        for(let i = 0; i<4; i++){
+            document.getElementById("recentCard"+i).style.visibility="visible"
+        }
+    }
     $.ajax({
         url: `/api/recentitem?recentlypage=${currentPageNum}`,
         type: "get",
@@ -247,44 +272,38 @@ function recentlyClick(totalItemNum, buttonState) {
             let img = ""
             for (let i = 0; i < data.length; i++){
                 let recentlyImageForm = document.getElementById("recentlyImageForm"+i)
-                if (data[i].itemtype=="pdf"){
-                    img = '<img width="' + thumbnailwidth + '" height="'+ thumbnailheight +
-                                '" src="/assets/img/pdfthumbnail.svg">'
-                }else if(data[i].itemtype=="hwp"){
-                    img = '<img width="' + thumbnailwidth + '" height="'+ thumbnailheight +
-                                '" src="/assets/img/hwpthumbnail.svg">'
-                }else if(data[i].itemtype=="sound"){
-                    img = '<img width="' + thumbnailwidth + '" height="'+ thumbnailheight +
-                                '" src="/assets/img/soundthumbnail.svg">'
-                }else if(data[i].itemtype=="hdri" || data[i].itemtype=="texture"){
+                if (data[i].itemtype == "pdf" || data[i].itemtype == "ppt" || data[i].itemtype == "hwp" || data[i].itemtype == "sound" || data[i].itemtype == "ies") {
+                    img = '<img class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                    '" src="/assets/img/' + data[i].itemtype + 'thumbnail.svg">'
+                }else if(data[i].itemtype=="hdri" || data[i].itemtype == "lut" || data[i].itemtype=="texture"){
                     if(data[i].status == "done"){
-                        img = '<img width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                        img = '<img class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
                                 '" src="/mediadata?id=' + data[i].id + '&type=png">'
                     }else{
-                        img = '<img width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                        img = '<img class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
                                 '" src="/assets/img/noimage.svg">'
                     }
                 }else{
                     if(data[i].status == "done"){
-                        img = '<video width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                        img = '<video class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
                                 '" controls poster="/mediadata?id=' + data[i].id + '&type=png">' +
                                 '<source src="/mediadata?id=' + data[i].id + '&type=mp4" type="video/mp4">' +
                                 '<source src="/mediadata?id=' + data[i].id + '&type=ogg" type="video/ogg">' +
                                 'Your browser does not support the video tag.'+
                                 '</video>'
                     }else{
-                        img = '<video width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                        img = '<video class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
                                 '" controls poster="/assets/img/noimage.svg">' +
                                 '<source src="/mediadata?id=' + data[i].id + '&type=mp4" type="video/mp4">' +
                                 '<source src="/mediadata?id=' + data[i].id + '&type=ogg" type="video/ogg">' +
                                 'Your browser does not support the video tag.'+
                                 '</video>'
                     }
-                recentlyImageForm.innerHTML = img;
                 }
-                document.getElementById("recentlyTitle"+i).innerHTML = "Title: " + data[i].title;
-                document.getElementById("recentlyAuthor"+i).innerHTML = "Author: " + data[i].author;
-                document.getElementById("recentlyCreateTime"+i).innerHTML = "CreateTime: " + data[i].createtime.split('T')[0];
+                recentlyImageForm.innerHTML = img;
+                document.getElementById("recentCardBody"+i).onclick = function () { setDetailViewModal(data[i].id);}
+                document.getElementById("recentlyTitle"+i).innerHTML = data[i].title;
+                document.getElementById("recentlyCreateTime"+i).innerHTML = data[i].createtime.split('T')[0];
             }
         },
         error: function(request,status,error){
@@ -293,9 +312,9 @@ function recentlyClick(totalItemNum, buttonState) {
     });
 }
 
-// recentlyClick 은 초기페이지에서 가장많이 사용되는 아이템의 next, prev 버튼을 눌렀을때 실행하는 함수이다.
+// topUsingClick 은 초기페이지에서 가장 많이 사용되는 아이템의 next, prev 버튼을 눌렀을 때 실행하는 함수이다.
 function topUsingClick(totalItemNum, buttonState) {
-    // RecentlyTotalNum 가장많이 사용된 에셋의 전체 아이템 수
+    // RecentlyTotalNum 가장 많이 사용된 에셋의 전체 아이템 수
     let totalPageNum = Math.ceil(totalItemNum / 4); // 전체 페이지 수
     let clearItemNum = (totalPageNum * 4) - totalItemNum; // 마지막 페이지의 공백처리할 아이템 수
     let currentPageNum = parseInt(document.getElementById("topUsingPage").getAttribute('value'));
@@ -315,15 +334,13 @@ function topUsingClick(totalItemNum, buttonState) {
     }
     
     document.getElementById("topUsingPage").innerHTML = currentPageNum + " / " + totalPageNum;
+    document.getElementById("topUsingPage").setAttribute('value', currentPageNum);
+    // 마지막 페이지일 때
     if(clearItemNum!=0 && currentPageNum==totalPageNum){
         for(let i = 3; clearItemNum!=0; i--, clearItemNum--){
-            document.getElementById("topUsingImageForm"+i).innerHTML = ""
-            document.getElementById("topUsingTitle"+i).innerHTML = ""
-            document.getElementById("topUsingAuthor"+i).innerHTML = ""
-            document.getElementById("topUsingRate"+i).innerHTML = ""
+            document.getElementById("topUsingCard").style.visibility="hidden";
         }
     }
-    document.getElementById("topUsingPage").setAttribute('value', currentPageNum);
     $.ajax({
         url: `/api/topusingitem?usingpage=${currentPageNum}`,
         type: "get",
@@ -334,44 +351,38 @@ function topUsingClick(totalItemNum, buttonState) {
             let img = ""
             for (let i = 0; i < data.length; i++){
                 let topUsingImageForm = document.getElementById("topUsingImageForm"+i)
-                if (data[i].itemtype=="pdf"){
-                    img = '<img width="' + thumbnailwidth + '" height="'+ thumbnailheight +
-                                '" src="/assets/img/pdfthumbnail.svg">'
-                }else if(data[i].itemtype=="hwp"){
-                    img = '<img width="' + thumbnailwidth + '" height="'+ thumbnailheight +
-                                '" src="/assets/img/hwpthumbnail.svg">'
-                }else if(data[i].itemtype=="sound"){
-                    img = '<img width="' + thumbnailwidth + '" height="'+ thumbnailheight +
-                                '" src="/assets/img/soundthumbnail.svg">'
-                }else if(data[i].itemtype=="hdri" || data[i].itemtype=="texture"){
+                if (data[i].itemtype == "pdf" || data[i].itemtype == "ppt" || data[i].itemtype == "hwp" || data[i].itemtype == "sound" || data[i].itemtype == "ies") {
+                    img = '<img class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                                '" src="/assets/img/' + data[i].itemtype + 'thumbnail.svg">'
+                }else if(data[i].itemtype=="hdri" || data[i].itemtype=="lut" || data[i].itemtype=="texture"){
                     if(data[i].status == "done"){
-                        img = '<img width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                        img = '<img class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
                                 '" src="/mediadata?id=' + data[i].id + '&type=png">'
                     }else{
-                        img = '<img width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                        img = '<img class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
                                 '" src="/assets/img/noimage.svg">'
                     }
                 }else{
                     if(data[i].status == "done"){
-                        img = '<video width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                        img = '<video class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
                                 '" controls poster="/mediadata?id=' + data[i].id + '&type=png">' +
                                 '<source src="/mediadata?id=' + data[i].id + '&type=mp4" type="video/mp4">' +
                                 '<source src="/mediadata?id=' + data[i].id + '&type=ogg" type="video/ogg">' +
                                 'Your browser does not support the video tag.'+
                                 '</video>'
                     }else{
-                        img = '<video width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                        img = '<video class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
                                 '" controls poster="/assets/img/noimage.svg">' +
                                 '<source src="/mediadata?id=' + data[i].id + '&type=mp4" type="video/mp4">' +
                                 '<source src="/mediadata?id=' + data[i].id + '&type=ogg" type="video/ogg">' +
                                 'Your browser does not support the video tag.'+
                                 '</video>'
                     }
-                    topUsingImageForm.innerHTML = img;
                 }
-                document.getElementById("topUsingTitle"+i).innerHTML = "Title: " + data[i].title;
-                document.getElementById("topUsingAuthor"+i).innerHTML = "Author: " + data[i].author;
-                document.getElementById("topUsingRate"+i).innerHTML = "topUsingRate: " + data[i].usingrate;
+                topUsingImageForm.innerHTML = img;
+                document.getElementById("topUsingCardBody"+i).onclick = function () { setDetailViewModal(data[i].id);}
+                document.getElementById("topUsingTitle"+i).innerHTML = data[i].title;
+                document.getElementById("topUsingRate"+i).innerHTML = data[i].usingrate;
             }
         },
         error: function(request,status,error){

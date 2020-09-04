@@ -9,9 +9,9 @@
 ## Post
 | URI | Description | Attributes | Curl Example |
 | --- | --- | --- | --- |
-| /api/item | asset 등록하기 | itemtype, title, author, description, tags | `$ curl -H "Authorization: Basic <TOKEN>" -X POST -F "file1=@abc_thumbnail.jpg;type=image/jpeg" -F "file2=@abc_thumbnail.mov;type=video/quicktime" -F "file3=@data.abc;type=application/octet-stream" -F "iteminfo={\"itemtype\":\"alembic\",\"title\":\"train test\",\"author\":\"dchecheb\",\"description\":\"3\",\"tags\":\"테스트  진행 중\",\"attribute\":\"key1:value1,key2:value2\"}" http://198.168.219.104/api/item`
-| /api/search | 검색하기 | searchword | `$ curl -X POST -d "searchword=나무" http://192.168.219.104/api/search` |
+| /api/item | asset 등록하기 | itemtype, title, author, description, tags | `$ curl -H "Authorization: Basic <TOKEN>" -X POST \`<br>`-F "file1=@thumbnail.jpg;type=image/jpeg" \` <br>`-F "file2=@thumbnail.mov;type=video/quicktime" \`<br>`-F "file3=@data.abc;type=application/octet-stream" \` <br>`-F "itemtype=alembic" \` <br>`-F "title=abc restapi test" \` <br>`-F "author=dchecheb" \` <br>`-F "description=3" \` <br>`-F "tags=test" \` <br>`-F "attribute=key1:value1,key2:value2" \` <br>`http://192.168.219.104/api/item` |
 | /api/usingrate | Using Rate 올리기 | id | `$ curl -X POST -d "id=5eaa5758eafdfd2dae3bb050" http://192.168.219.104/api/usingrate`
+
 
 ## Delete
 | URI | Description | Attributes | Curl Example |
@@ -46,12 +46,17 @@ import requests, mimetypes, os
 
 token="example.blar-blar"               
 fileList=[  # Upload 할 File list                                                
-    '/Users/baechaeyun/cheche/dotori/examples/abc/abc_thumbnail.jpg',
-    '/Users/baechaeyun/cheche/dotori/examples/abc/abc_thumbnail.mov',
-    '/Users/baechaeyun/cheche/dotori/examples/abc/data.abc'
+    '/home/chaeyun.bae/cheche/dotori/examples/abc/abc_thumbnail.jpg',
+    '/home/chaeyun.bae/cheche/dotori/examples/abc/abc_thumbnail.mov',
+    '/home/chaeyun.bae/cheche/dotori/examples/abc/data.abc'
 ]
 data = {    # 어셋 정보 입력
-    'iteminfo': (None, '{"itemtype":"alembic","title":"train test","author":"dchecheb","description":"3","tags":"test","attribute":"key1:value1,key2:value2"}'),
+    'itemtype': (None, 'alembic'),
+    'title': (None, 'train test'),
+    'author': (None, 'dchecheb'),
+    'description': (None, '3'),
+    'tags': (None, 'test'),
+    'attribute': (None, 'key1:value1,key2:value')
 }
 
 session = requests.Session()
@@ -65,7 +70,7 @@ for file in fileList:
     data[key] = (os.path.basename(file), open(file, 'rb'), mimetype)
     i += 1
 
-response = session.post('http://172.18.18.167/api/item', files=data)    # 전송
+response = session.post('http://192.168.219.104/api/item', files=data)    # 전송
 print(response.text)
 ```
 
