@@ -220,10 +220,6 @@ body {
 /*----------- Modal -----------*/
 /*-----------------------------*/
 
-.modal-dialog {
-	min-width: 70%;
-}
-
 .modal-header {
 	border-bottom: 1px solid rgb(111, 110, 104);
 }
@@ -234,6 +230,10 @@ body {
 
 .modal-title {
 	color: #A7A59C;
+}
+
+#modal-detailview-dialog {
+	min-width: 70%;
 }
 
 /* title */
