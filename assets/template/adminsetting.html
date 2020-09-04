@@ -56,6 +56,15 @@
                 <div class="row">
                     <div class="col-sm">
                         <div class="form-group">
+                            <label class="text-muted">Windows UNC Prefix</label>
+                            <input type="text" name="windowsuncprefix" class="form-control" placeholder="\" value="{{.Adminsetting.WindowsUNCPrefix}}">
+                            <small class="form-text text-muted">Windows에서 CopyPath를 실행했을 때 UNC 경로 앞에 붙는 문자열</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm">
+                        <div class="form-group">
                             <label class="text-muted">Umask</label>
                             <input type="text" name="umask" class="form-control" placeholder="0000" value="{{.Adminsetting.Umask}}" maxlength="4" onkeyup=handlerNumCheck(this)>
                             <small class="form-text text-muted">Umask 값을 설정해주세요.</small>
