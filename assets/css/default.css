@@ -138,6 +138,7 @@ body {
 	border:1px solid #A7A59C;
 	color: #A7A59C;
 	text-decoration: none;
+	vertical-align: middle;
 }
 
 .btn-outline-darkmode {
