@@ -160,7 +160,7 @@ function setDetailViewModal(itemid) {
         },
         error: function() {
             alert("어셋 정보를 가져오는 데 실패했습니다");
-            document.getElementById("modal-detailview").style.display="none";
+            location.reload();
         }
     });
 
