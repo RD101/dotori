@@ -18,6 +18,7 @@
                                 Your browser does not support the video tag.
                             </video>
                         {{end}}    
+                    </div>
                     <div class="card-body" data-toggle="modal" data-target="#modal-detailview" onclick="setDetailViewModal('{{.ID.Hex}}')">
                         <h5 class="card-title">{{.Title}}</h5>
                         <div class="row m-0 mb-2"style="align-items: center;">
@@ -32,7 +33,6 @@
                     </div>
                 </div>
             </div>
-        </div>
         {{end}}
     </div>
 {{end}}
