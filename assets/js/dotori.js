@@ -80,7 +80,7 @@ function setDetailViewModal(itemid) {
                 document.getElementById("modal-detailview-thumbnail").innerHTML = `<img src="/assets/img/${itemtype}thumbnail.svg">`;
             } else if (itemtype == "hdri" || itemtype == "lut" || itemtype == "texture") {
                 if (response["status"] == "done") {
-                document.getElementById("modal-detailview-thumbnail").innerHTML = `<img src="/mediadata?id=${itemid}&type=png`
+                    document.getElementById("modal-detailview-thumbnail").innerHTML = `<img src="/mediadata?id=${itemid}&type=png">`
                 } else {
                     document.getElementById("modal-detailview-thumbnail").innerHTML = `<img src="/assets/img/noimage.svg">`
                 }
