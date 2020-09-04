@@ -56,7 +56,7 @@ data = {    # 어셋 정보 입력
     'author': (None, 'dchecheb'),
     'description': (None, '3'),
     'tags': (None, 'test'),
-    'attribute': (None, 'key1:value1,key2:value'
+    'attribute': (None, 'key1:value1,key2:value')
 }
 
 session = requests.Session()
