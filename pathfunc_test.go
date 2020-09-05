@@ -125,6 +125,9 @@ func Test_QuotesPaths2Paths(t *testing.T) {
 	}, {
 		in:   "'/project/case 1.exr' \"/project/case2.exr\"", // 작은 따옴표 + 큰 따옴표 + 스페이스로 구성된 다중경로
 		want: []string{"/project/case 1.exr", "/project/case2.exr"},
+	}, {
+		in:   "/project/case1.exr /project/case2.exr", // 띄어쓰기로 구성된 다중경로
+		want: []string{"/project/case1.exr", "/project/case2.exr"},
 	},
 	}
 	for _, c := range cases {
