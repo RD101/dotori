@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"strings"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -135,11 +134,21 @@ func addMayaItemCmd() {
 	i.ThumbClipUploaded = true
 
 	// 3. 데이터
-	datapaths := make([]string, 0)
-	for _, path := range strings.Split(*flagInputDataPath, " ") {
-		datapaths = append(datapaths, path)
-	}
+	datapaths := QuotesPaths2Paths(*flagInputDataPath)
+	var filteredPaths []string
 	for _, path := range datapaths {
+		if HasWildcard(path) {
+			// 파일명에 와일드카드(?,*)가 존재할 때
+			matches, err := filepath.Glob(*flagInputDataPath)
+			if err != nil {
+				log.Fatal(err)
+			}
+			filteredPaths = append(filteredPaths, matches...)
+		} else {
+			filteredPaths = append(filteredPaths, path)
+		}
+	}
+	for _, path := range filteredPaths {
 		// 데이터 경로에 실재 파일이 존재하는지 체크.
 		err = FileExists(path)
 		if err != nil {
@@ -303,11 +312,21 @@ func addMaxItemCmd() {
 	i.ThumbClipUploaded = true
 
 	// 3. 데이터
-	datapaths := make([]string, 0)
-	for _, path := range strings.Split(*flagInputDataPath, " ") {
-		datapaths = append(datapaths, path)
-	}
+	datapaths := QuotesPaths2Paths(*flagInputDataPath)
+	var filteredPaths []string
 	for _, path := range datapaths {
+		if HasWildcard(path) {
+			// 파일명에 와일드카드(?,*)가 존재할 때
+			matches, err := filepath.Glob(*flagInputDataPath)
+			if err != nil {
+				log.Fatal(err)
+			}
+			filteredPaths = append(filteredPaths, matches...)
+		} else {
+			filteredPaths = append(filteredPaths, path)
+		}
+	}
+	for _, path := range filteredPaths {
 		// 데이터 경로에 실재 파일이 존재하는지 체크.
 		err = FileExists(path)
 		if err != nil {
@@ -471,11 +490,21 @@ func addFusion360ItemCmd() {
 	i.ThumbClipUploaded = true
 
 	// 3. 데이터
-	datapaths := make([]string, 0)
-	for _, path := range strings.Split(*flagInputDataPath, " ") {
-		datapaths = append(datapaths, path)
-	}
+	datapaths := QuotesPaths2Paths(*flagInputDataPath)
+	var filteredPaths []string
 	for _, path := range datapaths {
+		if HasWildcard(path) {
+			// 파일명에 와일드카드(?,*)가 존재할 때
+			matches, err := filepath.Glob(*flagInputDataPath)
+			if err != nil {
+				log.Fatal(err)
+			}
+			filteredPaths = append(filteredPaths, matches...)
+		} else {
+			filteredPaths = append(filteredPaths, path)
+		}
+	}
+	for _, path := range filteredPaths {
 		// 데이터 경로에 실재 파일이 존재하는지 체크.
 		err = FileExists(path)
 		if err != nil {
@@ -639,11 +668,21 @@ func addOpenVDBItemCmd() {
 	i.ThumbClipUploaded = true
 
 	// 3. 데이터
-	datapaths := make([]string, 0)
-	for _, path := range strings.Split(*flagInputDataPath, " ") {
-		datapaths = append(datapaths, path)
-	}
+	datapaths := QuotesPaths2Paths(*flagInputDataPath)
+	var filteredPaths []string
 	for _, path := range datapaths {
+		if HasWildcard(path) {
+			// 파일명에 와일드카드(?,*)가 존재할 때
+			matches, err := filepath.Glob(*flagInputDataPath)
+			if err != nil {
+				log.Fatal(err)
+			}
+			filteredPaths = append(filteredPaths, matches...)
+		} else {
+			filteredPaths = append(filteredPaths, path)
+		}
+	}
+	for _, path := range filteredPaths {
 		// 데이터 경로에 실재 파일이 존재하는지 체크.
 		err = FileExists(path)
 		if err != nil {
@@ -807,11 +846,21 @@ func addModoItemCmd() {
 	i.ThumbClipUploaded = true
 
 	// 3. 데이터
-	datapaths := make([]string, 0)
-	for _, path := range strings.Split(*flagInputDataPath, " ") {
-		datapaths = append(datapaths, path)
-	}
+	datapaths := QuotesPaths2Paths(*flagInputDataPath)
+	var filteredPaths []string
 	for _, path := range datapaths {
+		if HasWildcard(path) {
+			// 파일명에 와일드카드(?,*)가 존재할 때
+			matches, err := filepath.Glob(*flagInputDataPath)
+			if err != nil {
+				log.Fatal(err)
+			}
+			filteredPaths = append(filteredPaths, matches...)
+		} else {
+			filteredPaths = append(filteredPaths, path)
+		}
+	}
+	for _, path := range filteredPaths {
 		// 데이터 경로에 실재 파일이 존재하는지 체크.
 		err = FileExists(path)
 		if err != nil {
@@ -975,11 +1024,21 @@ func addKatanaItemCmd() {
 	i.ThumbClipUploaded = true
 
 	// 3. 데이터
-	datapaths := make([]string, 0)
-	for _, path := range strings.Split(*flagInputDataPath, " ") {
-		datapaths = append(datapaths, path)
-	}
+	datapaths := QuotesPaths2Paths(*flagInputDataPath)
+	var filteredPaths []string
 	for _, path := range datapaths {
+		if HasWildcard(path) {
+			// 파일명에 와일드카드(?,*)가 존재할 때
+			matches, err := filepath.Glob(*flagInputDataPath)
+			if err != nil {
+				log.Fatal(err)
+			}
+			filteredPaths = append(filteredPaths, matches...)
+		} else {
+			filteredPaths = append(filteredPaths, path)
+		}
+	}
+	for _, path := range filteredPaths {
 		// 데이터 경로에 실재 파일이 존재하는지 체크.
 		err = FileExists(path)
 		if err != nil {
@@ -1143,11 +1202,21 @@ func addHoudiniItemCmd() {
 	i.ThumbClipUploaded = true
 
 	// 3. 데이터
-	datapaths := make([]string, 0)
-	for _, path := range strings.Split(*flagInputDataPath, " ") {
-		datapaths = append(datapaths, path)
-	}
+	datapaths := QuotesPaths2Paths(*flagInputDataPath)
+	var filteredPaths []string
 	for _, path := range datapaths {
+		if HasWildcard(path) {
+			// 파일명에 와일드카드(?,*)가 존재할 때
+			matches, err := filepath.Glob(*flagInputDataPath)
+			if err != nil {
+				log.Fatal(err)
+			}
+			filteredPaths = append(filteredPaths, matches...)
+		} else {
+			filteredPaths = append(filteredPaths, path)
+		}
+	}
+	for _, path := range filteredPaths {
 		// 데이터 경로에 실재 파일이 존재하는지 체크.
 		err = FileExists(path)
 		if err != nil {
@@ -1311,11 +1380,21 @@ func addBlenderItemCmd() {
 	i.ThumbClipUploaded = true
 
 	// 3. 데이터
-	datapaths := make([]string, 0)
-	for _, path := range strings.Split(*flagInputDataPath, " ") {
-		datapaths = append(datapaths, path)
-	}
+	datapaths := QuotesPaths2Paths(*flagInputDataPath)
+	var filteredPaths []string
 	for _, path := range datapaths {
+		if HasWildcard(path) {
+			// 파일명에 와일드카드(?,*)가 존재할 때
+			matches, err := filepath.Glob(*flagInputDataPath)
+			if err != nil {
+				log.Fatal(err)
+			}
+			filteredPaths = append(filteredPaths, matches...)
+		} else {
+			filteredPaths = append(filteredPaths, path)
+		}
+	}
+	for _, path := range filteredPaths {
 		// 데이터 경로에 실재 파일이 존재하는지 체크.
 		err = FileExists(path)
 		if err != nil {
@@ -1452,11 +1531,21 @@ func addLutItemCmd() {
 	i.ThumbImgUploaded = true
 
 	// 3. 데이터
-	datapaths := make([]string, 0)
-	for _, path := range strings.Split(*flagInputDataPath, " ") {
-		datapaths = append(datapaths, path)
-	}
+	datapaths := QuotesPaths2Paths(*flagInputDataPath)
+	var filteredPaths []string
 	for _, path := range datapaths {
+		if HasWildcard(path) {
+			// 파일명에 와일드카드(?,*)가 존재할 때
+			matches, err := filepath.Glob(*flagInputDataPath)
+			if err != nil {
+				log.Fatal(err)
+			}
+			filteredPaths = append(filteredPaths, matches...)
+		} else {
+			filteredPaths = append(filteredPaths, path)
+		}
+	}
+	for _, path := range filteredPaths {
 		// 데이터 경로에 실재 파일이 존재하는지 체크.
 		err = FileExists(path)
 		if err != nil {
@@ -1571,11 +1660,21 @@ func addClipItemCmd() {
 	i.OutputDataPath = rootpath + objIDpath + "/data/"
 
 	// 3. 데이터
-	datapaths := make([]string, 0)
-	for _, path := range strings.Split(*flagInputDataPath, " ") {
-		datapaths = append(datapaths, path)
-	}
+	datapaths := QuotesPaths2Paths(*flagInputDataPath)
+	var filteredPaths []string
 	for _, path := range datapaths {
+		if HasWildcard(path) {
+			// 파일명에 와일드카드(?,*)가 존재할 때
+			matches, err := filepath.Glob(*flagInputDataPath)
+			if err != nil {
+				log.Fatal(err)
+			}
+			filteredPaths = append(filteredPaths, matches...)
+		} else {
+			filteredPaths = append(filteredPaths, path)
+		}
+	}
+	for _, path := range filteredPaths {
 		// 데이터 경로에 실재 파일이 존재하는지 체크.
 		err = FileExists(path)
 		if err != nil {
@@ -1685,11 +1784,21 @@ func addPdfItemCmd() {
 	i.OutputDataPath = rootpath + objIDpath + "/data/"
 
 	// 3. 데이터
-	datapaths := make([]string, 0)
-	for _, path := range strings.Split(*flagInputDataPath, " ") {
-		datapaths = append(datapaths, path)
-	}
+	datapaths := QuotesPaths2Paths(*flagInputDataPath)
+	var filteredPaths []string
 	for _, path := range datapaths {
+		if HasWildcard(path) {
+			// 파일명에 와일드카드(?,*)가 존재할 때
+			matches, err := filepath.Glob(*flagInputDataPath)
+			if err != nil {
+				log.Fatal(err)
+			}
+			filteredPaths = append(filteredPaths, matches...)
+		} else {
+			filteredPaths = append(filteredPaths, path)
+		}
+	}
+	for _, path := range filteredPaths {
 		// 데이터 경로에 실재 파일이 존재하는지 체크.
 		err = FileExists(path)
 		if err != nil {
@@ -1799,11 +1908,21 @@ func addIesItemCmd() {
 	i.OutputDataPath = rootpath + objIDpath + "/data/"
 
 	// 3. 데이터
-	datapaths := make([]string, 0)
-	for _, path := range strings.Split(*flagInputDataPath, " ") {
-		datapaths = append(datapaths, path)
-	}
+	datapaths := QuotesPaths2Paths(*flagInputDataPath)
+	var filteredPaths []string
 	for _, path := range datapaths {
+		if HasWildcard(path) {
+			// 파일명에 와일드카드(?,*)가 존재할 때
+			matches, err := filepath.Glob(*flagInputDataPath)
+			if err != nil {
+				log.Fatal(err)
+			}
+			filteredPaths = append(filteredPaths, matches...)
+		} else {
+			filteredPaths = append(filteredPaths, path)
+		}
+	}
+	for _, path := range filteredPaths {
 		// 데이터 경로에 실재 파일이 존재하는지 체크.
 		err = FileExists(path)
 		if err != nil {
@@ -1913,11 +2032,21 @@ func addPptItemCmd() {
 	i.OutputDataPath = rootpath + objIDpath + "/data/"
 
 	// 3. 데이터
-	datapaths := make([]string, 0)
-	for _, path := range strings.Split(*flagInputDataPath, " ") {
-		datapaths = append(datapaths, path)
-	}
+	datapaths := QuotesPaths2Paths(*flagInputDataPath)
+	var filteredPaths []string
 	for _, path := range datapaths {
+		if HasWildcard(path) {
+			// 파일명에 와일드카드(?,*)가 존재할 때
+			matches, err := filepath.Glob(*flagInputDataPath)
+			if err != nil {
+				log.Fatal(err)
+			}
+			filteredPaths = append(filteredPaths, matches...)
+		} else {
+			filteredPaths = append(filteredPaths, path)
+		}
+	}
+	for _, path := range filteredPaths {
 		// 데이터 경로에 실재 파일이 존재하는지 체크.
 		err = FileExists(path)
 		if err != nil {
@@ -2027,11 +2156,21 @@ func addSoundItemCmd() {
 	i.OutputDataPath = rootpath + objIDpath + "/data/"
 
 	// 3. 데이터
-	datapaths := make([]string, 0)
-	for _, path := range strings.Split(*flagInputDataPath, " ") {
-		datapaths = append(datapaths, path)
-	}
+	datapaths := QuotesPaths2Paths(*flagInputDataPath)
+	var filteredPaths []string
 	for _, path := range datapaths {
+		if HasWildcard(path) {
+			// 파일명에 와일드카드(?,*)가 존재할 때
+			matches, err := filepath.Glob(*flagInputDataPath)
+			if err != nil {
+				log.Fatal(err)
+			}
+			filteredPaths = append(filteredPaths, matches...)
+		} else {
+			filteredPaths = append(filteredPaths, path)
+		}
+	}
+	for _, path := range filteredPaths {
 		// 데이터 경로에 실재 파일이 존재하는지 체크.
 		err = FileExists(path)
 		if err != nil {
@@ -2141,11 +2280,21 @@ func addTextureItemCmd() {
 	i.OutputDataPath = rootpath + objIDpath + "/data/"
 
 	// 3. 데이터
-	datapaths := make([]string, 0)
-	for _, path := range strings.Split(*flagInputDataPath, " ") {
-		datapaths = append(datapaths, path)
-	}
+	datapaths := QuotesPaths2Paths(*flagInputDataPath)
+	var filteredPaths []string
 	for _, path := range datapaths {
+		if HasWildcard(path) {
+			// 파일명에 와일드카드(?,*)가 존재할 때
+			matches, err := filepath.Glob(*flagInputDataPath)
+			if err != nil {
+				log.Fatal(err)
+			}
+			filteredPaths = append(filteredPaths, matches...)
+		} else {
+			filteredPaths = append(filteredPaths, path)
+		}
+	}
+	for _, path := range filteredPaths {
 		// 데이터 경로에 실재 파일이 존재하는지 체크.
 		err = FileExists(path)
 		if err != nil {
@@ -2255,11 +2404,21 @@ func addHwpItemCmd() {
 	i.OutputDataPath = rootpath + objIDpath + "/data/"
 
 	// 3. 데이터
-	datapaths := make([]string, 0)
-	for _, path := range strings.Split(*flagInputDataPath, " ") {
-		datapaths = append(datapaths, path)
-	}
+	datapaths := QuotesPaths2Paths(*flagInputDataPath)
+	var filteredPaths []string
 	for _, path := range datapaths {
+		if HasWildcard(path) {
+			// 파일명에 와일드카드(?,*)가 존재할 때
+			matches, err := filepath.Glob(*flagInputDataPath)
+			if err != nil {
+				log.Fatal(err)
+			}
+			filteredPaths = append(filteredPaths, matches...)
+		} else {
+			filteredPaths = append(filteredPaths, path)
+		}
+	}
+	for _, path := range filteredPaths {
 		// 데이터 경로에 실재 파일이 존재하는지 체크.
 		err = FileExists(path)
 		if err != nil {
@@ -2377,11 +2536,21 @@ func addHdriItemCmd() {
 	i.OutputDataPath = rootpath + objIDpath + "/data/"
 
 	// 3. 데이터
-	datapaths := make([]string, 0)
-	for _, path := range strings.Split(*flagInputDataPath, " ") {
-		datapaths = append(datapaths, path)
-	}
+	datapaths := QuotesPaths2Paths(*flagInputDataPath)
+	var filteredPaths []string
 	for _, path := range datapaths {
+		if HasWildcard(path) {
+			// 파일명에 와일드카드(?,*)가 존재할 때
+			matches, err := filepath.Glob(*flagInputDataPath)
+			if err != nil {
+				log.Fatal(err)
+			}
+			filteredPaths = append(filteredPaths, matches...)
+		} else {
+			filteredPaths = append(filteredPaths, path)
+		}
+	}
+	for _, path := range filteredPaths {
 		// 데이터 경로에 실재 파일이 존재하는지 체크.
 		err = FileExists(path)
 		if err != nil {
@@ -2491,11 +2660,21 @@ func addUnrealItemCmd() {
 	i.OutputDataPath = rootpath + objIDpath + "/data/"
 
 	// 3. 데이터
-	datapaths := make([]string, 0)
-	for _, path := range strings.Split(*flagInputDataPath, " ") {
-		datapaths = append(datapaths, path)
-	}
+	datapaths := QuotesPaths2Paths(*flagInputDataPath)
+	var filteredPaths []string
 	for _, path := range datapaths {
+		if HasWildcard(path) {
+			// 파일명에 와일드카드(?,*)가 존재할 때
+			matches, err := filepath.Glob(*flagInputDataPath)
+			if err != nil {
+				log.Fatal(err)
+			}
+			filteredPaths = append(filteredPaths, matches...)
+		} else {
+			filteredPaths = append(filteredPaths, path)
+		}
+	}
+	for _, path := range filteredPaths {
 		// 데이터 경로에 실재 파일이 존재하는지 체크.
 		err = FileExists(path)
 		if err != nil {
@@ -2618,21 +2797,21 @@ func addFootageItemCmd() {
 	i.OutputProxyImgPath = rootpath + objIDpath + "/proxy/"
 
 	// 3. 데이터
-	datapaths := make([]string, 0)
-	if HasWildcard(*flagInputDataPath) {
-		// 파일명에 와일드카드(?,*)가 존재할 때
-		matches, err := filepath.Glob(*flagInputDataPath)
-		if err != nil {
-			log.Fatal(err)
-		}
-		datapaths = matches
-	} else {
-		// 파일이 띄어쓰기로 구분되어 있다면 아래처럼 처리한다.
-		for _, path := range strings.Split(*flagInputDataPath, " ") {
-			datapaths = append(datapaths, path)
+	datapaths := QuotesPaths2Paths(*flagInputDataPath)
+	var filteredPaths []string
+	for _, path := range datapaths {
+		if HasWildcard(path) {
+			// 파일명에 와일드카드(?,*)가 존재할 때
+			matches, err := filepath.Glob(*flagInputDataPath)
+			if err != nil {
+				log.Fatal(err)
+			}
+			filteredPaths = append(filteredPaths, matches...)
+		} else {
+			filteredPaths = append(filteredPaths, path)
 		}
 	}
-	for _, path := range datapaths {
+	for _, path := range filteredPaths {
 		// 데이터 경로에 실재 파일이 존재하는지 체크.
 		err = FileExists(path)
 		if err != nil {
@@ -2796,11 +2975,21 @@ func addUSDItemCmd() {
 	i.ThumbClipUploaded = true
 
 	// 3. 데이터
-	datapaths := make([]string, 0)
-	for _, path := range strings.Split(*flagInputDataPath, " ") {
-		datapaths = append(datapaths, path)
-	}
+	datapaths := QuotesPaths2Paths(*flagInputDataPath)
+	var filteredPaths []string
 	for _, path := range datapaths {
+		if HasWildcard(path) {
+			// 파일명에 와일드카드(?,*)가 존재할 때
+			matches, err := filepath.Glob(*flagInputDataPath)
+			if err != nil {
+				log.Fatal(err)
+			}
+			filteredPaths = append(filteredPaths, matches...)
+		} else {
+			filteredPaths = append(filteredPaths, path)
+		}
+	}
+	for _, path := range filteredPaths {
 		// 데이터 경로에 실재 파일이 존재하는지 체크.
 		err = FileExists(path)
 		if err != nil {
@@ -2964,11 +3153,21 @@ func addAlembicItemCmd() {
 	i.ThumbClipUploaded = true
 
 	// 3. 데이터
-	datapaths := make([]string, 0)
-	for _, path := range strings.Split(*flagInputDataPath, " ") {
-		datapaths = append(datapaths, path)
-	}
+	datapaths := QuotesPaths2Paths(*flagInputDataPath)
+	var filteredPaths []string
 	for _, path := range datapaths {
+		if HasWildcard(path) {
+			// 파일명에 와일드카드(?,*)가 존재할 때
+			matches, err := filepath.Glob(*flagInputDataPath)
+			if err != nil {
+				log.Fatal(err)
+			}
+			filteredPaths = append(filteredPaths, matches...)
+		} else {
+			filteredPaths = append(filteredPaths, path)
+		}
+	}
+	for _, path := range filteredPaths {
 		// 데이터 경로에 실재 파일이 존재하는지 체크.
 		err = FileExists(path)
 		if err != nil {
@@ -3133,11 +3332,21 @@ func addNukeItemCmd() {
 	i.ThumbClipUploaded = true
 
 	// 3. 데이터
-	datapaths := make([]string, 0)
-	for _, path := range strings.Split(*flagInputDataPath, " ") {
-		datapaths = append(datapaths, path)
-	}
+	datapaths := QuotesPaths2Paths(*flagInputDataPath)
+	var filteredPaths []string
 	for _, path := range datapaths {
+		if HasWildcard(path) {
+			// 파일명에 와일드카드(?,*)가 존재할 때
+			matches, err := filepath.Glob(*flagInputDataPath)
+			if err != nil {
+				log.Fatal(err)
+			}
+			filteredPaths = append(filteredPaths, matches...)
+		} else {
+			filteredPaths = append(filteredPaths, path)
+		}
+	}
+	for _, path := range filteredPaths {
 		// 데이터 경로에 실재 파일이 존재하는지 체크.
 		err = FileExists(path)
 		if err != nil {
