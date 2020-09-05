@@ -343,7 +343,7 @@ func QuotesPaths2Paths(path string) []string {
 		}
 
 	} else {
-		results = append(results, path)
+		results = strings.Split(path, " ")
 	}
 	return results
 }
