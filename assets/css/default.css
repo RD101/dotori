@@ -138,6 +138,7 @@ body {
 	border:1px solid #A7A59C;
 	color: #A7A59C;
 	text-decoration: none;
+	vertical-align: middle;
 }
 
 .btn-outline-darkmode {
@@ -172,4 +173,110 @@ body {
 
 .text-darkmode, .text-darkmode:hover {
 	color: #A7A59C;
+}
+
+.tag {
+    border-radius: 7px;
+    padding: 3px 8px;
+    margin-right: 3px;
+    margin-top: 5px
+}
+
+
+/*------------------------------*/
+/*------------ card ------------*/
+/*------------------------------*/
+
+.card{
+    margin: 10px;
+    width: 18rem;
+    border-radius: 0px;
+    border: 1px;
+    background-color: #222222;
+    box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.1);
+}
+
+.card:hover{
+    transform: scale(1.01);
+}
+
+.card-title{
+    color: white;
+    margin-bottom: 5px;
+}
+
+.card-body{
+    padding: 15px;
+    padding-top: 10px;
+}
+
+.card-text{
+    color: grey;
+    font-size:13px;
+    padding: 0px 5px;
+}
+
+/*-----------------------------*/
+/*----------- Modal -----------*/
+/*-----------------------------*/
+
+.modal-dialog {
+	min-width: 70%;
+}
+
+.modal-header {
+	border-bottom: 1px solid rgb(111, 110, 104);
+}
+
+.modal-footer{
+	border-top: 1px solid rgb(111, 110, 104);
+}
+
+.modal-title {
+	color: #A7A59C;
+}
+
+/* title */
+.iteminfo-list h3 {
+    font-weight: 600;
+    margin-top: 1rem;
+    margin-bottom: 20px;
+}
+
+/* id, itemtype, author */
+.iteminfo-list .iteminfo span {
+    float: right;
+    font-size: 15px;
+}
+
+.iteminfo {
+    margin-bottom: 1rem;
+}
+
+/* description */
+#modal-detailview-description {
+	font-size: 14px;
+}
+
+.detailview-thumbnail > * {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    vertical-align: middle;
+}
+
+.attributes {
+    margin-top: 10px;
+    font-size: 13px;
+}
+
+/* attribute의 key */
+.attributes dt {
+    width: 12%;
+}
+
+/* attribute의 value */
+.attributes dd {
+    margin-left: 20px;
 }
