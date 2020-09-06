@@ -3543,5 +3543,8 @@ Dropzone.options.hdriDropzone = {
           currentDropzone.processQueue(); // 파일을 수동으로 전송한다.
       }
     );
-  }
+  },
+  success: function success() {
+    document.getElementById("btn-register-item").disabled = false; // 전송이 완료되면 등록버튼을 활성화 시킨다.
+  },
 }
