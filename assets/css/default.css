@@ -187,10 +187,10 @@ body {
 /*------------------------------*/
 
 .init-title {
-	margin-top: 30px;
+	margin-top: 40px;
 	margin-left: 5%;
 	margin-right: 5%;
-	color: white;
+	color: #d9d9d9;
 	font-size: 17px;
 }
 
@@ -200,9 +200,10 @@ body {
 	padding: 0;
 }
 
-.slider-icon {
-	text-align: right;
+.slider-text{
+	color: #d9d9d9;
 }
+
 
 /*------------------------------*/
 /*------------ card ------------*/
@@ -222,7 +223,7 @@ body {
 }
 
 .card-title{
-    color: white;
+    color: #d9d9d9;
     margin-bottom: 5px;
 }
 
@@ -236,6 +237,7 @@ body {
     font-size:13px;
     padding: 0px 5px;
 }
+
 
 /*-----------------------------*/
 /*----------- Modal -----------*/

@@ -6,7 +6,7 @@
     <h6 class="init-title">NEW {{$.RecentlyTotalItemNum}}
         <div class="slider-icon float-right">
             <span class="btn carousel-control-prev-icon" aria-hidden="true" onclick="recentlyClick('{{.RecentlyTotalItemNum}}', 'prev');" ></span>
-            <span class="text-white" id="recentlyPage" value="1">1 / {{divCeil $.RecentlyTotalItemNum 4}}</span>
+            <span class="slider-text" id="recentlyPage" value="1">1 / {{divCeil $.RecentlyTotalItemNum 4}}</span>
             <span class="btn carousel-control-next-icon" aria-hidden="true" onclick="recentlyClick('{{.RecentlyTotalItemNum}}', 'next');" ></span>
         </div>
     </h6>
