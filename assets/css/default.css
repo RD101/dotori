@@ -186,14 +186,18 @@ body {
 /*---------- init page ---------*/
 /*------------------------------*/
 
-.slider {
+.init-title {
+	margin-top: 30px;
 	margin-left: 5%;
 	margin-right: 5%;
 	color: white;
 	font-size: 17px;
 }
-.slider-title {
-	font-style: oblique;
+
+.init-tags {
+	margin-left: 5%;
+	margin-right: 5%;
+	padding: 0;
 }
 
 .slider-icon {

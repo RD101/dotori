@@ -1,19 +1,8 @@
 {{define "itemsRecentlyTag"}}
-<div class="row justify-content-center align-items-center m-3">
-    <div class="col-lg-12">
-        <div class="input-group mb-3">
-            <span class="text-white">최근에 등록된 태그 {{len $.RecentTags}}건</span><br>
-        </div>
-    </div>
+<h6 class="init-title">New Tags {{len $.RecentTags}}</h6>
+<div class="container init-tags">
+    {{range .RecentTags}}
+        <a href="/search?searchword=tag:{{.}}" class="tag badge badge-outline-darkmode">{{.}}</a>
+    {{end}}
 </div>
-    <div class="row justify-content-center align-items-center m-3">
-        <div class="col-lg-12">
-            <div class="text-muted mb-3">
-            {{range .RecentTags}}
-                <a href="/search?searchword=tag:{{.}}" class="tag badge badge-outline-darkmode">{{.}}</a>
-            {{end}}
-            </div>
-        </div>
-        </div>
-    </div>
 {{end}}

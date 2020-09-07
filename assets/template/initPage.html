@@ -4,13 +4,7 @@
       {{template "modal" .}}
       {{template "navbar" .}}
       {{template "search" .}}
-    	<div class="row justify-content-center align-items-center m-3">
-		    <div class="col-lg-12">
-			    <div class="input-group mb-3">
-                    <span class="text-white">총 {{$.AllItemCount}} 건의 에셋이 등록되어 있습니다.</span>
-			    </div>
-        </div>
-      </div>
+      <h6 class="init-title">{{$.Adminsetting.Appname}} has {{$.AllItemCount}} Assets.</h6>
       {{template "itemsRecentlyCreate" .}}
       {{template "itemsTopUsing" .}}
       {{template "itemsRecentlyTag" .}}
