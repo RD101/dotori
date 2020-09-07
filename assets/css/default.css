@@ -182,6 +182,23 @@ body {
     margin-top: 5px
 }
 
+/*------------------------------*/
+/*---------- init page ---------*/
+/*------------------------------*/
+
+.slider {
+	margin-left: 5%;
+	margin-right: 5%;
+	color: white;
+	font-size: 17px;
+}
+.slider-title {
+	font-style: oblique;
+}
+
+.slider-icon {
+	text-align: right;
+}
 
 /*------------------------------*/
 /*------------ card ------------*/
