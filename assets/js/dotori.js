@@ -66,15 +66,13 @@ function copyButton(elementId) {
 
 // setDetailViewModal 은 아이템을 선택했을 때 볼 수 있는 detailview 모달창에 어셋 정보를 세팅해주는 함수이다.
 function setDetailViewModal(itemid) {
-
     // Detail View에 세팅할 아이템 정보를 RestAPI로 불러옴
     $.ajax({
         url: `/api/item?id=${itemid}`,
         type: "get",
         dataType: "json",
         success: function(response) {
-
-            // thunbnail 세팅
+            // thumbnail 세팅
             let itemtype = response["itemtype"];
             if (itemtype == "pdf" || itemtype == "ppt" || itemtype == "hwp" || itemtype == "sound" || itemtype == "ies") {
                 document.getElementById("modal-detailview-thumbnail").innerHTML = `<img src="/assets/img/${itemtype}thumbnail.svg">`;
@@ -83,6 +81,18 @@ function setDetailViewModal(itemid) {
                     document.getElementById("modal-detailview-thumbnail").innerHTML = `<img src="/mediadata?id=${itemid}&type=png">`
                 } else {
                     document.getElementById("modal-detailview-thumbnail").innerHTML = `<img src="/assets/img/noimage.svg">`
+                }
+            } else if (itemtype == "clip") {
+                let thumbnailHtml = `
+                                    <video id="modal-detailview-video" controls autoplay loop>
+                                        <source src="/mediadata?id=${itemid}&type=mp4" type="video/mp4">
+                                        <source src="/mediadata?id=${itemid}&type=ogg" type="video/ogg">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                    `
+                document.getElementById("modal-detailview-thumbnail").innerHTML = thumbnailHtml;
+                if (response["status"] != "done") {
+                    document.getElementById("modal-detailview-video").setAttribute("poster", "/assets/img/noimage.svg") 
                 }
             } else {
                 let thumbnailHtml = `
@@ -275,7 +285,7 @@ function recentlyClick(totalItemNum, buttonState) {
                 if (data[i].itemtype == "pdf" || data[i].itemtype == "ppt" || data[i].itemtype == "hwp" || data[i].itemtype == "sound" || data[i].itemtype == "ies") {
                     img = '<img class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
                     '" src="/assets/img/' + data[i].itemtype + 'thumbnail.svg">'
-                }else if(data[i].itemtype=="hdri" || data[i].itemtype == "lut" || data[i].itemtype=="texture"){
+                } else if(data[i].itemtype=="hdri" || data[i].itemtype == "lut" || data[i].itemtype=="texture"){
                     if(data[i].status == "done"){
                         img = '<img class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
                                 '" src="/mediadata?id=' + data[i].id + '&type=png">'
@@ -283,7 +293,23 @@ function recentlyClick(totalItemNum, buttonState) {
                         img = '<img class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
                                 '" src="/assets/img/noimage.svg">'
                     }
-                }else{
+                } else if (data[i].itemtype=="clip") {
+                    if(data[i].status == "done"){
+                        img = '<video class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                                '" autoplay loop>' +
+                                '<source src="/mediadata?id=' + data[i].id + '&type=mp4" type="video/mp4">' +
+                                '<source src="/mediadata?id=' + data[i].id + '&type=ogg" type="video/ogg">' +
+                                'Your browser does not support the video tag.'+
+                                '</video>'
+                    }else{
+                        img = '<video class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                                '" controls poster="/assets/img/noimage.svg">' +
+                                '<source src="/mediadata?id=' + data[i].id + '&type=mp4" type="video/mp4">' +
+                                '<source src="/mediadata?id=' + data[i].id + '&type=ogg" type="video/ogg">' +
+                                'Your browser does not support the video tag.'+
+                                '</video>'
+                    }
+                } else{
                     if(data[i].status == "done"){
                         img = '<video class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
                                 '" controls poster="/mediadata?id=' + data[i].id + '&type=png">' +
@@ -354,7 +380,7 @@ function topUsingClick(totalItemNum, buttonState) {
                 if (data[i].itemtype == "pdf" || data[i].itemtype == "ppt" || data[i].itemtype == "hwp" || data[i].itemtype == "sound" || data[i].itemtype == "ies") {
                     img = '<img class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
                                 '" src="/assets/img/' + data[i].itemtype + 'thumbnail.svg">'
-                }else if(data[i].itemtype=="hdri" || data[i].itemtype=="lut" || data[i].itemtype=="texture"){
+                } else if(data[i].itemtype=="hdri" || data[i].itemtype=="lut" || data[i].itemtype=="texture"){
                     if(data[i].status == "done"){
                         img = '<img class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
                                 '" src="/mediadata?id=' + data[i].id + '&type=png">'
@@ -362,7 +388,23 @@ function topUsingClick(totalItemNum, buttonState) {
                         img = '<img class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
                                 '" src="/assets/img/noimage.svg">'
                     }
-                }else{
+                } else if (data[i].itemtype=="clip") {
+                    if(data[i].status == "done"){
+                        img = '<video class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                                '" autoplay loop>' +
+                                '<source src="/mediadata?id=' + data[i].id + '&type=mp4" type="video/mp4">' +
+                                '<source src="/mediadata?id=' + data[i].id + '&type=ogg" type="video/ogg">' +
+                                'Your browser does not support the video tag.'+
+                                '</video>'
+                    }else{
+                        img = '<video class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                                '" controls poster="/assets/img/noimage.svg">' +
+                                '<source src="/mediadata?id=' + data[i].id + '&type=mp4" type="video/mp4">' +
+                                '<source src="/mediadata?id=' + data[i].id + '&type=ogg" type="video/ogg">' +
+                                'Your browser does not support the video tag.'+
+                                '</video>'
+                    }
+                } else {
                     if(data[i].status == "done"){
                         img = '<video class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
                                 '" controls poster="/mediadata?id=' + data[i].id + '&type=png">' +
