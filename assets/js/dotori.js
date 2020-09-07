@@ -80,7 +80,7 @@ function setDetailViewModal(itemid) {
                 document.getElementById("modal-detailview-thumbnail").innerHTML = `<img src="/assets/img/${itemtype}thumbnail.svg">`;
             } else if (itemtype == "hdri" || itemtype == "lut" || itemtype == "texture") {
                 if (response["status"] == "done") {
-                document.getElementById("modal-detailview-thumbnail").innerHTML = `<img src="/mediadata?id=${itemid}&type=png`
+                    document.getElementById("modal-detailview-thumbnail").innerHTML = `<img src="/mediadata?id=${itemid}&type=png">`
                 } else {
                     document.getElementById("modal-detailview-thumbnail").innerHTML = `<img src="/assets/img/noimage.svg">`
                 }
@@ -301,6 +301,7 @@ function recentlyClick(totalItemNum, buttonState) {
                     }
                 }
                 recentlyImageForm.innerHTML = img;
+                document.getElementById("recentCardBody"+i).onclick = function () { setDetailViewModal(data[i].id);}
                 document.getElementById("recentlyTitle"+i).innerHTML = data[i].title;
                 document.getElementById("recentlyCreateTime"+i).innerHTML = data[i].createtime.split('T')[0];
             }
@@ -379,6 +380,7 @@ function topUsingClick(totalItemNum, buttonState) {
                     }
                 }
                 topUsingImageForm.innerHTML = img;
+                document.getElementById("topUsingCardBody"+i).onclick = function () { setDetailViewModal(data[i].id);}
                 document.getElementById("topUsingTitle"+i).innerHTML = data[i].title;
                 document.getElementById("topUsingRate"+i).innerHTML = data[i].usingrate;
             }
