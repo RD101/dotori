@@ -182,6 +182,28 @@ body {
     margin-top: 5px
 }
 
+/*------------------------------*/
+/*---------- init page ---------*/
+/*------------------------------*/
+
+.init-title {
+	margin-top: 40px;
+	margin-left: 5%;
+	margin-right: 5%;
+	color: #d9d9d9;
+	font-size: 17px;
+}
+
+.init-tags {
+	margin-left: 5%;
+	margin-right: 5%;
+	padding: 0;
+}
+
+.slider-text{
+	color: #d9d9d9;
+}
+
 
 /*------------------------------*/
 /*------------ card ------------*/
@@ -201,7 +223,7 @@ body {
 }
 
 .card-title{
-    color: white;
+    color: #d9d9d9;
     margin-bottom: 5px;
 }
 
@@ -216,13 +238,10 @@ body {
     padding: 0px 5px;
 }
 
+
 /*-----------------------------*/
 /*----------- Modal -----------*/
 /*-----------------------------*/
-
-.modal-dialog {
-	min-width: 70%;
-}
 
 .modal-header {
 	border-bottom: 1px solid rgb(111, 110, 104);
@@ -234,6 +253,14 @@ body {
 
 .modal-title {
 	color: #A7A59C;
+}
+
+#modal-detailview-dialog {
+	min-width: 70%;
+}
+
+.iteminfo-list {
+	color: #d9d9d9;
 }
 
 /* title */

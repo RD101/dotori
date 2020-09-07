@@ -3,22 +3,13 @@
     {{$thumbnailheight := .Adminsetting.ThumbnailImageHeight}}
     <input type="hidden" id="thumbnailwidth" value="{{$thumbnailwidth}}">
     <input type="hidden" id="thumbnailheight" value="{{$thumbnailheight}}">
-    <div class="row justify-content-center align-items-center m-3">
-        <div class="col-lg-12">
-            <div class="input-group mb-3">
-                <span class="text-white">최근에 등록된 에셋 {{$.RecentlyTotalItemNum}}건</span>
-            </div>
+    <h6 class="init-title">NEW {{$.RecentlyTotalItemNum}}
+        <div class="slider-icon float-right">
+            <span class="btn carousel-control-prev-icon" aria-hidden="true" onclick="recentlyClick('{{.RecentlyTotalItemNum}}', 'prev');" ></span>
+            <span class="slider-text" id="recentlyPage" value="1">1 / {{divCeil $.RecentlyTotalItemNum 4}}</span>
+            <span class="btn carousel-control-next-icon" aria-hidden="true" onclick="recentlyClick('{{.RecentlyTotalItemNum}}', 'next');" ></span>
         </div>
-    </div>
-    <div class="row justify-content-center m-3">
-        <div class="col-lg-12">
-            <div class="input-group mb-3" style="display: inline-block; width: 98%; text-align: right;">
-                <span class="btn carousel-control-prev-icon" aria-hidden="true" onclick="recentlyClick('{{.RecentlyTotalItemNum}}', 'prev');" ></span>
-                <span class="text-white" id="recentlyPage" value="1">1 / {{divCeil $.RecentlyTotalItemNum 4}}</span>
-                <span class="btn carousel-control-next-icon" aria-hidden="true" onclick="recentlyClick('{{.RecentlyTotalItemNum}}', 'next');" ></span>
-            </div>
-        </div>
-    </div>
+    </h6>
     <div class="container-fluid">
         <div class="row mx-auto mb-12">
             {{range $i, $q := .RecentlyCreateItems}}

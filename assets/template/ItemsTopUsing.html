@@ -1,22 +1,14 @@
 {{define "itemsTopUsing"}}
     {{$thumbnailwidth := .Adminsetting.ThumbnailImageWidth}}
     {{$thumbnailheight := .Adminsetting.ThumbnailImageHeight}}  
-    <div class="row justify-content-center align-items-center m-3">
-        <div class="col-lg-12">
-            <div class="input-group mb-3">
-                <span class="text-white">가장 많이 사용되는 에셋 {{$.TopUsingTotalItemNum}}건</span><br>
-            </div>
+    <h6 class="init-title">TOP {{$.TopUsingTotalItemNum}}
+        <div class="slider-icon float-right">
+            <span class="btn carousel-control-prev-icon" aria-hidden="true" onclick="topUsingClick('{{.TopUsingTotalItemNum}}', 'prev');" ></span>
+            <span class="slider-text" id="topUsingPage" value="1">1 / {{divCeil $.TopUsingTotalItemNum 4}}</span>
+            <span class="btn carousel-control-next-icon" aria-hidden="true" onclick="topUsingClick('{{.TopUsingTotalItemNum}}', 'next');" ></span>
         </div>
-    </div>
-    <div class="row justify-content-center m-3">
-        <div type="number" class="col-lg-12">
-            <div class="input-group mb-3" style="display: inline-block; width: 98%; text-align: right;">
-                <span class="btn carousel-control-prev-icon" aria-hidden="true" onclick="topUsingClick('{{.TopUsingTotalItemNum}}', 'prev');" ></span>
-                <span class="text-white" id="topUsingPage" value="1">1 / {{divCeil $.TopUsingTotalItemNum 4}}</span>
-                <span class="btn carousel-control-next-icon" aria-hidden="true" onclick="topUsingClick('{{.TopUsingTotalItemNum}}', 'next');" ></span>
-            </div>
-        </div>
-    </div>
+        <!-- </div> -->
+    </h6>
     <div class="container-fluid">
         <div class="row mx-auto mb-12">
             {{range $i, $q := .TopUsingItems}}
