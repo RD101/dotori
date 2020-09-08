@@ -1,6 +1,8 @@
 {{define "itemsRecentlyCreate"}}
     {{$thumbnailwidth := .Adminsetting.ThumbnailImageWidth}}
     {{$thumbnailheight := .Adminsetting.ThumbnailImageHeight}}
+    <input type="hidden" id="thumbnailwidth" value="{{$thumbnailwidth}}">
+    <input type="hidden" id="thumbnailheight" value="{{$thumbnailheight}}">
     <h6 class="init-title">NEW {{$.RecentlyTotalItemNum}}
         <div class="slider-icon float-right">
             <span class="btn carousel-control-prev-icon" aria-hidden="true" onclick="recentlyClick('{{.RecentlyTotalItemNum}}', 'prev');" ></span>
