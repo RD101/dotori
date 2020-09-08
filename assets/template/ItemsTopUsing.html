@@ -7,42 +7,37 @@
             <span class="slider-text" id="topUsingPage" value="1">1 / {{divCeil $.TopUsingTotalItemNum 4}}</span>
             <span class="btn carousel-control-next-icon" aria-hidden="true" onclick="topUsingClick('{{.TopUsingTotalItemNum}}', 'next');" ></span>
         </div>
-        <!-- </div> -->
     </h6>
-    <div class="container-fluid">
-        <div class="row mx-auto mb-12">
-            {{range $i, $q := .TopUsingItems}}
-                {{$itemtype := .ItemType}}
-                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
-                    <div class="card mx-auto" id="topUsingCard{{$i}}">
-                        <a class="card-image" href="#" title="image {{$i}}" id="topUsingImageForm{{$i}}">
-                        {{if eq .ItemType "hwp" "ies" "pdf" "ppt" "sound"}}
-                            <img class="card-img" width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="/assets/img/{{$itemtype}}thumbnail.svg">
-                        {{else if eq .ItemType "hdri" "lut" "texture" }}
-                            <img class="card-img" width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="{{if eq .Status "done" }}/mediadata?id={{.ID.Hex}}&type=png{{else}}/assets/img/noimage.svg{{end}}">
-                        {{else}}
-                            <video class="card-img"width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" controls poster="{{if eq .Status "done" }}/mediadata?id={{.ID.Hex}}&type=png{{else}}/assets/img/noimage.svg{{end}}">
-                                <source src="/mediadata?id={{.ID.Hex}}&type=mp4" type="video/mp4">
-                                <source src="/mediadata?id={{.ID.Hex}}&type=ogg" type="video/ogg">
-                                Your browser does not support the video tag.
-                            </video>
+    <div class="row init-items">
+        {{range $i, $q := .TopUsingItems}}
+            {{$itemtype := .ItemType}}
+            <div class="card" id="topUsingCard{{$i}}">
+                <a class="card-image" href="#" title="image {{$i}}" id="topUsingImageForm{{$i}}">
+                {{if eq .ItemType "hwp" "ies" "pdf" "ppt" "sound"}}
+                    <img class="card-img" width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="/assets/img/{{$itemtype}}thumbnail.svg">
+                {{else if eq .ItemType "hdri" "lut" "texture" }}
+                    <img class="card-img" width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="{{if eq .Status "done" }}/mediadata?id={{.ID.Hex}}&type=png{{else}}/assets/img/noimage.svg{{end}}">
+                {{else}}
+                    <video class="card-img"width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" controls poster="{{if eq .Status "done" }}/mediadata?id={{.ID.Hex}}&type=png{{else}}/assets/img/noimage.svg{{end}}">
+                        <source src="/mediadata?id={{.ID.Hex}}&type=mp4" type="video/mp4">
+                        <source src="/mediadata?id={{.ID.Hex}}&type=ogg" type="video/ogg">
+                        Your browser does not support the video tag.
+                    </video>
+                {{end}}
+                </a>
+                <div class="card-body" id="topUsingCardBody{{$i}}" data-toggle="modal" data-target="#modal-detailview" onclick="setDetailViewModal('{{.ID.Hex}}')">
+                    <h5 class="card-title" id="topUsingTitle{{$i}}">{{.Title}}</h5>
+                    <div class="row m-0 mb-2"style="align-items: center;">
+                        <i class="fas fa-download fa-xs" style="color:grey;"></i>
+                        <p class="card-text" id="topUsingRate{{$i}}">{{.UsingRate}}</p>
+                    </div>
+                    <div>
+                        {{range .Tags}}
+                            <a href="/search?itemtype={{$itemtype}}&searchword=tag:{{.}}" class="tag badge badge-outline-darkmode">{{.}}</a>
                         {{end}}
-                        </a>
-                        <div class="card-body" id="topUsingCardBody{{$i}}" data-toggle="modal" data-target="#modal-detailview" onclick="setDetailViewModal('{{.ID.Hex}}')">
-                            <h5 class="card-title" id="topUsingTitle{{$i}}">{{.Title}}</h5>
-                            <div class="row m-0 mb-2"style="align-items: center;">
-                                <i class="fas fa-download fa-xs" style="color:grey;"></i>
-                                <p class="card-text" id="topUsingRate{{$i}}">{{.UsingRate}}</p>
-                            </div>
-                            <div>
-                                {{range .Tags}}
-                                    <a href="/search?itemtype={{$itemtype}}&searchword=tag:{{.}}" class="tag badge badge-outline-darkmode">{{.}}</a>
-                                {{end}}
-                            </div>
-                        </div>
                     </div>
                 </div>
-            {{end}}
-        </div>
+            </div>
+        {{end}}
     </div>
 {{end}}
