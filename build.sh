@@ -4,8 +4,8 @@
 go run assets/asset_generate.go
 
 APP="dotori"
-GOOS=linux GOARCH=amd64 go build -o ./bin/linux/${APP} *.go
-GOOS=darwin GOARCH=amd64 go build -o ./bin/darwin/${APP} *.go
+GOOS=linux GOARCH=amd64 go build -ldflags "-X main.SHA1VER=`git rev-parse HEAD` -X main.BUILDTIME=`date -u +%Y-%m-%dT%H:%M:%S`" -o ./bin/linux/${APP} *.go
+GOOS=darwin GOARCH=amd64 go build -ldflags "-X main.SHA1VER=`git rev-parse HEAD` -X main.BUILDTIME=`date -u +%Y-%m-%dT%H:%M:%S`" -o ./bin/darwin/${APP} *.go
 
 # Github Release에 업로드 하기위해 압축
 cd ./bin/linux/ && tar -zcvf ../${APP}_linux_x86-64.tgz . && cd -
