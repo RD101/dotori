@@ -364,7 +364,7 @@ function topUsingClick(totalItemNum, buttonState) {
     // 마지막 페이지일 때
     if(clearItemNum!=0 && currentPageNum==totalPageNum){
         for(let i = 3; clearItemNum!=0; i--, clearItemNum--){
-            document.getElementById("topUsingCard").style.visibility="hidden";
+            document.getElementById("topUsingCard"+i).style.visibility="hidden";
         }
     }
     // 마지막 페이지가 아닐 때
