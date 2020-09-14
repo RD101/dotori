@@ -367,6 +367,12 @@ function topUsingClick(totalItemNum, buttonState) {
             document.getElementById("topUsingCard").style.visibility="hidden";
         }
     }
+    // 마지막 페이지가 아닐 때
+    if (currentPageNum != totalPageNum) {
+        for(let i = 0; i<4; i++){
+            document.getElementById("topUsingCard"+i).style.visibility="visible"
+        }
+    }
     $.ajax({
         url: `/api/topusingitem?usingpage=${currentPageNum}`,
         type: "get",
