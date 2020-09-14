@@ -58,6 +58,11 @@ var (
 	flagCertPrivkey     = flag.String("certprivkey", "", "certification privkey path")
 
 	flagItemID = flag.String("itemid", "", "bson ObjectID assigned by mongodb")
+
+	// SHA1VER 값은 git 커밋 로그 이다.
+	SHA1VER = ""
+	// BUILDTIME 값은 빌드시간 변수이다.
+	BUILDTIME = ""
 )
 
 func main() {
@@ -217,7 +222,7 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-    
+
 		items, err := GetUndoneItem(client)
 		fmt.Println(items)
 	} else if *flagProcess {

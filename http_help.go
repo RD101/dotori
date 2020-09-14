@@ -19,8 +19,13 @@ func handleHelp(w http.ResponseWriter, r *http.Request) {
 	type recipe struct {
 		Token
 		Adminsetting Adminsetting
+		Sha1ver      string
+		BuildTime    string
 	}
+
 	rcp := recipe{}
+	rcp.Sha1ver = SHA1VER
+	rcp.BuildTime = BUILDTIME
 	rcp.Token = token
 	//mongoDB client 연결
 	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
