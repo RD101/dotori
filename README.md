@@ -1,6 +1,3 @@
-1. 짧고 강한 어필(목펴)
-1. 특성
-2. 다운로드 받고 설치해서 사용하는 방법
 # Dotori
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/rd101/dotori)](https://goreportcard.com/report/github.com/rd101/dotori)
