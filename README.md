@@ -4,10 +4,10 @@
 
 VFX, 애니메이션, 게임, 사운드 등 콘텐츠 제작과정에 사용되는 에셋 관리 솔루션
 
-Screenshot
+#### Screenshot
 ![screenshot](documents/screenshot.png)
 
-Demo
+#### Demo
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/VNBdlPDKzTc/0.jpg)](http://www.youtube.com/watch?v=VNBdlPDKzTc "Asset Library System - DOTORI")
 
 ### 기본정보
