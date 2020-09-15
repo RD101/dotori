@@ -2,10 +2,12 @@
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/rd101/dotori)](https://goreportcard.com/report/github.com/rd101/dotori)
 
-![screenshot](documents/screenshot.png)
 VFX, 애니메이션, 게임, 사운드 등 콘텐츠 제작과정에 사용되는 에셋 관리 솔루션
 
-### 기술 데모 영상
+Screenshot
+![screenshot](documents/screenshot.png)
+
+Demo
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/VNBdlPDKzTc/0.jpg)](http://www.youtube.com/watch?v=VNBdlPDKzTc "Asset Library System - DOTORI")
 
 ### 기본정보
