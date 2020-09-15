@@ -78,10 +78,10 @@ $ sudo dotori -http :80
 mongoDB를 백업하는 방법은 아래 문서를 참고해 주세요.
 - [backup](documents/backup.md)
 
-## 조작
+## 개발자 API
 도토리는 `웹`, `command line`, `REST API`를 이용해서 조작할 수 있습니다.
 
-### command-line
+### Command-line
 command를 통해 dotori를 제어할 수 있습니다.
 - [Item](documents/command_item.md)
 - [User](documents/command_user.md)
@@ -92,8 +92,8 @@ Dotori는 REST API를 지원합니다. Python, Go, Java, Javascript, node.JS, C+
 - [item](documents/restapi_item.md)
 - [admin setting](documents/restapi_adminsetting.md)
 
-## 기여하고 싶다면
-도토리는 오픈소스로 진행 중인 프로젝트입니다. 기여하고 싶다면 아래 내용을 참고해주세요!
+## 개발에 기여하고 싶다면...
+도토리는 오픈소스로 진행 중인 프로젝트입니다. 개발에 기여하고 싶다면 아래 내용을 참고해주세요!
 
 ### 개발환경셋팅
 Go에서 컴파일된 파일이 생성되는 경로를 설정하기 위해 GOBIN 환경변수 셋팅이 필요합니다.
@@ -133,10 +133,7 @@ Default env_keep=PATH # 새로 추가
     - 리포지터리에는 최대한 가벼운 파일, 코드만 올리기 위해 위 폴더에 Prores422HQ mov 데이터는 들어가 있지 않습니다.
     - HDRI 예제파일은 https://github.com/lazypic/tdcourse_examples/tree/master/movs 에서 다운받을 수 있습니다.
 
-### 위키 안내
-프로젝트의 전반적인 규칙, 공유되어야 할 내용이 적혀있습니다.
-상단의 wiki 탭을 통해서도 접근할 수 있습니다.
-
-### 주의사항
-회사 특이사항과 관련된 코드를 내부에 넣지말것. 셋팅영역으로 뺄 것
-- [wiki](https://github.com/RD101/dotori/wiki)
+### 위키 및 개발시 주의사항
+- 상단의 [wiki](https://github.com/RD101/dotori/wiki) 탭을 통해서 개발에 필요한 정보를 접근할 수 있습니다.
+- 프로젝트의 전반적인 규칙, 공유되어야 할 내용이 적혀있습니다.
+- 회사 특이사항 및 관련된 코드를 내부에 하드코딩하지 말아주세요.
