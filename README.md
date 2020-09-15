@@ -2,6 +2,7 @@
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/rd101/dotori)](https://goreportcard.com/report/github.com/rd101/dotori)
 
+![screenshot](documents/screenshot.png)
 VFX, 애니메이션, 게임, 사운드 등 콘텐츠 제작과정에 사용되는 모든 타입의 에셋을 등록,관리하는 툴입니다.
 
 ### 기본정보
