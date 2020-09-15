@@ -11,7 +11,7 @@
     <div class="row init-items">
         {{range $i, $q := .TopUsingItems}}
             {{$itemtype := .ItemType}}
-            <div class="card" id="topUsingCard{{$i}}">
+            <div class="card" id="topUsingCard{{$i}}" style="width: {{$thumbnailwidth}}px;">
                 <a class="card-image" href="#" title="image {{$i}}" id="topUsingImageForm{{$i}}">
                 {{if eq .ItemType "hwp" "ies" "pdf" "ppt" "sound"}}
                     <img class="card-img" width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="/assets/img/{{$itemtype}}thumbnail.svg">
