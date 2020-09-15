@@ -1,4 +1,4 @@
-# Dotori(가제)
+# DOTORI(가제)
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/rd101/dotori)](https://goreportcard.com/report/github.com/rd101/dotori)
 
