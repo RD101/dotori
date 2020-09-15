@@ -1,26 +1,22 @@
-# Dotori
+# Dotori(가제)
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/rd101/dotori)](https://goreportcard.com/report/github.com/rd101/dotori)
 
-짧은 소개
-스크린샷
-다양한 타입의 에셋을 등록, 관리할 수 있다.
-공동개발 중
-제품화를 목표로 개발중
-장기 프로젝트다
-오픈소스 프로젝트다
-테스트 서버 소개(아래 테스트 서버 링크를 통해 테스트해볼 수 있다)
+- VFX, 애니메이션, 게임, 사운드 등 콘텐츠 제작과정에 사용되는 모든 타입의 에셋을 등록,관리하는 툴입니다.
+- Dotori is web-based asset library tool.
 - 테스트서버: https://csi.lazypic.org:8089
-Dotori is web-based asset library tool.
 
-## 목 표
-## 특 성
-- 오픈소스
-- REST API
+### 기본정보
+- 개발기간: 2019. 9 ~ 현
+- 개발방법: 공동개발. (주)로드원오원 + [Lazypic,LLC.](https://lazypic.org)
+- 권리자(발명자): [contribution](https://github.com/RD101/dotori/graphs/contributors)
+- 라이센스: BSD-3-Clause License
+
+## 특 징
+- REST API 지원
 - 멀티 스레딩 연산
-- 관리자 페이지를 통해 회사 상황에 맞는 유동적인 환경 셋팅
-- 자동화 시킬 수 있도록 설계
-- 다른 툴과 연동시키기 좋음(REST API)
+- 관리자 페이지를 통해 회사 상황에 맞는 유동적인 환경 셋팅 가능
+
 ## 사용 방법
 ### 서버 권장 사항
 - 동시접속자 처리를 위한 OS: Linux, macOS, Windows Server
@@ -121,7 +117,7 @@ Default env_keep=PATH # 새로 추가
 ------------------------------------
 
 
-- VFX, 애니메이션, 게임, 사운드 작업에 사용되는 모든 타입의 에셋을 등록,관리
+
 - 사용라이브러리: OpenColorIO, OpenImageIO, FFmpeg
 - 주의사항: 회사 특이사항과 관련된 코드를 내부에 넣지말것. 셋팅영역으로 뺄 것
 
