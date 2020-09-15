@@ -39,6 +39,11 @@ $ brew services start mongodb-community
 ### 기타 라이브러리 및 명령어 설치
 도토리에서 사용하고 있는 라이브러리의 설치는 아래 문서를 참고해주세요.
 - [Library 설치](documents/setlibrary.md)
+
+도토리에서 사용중인 라이브러리는 다음과 같습니다.
+- OpenColorIO
+- OpenImageIO
+- FFmpeg
 ### dotori 다운로드
 - [Linux](https://github.com/RD101/dotori/releases/download/v0.0.1/dotori_linux_x86-64.tgz) 
 - [macOS](https://github.com/RD101/dotori/releases/download/v0.0.1/dotori_darwin_x86-64.tgz)
@@ -109,6 +114,8 @@ Default env_keep=PATH # 새로 추가
 ### 위키 안내
 프로젝트의 전반적인 규칙, 공유되어야 할 내용이 적혀있습니다.
 상단의 wiki 탭을 통해서도 접근할 수 있습니다.
+### 주의사항
+회사 특이사항과 관련된 코드를 내부에 넣지말것. 셋팅영역으로 뺄 것
 - [wiki](https://github.com/RD101/dotori/wiki)
 ## Information / History
 - '19.9 RD101에서 오픈소스로 시작(License: BSD 3-Clause License)
@@ -118,7 +125,7 @@ Default env_keep=PATH # 새로 추가
 
 
 
-- 사용라이브러리: OpenColorIO, OpenImageIO, FFmpeg
-- 주의사항: 회사 특이사항과 관련된 코드를 내부에 넣지말것. 셋팅영역으로 뺄 것
+
+
 
 
