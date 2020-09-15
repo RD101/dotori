@@ -12,7 +12,6 @@ VFX, 애니메이션, 게임, 사운드 등 콘텐츠 제작과정에 사용되�
 - 개발언어: Go, Javascript, HTML, CSS
 - 개발주체: [(주)로드원오원](https://rd101.co.kr) + [Lazypic,LLC.](https://lazypic.org)
 - 권리자(발명자): [Contributors](https://github.com/RD101/dotori/graphs/contributors)
-- 라이센스: [BSD-3-Clause License](https://github.com/RD101/dotori/blob/master/LICENSE)
 - 테스트서버: https://csi.lazypic.org:8089
 - [다운로드](https://github.com/RD101/dotori/releases)
 
@@ -137,3 +136,6 @@ Default env_keep=PATH # 새로 추가
 - 상단의 [wiki](https://github.com/RD101/dotori/wiki) 탭을 통해서 개발에 필요한 정보를 접근할 수 있습니다.
 - 프로젝트의 전반적인 규칙, 공유되어야 할 내용이 적혀있습니다.
 - 회사 특이사항 및 관련된 코드를 내부에 하드코딩하지 말아주세요.
+
+### License
+[BSD-3-Clause License](https://github.com/RD101/dotori/blob/master/LICENSE)
