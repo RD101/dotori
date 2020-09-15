@@ -2,7 +2,7 @@
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/rd101/dotori)](https://goreportcard.com/report/github.com/rd101/dotori)
 
-VFX, 애니메이션, 게임, 사운드 등 콘텐츠 제작과정에 사용되는 에셋 관리 솔루션
+VFX, 애니메이션, 게임, 사운드 등 콘텐츠 제작에 사용되는 에셋 관리 솔루션
 
 #### Screenshot
 ![screenshot](documents/screenshot.png)
