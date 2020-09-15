@@ -31,18 +31,21 @@ VFX, 애니메이션, 게임, 사운드 등 콘텐츠 제작과정에 사용되�
 - 유저관리
 
 ## 사용 방법
+
 ### 서버 권장 사항
 - OS: Linux, macOS 또는 Windows Server
 - 메모리: 32기가 이상
+
 ### DB 설치 및 실행
 도토리는 mongoDB를 사용하고 있습니다. mongoDB를 설치해주세요.
-**CentOS**
+
+#### CentOS
 ```bash
 $ sudo yum install mongodb mongodb-server
 $ sudo service mongod start
 ```
 
-**macOS**
+#### macOS
 ```bash
 $ brew uninstall mongodb
 $ brew tap mongodb/brew
