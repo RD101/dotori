@@ -7,7 +7,7 @@ VFX, 애니메이션, 게임, 사운드 등 콘텐츠 제작과정에 사용되�
 
 ### 기본정보
 - 개발기간: 2019.9 ~ 現
-- 개발방법: 공동개발. [(주)로드원오원](https://rd101.co.kr) + [Lazypic,LLC.](https://lazypic.org)
+- 개발방법: 오픈소스 공동개발 프로젝트 [(주)로드원오원](https://rd101.co.kr) + [Lazypic,LLC.](https://lazypic.org)
 - 권리자(발명자): [Contribution 목록](https://github.com/RD101/dotori/graphs/contributors)
 - 라이센스: [BSD-3-Clause License](https://github.com/RD101/dotori/blob/master/LICENSE)
 - 테스트서버: https://csi.lazypic.org:8089
