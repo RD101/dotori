@@ -71,5 +71,10 @@ $ sudo dotori -add -itemtype hdri -title example -author woong -description "des
 - incolorspace
 - outcolorspace
 
+## Item 삭제
+```bash
+$ sudo dotori -remove -itemid 5e89cef7cd1747fd5eacf256
+```
+
 
 
