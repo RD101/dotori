@@ -16,20 +16,22 @@
                 {{if eq .ItemType "hwp" "ies" "pdf" "ppt" "sound"}}
                     <img class="card-img" width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="/assets/img/{{$itemtype}}thumbnail.svg">
                 {{else if eq .ItemType "hdri" "lut" "texture" }}
-                    <img class="card-img" width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="{{if eq .Status "done" }}/mediadata?id={{.ID.Hex}}&type=png{{else}}/assets/img/noimage.svg{{end}}">
+                    <img class="card-img" width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src='{{if eq .Status "done" }}/mediadata?id={{.ID.Hex}}&type=png{{else}}/assets/img/noimage.svg{{end}}'>
                 {{else}}
-                    <video class="card-img"width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" controls poster="{{if eq .Status "done" }}/mediadata?id={{.ID.Hex}}&type=png{{else}}/assets/img/noimage.svg{{end}}">
+                    <video class="card-img"width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" controls poster='{{if eq .Status "done" }}/mediadata?id={{.ID.Hex}}&type=png{{else}}/assets/img/noimage.svg{{end}}'>
                         <source src="/mediadata?id={{.ID.Hex}}&type=mp4" type="video/mp4">
                         <source src="/mediadata?id={{.ID.Hex}}&type=ogg" type="video/ogg">
                         Your browser does not support the video tag.
                     </video>
                 {{end}}
                 </a>
-                <div class="card-body" id="topUsingCardBody{{$i}}" data-toggle="modal" data-target="#modal-detailview" onclick="setDetailViewModal('{{.ID.Hex}}')">
-                    <h5 class="card-title" id="topUsingTitle{{$i}}">{{.Title}}</h5>
-                    <div class="row m-0 mb-2"style="align-items: center;">
-                        <i class="fas fa-download fa-xs" style="color:grey;"></i>
-                        <p class="card-text" id="topUsingRate{{$i}}">{{.UsingRate}}</p>
+                <div class="card-body">
+                    <div id="topUsingCardBody{{$i}}" data-toggle="modal" data-target="#modal-detailview" onclick="setDetailViewModal('{{.ID.Hex}}')">
+                        <h5 class="card-title" id="topUsingTitle{{$i}}">{{.Title}}</h5>
+                        <div class="row m-0 mb-2"style="align-items: center;">
+                            <i class="fas fa-download fa-xs" style="color:grey;"></i>
+                            <p class="card-text" id="topUsingRate{{$i}}">{{.UsingRate}}</p>
+                        </div>
                     </div>
                     <div>
                         {{range .Tags}}
