@@ -122,7 +122,7 @@ function setDetailViewModal(itemid) {
             for (let i=0; i<response["tags"].length;i++) {
                 let tag = response["tags"][i];
                 tagsHtml += `
-                <a href="/search?itemtype=${itemtype}&searchword=tag:${tag}" class="tag badge badge-outline-darkmode">${tag}</a>
+                <a href="/search?searchword=tag:${tag}" class="tag badge badge-outline-darkmode">${tag}</a>
                 `;
             }
             document.getElementById("modal-detailview-tags").innerHTML = tagsHtml
