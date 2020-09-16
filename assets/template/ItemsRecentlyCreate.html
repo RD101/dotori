@@ -39,10 +39,10 @@
                         <span class="text-muted" id="recentlyCreateTime{{$i}}" style="font-size: 13px;">{{SplitTimeData .CreateTime}}</span><br>
                         <div class="row m-0 mb-2"style="align-items: center;">
                             <i class="fas fa-download fa-xs" style="color:grey;"></i>
-                            <p class="card-text">{{.UsingRate}}</p>
+                            <p class="card-text" id="recentUsingRate{{$i}}">{{.UsingRate}}</p>
                         </div>
                     </div>
-                    <div>
+                    <div id="recentCardTags{{$i}}">
                         {{range .Tags}}
                             <a href="/search?searchword=tag:{{.}}" class="tag badge badge-outline-darkmode">{{.}}</a>
                         {{end}}

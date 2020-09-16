@@ -281,6 +281,7 @@ function recentlyClick(totalItemNum, buttonState) {
             let thumbnailheight = document.getElementById("thumbnailheight").value;
             let img = ""
             for (let i = 0; i < data.length; i++){
+                // 썸네일 스위칭
                 let recentlyImageForm = document.getElementById("recentlyImageForm"+i)
                 if (data[i].itemtype == "pdf" || data[i].itemtype == "ppt" || data[i].itemtype == "hwp" || data[i].itemtype == "sound" || data[i].itemtype == "ies") {
                     img = '<img class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
@@ -327,9 +328,17 @@ function recentlyClick(totalItemNum, buttonState) {
                     }
                 }
                 recentlyImageForm.innerHTML = img;
-                document.getElementById("recentCardBody"+i).onclick = function () { setDetailViewModal(data[i].id);}
-                document.getElementById("recentlyTitle"+i).innerHTML = data[i].title;
-                document.getElementById("recentlyCreateTime"+i).innerHTML = data[i].createtime.split('T')[0];
+                document.getElementById("recentCardBody"+i).onclick = function () { setDetailViewModal(data[i].id);}    // detail view 용 item id 스위칭
+                document.getElementById("recentlyTitle"+i).innerHTML = data[i].title;                                   // title 스위칭
+                document.getElementById("recentlyCreateTime"+i).innerHTML = data[i].createtime.split('T')[0];           // create time 스위칭
+                document.getElementById("recentUsingRate"+i).innerHTML = data[i].usingrate;                             // using rate 스위칭
+                // 태그 스위칭
+                let tagsHtml = '';
+                for (let j=0;j<data[i].tags.length;j++) {
+                    tagsHtml += '<a href="/search?searchword=tag:' + data[i].tags[j] + '" class="tag badge badge-outline-darkmode">' + data[i].tags[j] + '</a>';
+                }
+                document.getElementById("recentCardTags"+i).innerHTML = tagsHtml;                             
+
             }
         },
         error: function(request,status,error){
@@ -428,9 +437,16 @@ function topUsingClick(totalItemNum, buttonState) {
                     }
                 }
                 topUsingImageForm.innerHTML = img;
-                document.getElementById("topUsingCardBody"+i).onclick = function () { setDetailViewModal(data[i].id);}
-                document.getElementById("topUsingTitle"+i).innerHTML = data[i].title;
-                document.getElementById("topUsingRate"+i).innerHTML = data[i].usingrate;
+                document.getElementById("topUsingCardBody"+i).onclick = function () { setDetailViewModal(data[i].id);}  // detail view 용 item id 스위칭
+                document.getElementById("topUsingTitle"+i).innerHTML = data[i].title;                                   // title 스위칭
+                document.getElementById("topUsingRate"+i).innerHTML = data[i].usingrate;                                // using rate 스위칭
+                // 태그 스위칭
+                let tagHtmls = '';
+                for (let j=0;j<data[i].tags.length;j++) {
+                    console.log("Test")
+                    tagHtmls += '<a href="/search?searchword=tag:' + data[i].tags[j] + '" class="tag badge badge-outline-darkmode">' + data[i].tags[j] + '</a>';
+                }
+                document.getElementById("topCardTags"+i).innerHTML = tagsHtml;                               
             }
         },
         error: function(request,status,error){
