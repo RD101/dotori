@@ -9,7 +9,7 @@
                     {{if eq .ItemType "hwp" "ies" "pdf" "ppt" "sound"}}
                         <img class="card-img" width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="/assets/img/{{.ItemType}}thumbnail.svg">
                     {{else if eq .ItemType "hdri" "texture" "lut" }}
-                        <img class="card-img" width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="{{if eq .Status "done" }}/mediadata?id={{.ID.Hex}}&type=png{{else}}/assets/img/noimage.svg{{end}}">
+                        <img class="card-img" width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src='{{if eq .Status "done" }}/mediadata?id={{.ID.Hex}}&type=png{{else}}/assets/img/noimage.svg{{end}}'>
                     {{else if eq .ItemType "clip"}}
                         <video class="card-img" width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" autoplay loop>
                             <source src="/mediadata?id={{.ID.Hex}}&type=mp4" type="video/mp4">
@@ -17,21 +17,23 @@
                             Your browser does not support the video tag.
                         </video>
                     {{else}}
-                        <video class="card-img" width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" controls poster="{{if eq .Status "done" }}/mediadata?id={{.ID.Hex}}&type=png{{else}}/assets/img/noimage.svg{{end}}">
+                        <video class="card-img" width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" controls poster='{{if eq .Status "done" }}/mediadata?id={{.ID.Hex}}&type=png{{else}}/assets/img/noimage.svg{{end}}'>
                             <source src="/mediadata?id={{.ID.Hex}}&type=mp4" type="video/mp4">
                             <source src="/mediadata?id={{.ID.Hex}}&type=ogg" type="video/ogg">
                             Your browser does not support the video tag.
                         </video>
                     {{end}}    
-                    <div class="card-body" data-toggle="modal" data-target="#modal-detailview" onclick="setDetailViewModal('{{.ID.Hex}}')">
-                        <h5 class="card-title">{{.Title}}</h5>
-                        <div class="row m-0 mb-2"style="align-items: center;">
-                            <i class="fas fa-download fa-xs" style="color:grey;"></i>
-                            <p class="card-text">{{.UsingRate}}</p>
+                    <div class="card-body">
+                        <div data-toggle="modal" data-target="#modal-detailview" onclick="setDetailViewModal('{{.ID.Hex}}')">
+                            <h5 class="card-title">{{.Title}}</h5>
+                            <div class="row m-0 mb-2"style="align-items: center;">
+                                <i class="fas fa-download fa-xs" style="color:grey;"></i>
+                                <p class="card-text">{{.UsingRate}}</p>
+                            </div>
                         </div>
                         <div>
                             {{range .Tags}}
-                                <a href="/search?itemtype={{$itemtype}}&searchword=tag:{{.}}" class="tag badge badge-outline-darkmode">{{.}}</a>
+                                <a href="/search?searchword=tag:{{.}}" class="tag badge badge-outline-darkmode">{{.}}</a>
                             {{end}}
                         </div>
                     </div>
