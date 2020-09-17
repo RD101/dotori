@@ -33,7 +33,7 @@
                             <p class="card-text" id="topUsingRate{{$i}}">{{.UsingRate}}</p>
                         </div>
                     </div>
-                    <div>
+                    <div id="topUsingCardTags{{$i}}">
                         {{range .Tags}}
                             <a href="/search?searchword=tag:{{.}}" class="tag badge badge-outline-darkmode">{{.}}</a>
                         {{end}}
