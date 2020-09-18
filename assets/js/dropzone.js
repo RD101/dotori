@@ -3533,7 +3533,152 @@ function __guardMethod__(obj, methodName, transform) {
 // hdri dropzone 페이지에서 업로드 버튼을 눌렀을 때 실행되는 코드부
 Dropzone.options.hdriDropzone = {
   autoProcessQueue: false,
-  maxFiles: 1,
+  maxFiles: 1, // hdri는 최대 업로드 파일 개수를 1개로 제한한다.
+  init: function () {
+    // 최초 dropzone 설정시 init을 통해 호출
+    var submitButton = document.getElementById("btn-upload-file");
+    var currentDropzone = this; //closure
+    submitButton.addEventListener("click",
+      function () {
+          currentDropzone.processQueue(); // 파일을 수동으로 전송한다.
+      }
+    );
+  },
+  success: function success() {
+    document.getElementById("btn-register-item").disabled = false; // 전송이 완료되면 등록버튼을 활성화 시킨다.
+  },
+}
+
+// alembic dropzone 페이지에서 업로드 버튼을 눌렀을 때 실행되는 코드부
+Dropzone.options.alembicDropzone = {
+  autoProcessQueue: false,
+  init: function () {
+    // 최초 dropzone 설정시 init을 통해 호출
+    var submitButton = document.getElementById("btn-upload-file");
+    var currentDropzone = this; //closure
+    submitButton.addEventListener("click",
+      function () {
+          currentDropzone.processQueue(); // 파일을 수동으로 전송한다.
+      }
+    );
+  },
+  success: function success() {
+    document.getElementById("btn-register-item").disabled = false; // 전송이 완료되면 등록버튼을 활성화 시킨다.
+  },
+}
+
+// blender dropzone 페이지에서 업로드 버튼을 눌렀을 때 실행되는 코드부
+Dropzone.options.blenderDropzone = {
+  autoProcessQueue: false,
+  init: function () {
+    // 최초 dropzone 설정시 init을 통해 호출
+    var submitButton = document.getElementById("btn-upload-file");
+    var currentDropzone = this; //closure
+    submitButton.addEventListener("click",
+      function () {
+          currentDropzone.processQueue(); // 파일을 수동으로 전송한다.
+      }
+    );
+  },
+  success: function success() {
+    document.getElementById("btn-register-item").disabled = false; // 전송이 완료되면 등록버튼을 활성화 시킨다.
+  },
+}
+
+// clip dropzone 페이지에서 업로드 버튼을 눌렀을 때 실행되는 코드부
+Dropzone.options.clipDropzone = {
+  autoProcessQueue: false,
+  maxFiles: 1, // clip은 최대 업로드 파일 개수를 1개로 제한한다.
+  init: function () {
+    // 최초 dropzone 설정시 init을 통해 호출
+    var submitButton = document.getElementById("btn-upload-file");
+    var currentDropzone = this; //closure
+    submitButton.addEventListener("click",
+      function () {
+          currentDropzone.processQueue(); // 파일을 수동으로 전송한다.
+      }
+    );
+  },
+  success: function success() {
+    document.getElementById("btn-register-item").disabled = false; // 전송이 완료되면 등록버튼을 활성화 시킨다.
+  },
+}
+
+// footage dropzone 페이지에서 업로드 버튼을 눌렀을 때 실행되는 코드부
+Dropzone.options.footageDropzone = {
+  autoProcessQueue: false,
+  init: function () {
+    // 최초 dropzone 설정시 init을 통해 호출
+    var submitButton = document.getElementById("btn-upload-file");
+    var currentDropzone = this; //closure
+    submitButton.addEventListener("click",
+      function () {
+          currentDropzone.processQueue(); // 파일을 수동으로 전송한다.
+      }
+    );
+  },
+  success: function success() {
+    document.getElementById("btn-register-item").disabled = false; // 전송이 완료되면 등록버튼을 활성화 시킨다.
+  },
+}
+
+// fusion360 dropzone 페이지에서 업로드 버튼을 눌렀을 때 실행되는 코드부
+Dropzone.options.fusion360Dropzone = {
+  autoProcessQueue: false,
+  init: function () {
+    // 최초 dropzone 설정시 init을 통해 호출
+    var submitButton = document.getElementById("btn-upload-file");
+    var currentDropzone = this; //closure
+    submitButton.addEventListener("click",
+      function () {
+          currentDropzone.processQueue(); // 파일을 수동으로 전송한다.
+      }
+    );
+  },
+  success: function success() {
+    document.getElementById("btn-register-item").disabled = false; // 전송이 완료되면 등록버튼을 활성화 시킨다.
+  },
+}
+
+// houdini dropzone 페이지에서 업로드 버튼을 눌렀을 때 실행되는 코드부
+Dropzone.options.houdiniDropzone = {
+  autoProcessQueue: false,
+  init: function () {
+    // 최초 dropzone 설정시 init을 통해 호출
+    var submitButton = document.getElementById("btn-upload-file");
+    var currentDropzone = this; //closure
+    submitButton.addEventListener("click",
+      function () {
+          currentDropzone.processQueue(); // 파일을 수동으로 전송한다.
+      }
+    );
+  },
+  success: function success() {
+    document.getElementById("btn-register-item").disabled = false; // 전송이 완료되면 등록버튼을 활성화 시킨다.
+  },
+}
+
+// maya dropzone 페이지에서 업로드 버튼을 눌렀을 때 실행되는 코드부
+Dropzone.options.mayaDropzone = {
+  autoProcessQueue: false,
+  init: function () {
+    // 최초 dropzone 설정시 init을 통해 호출
+    var submitButton = document.getElementById("btn-upload-file");
+    var currentDropzone = this; //closure
+    submitButton.addEventListener("click",
+      function () {
+          currentDropzone.processQueue(); // 파일을 수동으로 전송한다.
+      }
+    );
+  },
+  success: function success() {
+    document.getElementById("btn-register-item").disabled = false; // 전송이 완료되면 등록버튼을 활성화 시킨다.
+  },
+}
+
+// nuke dropzone 페이지에서 업로드 버튼을 눌렀을 때 실행되는 코드부
+Dropzone.options.nukeDropzone = {
+  autoProcessQueue: false,
   init: function () {
     // 최초 dropzone 설정시 init을 통해 호출
     var submitButton = document.getElementById("btn-upload-file");
