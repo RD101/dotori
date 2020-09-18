@@ -41,15 +41,17 @@
         <li class="nav-item">
           <a class="nav-link" href="/help">Help</a>
         </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle text-danger" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-             Admin
-          </a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="/adminsetting">Admin Setting</a>
-              <a class="dropdown-item" href="/cleanup-db">Clean Up DB</a>
-          </div>
-        </li>
+        {{if eq $.User.AccessLevel "admin"}}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-danger" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+               Admin
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="/adminsetting">Admin Setting</a>
+                <a class="dropdown-item" href="/cleanup-db">Clean Up DB</a>
+            </div>
+          </li>
+        {{end}}
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
              {{if $.Token.ID}}{{$.Token.ID}}{{else}}User{{end}}
