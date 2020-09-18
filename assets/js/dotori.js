@@ -338,7 +338,6 @@ function recentlyClick(totalItemNum, buttonState) {
                     tagsHtml += '<a href="/search?searchword=tag:' + data[i].tags[j] + '" class="tag badge badge-outline-darkmode">' + data[i].tags[j] + '</a>';
                 }
                 document.getElementById("recentCardTags"+i).innerHTML = tagsHtml;                             
-
             }
         },
         error: function(request,status,error){
@@ -441,12 +440,11 @@ function topUsingClick(totalItemNum, buttonState) {
                 document.getElementById("topUsingTitle"+i).innerHTML = data[i].title;                                   // title 스위칭
                 document.getElementById("topUsingRate"+i).innerHTML = data[i].usingrate;                                // using rate 스위칭
                 // 태그 스위칭
-                let tagHtmls = '';
+                let tagsHtml = '';
                 for (let j=0;j<data[i].tags.length;j++) {
-                    console.log("Test")
-                    tagHtmls += '<a href="/search?searchword=tag:' + data[i].tags[j] + '" class="tag badge badge-outline-darkmode">' + data[i].tags[j] + '</a>';
+                    tagsHtml += '<a href="/search?searchword=tag:' + data[i].tags[j] + '" class="tag badge badge-outline-darkmode">' + data[i].tags[j] + '</a>';
                 }
-                document.getElementById("topCardTags"+i).innerHTML = tagsHtml;                               
+                document.getElementById("topUsingCardTags"+i).innerHTML = tagsHtml;                               
             }
         },
         error: function(request,status,error){
