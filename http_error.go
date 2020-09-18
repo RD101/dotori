@@ -86,13 +86,16 @@ func handleErrorInvalidAccess(w http.ResponseWriter, r *http.Request) {
 
 	// 연결할 페이지에서 필요한 데이터 recipe에 정리
 	type recipe struct {
-		User User
+		Adminsetting Adminsetting
+		Token
 	}
 	rcp := recipe{}
-	rcp.User, err = GetUser(client, token.ID)
+	rcp.Adminsetting, err = GetAdminSetting(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
+	rcp.Token = token
 
 	// 페이지 출력
 	w.Header().Set("Content-Type", "text/html")

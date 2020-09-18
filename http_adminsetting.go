@@ -38,18 +38,13 @@ func handleAdminSetting(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Access level 체크
-	user, err := GetUser(client, token.ID)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
-	if user.AccessLevel != "admin" {
+	if token.AccessLevel != "admin" {
 		http.Redirect(w, r, "/error-invalidaccess", http.StatusSeeOther)
 		return
 	}
 	type recipe struct {
 		Adminsetting
 		Token Token
-		User  User
 	}
 	rcp := recipe{}
 	setting, err := GetAdminSetting(client)
@@ -59,7 +54,6 @@ func handleAdminSetting(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Adminsetting = setting
 	rcp.Token = token
-	rcp.User = user
 	w.Header().Set("Content-Type", "text/html")
 	err = TEMPLATES.ExecuteTemplate(w, "adminsetting", rcp)
 	if err != nil {

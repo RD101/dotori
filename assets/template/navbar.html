@@ -41,7 +41,7 @@
         <li class="nav-item">
           <a class="nav-link" href="/help">Help</a>
         </li>
-        {{if eq $.User.AccessLevel "admin"}}
+        {{if eq $.Token.AccessLevel "admin"}}
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle text-danger" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                Admin
