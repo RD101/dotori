@@ -174,7 +174,6 @@ func handleAdminSettingSuccess(w http.ResponseWriter, r *http.Request) {
 	type recipe struct {
 		Token
 		Adminsetting Adminsetting
-		User         User
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -203,10 +202,6 @@ func handleAdminSettingSuccess(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rcp.Adminsetting = adminsetting
-	rcp.User, err = GetUser(client, token.ID)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
 	w.Header().Set("Content-Type", "text/html")
 	err = TEMPLATES.ExecuteTemplate(w, "adminsetting-success", rcp)
 	if err != nil {
