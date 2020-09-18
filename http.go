@@ -349,7 +349,6 @@ func webserver() {
 
 	// Error
 	http.HandleFunc("/error-ocio", handleErrorOCIO)
-	http.HandleFunc("/error-invalidaccess", handleErrorInvalidAccess)
 
 	// User
 	http.HandleFunc("/profile", handleProfile)
@@ -359,6 +358,7 @@ func webserver() {
 	http.HandleFunc("/signin", handleSignin)
 	http.HandleFunc("/signin-submit", handleSigninSubmit)
 	http.HandleFunc("/signout", handleSignOut)
+	http.HandleFunc("/invalidaccess", handleInvalidAccess)
 
 	// REST API
 	http.HandleFunc("/api/item", handleAPIItem)

@@ -228,3 +228,54 @@ func handleSigninSubmit(w http.ResponseWriter, r *http.Request) {
 	// "/" 로 리다이렉션 한다.
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
+
+// handleInvalidAccess 는 접근 권한이 없는 uri로의 접속을 시도했을 때 invalid access 페이지를 열어주는 함수다.
+func handleInvalidAccess(w http.ResponseWriter, r *http.Request) {
+	// token 체크
+	token, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
+
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer client.Disconnect(ctx)
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// 연결할 페이지에서 필요한 데이터 recipe에 정리
+	type recipe struct {
+		Adminsetting Adminsetting
+		Token
+	}
+	rcp := recipe{}
+	rcp.Adminsetting, err = GetAdminSetting(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp.Token = token
+
+	// 페이지 출력
+	w.Header().Set("Content-Type", "text/html")
+	err = TEMPLATES.ExecuteTemplate(w, "invalidaccess", rcp)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
