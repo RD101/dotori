@@ -37,6 +37,11 @@ func handleAdminSetting(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	// Access level 체크
+	if token.AccessLevel != "admin" {
+		http.Redirect(w, r, "/invalidaccess", http.StatusSeeOther)
+		return
+	}
 	type recipe struct {
 		Adminsetting
 		Token Token
