@@ -349,6 +349,7 @@ func webserver() {
 
 	// Error
 	http.HandleFunc("/error-ocio", handleErrorOCIO)
+	http.HandleFunc("/error-invalidaccess", handleErrorInvalidAccess)
 
 	// User
 	http.HandleFunc("/profile", handleProfile)
