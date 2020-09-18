@@ -17,10 +17,13 @@
         <div class="col-sm-4 col-md-4 col-lg-1">
             itemtype
         </div>
+        <div class="col-sm-4 col-md-4 col-lg-2">
+            title
+        </div>
         <div class="col-sm-4 col-md-4 col-lg-1">
             author
         </div>
-        <div class="col-sm-12 col-md-6 col-lg-4">
+        <div class="col-sm-12 col-md-6 col-lg-3">
             id
         </div>
         <div class="col-sm-4 col-md-2 col-lg-1">
@@ -51,10 +54,13 @@
                     {{.ItemType}}
                 </div>
                 <input type="hidden" id="itemtype{{$index}}" name="itemtype{{$index}}" value="{{.ItemType}}">
+                <div class="col-sm-4 col-md-4 col-lg-2">
+                    {{.Title}}
+                </div>
                 <div class="col-sm-4 col-md-4 col-lg-1">
                     {{.Author}}
                 </div>
-                <div class="col-sm-12 col-md-6 col-lg-4">
+                <div class="col-sm-12 col-md-6 col-lg-3">
                     {{.ID.Hex}}
                 </div>
                 <div class="col-sm-4 col-md-2 col-lg-1">
