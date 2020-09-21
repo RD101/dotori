@@ -15,11 +15,12 @@ type Token struct {
 
 // User 는 사용자 자료구조이다.
 type User struct {
-	ID          string `json:"id" bson:"id"`                   // 사용자 ID
-	Password    string `json:"password" bson:"password"`       // 암호화된 암호
-	Token       string `json:"token" bson:"token"`             // JWT 토큰
-	SignKey     string `json:"signkey" bson:"signkey"`         // JWT 토큰을 만들 때 사용하는 SignKey
-	AccessLevel string `json:"accesslevel" bson:"accesslevel"` // admin, manager, default
+	ID             string   `json:"id" bson:"id"`                         // 사용자 ID
+	Password       string   `json:"password" bson:"password"`             // 암호화된 암호
+	Token          string   `json:"token" bson:"token"`                   // JWT 토큰
+	SignKey        string   `json:"signkey" bson:"signkey"`               // JWT 토큰을 만들 때 사용하는 SignKey
+	AccessLevel    string   `json:"accesslevel" bson:"accesslevel"`       // admin, manager, default
+	FavoriteAssets []string `json:"favoriteassets" bson:"favoriteassets"` // 즐겨찾는 어셋 id 리스트
 }
 
 // CreateToken 메소드는 토큰을 생성합니다.
