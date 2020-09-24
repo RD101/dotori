@@ -367,6 +367,7 @@ func webserver() {
 	http.HandleFunc("/api/usingrate", handleAPIUsingRate)
 	http.HandleFunc("/api/recentitem", handleAPIRecentItem)
 	http.HandleFunc("/api/topusingitem", handleAPITopUsingItem)
+	http.HandleFunc("/api/favoriteassets", handleAPIFavoriteAssets)
 
 	// 웹서버 실행
 	if *flagCertFullchain != "" || *flagCertPrivkey != "" {
