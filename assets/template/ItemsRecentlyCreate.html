@@ -35,7 +35,12 @@
                 </a>
                 <div class="card-body">
                     <div id="recentCardBody{{$i}}" data-toggle="modal" data-target="#modal-detailview" onclick="setDetailViewModal('{{.ID.Hex}}')">
-                        <h5 class="card-title mb-0" id="recentlyTitle{{$i}}">{{.Title}}</h5>
+                        <h5 class="card-title mb-0" id="recentlyTitle{{$i}}">{{.Title}}
+                            <div id="recentFavoriteButton{{$i}}" width="20" height="20" class="bookmark-icon">
+                                <div class="bookmark-clicklistener" onclick="clickBookmarkIcon(this, 'fill');event.stopPropagation()"></div>
+                                <object type="image/svg+xml" data="/assets/img/bookmark-unfilled.svg" class="bookmark-icon"></object>
+                            </div>
+                        </h5>
                         <span class="text-muted" id="recentlyCreateTime{{$i}}" style="font-size: 13px;">{{SplitTimeData .CreateTime}}</span><br>
                         <div class="row m-0 mb-2" style="align-items: center;">
                             <img class="download-icon" src="/assets/img/download-solid.svg">

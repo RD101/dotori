@@ -187,6 +187,18 @@ body {
 	height: 12px;
 }
 
+.bookmark-icon {
+	float: right;
+	width: 20px;
+	height: 20px;
+}
+
+.bookmark-clicklistener {
+	position: absolute;
+	width: 20px;
+	height: 20px;
+}
+
 /*------------------------------*/
 /*---------- init page ---------*/
 /*------------------------------*/
