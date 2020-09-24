@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -558,16 +557,29 @@ func handleAPIFavoriteAssets(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// 전송받은 데이터 parsing
-	itemid := r.FormValue("itemid")
-	userid := r.FormValue("userid")
-
-	// User struct 선언
-	user := User{}
-	user, err = GetUser(client, userid)
-
-	// POST : FavoriteAssetsId 자료구조에 id를 추가
 	if r.Method == http.MethodPost {
+		// POST : FavoriteAssetsId 자료구조에 id를 추가
+
+		// 전송받은 데이터 parsing
+		itemid := r.FormValue("itemid")
+		if itemid == "" {
+			http.Error(w, "item id를 설정해주세요", http.StatusBadRequest)
+			return
+		}
+		userid := r.FormValue("userid")
+		if userid == "" {
+			http.Error(w, "user id를 설정해주세요", http.StatusBadRequest)
+		}
+
+		// Add itemid to FavoriteAssetIds of User
+		user := User{}
+		user, err = GetUser(client, userid)
+		for i := 0; i < len(user.FavoriteAssetIDs); i++ {
+			if itemid == user.FavoriteAssetIDs[i] {
+				http.Error(w, "즐겨찾기 목록에 이미 존재하는 itemid입니다", http.StatusBadRequest)
+				return
+			}
+		}
 		user.FavoriteAssetIDs = append(user.FavoriteAssetIDs, itemid)
 		err = SetUser(client, user)
 		if err != nil {
@@ -592,14 +604,57 @@ func handleAPIFavoriteAssets(w http.ResponseWriter, r *http.Request) {
 		return
 
 	} else if r.Method == http.MethodDelete {
-		favorites := user.FavoriteAssetIDs
-		// for i := 0; i < len(favorites); i++ {
-		// if itemid == favorites[i] {
-		// favorites = append(favorites[:i], favorites[i+1:])
-		//
-		// }
-		// }
-		fmt.Println(favorites)
+		// DELETE : FavoriteAssetsId 자료구조에 id를 추가
+
+		// 전송받은 데이터 parsing
+		q := r.URL.Query()
+		itemid := q.Get("itemid")
+		if itemid == "" {
+			http.Error(w, "URL에 itemid를 입력해주세요", http.StatusBadRequest)
+			return
+		}
+		userid := q.Get("userid")
+		if userid == "" {
+			http.Error(w, "URL에 userid를 입력해주세요", http.StatusBadRequest)
+			return
+		}
+
+		// Delete itemid from FavoriteAssetIds of User
+		user := User{}
+		user, err = GetUser(client, userid)
+
+		deleteCount := 0
+		for i := 0; i < len(user.FavoriteAssetIDs); i++ {
+			if itemid == user.FavoriteAssetIDs[i] {
+				user.FavoriteAssetIDs = append(user.FavoriteAssetIDs[:i], user.FavoriteAssetIDs[i+1:]...)
+				deleteCount += 1
+			}
+		}
+		if deleteCount == 0 {
+			http.Error(w, "즐겨찾기에 존재하지 않는 itemid입니다", http.StatusBadRequest)
+			return
+		}
+		err = SetUser(client, user)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		// Reponse
+		user, err = GetUser(client, userid)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		data, err := json.Marshal(user)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(http.StatusOK)
+		w.Write(data)
+		return
 	}
 
 }
