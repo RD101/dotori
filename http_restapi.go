@@ -558,17 +558,17 @@ func handleAPIFavoriteAssets(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == http.MethodPost {
-		// POST : FavoriteAssetsId 자료구조에 id를 추가
+		// POST : FavoriteAssetsId 자료구조에 itemid를 추가
 
 		// 전송받은 데이터 parsing
 		itemid := r.FormValue("itemid")
 		if itemid == "" {
-			http.Error(w, "item id를 설정해주세요", http.StatusBadRequest)
+			http.Error(w, "itemid를 설정해주세요", http.StatusBadRequest)
 			return
 		}
 		userid := r.FormValue("userid")
 		if userid == "" {
-			http.Error(w, "user id를 설정해주세요", http.StatusBadRequest)
+			http.Error(w, "userid를 설정해주세요", http.StatusBadRequest)
 		}
 
 		// Add itemid to FavoriteAssetIds of User
@@ -604,7 +604,7 @@ func handleAPIFavoriteAssets(w http.ResponseWriter, r *http.Request) {
 		return
 
 	} else if r.Method == http.MethodDelete {
-		// DELETE : FavoriteAssetsId 자료구조에 id를 추가
+		// DELETE : FavoriteAssetsId 자료구조에 itemid를 추가
 
 		// 전송받은 데이터 parsing
 		q := r.URL.Query()
