@@ -527,8 +527,8 @@ func handleAPITopUsingItem(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-// handleAPIFavoriteAssets는 FavoriteAssetIds에 아이템 id를 추가하거나 제거하는 함수다.
-func handleAPIFavoriteAssets(w http.ResponseWriter, r *http.Request) {
+// handleAPIFavoriteAsset는 FavoriteAssetIds에 아이템 id를 추가하거나 제거하는 함수다.
+func handleAPIFavoriteAsset(w http.ResponseWriter, r *http.Request) {
 
 	// mongoDB Client 생성
 	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
