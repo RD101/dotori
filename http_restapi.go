@@ -623,14 +623,14 @@ func handleAPIFavoriteAsset(w http.ResponseWriter, r *http.Request) {
 		user := User{}
 		user, err = GetUser(client, userid)
 
-		deleteCount := 0
+		deleteBool := false
 		for i := 0; i < len(user.FavoriteAssetIDs); i++ {
 			if itemid == user.FavoriteAssetIDs[i] {
 				user.FavoriteAssetIDs = append(user.FavoriteAssetIDs[:i], user.FavoriteAssetIDs[i+1:]...)
-				deleteCount += 1
+				deleteBool = true
 			}
 		}
-		if deleteCount == 0 {
+		if deleteBool == false {
 			http.Error(w, "즐겨찾기에 존재하지 않는 itemid입니다", http.StatusBadRequest)
 			return
 		}
