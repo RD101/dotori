@@ -587,7 +587,7 @@ func handleAPIFavoriteAsset(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Reponse
+		// Response
 		user, err = GetUser(client, userid)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
