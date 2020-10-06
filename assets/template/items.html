@@ -27,9 +27,8 @@
                         <div data-toggle="modal" data-target="#modal-detailview" onclick="setDetailViewModal('{{.ID.Hex}}')">
                             <h5 class="card-title">{{.Title}}
                                 <div width="20" height="20" class="bookmark-icon">
-                                    <div class="bookmark-clicklistener" onclick="clickBookmarkIcon(this, 'fill');event.stopPropagation()">
+                                    <div class="bookmark-clicklistener" onclick="clickBookmarkIcon(this, 'fill');event.stopPropagation()"></div>
                                         <object type="image/svg+xml" data="/assets/img/bookmark-unfilled.svg" class="bookmark-icon"></object>
-                                    </div>
                                 </div>
                             </h5>
                             <div class="row m-0 mb-2"style="align-items: center;">
