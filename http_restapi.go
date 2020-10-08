@@ -526,3 +526,135 @@ func handleAPITopUsingItem(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, "Not Supported Method", http.StatusMethodNotAllowed)
 	return
 }
+
+// handleAPIFavoriteAsset는 FavoriteAssetIds에 아이템 id를 추가하거나 제거하는 함수다.
+func handleAPIFavoriteAsset(w http.ResponseWriter, r *http.Request) {
+
+	// mongoDB Client 생성
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer client.Disconnect(ctx)
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// accesslevel 체크
+	accesslevel, err := GetAccessLevelFromHeader(r, client)
+	if accesslevel != "default" && accesslevel != "manager" && accesslevel != "admin" {
+		http.Error(w, "즐겨찾기 수정 권한이 없습니다", http.StatusUnauthorized)
+		return
+	}
+
+	if r.Method == http.MethodPost {
+		// POST : FavoriteAssetsId 자료구조에 itemid를 추가
+
+		// 전송받은 데이터 parsing
+		itemid := r.FormValue("itemid")
+		if itemid == "" {
+			http.Error(w, "itemid를 설정해주세요", http.StatusBadRequest)
+			return
+		}
+		userid := r.FormValue("userid")
+		if userid == "" {
+			http.Error(w, "userid를 설정해주세요", http.StatusBadRequest)
+		}
+
+		// Add itemid to FavoriteAssetIds of User
+		user := User{}
+		user, err = GetUser(client, userid)
+		for i := 0; i < len(user.FavoriteAssetIDs); i++ {
+			if itemid == user.FavoriteAssetIDs[i] {
+				http.Error(w, "즐겨찾기 목록에 이미 존재하는 itemid입니다", http.StatusBadRequest)
+				return
+			}
+		}
+		user.FavoriteAssetIDs = append(user.FavoriteAssetIDs, itemid)
+		err = SetUser(client, user)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		// Response
+		user, err = GetUser(client, userid)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		data, err := json.Marshal(user)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(http.StatusOK)
+		w.Write(data)
+		return
+
+	} else if r.Method == http.MethodDelete {
+		// DELETE : FavoriteAssetsId 자료구조에 itemid를 추가
+
+		// 전송받은 데이터 parsing
+		q := r.URL.Query()
+		itemid := q.Get("itemid")
+		if itemid == "" {
+			http.Error(w, "URL에 itemid를 입력해주세요", http.StatusBadRequest)
+			return
+		}
+		userid := q.Get("userid")
+		if userid == "" {
+			http.Error(w, "URL에 userid를 입력해주세요", http.StatusBadRequest)
+			return
+		}
+
+		// Delete itemid from FavoriteAssetIds of User
+		user := User{}
+		user, err = GetUser(client, userid)
+
+		deleteBool := false
+		for i := 0; i < len(user.FavoriteAssetIDs); i++ {
+			if itemid == user.FavoriteAssetIDs[i] {
+				user.FavoriteAssetIDs = append(user.FavoriteAssetIDs[:i], user.FavoriteAssetIDs[i+1:]...)
+				deleteBool = true
+			}
+		}
+		if deleteBool == false {
+			http.Error(w, "즐겨찾기에 존재하지 않는 itemid입니다", http.StatusBadRequest)
+			return
+		}
+		err = SetUser(client, user)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		// Response
+		user, err = GetUser(client, userid)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		data, err := json.Marshal(user)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(http.StatusOK)
+		w.Write(data)
+		return
+	}
+
+}
