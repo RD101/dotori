@@ -1,0 +1,20 @@
+<svg id="e97zz4inaq8g1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20" shape-rendering="geometricPrecision" text-rendering="geometricPrecision">
+<style>
+<![CDATA[#e97zz4inaq8g4_ts 
+    {animation: e97zz4inaq8g4_ts__ts 3000ms linear 1 normal forwards}
+    @keyframes e97zz4inaq8g4_ts__ts 
+    { 0% {transform: translate(11.489364px,10.333334px) scale(0,0);
+         animation-timing-function: cubic-bezier(0,0,0.010000,0.925000)}13.333333% 
+         {transform: translate(11.489364px,10.333334px) scale(1.100000,1.100000);
+         animation-timing-function: cubic-bezier(0.015000,0.945000,1,1)} 23.333333% 
+         {transform: translate(11.489364px,10.333334px) scale(1,1)} 100% 
+         {transform: translate(11.489364px,10.333334px) scale(1,1)} }]]>
+</style>
+<g id="e97zz4inaq8g2">
+<g id="e97zz4inaq8g3" transform="matrix(1 0 0 1 -1.48936319000000 -0.50426835000001)">
+<g id="e97zz4inaq8g4_ts" transform="translate(11.489364,10.333334) scale(0,0)">
+<path id="e97zz4inaq8g4" d="M4.546350,19.162400C4.546350,19.162400,4.503640,2.167660,4.503640,2.167660C4.503640,2.167660,4.422340,0.565182,5.538400,0.523011C6.654460,0.480840,17.277700,0.523011,17.277700,0.523011C17.277700,0.523011,18.476400,0.565182,18.476400,2.167660C18.476400,3.770140,18.476400,19.162400,18.476400,19.162400C18.476400,19.162400,11.449400,15.282700,11.449400,15.282700C11.449400,15.282700,4.546350,19.162400,4.546350,19.162400Z" transform="translate(-11.489363,-9.833334)" fill="rgb(255,193,7)" fill-rule="evenodd" stroke="rgb(255,193,7)" stroke-width="1" stroke-miterlimit="2"/>
+</g>
+</g>
+</g>
+</svg>
