@@ -457,11 +457,11 @@ function topUsingClick(totalItemNum, buttonState) {
 // clickBookmarkIcon 은 즐겨찾기 버튼을 눌렀을 때 실행되는 함수다. 
 function clickBookmarkIcon(target, fillBool) { 
     let parentNode = target.parentNode;
-    if (fillBool == "fill") {
-        parentNode.innerHTML = `<div class="bookmark-clicklistener" onclick="clickBookmarkIcon(this, 'unfill');event.stopPropagation()"></div>
-                                <object type="image/svg+xml" data="/assets/img/bookmark-filled.svg" class="bookmark-icon"></object>`
-    } else if (fillBool == "unfill") {
+    if (fillBool == "unfill") {
         parentNode.innerHTML = `<div class="bookmark-clicklistener" onclick="clickBookmarkIcon(this, 'fill');event.stopPropagation()"></div>
-                                <object type="image/svg+xml" data="/assets/img/bookmark-unfilled.svg" class="bookmark-icon"></object>`
+                                <object type="image/svg+xml" data="/assets/img/bookmark-fill.svg" class="bookmark-icon"></object>`
+    } else if (fillBool == "fill") {
+        parentNode.innerHTML = `<div class="bookmark-clicklistener" onclick="clickBookmarkIcon(this, 'unfill');event.stopPropagation()"></div>
+                                <object type="image/svg+xml" data="/assets/img/bookmark-unfill.svg" class="bookmark-icon"></object>`
     }
 }

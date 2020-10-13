@@ -13,6 +13,7 @@
     <div class="row init-items">
         {{range $i, $q := .RecentlyCreateItems}}
             {{$itemtype := .ItemType}}
+            {{$itemid := .ID.Hex}}
             <div class="card" id="recentCard{{$i}}" style="width: {{$thumbnailwidth}}px;">
                 <a class="card-image" href="#" title="image {{$i}}" class="thumb" id="recentlyImageForm{{$i}}">
                     {{if eq $itemtype "hwp" "ies" "pdf" "ppt" "sound"}}
@@ -37,8 +38,14 @@
                     <div id="recentCardBody{{$i}}" data-toggle="modal" data-target="#modal-detailview" onclick="setDetailViewModal('{{.ID.Hex}}')">
                         <h5 class="card-title mb-0" id="recentlyTitle{{$i}}">{{.Title}}
                             <div id="recentFavoriteButton{{$i}}" width="20" height="20" class="bookmark-icon">
-                                <div class="bookmark-clicklistener" onclick="clickBookmarkIcon(this, 'fill');event.stopPropagation()"></div>
-                                <object type="image/svg+xml" data="/assets/img/bookmark-unfilled.svg" class="bookmark-icon"></object>
+                                {{$fillBool := "unfill"}}
+                                {{range $index, $favoriteid := $.User.FavoriteAssetIDs}}
+                                    {{if eq $itemid $favoriteid}}
+                                        {{$fillBool = "fill"}}
+                                    {{end}}
+                                {{end}}
+                                <div class="bookmark-clicklistener" onclick="clickBookmarkIcon(this, '{{$fillBool}}');event.stopPropagation()"></div>
+                                <object type="image/svg+xml" data="/assets/img/bookmark-{{$fillBool}}.svg" class="bookmark-icon"></object>
                             </div>
                         </h5>
                         <span class="text-muted" id="recentlyCreateTime{{$i}}" style="font-size: 13px;">{{SplitTimeData .CreateTime}}</span><br>
