@@ -1,6 +1,9 @@
 {{define "initPage"}}
     {{template "head"}}
     <body>
+      <!-- Preset Value -->
+      <input type="hidden" id="token" value="{{$.User.Token}}">
+      <!-- Templates -->
       {{template "modal" .}}
       {{template "navbar" .}}
       {{template "search" .}}
