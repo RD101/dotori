@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -552,13 +553,44 @@ func handleAPIFavoriteAsset(w http.ResponseWriter, r *http.Request) {
 
 	// accesslevel 체크
 	accesslevel, err := GetAccessLevelFromHeader(r, client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	if accesslevel != "default" && accesslevel != "manager" && accesslevel != "admin" {
 		http.Error(w, "즐겨찾기 수정 권한이 없습니다", http.StatusUnauthorized)
 		return
 	}
 
-	if r.Method == http.MethodPost {
-		// POST : FavoriteAssetsId 자료구조에 itemid를 추가
+	if r.Method == http.MethodGet {
+		// Get : Get FavoriteAssetIDs
+
+		// 전송받은 데이터 parsing
+		q := r.URL.Query()
+		userid := q.Get("userid")
+		if userid == "" {
+			http.Error(w, "URL에 userid를 입력해주세요", http.StatusBadRequest)
+			return
+		}
+
+		// Delete itemid from FavoriteAssetIds of User
+		user := User{}
+		user, err = GetUser(client, userid)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		favoriteAssetIds := user.FavoriteAssetIDs
+		data := "\x00" + strings.Join(favoriteAssetIds, "x20x00") // x20: space, x00: null
+		byteData := []byte(data)
+
+		// Response
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(http.StatusOK)
+		w.Write(byteData)
+		return
+	} else if r.Method == http.MethodPost {
+		// POST : FavoriteAssetIDs 자료구조에 itemid를 추가
 
 		// 전송받은 데이터 parsing
 		itemid := r.FormValue("itemid")
