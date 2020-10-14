@@ -455,13 +455,45 @@ function topUsingClick(totalItemNum, buttonState) {
 
 
 // clickBookmarkIcon 은 즐겨찾기 버튼을 눌렀을 때 실행되는 함수다. 
-function clickBookmarkIcon(target, fillBool) { 
+function clickBookmarkIcon(target, fillBool, itemid, userid) { 
     let parentNode = target.parentNode;
+    let token = document.getElementById("token").value;
+
+
+    // 즐겨찾기에 추가
     if (fillBool == "unfill") {
-        parentNode.innerHTML = `<div class="bookmark-clicklistener" onclick="clickBookmarkIcon(this, 'fill');event.stopPropagation()"></div>
-                                <object type="image/svg+xml" data="/assets/img/bookmark-fill.svg" class="bookmark-icon"></object>`
+        $.ajax({
+            url: "/api/favoriteasset",
+            headers: {
+                "Authorization": "Basic " + token
+            },
+            type: "post",
+            data: {"itemid":itemid,"userid":userid},
+            success: function(data) {
+                parentNode.innerHTML = `<div class="bookmark-clicklistener" onclick="clickBookmarkIcon(this, 'fill');event.stopPropagation()"></div>
+                                        <object type="image/svg+xml" data="/assets/img/bookmark-fill.svg" class="bookmark-icon"></object>`
+            },
+            error: function(data) {
+                alert("Failed to add item to Favorite Asset List.");
+            }
+        })
+    // 즐겨찾기에서 제거
     } else if (fillBool == "fill") {
-        parentNode.innerHTML = `<div class="bookmark-clicklistener" onclick="clickBookmarkIcon(this, 'unfill');event.stopPropagation()"></div>
-                                <object type="image/svg+xml" data="/assets/img/bookmark-unfill.svg" class="bookmark-icon"></object>`
+        
+        $.ajax({
+            url: `/api/favoriteasset?itemid=${itemid}&userid=${userid}`,
+            headers: {
+                "Authorization": "Basic " + token
+            },
+            type: "delete",
+            success: function() {
+                parentNode.innerHTML = `<div class="bookmark-clicklistener" onclick="clickBookmarkIcon(this, 'unfill');event.stopPropagation()"></div>
+                                        <object type="image/svg+xml" data="/assets/img/bookmark-unfill.svg" class="bookmark-icon"></object>`
+            },
+            error: function() {
+                alert("Failed to delete item from Favorite Asset List.");
+            }
+        })
     }
+    
 }
