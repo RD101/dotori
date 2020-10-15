@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
-	"strings"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -550,7 +549,6 @@ func handleAPIFavoriteAsset(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
 	// accesslevel 체크
 	accesslevel, err := GetAccessLevelFromHeader(r, client)
 	if err != nil {
@@ -581,14 +579,21 @@ func handleAPIFavoriteAsset(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		favoriteAssetIds := user.FavoriteAssetIDs
-		data := "\x00" + strings.Join(favoriteAssetIds, "x20x00") // x20: space, x00: null
-		byteData := []byte(data)
+		reponseIds := make(map[string][]string)
+		reponseIds["favoriteAssetIds"] = favoriteAssetIds
+
+		data, err := json.Marshal(reponseIds)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 
 		// Response
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(http.StatusOK)
-		w.Write(byteData)
+		w.Write(data)
 		return
+
 	} else if r.Method == http.MethodPost {
 		// POST : FavoriteAssetIDs 자료구조에 itemid를 추가
 
@@ -606,6 +611,9 @@ func handleAPIFavoriteAsset(w http.ResponseWriter, r *http.Request) {
 		// Add itemid to FavoriteAssetIds of User
 		user := User{}
 		user, err = GetUser(client, userid)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 		for i := 0; i < len(user.FavoriteAssetIDs); i++ {
 			if itemid == user.FavoriteAssetIDs[i] {
 				http.Error(w, "즐겨찾기 목록에 이미 존재하는 itemid입니다", http.StatusBadRequest)
@@ -654,6 +662,9 @@ func handleAPIFavoriteAsset(w http.ResponseWriter, r *http.Request) {
 		// Delete itemid from FavoriteAssetIds of User
 		user := User{}
 		user, err = GetUser(client, userid)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 
 		deleteBool := false
 		for i := 0; i < len(user.FavoriteAssetIDs); i++ {
