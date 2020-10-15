@@ -272,6 +272,28 @@ function recentlyClick(totalItemNum, buttonState) {
             document.getElementById("recentCard"+i).style.visibility="visible"
         }
     }
+
+    // Get Favorite Asset IDs
+    let userid = document.getElementById("userid").value;
+    let token = document.getElementById("token").value;
+    let favoriteAssetIds = new Array();
+    $.ajax({
+        url: `/api/favoriteasset?userid=${userid}`,
+        headers: {
+            "Authorization": "Basic " + token
+        },
+        type: "get",
+        dataType: "json",
+        success: function(response) {
+            favoriteAssetIds = response["favoriteAssetIds"];
+        },
+        error: function(response) {
+            alert("Failed to Get Favorite Asset IDs.");
+        }
+
+    })
+
+    // Recent Item 정보 가져온 후 세팅
     $.ajax({
         url: `/api/recentitem?recentlypage=${currentPageNum}`,
         type: "get",
@@ -281,6 +303,7 @@ function recentlyClick(totalItemNum, buttonState) {
             let thumbnailheight = document.getElementById("thumbnailheight").value;
             let img = ""
             for (let i = 0; i < data.length; i++){
+                let itemid = data[i].id;
                 // 썸네일 스위칭
                 let recentlyImageForm = document.getElementById("recentlyImageForm"+i)
                 if (data[i].itemtype == "pdf" || data[i].itemtype == "ppt" || data[i].itemtype == "hwp" || data[i].itemtype == "sound" || data[i].itemtype == "ies") {
@@ -289,7 +312,7 @@ function recentlyClick(totalItemNum, buttonState) {
                 } else if(data[i].itemtype=="hdri" || data[i].itemtype == "lut" || data[i].itemtype=="texture"){
                     if(data[i].status == "done"){
                         img = '<img class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
-                                '" src="/mediadata?id=' + data[i].id + '&type=png">'
+                                '" src="/mediadata?id=' + itemid + '&type=png">'
                     }else{
                         img = '<img class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
                                 '" src="/assets/img/noimage.svg">'
@@ -298,38 +321,37 @@ function recentlyClick(totalItemNum, buttonState) {
                     if(data[i].status == "done"){
                         img = '<video class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
                                 '" autoplay loop>' +
-                                '<source src="/mediadata?id=' + data[i].id + '&type=mp4" type="video/mp4">' +
-                                '<source src="/mediadata?id=' + data[i].id + '&type=ogg" type="video/ogg">' +
+                                '<source src="/mediadata?id=' + itemid + '&type=mp4" type="video/mp4">' +
+                                '<source src="/mediadata?id=' + itemid + '&type=ogg" type="video/ogg">' +
                                 'Your browser does not support the video tag.'+
                                 '</video>'
                     }else{
                         img = '<video class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
                                 '" controls poster="/assets/img/noimage.svg">' +
-                                '<source src="/mediadata?id=' + data[i].id + '&type=mp4" type="video/mp4">' +
-                                '<source src="/mediadata?id=' + data[i].id + '&type=ogg" type="video/ogg">' +
+                                '<source src="/mediadata?id=' + itemid + '&type=mp4" type="video/mp4">' +
+                                '<source src="/mediadata?id=' + itemid + '&type=ogg" type="video/ogg">' +
                                 'Your browser does not support the video tag.'+
                                 '</video>'
                     }
                 } else{
                     if(data[i].status == "done"){
                         img = '<video class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
-                                '" controls poster="/mediadata?id=' + data[i].id + '&type=png">' +
-                                '<source src="/mediadata?id=' + data[i].id + '&type=mp4" type="video/mp4">' +
-                                '<source src="/mediadata?id=' + data[i].id + '&type=ogg" type="video/ogg">' +
+                                '" controls poster="/mediadata?id=' + itemid + '&type=png">' +
+                                '<source src="/mediadata?id=' + itemid + '&type=mp4" type="video/mp4">' +
+                                '<source src="/mediadata?id=' + itemid + '&type=ogg" type="video/ogg">' +
                                 'Your browser does not support the video tag.'+
                                 '</video>'
                     }else{
                         img = '<video class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
                                 '" controls poster="/assets/img/noimage.svg">' +
-                                '<source src="/mediadata?id=' + data[i].id + '&type=mp4" type="video/mp4">' +
-                                '<source src="/mediadata?id=' + data[i].id + '&type=ogg" type="video/ogg">' +
+                                '<source src="/mediadata?id=' + itemid + '&type=mp4" type="video/mp4">' +
+                                '<source src="/mediadata?id=' + itemid + '&type=ogg" type="video/ogg">' +
                                 'Your browser does not support the video tag.'+
                                 '</video>'
                     }
                 }
                 recentlyImageForm.innerHTML = img;
-                document.getElementById("recentCardBody"+i).onclick = function () { setDetailViewModal(data[i].id);}    // detail view 용 item id 스위칭
-                document.getElementById("recentlyTitle"+i).innerHTML = data[i].title;                                   // title 스위칭
+                document.getElementById("recentCardBody"+i).onclick = function () { setDetailViewModal(itemid);}    // detail view 용 item id 스위칭
                 document.getElementById("recentlyCreateTime"+i).innerHTML = data[i].createtime.split('T')[0];           // create time 스위칭
                 document.getElementById("recentUsingRate"+i).innerHTML = data[i].usingrate;                             // using rate 스위칭
                 // 태그 스위칭
@@ -338,6 +360,19 @@ function recentlyClick(totalItemNum, buttonState) {
                     tagsHtml += '<a href="/search?searchword=tag:' + data[i].tags[j] + '" class="tag badge badge-outline-darkmode">' + data[i].tags[j] + '</a>';
                 }
                 document.getElementById("recentCardTags"+i).innerHTML = tagsHtml;                             
+                // 즐겨찾기 아이콘 스위칭
+                let fillBool = "unfilled";
+                for (j=0;j<favoriteAssetIds.length;j++) {
+                    if (favoriteAssetIds[j] == itemid) {
+                        fillBool = "filled";
+                    }
+                }
+                titleHtml= data[i].title;
+                titleHtml +=    `<div width="20" height="20" class="bookmark-icon"> 
+                                    <div class="bookmark-clicklistener" onclick="clickBookmarkIcon(this, '${fillBool}','${itemid}');event.stopPropagation();"></div>
+                                    <object type="image/svg+xml" data="/assets/img/bookmark-${fillBool}.svg" class="bookmark-icon"></object>
+                                </div>`;
+                document.getElementById("recentlyTitle"+i).innerHTML = titleHtml;
             }
         },
         error: function(request,status,error){
@@ -455,13 +490,13 @@ function topUsingClick(totalItemNum, buttonState) {
 
 
 // clickBookmarkIcon 은 즐겨찾기 버튼을 눌렀을 때 실행되는 함수다. 
-function clickBookmarkIcon(target, fillBool, itemid, userid) { 
+function clickBookmarkIcon(target, fillBool, itemid) { 
     let parentNode = target.parentNode;
     let token = document.getElementById("token").value;
-
+    let userid = document.getElementById("userid").value;
 
     // 즐겨찾기에 추가
-    if (fillBool == "unfill") {
+    if (fillBool == "unfilled") {
         $.ajax({
             url: "/api/favoriteasset",
             headers: {
@@ -470,15 +505,15 @@ function clickBookmarkIcon(target, fillBool, itemid, userid) {
             type: "post",
             data: {"itemid":itemid,"userid":userid},
             success: function(data) {
-                parentNode.innerHTML = `<div class="bookmark-clicklistener" onclick="clickBookmarkIcon(this, 'fill');event.stopPropagation()"></div>
-                                        <object type="image/svg+xml" data="/assets/img/bookmark-fill.svg" class="bookmark-icon"></object>`
+                parentNode.innerHTML = `<div class="bookmark-clicklistener" onclick="clickBookmarkIcon(this, 'filled','${itemid}');event.stopPropagation();"></div>
+                                        <object type="image/svg+xml" data="/assets/img/bookmark-filled.svg" class="bookmark-icon"></object>`
             },
             error: function(data) {
                 alert("Failed to add item to Favorite Asset List.");
             }
         })
     // 즐겨찾기에서 제거
-    } else if (fillBool == "fill") {
+    } else if (fillBool == "filled") {
         
         $.ajax({
             url: `/api/favoriteasset?itemid=${itemid}&userid=${userid}`,
@@ -487,8 +522,8 @@ function clickBookmarkIcon(target, fillBool, itemid, userid) {
             },
             type: "delete",
             success: function() {
-                parentNode.innerHTML = `<div class="bookmark-clicklistener" onclick="clickBookmarkIcon(this, 'unfill');event.stopPropagation()"></div>
-                                        <object type="image/svg+xml" data="/assets/img/bookmark-unfill.svg" class="bookmark-icon"></object>`
+                parentNode.innerHTML = `<div class="bookmark-clicklistener" onclick="clickBookmarkIcon(this, 'unfilled','${itemid}');event.stopPropagation();"></div>
+                                        <object type="image/svg+xml" data="/assets/img/bookmark-unfilled.svg" class="bookmark-icon"></object>`
             },
             error: function() {
                 alert("Failed to delete item from Favorite Asset List.");
