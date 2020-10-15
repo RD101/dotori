@@ -1,6 +1,10 @@
 {{define "index"}}
     {{template "head"}}
-    <body>
+    <body>      
+        <!-- Preset Value -->
+        <input type="hidden" id="token" value="{{$.User.Token}}">
+        <input type="hidden" id="userid" value="{{$.User.ID}}">
+        <!-- Templates -->
         {{template "navbar" .}}
         {{template "search" .}}
         {{template "modal" .}}
