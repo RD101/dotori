@@ -96,6 +96,7 @@ func handleFavoriteAssets(w http.ResponseWriter, r *http.Request) {
 	// recipe에 FavoriteItems 담기
 	type recipe struct {
 		Token
+		User          User
 		FavoriteItems []Item
 		Adminsetting  Adminsetting
 	}
@@ -112,6 +113,7 @@ func handleFavoriteAssets(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	rcp.User = user
 	for _, itemid := range user.FavoriteAssetIDs {
 		item, err := GetItem(client, itemid)
 		if err != nil {
