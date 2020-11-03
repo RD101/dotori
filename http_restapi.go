@@ -549,16 +549,53 @@ func handleAPIFavoriteAsset(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
 	// accesslevel 체크
 	accesslevel, err := GetAccessLevelFromHeader(r, client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	if accesslevel != "default" && accesslevel != "manager" && accesslevel != "admin" {
 		http.Error(w, "즐겨찾기 수정 권한이 없습니다", http.StatusUnauthorized)
 		return
 	}
 
-	if r.Method == http.MethodPost {
-		// POST : FavoriteAssetsId 자료구조에 itemid를 추가
+	if r.Method == http.MethodGet {
+		// Get : Get FavoriteAssetIDs
+
+		// 전송받은 데이터 parsing
+		q := r.URL.Query()
+		userid := q.Get("userid")
+		if userid == "" {
+			http.Error(w, "URL에 userid를 입력해주세요", http.StatusBadRequest)
+			return
+		}
+
+		// Delete itemid from FavoriteAssetIds of User
+		user := User{}
+		user, err = GetUser(client, userid)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		favoriteAssetIds := user.FavoriteAssetIDs
+		reponseIds := make(map[string][]string)
+		reponseIds["favoriteAssetIds"] = favoriteAssetIds
+
+		data, err := json.Marshal(reponseIds)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		// Response
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(http.StatusOK)
+		w.Write(data)
+		return
+
+	} else if r.Method == http.MethodPost {
+		// POST : FavoriteAssetIDs 자료구조에 itemid를 추가
 
 		// 전송받은 데이터 parsing
 		itemid := r.FormValue("itemid")
@@ -574,6 +611,9 @@ func handleAPIFavoriteAsset(w http.ResponseWriter, r *http.Request) {
 		// Add itemid to FavoriteAssetIds of User
 		user := User{}
 		user, err = GetUser(client, userid)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 		for i := 0; i < len(user.FavoriteAssetIDs); i++ {
 			if itemid == user.FavoriteAssetIDs[i] {
 				http.Error(w, "즐겨찾기 목록에 이미 존재하는 itemid입니다", http.StatusBadRequest)
@@ -622,6 +662,9 @@ func handleAPIFavoriteAsset(w http.ResponseWriter, r *http.Request) {
 		// Delete itemid from FavoriteAssetIds of User
 		user := User{}
 		user, err = GetUser(client, userid)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 
 		deleteBool := false
 		for i := 0; i < len(user.FavoriteAssetIDs); i++ {

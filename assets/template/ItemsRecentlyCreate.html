@@ -1,8 +1,10 @@
 {{define "itemsRecentlyCreate"}}
+    <!-- Preset Value -->
     {{$thumbnailwidth := .Adminsetting.ThumbnailImageWidth}}
     {{$thumbnailheight := .Adminsetting.ThumbnailImageHeight}}
     <input type="hidden" id="thumbnailwidth" value="{{$thumbnailwidth}}">
     <input type="hidden" id="thumbnailheight" value="{{$thumbnailheight}}">
+    <!-- Switching Button -->
     <h6 class="init-title">NEW {{$.RecentlyTotalItemNum}}
         <div class="slider-icon float-right">
             <span class="btn carousel-control-prev-icon" aria-hidden="true" onclick="recentlyClick('{{.RecentlyTotalItemNum}}', 'prev');" ></span>
@@ -10,9 +12,12 @@
             <span class="btn carousel-control-next-icon" aria-hidden="true" onclick="recentlyClick('{{.RecentlyTotalItemNum}}', 'next');" ></span>
         </div>
     </h6>
+    <!-- Card Items -->
     <div class="row init-items">
         {{range $i, $q := .RecentlyCreateItems}}
             {{$itemtype := .ItemType}}
+            {{$itemid := .ID.Hex}}
+            <!-- Thumbnail in Card-->
             <div class="card" id="recentCard{{$i}}" style="width: {{$thumbnailwidth}}px;">
                 <a class="card-image" href="#" title="image {{$i}}" class="thumb" id="recentlyImageForm{{$i}}">
                     {{if eq $itemtype "hwp" "ies" "pdf" "ppt" "sound"}}
@@ -33,12 +38,20 @@
                         </video>
                     {{end}}
                 </a>
+                <!-- Item info in Card -->
                 <div class="card-body">
                     <div id="recentCardBody{{$i}}" data-toggle="modal" data-target="#modal-detailview" onclick="setDetailViewModal('{{.ID.Hex}}')">
                         <h5 class="card-title mb-0" id="recentlyTitle{{$i}}">{{.Title}}
-                            <div id="recentFavoriteButton{{$i}}" width="20" height="20" class="bookmark-icon">
-                                <div class="bookmark-clicklistener" onclick="clickBookmarkIcon(this, 'fill');event.stopPropagation()"></div>
-                                <object type="image/svg+xml" data="/assets/img/bookmark-unfilled.svg" class="bookmark-icon"></object>
+                            <!-- Favorite Icon -->
+                            <div class="bookmark-icon">
+                                {{$fillBool := "unfilled"}}
+                                {{range $index, $favoriteid := $.User.FavoriteAssetIDs}}
+                                    {{if eq $itemid $favoriteid}}
+                                        {{$fillBool = "filled"}}
+                                    {{end}}
+                                {{end}}
+                                <div class="bookmark-clicklistener" onclick="clickBookmarkIcon(this, '{{$fillBool}}','{{$itemid}}');event.stopPropagation()"></div>
+                                <object type="image/svg+xml" data="/assets/img/bookmark-{{$fillBool}}.svg" class="bookmark-icon"></object>
                             </div>
                         </h5>
                         <span class="text-muted" id="recentlyCreateTime{{$i}}" style="font-size: 13px;">{{SplitTimeData .CreateTime}}</span><br>
