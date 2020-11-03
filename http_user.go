@@ -64,6 +64,74 @@ func handleProfile(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// handleFavoriteAssets 는 사용자가 즐겨찾는 아이템 모음 페이지로 연결해주는 함수다.
+func handleFavoriteAssets(w http.ResponseWriter, r *http.Request) {
+	// token 체크
+	token, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
+
+	// mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer client.Disconnect(ctx)
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// recipe에 FavoriteItems 담기
+	type recipe struct {
+		Token
+		User          User
+		FavoriteItems []Item
+		Adminsetting  Adminsetting
+	}
+	rcp := recipe{}
+	rcp.Token = token
+	adminsetting, err := GetAdminSetting(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp.Adminsetting = adminsetting
+	user, err := GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp.User = user
+	for _, itemid := range user.FavoriteAssetIDs {
+		item, err := GetItem(client, itemid)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			continue
+		}
+		rcp.FavoriteItems = append(rcp.FavoriteItems, item)
+	}
+
+	// 즐겨찾기 모음 페이지 response
+	w.Header().Set("Content-Type", "text/html")
+	err = TEMPLATES.ExecuteTemplate(w, "items-favoriteassets", rcp)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
 func handleSignup(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
 	err := TEMPLATES.ExecuteTemplate(w, "signup", nil)

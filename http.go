@@ -352,6 +352,7 @@ func webserver() {
 
 	// User
 	http.HandleFunc("/profile", handleProfile)
+	http.HandleFunc("/favoriteassets", handleFavoriteAssets)
 	http.HandleFunc("/signup", handleSignup)
 	http.HandleFunc("/signup-submit", handleSignupSubmit)
 	http.HandleFunc("/signup-success", handleSignupSuccess)

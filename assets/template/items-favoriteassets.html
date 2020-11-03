@@ -1,0 +1,74 @@
+{{define "items-favoriteassets"}}
+{{template "head"}}
+<body>
+    {{template "navbar" .}}
+    <!-- Preset Value -->
+    {{$thumbnailwidth := .Adminsetting.ThumbnailImageWidth}}
+    {{$thumbnailheight := .Adminsetting.ThumbnailImageHeight}}
+    <!-- Title -->
+    <div class="text-center mx-auto pt-5 pb-5">
+        <h2 class="text-muted">Favorite Assets</h5>
+    </div>
+    <!-- Card Items -->
+    <div class="row mx-auto mb-5">
+        {{range .FavoriteItems}}
+            {{$itemtype := .ItemType}}
+            {{$itemid := .ID.Hex}}
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="card mx-auto" style="width: {{$thumbnailwidth}}px;">
+                    <!-- Thumbnail in Card-->
+                    {{if eq .ItemType "hwp" "ies" "pdf" "ppt" "sound"}}
+                        <img class="card-img" width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="/assets/img/{{.ItemType}}thumbnail.svg">
+                    {{else if eq .ItemType "hdri" "texture" "lut" }}
+                        <img class="card-img" width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src='{{if eq .Status "done" }}/mediadata?id={{.ID.Hex}}&type=png{{else}}/assets/img/noimage.svg{{end}}'>
+                    {{else if eq .ItemType "clip"}}
+                        <video class="card-img" width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" autoplay loop>
+                            <source src="/mediadata?id={{.ID.Hex}}&type=mp4" type="video/mp4">
+                            <source src="/mediadata?id={{.ID.Hex}}&type=ogg" type="video/ogg">
+                            Your browser does not support the video tag.
+                        </video>
+                    {{else}}
+                        <video class="card-img" width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" controls poster='{{if eq .Status "done" }}/mediadata?id={{.ID.Hex}}&type=png{{else}}/assets/img/noimage.svg{{end}}'>
+                            <source src="/mediadata?id={{.ID.Hex}}&type=mp4" type="video/mp4">
+                            <source src="/mediadata?id={{.ID.Hex}}&type=ogg" type="video/ogg">
+                            Your browser does not support the video tag.
+                        </video>
+                    {{end}}    
+                     <!-- Item info in Card -->
+                    <div class="card-body">
+                        <div data-toggle="modal" data-target="#modal-detailview" onclick="setDetailViewModal('{{.ID.Hex}}')">
+                            <h5 class="card-title">{{.Title}}
+                            <!-- Favorite Icon -->
+                            <div class="bookmark-icon">
+                                {{$fillBool := "unfilled"}}
+                                {{range $index, $favoriteid := $.User.FavoriteAssetIDs}}
+                                    {{if eq $itemid $favoriteid}}
+                                        {{$fillBool = "filled"}}
+                                    {{end}}
+                                {{end}}
+                                <div class="bookmark-clicklistener" onclick="clickBookmarkIcon(this, '{{$fillBool}}','{{$itemid}}');event.stopPropagation()"></div>
+                                <object type="image/svg+xml" data="/assets/img/bookmark-{{$fillBool}}.svg" class="bookmark-icon"></object>
+                            </h5>
+                            <div class="row m-0 mb-2"style="align-items: center;">
+                                <img class="download-icon" src="/assets/img/download-solid.svg">
+                                <p class="card-text">{{.UsingRate}}</p>
+                            </div>
+                        </div>
+                        <div>
+                            {{range .Tags}}
+                                <a href="/search?searchword=tag:{{.}}" class="tag badge badge-outline-darkmode">{{.}}</a>
+                            {{end}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {{end}}
+    </div>
+{{template "footer"}}
+</body>
+<!--add javascript-->
+<script src="/assets/js/jquery-3.1.1.min.js"></script>
+<script src="/assets/bootstrap-4/js/bootstrap.min.js"></script>
+<script src="/assets/js/dotori.js"></script>
+</html>
+{{end}}
