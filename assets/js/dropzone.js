@@ -3693,3 +3693,93 @@ Dropzone.options.nukeDropzone = {
     document.getElementById("btn-register-item").disabled = false; // 전송이 완료되면 등록버튼을 활성화 시킨다.
   },
 }
+
+// usd dropzone 페이지에서 업로드 버튼을 눌렀을 때 실행되는 코드부
+Dropzone.options.usdDropzone = {
+  autoProcessQueue: false,
+  init: function () {
+    // 최초 dropzone 설정시 init을 통해 호출
+    var submitButton = document.getElementById("btn-upload-file");
+    var currentDropzone = this; //closure
+    submitButton.addEventListener("click",
+      function () {
+          currentDropzone.processQueue(); // 파일을 수동으로 전송한다.
+      }
+    );
+  },
+  success: function success() {
+    document.getElementById("btn-register-item").disabled = false; // 전송이 완료되면 등록버튼을 활성화 시킨다.
+  },
+}
+
+// openvdb dropzone 페이지에서 업로드 버튼을 눌렀을 때 실행되는 코드부
+Dropzone.options.openvdbDropzone = {
+  autoProcessQueue: false,
+  init: function () {
+    // 최초 dropzone 설정시 init을 통해 호출
+    var submitButton = document.getElementById("btn-upload-file");
+    var currentDropzone = this; //closure
+    submitButton.addEventListener("click",
+      function () {
+          currentDropzone.processQueue(); // 파일을 수동으로 전송한다.
+      }
+    );
+  },
+  success: function success() {
+    document.getElementById("btn-register-item").disabled = false; // 전송이 완료되면 등록버튼을 활성화 시킨다.
+  },
+}
+
+// modo dropzone 페이지에서 업로드 버튼을 눌렀을 때 실행되는 코드부
+Dropzone.options.modoDropzone = {
+  autoProcessQueue: false,
+  init: function () {
+    // 최초 dropzone 설정시 init을 통해 호출
+    var submitButton = document.getElementById("btn-upload-file");
+    var currentDropzone = this; //closure
+    submitButton.addEventListener("click",
+      function () {
+          currentDropzone.processQueue(); // 파일을 수동으로 전송한다.
+      }
+    );
+  },
+  success: function success() {
+    document.getElementById("btn-register-item").disabled = false; // 전송이 완료되면 등록버튼을 활성화 시킨다.
+  },
+}
+
+// katana dropzone 페이지에서 업로드 버튼을 눌렀을 때 실행되는 코드부
+Dropzone.options.katanaDropzone = {
+  autoProcessQueue: false,
+  init: function () {
+    // 최초 dropzone 설정시 init을 통해 호출
+    var submitButton = document.getElementById("btn-upload-file");
+    var currentDropzone = this; //closure
+    submitButton.addEventListener("click",
+      function () {
+          currentDropzone.processQueue(); // 파일을 수동으로 전송한다.
+      }
+    );
+  },
+  success: function success() {
+    document.getElementById("btn-register-item").disabled = false; // 전송이 완료되면 등록버튼을 활성화 시킨다.
+  },
+}
+
+// max dropzone 페이지에서 업로드 버튼을 눌렀을 때 실행되는 코드부
+Dropzone.options.maxDropzone = {
+  autoProcessQueue: false,
+  init: function () {
+    // 최초 dropzone 설정시 init을 통해 호출
+    var submitButton = document.getElementById("btn-upload-file");
+    var currentDropzone = this; //closure
+    submitButton.addEventListener("click",
+      function () {
+          currentDropzone.processQueue(); // 파일을 수동으로 전송한다.
+      }
+    );
+  },
+  success: function success() {
+    document.getElementById("btn-register-item").disabled = false; // 전송이 완료되면 등록버튼을 활성화 시킨다.
+  },
+}
