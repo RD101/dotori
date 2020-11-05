@@ -1,8 +1,11 @@
 {{define "items-favoriteassets"}}
 {{template "head"}}
 <body>
+    {{template "modal" .}}
     {{template "navbar" .}}
     <!-- Preset Value -->
+    <input type="hidden" id="token" value="{{$.User.Token}}">
+    <input type="hidden" id="userid" value="{{$.User.ID}}">
     {{$thumbnailwidth := .Adminsetting.ThumbnailImageWidth}}
     {{$thumbnailheight := .Adminsetting.ThumbnailImageHeight}}
     <!-- Title -->
