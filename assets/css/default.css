@@ -187,6 +187,12 @@ body {
 	height: 12px;
 }
 
+.bookmark-icon {
+	float: right;
+	width: 20px;
+	height: 20px;
+}
+
 .bookmark-clicklistener {
 	position: absolute;
 	width: 20px;
@@ -194,10 +200,7 @@ body {
 }
 
 .bookmark-filled-icon {
-	float: right;
-	width: 20px;
-	height: 20px;
-	animation-duration: 0.2s;
+	animation-duration: 0.3s;
 	animation-timing-function: ease-out;
 	animation-name: scaleup;
 }
@@ -207,17 +210,14 @@ body {
 		transform: scale(0.0);
 	}
 	50% {
-		transform: scale(0.7)
+		transform: scale(0.7);
+	}
+	80% {
+		transform: scale(1.1);
 	}
 	100% {
 		transform: scale(1.0);
 	}
-}
-
-.bookmark-unfilled-icon {
-	float: right;
-	width: 20px;
-	height: 20px;
 }
 
 /*------------------------------*/

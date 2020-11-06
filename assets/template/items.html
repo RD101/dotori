@@ -32,7 +32,7 @@
                         <div data-toggle="modal" data-target="#modal-detailview" onclick="setDetailViewModal('{{.ID.Hex}}')">
                             <!-- Favorite Icon -->
                             <h5 class="card-title">{{.Title}}
-                                <div width="20" height="20" class="bookmark-icon">
+                                <div class="bookmark-icon">
                                     {{$fillBool := "unfilled"}}
                                     {{range $index, $favoriteid := $.User.FavoriteAssetIDs}}
                                         {{if eq $itemid $favoriteid}}
