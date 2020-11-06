@@ -1,20 +1,10 @@
-<svg id="e97zz4inaq8g1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20" shape-rendering="geometricPrecision" text-rendering="geometricPrecision">
-<style>
-<![CDATA[#e97zz4inaq8g4_ts 
-    {animation: e97zz4inaq8g4_ts__ts 3000ms linear 1 normal forwards}
-    @keyframes e97zz4inaq8g4_ts__ts 
-    { 0% {transform: translate(11.489364px,10.333334px) scale(0,0);
-         animation-timing-function: cubic-bezier(0,0,0.010000,0.925000)}13.333333% 
-         {transform: translate(11.489364px,10.333334px) scale(1.100000,1.100000);
-         animation-timing-function: cubic-bezier(0.015000,0.945000,1,1)} 23.333333% 
-         {transform: translate(11.489364px,10.333334px) scale(1,1)} 100% 
-         {transform: translate(11.489364px,10.333334px) scale(1,1)} }]]>
-</style>
-<g id="e97zz4inaq8g2">
-<g id="e97zz4inaq8g3" transform="matrix(1 0 0 1 -1.48936319000000 -0.50426835000001)">
-<g id="e97zz4inaq8g4_ts" transform="translate(11.489364,10.333334) scale(0,0)">
-<path id="e97zz4inaq8g4" d="M4.546350,19.162400C4.546350,19.162400,4.503640,2.167660,4.503640,2.167660C4.503640,2.167660,4.422340,0.565182,5.538400,0.523011C6.654460,0.480840,17.277700,0.523011,17.277700,0.523011C17.277700,0.523011,18.476400,0.565182,18.476400,2.167660C18.476400,3.770140,18.476400,19.162400,18.476400,19.162400C18.476400,19.162400,11.449400,15.282700,11.449400,15.282700C11.449400,15.282700,4.546350,19.162400,4.546350,19.162400Z" transform="translate(-11.489363,-9.833334)" fill="rgb(255,193,7)" fill-rule="evenodd" stroke="rgb(255,193,7)" stroke-width="1" stroke-miterlimit="2"/>
-</g>
-</g>
-</g>
+<?xml version="1.0"?>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20">
+    <desc iVinci="yes" version="4.6" gridStep="20" showGrid="no" snapToGrid="no" codePlatform="0"/>
+    <g id="Layer1" name="Layer 1" opacity="1">
+        <g id="Shape1">
+            <desc shapeID="1" type="0" basicInfo-basicType="0" basicInfo-roundedRectRadius="12" basicInfo-polygonSides="6" basicInfo-starPoints="5" bounding="rect(-169.034,-221.222,338.066,442.445)" text="" font-familyName="Helvetica" font-pixelSize="20" font-bold="0" font-underline="0" font-alignment="1" strokeStyle="0" markerStart="0" markerEnd="0" shadowEnabled="0" shadowOffsetX="0" shadowOffsetY="2" shadowBlur="4" shadowOpacity="160" blurEnabled="0" blurRadius="4" transform="matrix(0.0421172,0,0,0.0421191,10,9.90099)" pers-center="0,0" pers-size="0,0" pers-start="0,0" pers-end="0,0" locked="0" mesh="" flag=""/>
+            <path id="shapePath1" d="M2.92564,19.2187 C2.92564,19.2187 2.88213,2.2447 2.88213,2.2447 C2.88213,2.2447 2.79929,0.64417 3.93646,0.602051 C5.07362,0.559932 15.8978,0.602051 15.8978,0.602051 C15.8978,0.602051 17.1192,0.64417 17.1192,2.2447 C17.1192,3.84521 17.1192,19.2187 17.1192,19.2187 C17.1192,19.2187 9.95924,15.3437 9.95924,15.3437 C9.95924,15.3437 2.92564,19.2187 2.92564,19.2187 Z" style="stroke:#ffc107;stroke-opacity:1;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:2;stroke-linecap:butt;fill-rule:evenodd;fill:#ffc107;fill-opacity:1;"/>
+        </g>
+    </g>
 </svg>

@@ -187,14 +187,35 @@ body {
 	height: 12px;
 }
 
-.bookmark-icon {
-	float: right;
+.bookmark-clicklistener {
+	position: absolute;
 	width: 20px;
 	height: 20px;
 }
 
-.bookmark-clicklistener {
-	position: absolute;
+.bookmark-filled-icon {
+	float: right;
+	width: 20px;
+	height: 20px;
+	animation-duration: 0.2s;
+	animation-timing-function: ease-out;
+	animation-name: scaleup;
+}
+
+@keyframes scaleup {
+	0% {
+		transform: scale(0.0);
+	}
+	50% {
+		transform: scale(0.7)
+	}
+	100% {
+		transform: scale(1.0);
+	}
+}
+
+.bookmark-unfilled-icon {
+	float: right;
 	width: 20px;
 	height: 20px;
 }
