@@ -434,7 +434,7 @@ function topUsingClick(totalItemNum, buttonState) {
         success: function(response) {
             favoriteAssetIds = response["favoriteAssetIds"];
         },
-        complete: function(response) {
+        complete: function() {
             // Top Using Item 정보 가져온 후 세팅
             $.ajax({
                 url: `/api/topusingitem?usingpage=${currentPageNum}`,
