@@ -285,9 +285,7 @@ function recentlyClick(totalItemNum, buttonState) {
         type: "get",
         dataType: "json",
         success: function(response) {
-            if (response["favoriteAssetIds"] != null) {
-                favoriteAssetIds = response["favoriteAssetIds"];
-            }
+            favoriteAssetIds = response["favoriteAssetIds"];
         },
         complete: function() {
             // Recent Item 정보 가져온 후 세팅
