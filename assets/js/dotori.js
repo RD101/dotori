@@ -285,7 +285,97 @@ function recentlyClick(totalItemNum, buttonState) {
         type: "get",
         dataType: "json",
         success: function(response) {
-            favoriteAssetIds = response["favoriteAssetIds"];
+            if (response["favoriteAssetIds"] != null) {
+                favoriteAssetIds = response["favoriteAssetIds"];
+            }
+        },
+        complete: function() {
+            // Recent Item 정보 가져온 후 세팅
+            $.ajax({
+                url: `/api/recentitem?recentlypage=${currentPageNum}`,
+                type: "get",
+                dataType: "json",
+                success: function(data) {
+                    let thumbnailwidth = document.getElementById("thumbnailwidth").value;
+                    let thumbnailheight = document.getElementById("thumbnailheight");
+                    let img = ""
+                    for (let i = 0; i < data.length; i++){
+                        let itemid = data[i].id;
+                        // 썸네일 스위칭
+                        let recentlyImageForm = document.getElementById("recentlyImageForm"+i)
+                        if (data[i].itemtype == "pdf" || data[i].itemtype == "ppt" || data[i].itemtype == "hwp" || data[i].itemtype == "sound" || data[i].itemtype == "ies") {
+                            img = '<img class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                            '" src="/assets/img/' + data[i].itemtype + 'thumbnail.svg">'
+                        } else if(data[i].itemtype=="hdri" || data[i].itemtype == "lut" || data[i].itemtype=="texture"){
+                            if(data[i].status == "done"){
+                                img = '<img class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                                        '" src="/mediadata?id=' + itemid + '&type=png">'
+                            }else{
+                                img = '<img class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                                        '" src="/assets/img/noimage.svg">'
+                            }
+                        } else if (data[i].itemtype=="clip") {
+                            if(data[i].status == "done"){
+                                img = '<video class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                                        '" autoplay loop>' +
+                                        '<source src="/mediadata?id=' + itemid + '&type=mp4" type="video/mp4">' +
+                                        '<source src="/mediadata?id=' + itemid + '&type=ogg" type="video/ogg">' +
+                                        'Your browser does not support the video tag.'+
+                                        '</video>'
+                            }else{
+                                img = '<video class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                                        '" controls poster="/assets/img/noimage.svg">' +
+                                        '<source src="/mediadata?id=' + itemid + '&type=mp4" type="video/mp4">' +
+                                        '<source src="/mediadata?id=' + itemid + '&type=ogg" type="video/ogg">' +
+                                        'Your browser does not support the video tag.'+
+                                        '</video>'
+                            }
+                        } else{
+                            if(data[i].status == "done"){
+                                img = '<video class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                                        '" controls poster="/mediadata?id=' + itemid + '&type=png">' +
+                                        '<source src="/mediadata?id=' + itemid + '&type=mp4" type="video/mp4">' +
+                                        '<source src="/mediadata?id=' + itemid + '&type=ogg" type="video/ogg">' +
+                                        'Your browser does not support the video tag.'+
+                                        '</video>'
+                            }else{
+                                img = '<video class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                                        '" controls poster="/assets/img/noimage.svg">' +
+                                        '<source src="/mediadata?id=' + itemid + '&type=mp4" type="video/mp4">' +
+                                        '<source src="/mediadata?id=' + itemid + '&type=ogg" type="video/ogg">' +
+                                        'Your browser does not support the video tag.'+
+                                        '</video>'
+                            }
+                        }
+                        recentlyImageForm.innerHTML = img;
+                        document.getElementById("recentCardBody"+i).onclick = function () { setDetailViewModal(itemid);}    // detail view 용 item id 스위칭
+                        document.getElementById("recentlyCreateTime"+i).innerHTML = data[i].createtime.split('T')[0];           // create time 스위칭
+                        document.getElementById("recentUsingRate"+i).innerHTML = data[i].usingrate;                             // using rate 스위칭
+                        // 태그 스위칭
+                        let tagsHtml = '';
+                        for (let j=0;j<data[i].tags.length;j++) {
+                            tagsHtml += '<a href="/search?searchword=tag:' + data[i].tags[j] + '" class="tag badge badge-outline-darkmode">' + data[i].tags[j] + '</a>';
+                        }
+                        document.getElementById("recentCardTags"+i).innerHTML = tagsHtml;                             
+                        // 즐겨찾기 아이콘 스위칭
+                        let fillBool = "unfilled";
+                        for (j=0;j<favoriteAssetIds.length;j++) {
+                            if (favoriteAssetIds[j] == itemid) {
+                                fillBool = "filled";
+                            }
+                        }
+                        titleHtml= data[i].title;
+                        titleHtml +=    `<div class="bookmark-icon"> 
+                                            <div class="bookmark-clicklistener" onclick="clickBookmarkIcon(this, '${fillBool}','${itemid}');event.stopPropagation();"></div>
+                                            <object type="image/svg+xml" data="/assets/img/bookmark-${fillBool}.svg" class="bookmark-${fillBool}-icon"></object>
+                                        </div>`;
+                        document.getElementById("recentlyTitle"+i).innerHTML = titleHtml;
+                    }
+                },
+                error: function(request,status,error){
+                    alert("code:"+request.status+"\n"+"status:"+status+"\n"+"msg:"+request.responseText+"\n"+"error:"+error);
+                }
+            });
         },
         error: function(response) {
             alert(response["responseText"]);
@@ -293,92 +383,7 @@ function recentlyClick(totalItemNum, buttonState) {
 
     })
 
-    // Recent Item 정보 가져온 후 세팅
-    $.ajax({
-        url: `/api/recentitem?recentlypage=${currentPageNum}`,
-        type: "get",
-        dataType: "json",
-        success: function(data) {
-            let thumbnailwidth = document.getElementById("thumbnailwidth").value;
-            let thumbnailheight = document.getElementById("thumbnailheight").value;
-            let img = ""
-            for (let i = 0; i < data.length; i++){
-                let itemid = data[i].id;
-                // 썸네일 스위칭
-                let recentlyImageForm = document.getElementById("recentlyImageForm"+i)
-                if (data[i].itemtype == "pdf" || data[i].itemtype == "ppt" || data[i].itemtype == "hwp" || data[i].itemtype == "sound" || data[i].itemtype == "ies") {
-                    img = '<img class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
-                    '" src="/assets/img/' + data[i].itemtype + 'thumbnail.svg">'
-                } else if(data[i].itemtype=="hdri" || data[i].itemtype == "lut" || data[i].itemtype=="texture"){
-                    if(data[i].status == "done"){
-                        img = '<img class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
-                                '" src="/mediadata?id=' + itemid + '&type=png">'
-                    }else{
-                        img = '<img class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
-                                '" src="/assets/img/noimage.svg">'
-                    }
-                } else if (data[i].itemtype=="clip") {
-                    if(data[i].status == "done"){
-                        img = '<video class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
-                                '" autoplay loop>' +
-                                '<source src="/mediadata?id=' + itemid + '&type=mp4" type="video/mp4">' +
-                                '<source src="/mediadata?id=' + itemid + '&type=ogg" type="video/ogg">' +
-                                'Your browser does not support the video tag.'+
-                                '</video>'
-                    }else{
-                        img = '<video class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
-                                '" controls poster="/assets/img/noimage.svg">' +
-                                '<source src="/mediadata?id=' + itemid + '&type=mp4" type="video/mp4">' +
-                                '<source src="/mediadata?id=' + itemid + '&type=ogg" type="video/ogg">' +
-                                'Your browser does not support the video tag.'+
-                                '</video>'
-                    }
-                } else{
-                    if(data[i].status == "done"){
-                        img = '<video class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
-                                '" controls poster="/mediadata?id=' + itemid + '&type=png">' +
-                                '<source src="/mediadata?id=' + itemid + '&type=mp4" type="video/mp4">' +
-                                '<source src="/mediadata?id=' + itemid + '&type=ogg" type="video/ogg">' +
-                                'Your browser does not support the video tag.'+
-                                '</video>'
-                    }else{
-                        img = '<video class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
-                                '" controls poster="/assets/img/noimage.svg">' +
-                                '<source src="/mediadata?id=' + itemid + '&type=mp4" type="video/mp4">' +
-                                '<source src="/mediadata?id=' + itemid + '&type=ogg" type="video/ogg">' +
-                                'Your browser does not support the video tag.'+
-                                '</video>'
-                    }
-                }
-                recentlyImageForm.innerHTML = img;
-                document.getElementById("recentCardBody"+i).onclick = function () { setDetailViewModal(itemid);}    // detail view 용 item id 스위칭
-                document.getElementById("recentlyCreateTime"+i).innerHTML = data[i].createtime.split('T')[0];           // create time 스위칭
-                document.getElementById("recentUsingRate"+i).innerHTML = data[i].usingrate;                             // using rate 스위칭
-                // 태그 스위칭
-                let tagsHtml = '';
-                for (let j=0;j<data[i].tags.length;j++) {
-                    tagsHtml += '<a href="/search?searchword=tag:' + data[i].tags[j] + '" class="tag badge badge-outline-darkmode">' + data[i].tags[j] + '</a>';
-                }
-                document.getElementById("recentCardTags"+i).innerHTML = tagsHtml;                             
-                // 즐겨찾기 아이콘 스위칭
-                let fillBool = "unfilled";
-                for (j=0;j<favoriteAssetIds.length;j++) {
-                    if (favoriteAssetIds[j] == itemid) {
-                        fillBool = "filled";
-                    }
-                }
-                titleHtml= data[i].title;
-                titleHtml +=    `<div class="bookmark-icon"> 
-                                    <div class="bookmark-clicklistener" onclick="clickBookmarkIcon(this, '${fillBool}','${itemid}');event.stopPropagation();"></div>
-                                    <object type="image/svg+xml" data="/assets/img/bookmark-${fillBool}.svg" class="bookmark-${fillBool}-icon"></object>
-                                </div>`;
-                document.getElementById("recentlyTitle"+i).innerHTML = titleHtml;
-            }
-        },
-        error: function(request,status,error){
-            alert("code:"+request.status+"\n"+"status:"+status+"\n"+"msg:"+request.responseText+"\n"+"error:"+error);
-        }
-    });
+    
 }
 
 // topUsingClick 은 초기페이지에서 가장 많이 사용되는 아이템의 next, prev 버튼을 눌렀을 때 실행하는 함수이다.
@@ -431,96 +436,98 @@ function topUsingClick(totalItemNum, buttonState) {
         success: function(response) {
             favoriteAssetIds = response["favoriteAssetIds"];
         },
+        complete: function(response) {
+            // Top Using Item 정보 가져온 후 세팅
+            $.ajax({
+                url: `/api/topusingitem?usingpage=${currentPageNum}`,
+                type: "get",
+                dataType: "json",
+                success: function(data) {
+                    let thumbnailwidth = document.getElementById("thumbnailwidth").value;
+                    let thumbnailheight = document.getElementById("thumbnailheight").value;
+                    let img = ""
+                    for (let i = 0; i < data.length; i++){
+                        let itemid = data[i].id;
+                        let topUsingImageForm = document.getElementById("topUsingImageForm"+i)
+                        if (data[i].itemtype == "pdf" || data[i].itemtype == "ppt" || data[i].itemtype == "hwp" || data[i].itemtype == "sound" || data[i].itemtype == "ies") {
+                            img = '<img class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                                        '" src="/assets/img/' + data[i].itemtype + 'thumbnail.svg">'
+                        } else if(data[i].itemtype=="hdri" || data[i].itemtype=="lut" || data[i].itemtype=="texture"){
+                            if(data[i].status == "done"){
+                                img = '<img class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                                        '" src="/mediadata?id=' + itemid + '&type=png">'
+                            }else{
+                                img = '<img class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                                        '" src="/assets/img/noimage.svg">'
+                            }
+                        } else if (data[i].itemtype=="clip") {
+                            if(data[i].status == "done"){
+                                img = '<video class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                                        '" autoplay loop>' +
+                                        '<source src="/mediadata?id=' + itemid + '&type=mp4" type="video/mp4">' +
+                                        '<source src="/mediadata?id=' + itemid + '&type=ogg" type="video/ogg">' +
+                                        'Your browser does not support the video tag.'+
+                                        '</video>'
+                            }else{
+                                img = '<video class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                                        '" controls poster="/assets/img/noimage.svg">' +
+                                        '<source src="/mediadata?id=' + itemid + '&type=mp4" type="video/mp4">' +
+                                        '<source src="/mediadata?id=' + itemid + '&type=ogg" type="video/ogg">' +
+                                        'Your browser does not support the video tag.'+
+                                        '</video>'
+                            }
+                        } else {
+                            if(data[i].status == "done"){
+                                img = '<video class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                                        '" controls poster="/mediadata?id=' + itemid + '&type=png">' +
+                                        '<source src="/mediadata?id=' + itemid + '&type=mp4" type="video/mp4">' +
+                                        '<source src="/mediadata?id=' + itemid + '&type=ogg" type="video/ogg">' +
+                                        'Your browser does not support the video tag.'+
+                                        '</video>'
+                            }else{
+                                img = '<video class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
+                                        '" controls poster="/assets/img/noimage.svg">' +
+                                        '<source src="/mediadata?id=' + itemid + '&type=mp4" type="video/mp4">' +
+                                        '<source src="/mediadata?id=' + itemid + '&type=ogg" type="video/ogg">' +
+                                        'Your browser does not support the video tag.'+
+                                        '</video>'
+                            }
+                        }
+                        topUsingImageForm.innerHTML = img;
+                        document.getElementById("topUsingCardBody"+i).onclick = function () { setDetailViewModal(itemid);}  // detail view 용 item id 스위칭
+                        document.getElementById("topUsingRate"+i).innerHTML = data[i].usingrate;                            // using rate 스위칭
+                        // 태그 스위칭
+                        let tagsHtml = '';
+                        for (let j=0;j<data[i].tags.length;j++) {
+                            tagsHtml += '<a href="/search?searchword=tag:' + data[i].tags[j] + '" class="tag badge badge-outline-darkmode">' + data[i].tags[j] + '</a>';
+                        }
+                        document.getElementById("topUsingCardTags"+i).innerHTML = tagsHtml;  
+                        // 즐겨찾기 아이콘 스위칭
+                        let fillBool = "unfilled";
+                        for (j=0;j<favoriteAssetIds.length;j++) {
+                            if (favoriteAssetIds[j] == itemid) {
+                                fillBool = "filled";
+                            }
+                        }
+                        titleHtml= data[i].title;
+                        titleHtml +=    `<div class="bookmark-icon"> 
+                                            <div class="bookmark-clicklistener" onclick="clickBookmarkIcon(this, '${fillBool}','${itemid}');event.stopPropagation();"></div>
+                                            <object type="image/svg+xml" data="/assets/img/bookmark-${fillBool}.svg" class="bookmark-${fillBool}-icon"></object>
+                                        </div>`;
+                        document.getElementById("topUsingTitle"+i).innerHTML = titleHtml;                             
+                    }
+                },
+                error: function(request,status,error){
+                    alert("code:"+request.status+"\n"+"status:"+status+"\n"+"msg:"+request.responseText+"\n"+"error:"+error);
+                }
+            });
+        },
         error: function(response) {
             alert("Failed to Get Favorite Asset IDs.");
         }
 
     })
 
-    // Top Using Item 정보 가져온 후 세팅
-    $.ajax({
-        url: `/api/topusingitem?usingpage=${currentPageNum}`,
-        type: "get",
-        dataType: "json",
-        success: function(data) {
-            let thumbnailwidth = document.getElementById("thumbnailwidth").value;
-            let thumbnailheight = document.getElementById("thumbnailheight").value;
-            let img = ""
-            for (let i = 0; i < data.length; i++){
-                let itemid = data[i].id;
-                let topUsingImageForm = document.getElementById("topUsingImageForm"+i)
-                if (data[i].itemtype == "pdf" || data[i].itemtype == "ppt" || data[i].itemtype == "hwp" || data[i].itemtype == "sound" || data[i].itemtype == "ies") {
-                    img = '<img class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
-                                '" src="/assets/img/' + data[i].itemtype + 'thumbnail.svg">'
-                } else if(data[i].itemtype=="hdri" || data[i].itemtype=="lut" || data[i].itemtype=="texture"){
-                    if(data[i].status == "done"){
-                        img = '<img class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
-                                '" src="/mediadata?id=' + itemid + '&type=png">'
-                    }else{
-                        img = '<img class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
-                                '" src="/assets/img/noimage.svg">'
-                    }
-                } else if (data[i].itemtype=="clip") {
-                    if(data[i].status == "done"){
-                        img = '<video class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
-                                '" autoplay loop>' +
-                                '<source src="/mediadata?id=' + itemid + '&type=mp4" type="video/mp4">' +
-                                '<source src="/mediadata?id=' + itemid + '&type=ogg" type="video/ogg">' +
-                                'Your browser does not support the video tag.'+
-                                '</video>'
-                    }else{
-                        img = '<video class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
-                                '" controls poster="/assets/img/noimage.svg">' +
-                                '<source src="/mediadata?id=' + itemid + '&type=mp4" type="video/mp4">' +
-                                '<source src="/mediadata?id=' + itemid + '&type=ogg" type="video/ogg">' +
-                                'Your browser does not support the video tag.'+
-                                '</video>'
-                    }
-                } else {
-                    if(data[i].status == "done"){
-                        img = '<video class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
-                                '" controls poster="/mediadata?id=' + itemid + '&type=png">' +
-                                '<source src="/mediadata?id=' + itemid + '&type=mp4" type="video/mp4">' +
-                                '<source src="/mediadata?id=' + itemid + '&type=ogg" type="video/ogg">' +
-                                'Your browser does not support the video tag.'+
-                                '</video>'
-                    }else{
-                        img = '<video class="card-img" width="' + thumbnailwidth + '" height="'+ thumbnailheight +
-                                '" controls poster="/assets/img/noimage.svg">' +
-                                '<source src="/mediadata?id=' + itemid + '&type=mp4" type="video/mp4">' +
-                                '<source src="/mediadata?id=' + itemid + '&type=ogg" type="video/ogg">' +
-                                'Your browser does not support the video tag.'+
-                                '</video>'
-                    }
-                }
-                topUsingImageForm.innerHTML = img;
-                document.getElementById("topUsingCardBody"+i).onclick = function () { setDetailViewModal(itemid);}  // detail view 용 item id 스위칭
-                document.getElementById("topUsingRate"+i).innerHTML = data[i].usingrate;                            // using rate 스위칭
-                // 태그 스위칭
-                let tagsHtml = '';
-                for (let j=0;j<data[i].tags.length;j++) {
-                    tagsHtml += '<a href="/search?searchword=tag:' + data[i].tags[j] + '" class="tag badge badge-outline-darkmode">' + data[i].tags[j] + '</a>';
-                }
-                document.getElementById("topUsingCardTags"+i).innerHTML = tagsHtml;  
-                // 즐겨찾기 아이콘 스위칭
-                let fillBool = "unfilled";
-                for (j=0;j<favoriteAssetIds.length;j++) {
-                    if (favoriteAssetIds[j] == itemid) {
-                        fillBool = "filled";
-                    }
-                }
-                titleHtml= data[i].title;
-                titleHtml +=    `<div class="bookmark-icon"> 
-                                    <div class="bookmark-clicklistener" onclick="clickBookmarkIcon(this, '${fillBool}','${itemid}');event.stopPropagation();"></div>
-                                    <object type="image/svg+xml" data="/assets/img/bookmark-${fillBool}.svg" class="bookmark-${fillBool}-icon"></object>
-                                </div>`;
-                document.getElementById("topUsingTitle"+i).innerHTML = titleHtml;                             
-            }
-        },
-        error: function(request,status,error){
-            alert("code:"+request.status+"\n"+"status:"+status+"\n"+"msg:"+request.responseText+"\n"+"error:"+error);
-        }
-    });
 }
 
 
