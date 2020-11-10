@@ -51,7 +51,7 @@
                                     {{end}}
                                 {{end}}
                                 <div class="bookmark-clicklistener" onclick="clickBookmarkIcon(this, '{{$fillBool}}','{{$itemid}}');event.stopPropagation()"></div>
-                                <object type="image/svg+xml" data="/assets/img/bookmark-{{$fillBool}}.svg" class="bookmark-icon"></object>
+                                <object type="image/svg+xml" data="/assets/img/bookmark-{{$fillBool}}.svg" class="bookmark-{{$fillBool}}-icon"></object>
                             </div>
                         </h5>
                         <span class="text-muted" id="recentlyCreateTime{{$i}}" style="font-size: 13px;">{{SplitTimeData .CreateTime}}</span><br>

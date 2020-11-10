@@ -370,7 +370,7 @@ function recentlyClick(totalItemNum, buttonState) {
                 titleHtml= data[i].title;
                 titleHtml +=    `<div class="bookmark-icon"> 
                                     <div class="bookmark-clicklistener" onclick="clickBookmarkIcon(this, '${fillBool}','${itemid}');event.stopPropagation();"></div>
-                                    <object type="image/svg+xml" data="/assets/img/bookmark-${fillBool}.svg" class="bookmark-icon"></object>
+                                    <object type="image/svg+xml" data="/assets/img/bookmark-${fillBool}.svg" class="bookmark-${fillBool}-icon"></object>
                                 </div>`;
                 document.getElementById("recentlyTitle"+i).innerHTML = titleHtml;
             }
@@ -512,7 +512,7 @@ function topUsingClick(totalItemNum, buttonState) {
                 titleHtml= data[i].title;
                 titleHtml +=    `<div class="bookmark-icon"> 
                                     <div class="bookmark-clicklistener" onclick="clickBookmarkIcon(this, '${fillBool}','${itemid}');event.stopPropagation();"></div>
-                                    <object type="image/svg+xml" data="/assets/img/bookmark-${fillBool}.svg" class="bookmark-icon"></object>
+                                    <object type="image/svg+xml" data="/assets/img/bookmark-${fillBool}.svg" class="bookmark-${fillBool}-icon"></object>
                                 </div>`;
                 document.getElementById("topUsingTitle"+i).innerHTML = titleHtml;                             
             }
@@ -541,7 +541,7 @@ function clickBookmarkIcon(target, fillBool, itemid) {
             data: {"itemid":itemid,"userid":userid},
             success: function(data) {
                 parentNode.innerHTML = `<div class="bookmark-clicklistener" onclick="clickBookmarkIcon(this, 'filled','${itemid}');event.stopPropagation();"></div>
-                                        <object type="image/svg+xml" data="/assets/img/bookmark-filled.svg" class="bookmark-icon"></object>`
+                                        <object type="image/svg+xml" data="/assets/img/bookmark-filled.svg" class="bookmark-filled-icon"></object>`
             },
             error: function(response) {
                 alert(response["responseText"]);
@@ -558,7 +558,7 @@ function clickBookmarkIcon(target, fillBool, itemid) {
             type: "delete",
             success: function() {
                 parentNode.innerHTML = `<div class="bookmark-clicklistener" onclick="clickBookmarkIcon(this, 'unfilled','${itemid}');event.stopPropagation();"></div>
-                                        <object type="image/svg+xml" data="/assets/img/bookmark-unfilled.svg" class="bookmark-icon"></object>`
+                                        <object type="image/svg+xml" data="/assets/img/bookmark-unfilled.svg" class="bookmark-unfilled-icon"></object>`
             },
             error: function(response) {
                 alert(response["responseText"]);
