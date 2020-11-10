@@ -61,9 +61,12 @@
         {{end}}
         {{$len := len .TopUsingItems}}
         {{$modlen := mod $len 4}}
+        {{if eq $modlen 0}}
+        {{else}}
         {{$len = sub 4 $modlen}}
         {{range $index, $i := IntToSlice $len}}
-            <div class="card" id="topUsingCard{{add $modlen $index}}" style="width: {{$thumbnailwidth}}px; visibility: hidden;"></div>
+            <div class="card" id="topUsingCard{{add $modlen $index}}" style="width: {{$thumbnailwidth}}px; visibility: hidden;" value="{{$modlen}}"></div>
+        {{end}}    
         {{end}}
     </div>
 {{end}}
