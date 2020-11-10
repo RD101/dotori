@@ -21,6 +21,11 @@ func add(a, b int) int {
 	return (a + b)
 }
 
+// add함수는 입력받은 두 정수를 더한 값을 반환한다.
+func sub(a, b int) int {
+	return (a - b)
+}
+
 // mod함수는 입력받은 두 정수를 나눈 나머지을 반환한다.
 func mod(a, b int) int {
 	return (a % b)
@@ -53,4 +58,10 @@ func SplitTimeData(data string) string {
 // ItemListLength 함수는 Item형 리스트 전체의 개수를 반환한다.
 func ItemListLength(items []Item) int {
 	return len(items)
+}
+
+// IntToSlice 함수는 숫자만큼 slice 길이를 만들어 반환한다.
+func IntToSlice(a int) []int {
+	slice := make([]int, a)
+	return slice
 }

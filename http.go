@@ -26,6 +26,7 @@ func LoadTemplates() (*template.Template, error) {
 var funcMap = template.FuncMap{
 	"Tags2str":       Tags2str,
 	"add":            add,
+	"sub":            sub,
 	"mod":            mod,
 	"divCeil":        divCeil,
 	"PreviousPage":   PreviousPage,
@@ -34,6 +35,7 @@ var funcMap = template.FuncMap{
 	"LastLog":        LastLog,
 	"SplitTimeData":  SplitTimeData,
 	"ItemListLength": ItemListLength,
+	"IntToSlice":     IntToSlice,
 }
 
 func webserver() {
