@@ -72,6 +72,13 @@ $ sudo dotori -http :80
 ```
 > 여러분이 macOS를 사용한다면 기본적으로 80포트는 아파치 서버가 사용중일 수 있습니다. `:80` 포트에 실행되는 아파치 서버를 종료하기 위해서 $ sudo apachectl stop 를 터미널에 입력해주세요.
 
+### 방화벽 설정
+ ```
+# firewall-cmd --zone=public --add-port=80/tcp --permanent
+success
+# firewall-cmd --reload
+```
+
 ### 백업
 회사의 무형 자산을 안전하게 지키기 위해서는 정기적인 백업이 중요합니다.
 mongoDB를 백업하는 방법은 아래 문서를 참고해 주세요.
