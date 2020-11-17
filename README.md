@@ -72,7 +72,8 @@ $ sudo dotori -http :80
 ```
 > 여러분이 macOS를 사용한다면 기본적으로 80포트는 아파치 서버가 사용중일 수 있습니다. `:80` 포트에 실행되는 아파치 서버를 종료하기 위해서 $ sudo apachectl stop 를 터미널에 입력해주세요.
 
-### 방화벽 설정
+### CentOS 방화벽 설정
+다른 컴퓨터에서의 접근을 허용하기 위해서 해당 포트에 대한 방화벽을 해제합니다.
  ```
 # firewall-cmd --zone=public --add-port=80/tcp --permanent
 success
