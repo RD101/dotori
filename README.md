@@ -40,22 +40,17 @@ VFX, 애니메이션, 게임, 사운드 등 콘텐츠 제작에 사용되는 에
 - OS: Linux, macOS 또는 Windows Server
 - 메모리: 32기가 이상
 
+### yum명령어 최신으로 업데이트
+Dafault로 설치되어 있는 yum으로는 필요한 라이브러리를 설치할 수 없습니다.
+아래 명령어를 통해 업데이트 해주세요.
+
+ ```
+ # yum install epel-release
+ ```
+
 ### DB 설치 및 실행
 도토리는 mongoDB를 사용하고 있습니다. mongoDB를 설치해주세요.
-
-#### CentOS
-```bash
-$ sudo yum install mongodb mongodb-server
-$ sudo service mongod start
-```
-
-#### macOS
-```bash
-$ brew uninstall mongodb
-$ brew tap mongodb/brew
-$ brew install mongodb-community
-$ brew services start mongodb-community
-```
+- [mongoDB 설치하는 법](https://github.com/cgiseminar/curriculum/blob/master/docs/install_mongodb.md)
 
 ### 기타 라이브러리 및 명령어 설치
 도토리에서 사용하고 있는 라이브러리의 설치는 아래 문서를 참고해주세요.
@@ -76,6 +71,13 @@ https 보안프로토콜을 사용하기 위해서는 인증서를 발급받아�
 $ sudo dotori -http :80
 ```
 > 여러분이 macOS를 사용한다면 기본적으로 80포트는 아파치 서버가 사용중일 수 있습니다. `:80` 포트에 실행되는 아파치 서버를 종료하기 위해서 $ sudo apachectl stop 를 터미널에 입력해주세요.
+
+### CentOS 방화벽 설정
+다른 컴퓨터에서의 접근을 허용하기 위해서 해당 포트에 대한 방화벽을 해제합니다.
+ ```
+# firewall-cmd --zone=public --add-port=80/tcp --permanent
+# firewall-cmd --reload
+```
 
 ### 백업
 회사의 무형 자산을 안전하게 지키기 위해서는 정기적인 백업이 중요합니다.
