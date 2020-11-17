@@ -76,7 +76,6 @@ $ sudo dotori -http :80
 다른 컴퓨터에서의 접근을 허용하기 위해서 해당 포트에 대한 방화벽을 해제합니다.
  ```
 # firewall-cmd --zone=public --add-port=80/tcp --permanent
-success
 # firewall-cmd --reload
 ```
 
