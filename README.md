@@ -40,22 +40,17 @@ VFX, 애니메이션, 게임, 사운드 등 콘텐츠 제작에 사용되는 에
 - OS: Linux, macOS 또는 Windows Server
 - 메모리: 32기가 이상
 
+### yum명령어 최신으로 업데이트
+Dafault로 설치되어 있는 yum으로는 필요한 라이브러리를 설치할 수 없습니다.
+아래 명령어를 통해 업데이트 해주세요.
+
+ ```
+ # yum install epel-release
+ ```
+
 ### DB 설치 및 실행
 도토리는 mongoDB를 사용하고 있습니다. mongoDB를 설치해주세요.
-
-#### CentOS
-```bash
-$ sudo yum install mongodb mongodb-server
-$ sudo service mongod start
-```
-
-#### macOS
-```bash
-$ brew uninstall mongodb
-$ brew tap mongodb/brew
-$ brew install mongodb-community
-$ brew services start mongodb-community
-```
+- [mongoDB 설치하는 법](https://github.com/cgiseminar/curriculum/blob/master/docs/install_mongodb.md)
 
 ### 기타 라이브러리 및 명령어 설치
 도토리에서 사용하고 있는 라이브러리의 설치는 아래 문서를 참고해주세요.
