@@ -3607,6 +3607,7 @@ Dropzone.options.clipDropzone = {
 // footage dropzone 페이지에서 업로드 버튼을 눌렀을 때 실행되는 코드부
 Dropzone.options.footageDropzone = {
   autoProcessQueue: false,
+  parallelUploads: 99999,
   init: function () {
     // 최초 dropzone 설정시 init을 통해 호출
     var submitButton = document.getElementById("btn-upload-file");
