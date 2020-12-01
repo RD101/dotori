@@ -338,7 +338,7 @@ func uploadFootageFile(w http.ResponseWriter, r *http.Request, objectID string) 
 			mimeType := f.Header.Get("Content-Type")
 			switch mimeType {
 
-			case "application/octet-stream":
+			case "image/x-exr", "application/octet-stream":
 				ext := strings.ToLower(filepath.Ext(f.Filename))
 				if ext != ".dpx" && ext != ".exr" { // .dpx .exr 외에는 허용하지 않는다.
 					http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
