@@ -323,7 +323,7 @@ func uploadPptFile(w http.ResponseWriter, r *http.Request, objectID string) {
 			unix.Umask(umask)
 			mimeType := f.Header.Get("Content-Type")
 			switch mimeType {
-			case "application/octet-stream", "application/zip", "application/vnd.ms-powerpoint", "application/vnd.openxmlformats-officedocument.presentationml.presentation":
+			case "application/octet-stream", "application/zip", "application/vnd.ms-powerpoint", "application/vnd.openxmlformats-officedocument.presentationml.presentation", "application/x-iwork-keynote-sffkey":
 				ext := filepath.Ext(f.Filename)
 				if ext != ".key" && ext != ".zip" && ext != ".ppt" && ext != ".pptx" { // .ma .mb 외에는 허용하지 않는다.
 					http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
