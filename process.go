@@ -1471,7 +1471,7 @@ func genProxyToOggMedia(adminSetting Adminsetting, item Item) error {
 			adminSetting.MediaHeight,
 		),
 	}
-	if item.Premult {
+	if item.Premultiply {
 		args = append(args, []string{"-vf", "premultiply=inplace=1"}...)
 	}
 	if adminSetting.AudioCodec == "nosound" {
@@ -1579,7 +1579,7 @@ func genProxyToMovMedia(adminSetting Adminsetting, item Item) error {
 			adminSetting.MediaHeight,
 		),
 	}
-	if item.Premult {
+	if item.Premultiply {
 		args = append(args, []string{"-vf", "premultiply=inplace=1"}...)
 	}
 	if adminSetting.AudioCodec == "nosound" {
@@ -1685,7 +1685,7 @@ func genProxyToMp4Media(adminSetting Adminsetting, item Item) error {
 			adminSetting.MediaHeight,
 		),
 	}
-	if item.Premult {
+	if item.Premultiply {
 		args = append(args, []string{"-vf", "premultiply=inplace=1"}...)
 	}
 	if adminSetting.AudioCodec == "nosound" {
