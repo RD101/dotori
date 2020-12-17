@@ -100,29 +100,7 @@ func processingItem(item Item) {
 	// LD_LIBRARY_PATH 환경변수를 세팅한다.
 	adminLdLibPath := adminSetting.LDLibraryPath
 	if adminLdLibPath != "" {
-		var ldLibPath string
-		adminLdLibPaths := strings.Split(adminLdLibPath, ":")
-		// 세팅할 path 중 $LD_LIBRARY_PATH가 있다면
-		// os에서 할당값을 받아와 세팅해준 후 slice에서 제거
-		for _, path := range adminLdLibPaths {
-			if path == "$LD_LIBRARY_PATH" {
-				envLdLibPath := strings.Split(os.Getenv("LD_LIBRARY_PATH"), ":")
-				ldLibPath = strings.Join(envLdLibPath, ":")
-				for num := 0; num < len(adminLdLibPaths); num++ {
-					if adminLdLibPaths[num] == "$LD_LIBRARY_PATH" {
-						adminLdLibPaths = append(adminLdLibPaths[:num], adminLdLibPaths[num+1:]...)
-					}
-				}
-			}
-		}
-		if ldLibPath == "" {
-			ldLibPath = strings.Join(adminLdLibPaths, ":")
-		} else {
-			ldLibPath += ":" + strings.Join(adminLdLibPaths, ":")
-		}
-		if ldLibPath != "" {
-			os.Setenv("LD_LIBRARY_PATH", ldLibPath)
-		}
+		os.Setenv("LD_LIBRARY_PATH", adminLdLibPath)
 	}
 	// ItemType별로 연산한다.
 	switch item.ItemType {
