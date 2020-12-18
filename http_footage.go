@@ -115,6 +115,11 @@ func handleUploadFootageItem(w http.ResponseWriter, r *http.Request) {
 	tags := Str2Tags(r.FormValue("tags"))
 	item.Tags = tags
 	item.ItemType = "footage"
+	if r.FormValue("premult") == "" {
+		item.Premultiply = false
+	} else {
+		item.Premultiply = true
+	}
 	attr := make(map[string]string)
 	attrNum, err := strconv.Atoi(r.FormValue("attributesNum"))
 	if err != nil {

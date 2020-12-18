@@ -64,6 +64,30 @@ body {
 	-webkit-appearance:none;
 }
 
+.custom-check-input {
+	display: none;
+}
+
+.custom-check-input + label {
+	background-color:  #1C1C1C;
+	border:1px solid #A7A59C;
+	color: #A7A59C;
+    border-radius: 3px;
+	width: 15px;
+	height: 15px;
+	position: relative;
+	top: 3px;
+	margin-right: 10px;
+	margin-bottom: 0px
+}
+
+.custom-check-input:checked + label:before {
+	content: "\2714";
+	position: absolute;
+	top: -5px;
+}
+
+
 .custom-select {
 	background-color:  rgb(41, 41, 41)!important;
 	color: #A7A59C;
