@@ -78,16 +78,14 @@ func RmItem(client *mongo.Client, id string) error {
 	return nil
 }
 
-// RmFavoriteItemIds 는 id를 받아서 해당 id를 즐겨찾기 하고 있는 User가 있다면 favoriteassetids에서 삭제한다.
-func RmFavoriteItemIds(client *mongo.Client, id string) error {
+// RmFavoriteItem 는 id를 받아서 해당 id를 즐겨찾기 하고 있는 User가 있다면 favoriteassetids 필드에서 삭제한다.
+func RmFavoriteItem(client *mongo.Client, id string) error {
 	collection := client.Database(*flagDBName).Collection("users")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	objID, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		return err
-	}
-	_, err = collection.DeleteOne(ctx, bson.M{"_id": objID})
+	filter := bson.M{"favoriteassetids": id}
+	update := bson.M{"$pull": bson.M{"favoriteassetids": id}}
+	_, err := collection.UpdateMany(ctx, filter, update)
 	if err != nil {
 		return err
 	}
