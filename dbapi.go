@@ -78,6 +78,20 @@ func RmItem(client *mongo.Client, id string) error {
 	return nil
 }
 
+// RmFavoriteItem 는 id를 받아서 해당 id를 즐겨찾기 하고 있는 User가 있다면 favoriteassetids 필드에서 삭제한다.
+func RmFavoriteItem(client *mongo.Client, id string) error {
+	collection := client.Database(*flagDBName).Collection("users")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	filter := bson.M{"favoriteassetids": id}
+	update := bson.M{"$pull": bson.M{"favoriteassetids": id}}
+	_, err := collection.UpdateMany(ctx, filter, update)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // GetAllItems 는 DB에서 전체 아이템 정보를 가져오는 함수입니다.
 func GetAllItems(client *mongo.Client) ([]Item, error) {
 	collection := client.Database(*flagDBName).Collection("items")
@@ -464,7 +478,6 @@ func GetFileUploadedItemsNum(client *mongo.Client) (int64, error) {
 	}
 	return n, nil
 }
-
 
 // GetUndoneItem 는 status가 done이 아닌 모든 아이템을 가져온다.
 func GetUndoneItem(client *mongo.Client) ([]Item, error) {

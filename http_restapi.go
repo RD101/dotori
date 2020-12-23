@@ -228,11 +228,15 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		// 삭제 함수 호출
+		// DB에서 데이터 삭제
 		err = RmItem(client, id)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
+		}
+		err = RmFavoriteItem(client, id)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 
 		data, err := json.Marshal(id)

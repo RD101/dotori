@@ -3419,4 +3419,9 @@ func rmItemCmd() {
 	if err != nil {
 		log.Print(err)
 	}
+	err = RmFavoriteItem(client, *flagItemID)
+	if err != nil {
+		log.Print(err)
+	}
+
 }
