@@ -97,6 +97,11 @@ func processingItem(item Item) {
 		log.Println(err)
 		return
 	}
+	// LD_LIBRARY_PATH 환경변수를 세팅한다.
+	adminLdLibPath := adminSetting.LDLibraryPath
+	if adminLdLibPath != "" {
+		os.Setenv("LD_LIBRARY_PATH", adminLdLibPath)
+	}
 	// ItemType별로 연산한다.
 	switch item.ItemType {
 	case "maya":
