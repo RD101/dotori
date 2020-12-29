@@ -2752,6 +2752,7 @@ func addFootageItemCmd() {
 	i.InColorspace = *flagInColorspace
 	i.OutColorspace = *flagOutColorspace
 	i.Tags = Str2Tags(*flagTag)
+	i.Premultiply = *flagPremultiply
 	attr, err := StringToMap(*flagAttributes)
 	if err != nil {
 		log.Fatal(err)
@@ -2828,7 +2829,7 @@ func addFootageItemCmd() {
 		}
 		// 유효한 파일인지 체크.
 		ext := filepath.Ext(path)
-		if ext != ".dpx" && ext != ".exr" && ext != ".zip" {
+		if ext != ".dpx" && ext != ".exr" && ext != ".zip" && ext != ".jpg" {
 			log.Fatal("지원하지 않는 데이터 포맷입니다.")
 		}
 		// 있으면 OutputData 경로로 복사하기
