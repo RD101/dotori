@@ -19,25 +19,10 @@
             {{$itemid := .ID.Hex}}
             <!-- Thumbnail in Card-->
             <div class="card" id="recentCard{{$i}}" style="width: {{$thumbnailwidth}}px;">
-                <a class="card-image" href="#" title="image {{$i}}" class="thumb" id="recentlyImageForm{{$i}}">
-                    {{if eq $itemtype "hwp" "ies" "pdf" "ppt" "sound"}}
-                        <img class="card-img" width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="/assets/img/{{$itemtype}}thumbnail.svg">
-                    {{else if eq $itemtype "hdri" "texture" "lut" }}
-                        <img class="card-img" width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src='{{if eq .Status "done" }}/mediadata?id={{.ID.Hex}}&type=png{{else}}/assets/img/noimage.svg{{end}}'>
-                    {{else if eq $itemtype "clip"}}
-                        <video class="card-img" width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" autoplay loop>
-                            <source src="/mediadata?id={{.ID.Hex}}&type=mp4" type="video/mp4">
-                            <source src="/mediadata?id={{.ID.Hex}}&type=ogg" type="video/ogg">
-                            Your browser does not support the video tag.
-                        </video>
-                    {{else}}
-                        <video class="card-img" width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" controls poster="{{if eq .Status "done" }}/mediadata?id={{.ID.Hex}}&type=png{{else}}/assets/img/noimage.svg{{end}}">
-                            <source src="/mediadata?id={{.ID.Hex}}&type=mp4" type="video/mp4">
-                            <source src="/mediadata?id={{.ID.Hex}}&type=ogg" type="video/ogg">
-                            Your browser does not support the video tag.
-                        </video>
-                    {{end}}
-                </a>
+                <a class="card-image" href="#" title="image {{$i}}" class="thumb" id="recentlyImageForm{{$i}}"></a>
+                    <script src="/assets/js/dotori.js"></script>
+                    <script src="/assets/js/jquery-3.1.1.min.js"></script>
+                    <script>recentlyClick('{{$.RecentlyTotalItemNum}}', 'next');</script>
                 <!-- Item info in Card -->
                 <div class="card-body">
                     <div id="recentCardBody{{$i}}" data-toggle="modal" data-target="#modal-detailview" onclick="setDetailViewModal('{{.ID.Hex}}')">
@@ -67,6 +52,15 @@
                     </div>
                 </div>
             </div>
+        {{end}}
+        {{$len := len .RecentlyCreateItems}}
+        {{$modlen := mod $len 4}}
+        {{if eq $modlen 0}}
+        {{else}}
+        {{$len = sub 4 $modlen}}
+        {{range $index, $i := IntToSlice $len}}
+            <div class="card" id="recentCard{{add $modlen $index}}" style="width: {{$thumbnailwidth}}px; visibility: hidden;"></div>
+        {{end}}
         {{end}}
     </div>
 {{end}}
