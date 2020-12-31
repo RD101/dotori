@@ -45,6 +45,7 @@ var (
 	flagFPS                = flag.String("fps", "", "frame per second")
 	flagInColorspace       = flag.String("incolorspace", "", "in color space")
 	flagOutColorspace      = flag.String("outcolorspace", "", "out color space")
+	flagPremultiply        = flag.Bool("premultiply", false, "premultiply")
 
 	// 서비스에 필요한 인수
 	flagMongoDBURI      = flag.String("mongodburi", "mongodb://localhost:27017", "mongoDB URI ex)mongodb://localhost:27017")
