@@ -243,7 +243,7 @@ function recentlyClick(totalItemNum, buttonState) {
     let totalPageNum = Math.ceil(totalItemNum / 4); // 전체 페이지 수
     let clearItemNum = (totalPageNum * 4) - totalItemNum; // 마지막 페이지의 공백처리할 아이템 수
     let currentPageNum = parseInt(document.getElementById("recentlyPage").getAttribute('value')); // 현재 보고있는 페이지
-    
+
     if (buttonState=="next"){
         if (currentPageNum===totalPageNum){
             currentPageNum = 1;
@@ -260,16 +260,19 @@ function recentlyClick(totalItemNum, buttonState) {
 
     document.getElementById("recentlyPage").innerHTML = currentPageNum + " / " + totalPageNum;
     document.getElementById("recentlyPage").setAttribute('value', currentPageNum);
-    // 마지막 페이지일 때
-    if(clearItemNum!==0 && currentPageNum===totalPageNum){
-        for(let i = 3; clearItemNum!=0; i--, clearItemNum--){
-            document.getElementById("recentCard"+i).style.visibility="hidden"
+
+    if(totalPageNum !== 1){
+        // 마지막 페이지일 때
+        if(clearItemNum!==0 && currentPageNum===totalPageNum){
+            for(let i = 3; clearItemNum!=0; i--, clearItemNum--){
+                document.getElementById("recentCard"+i).style.visibility="hidden"
+            }
         }
-    }
-    // 마지막 페이지가 아닐 때
-    if (currentPageNum != totalPageNum) {
-        for(let i = 0; i<4; i++){
-            document.getElementById("recentCard"+i).style.visibility="visible"
+        // 마지막 페이지가 아닐 때
+        if (currentPageNum != totalPageNum) {
+            for(let i = 0; i<4; i++){
+                document.getElementById("recentCard"+i).style.visibility="visible"
+            }
         }
     }
 
@@ -357,9 +360,11 @@ function recentlyClick(totalItemNum, buttonState) {
                         document.getElementById("recentCardTags"+i).innerHTML = tagsHtml;                             
                         // 즐겨찾기 아이콘 스위칭
                         let fillBool = "unfilled";
-                        for (j=0;j<favoriteAssetIds.length;j++) {
-                            if (favoriteAssetIds[j] == itemid) {
-                                fillBool = "filled";
+                        if (favoriteAssetIds){
+                            for (j=0;j<favoriteAssetIds.length;j++) {
+                                if (favoriteAssetIds[j] == itemid) {
+                                    fillBool = "filled";
+                                }
                             }
                         }
                         titleHtml= data[i].title;
@@ -378,10 +383,7 @@ function recentlyClick(totalItemNum, buttonState) {
         error: function(response) {
             alert(response["responseText"]);
         }
-
     })
-
-    
 }
 
 // topUsingClick 은 초기페이지에서 가장 많이 사용되는 아이템의 next, prev 버튼을 눌렀을 때 실행하는 함수이다.
@@ -407,16 +409,19 @@ function topUsingClick(totalItemNum, buttonState) {
     
     document.getElementById("topUsingPage").innerHTML = currentPageNum + " / " + totalPageNum;
     document.getElementById("topUsingPage").setAttribute('value', currentPageNum);
-    // 마지막 페이지일 때
-    if(clearItemNum!=0 && currentPageNum==totalPageNum){
-        for(let i = 3; clearItemNum!=0; i--, clearItemNum--){
-            document.getElementById("topUsingCard"+i).style.visibility="hidden";
+
+    if(totalPageNum !== 1){
+        // 마지막 페이지일 때
+        if(clearItemNum!=0 && currentPageNum==totalPageNum){
+            for(let i = 3; clearItemNum!=0; i--, clearItemNum--){
+                document.getElementById("topUsingCard"+i).style.visibility="hidden";
+            }
         }
-    }
-    // 마지막 페이지가 아닐 때
-    if (currentPageNum != totalPageNum) {
-        for(let i = 0; i<4; i++){
-            document.getElementById("topUsingCard"+i).style.visibility="visible"
+        // 마지막 페이지가 아닐 때
+        if (currentPageNum != totalPageNum) {
+            for(let i = 0; i<4; i++){
+                document.getElementById("topUsingCard"+i).style.visibility="visible"
+            }
         }
     }
 
@@ -502,9 +507,12 @@ function topUsingClick(totalItemNum, buttonState) {
                         document.getElementById("topUsingCardTags"+i).innerHTML = tagsHtml;  
                         // 즐겨찾기 아이콘 스위칭
                         let fillBool = "unfilled";
-                        for (j=0;j<favoriteAssetIds.length;j++) {
-                            if (favoriteAssetIds[j] == itemid) {
-                                fillBool = "filled";
+
+                        if (favoriteAssetIds){
+                            for (j=0;j<favoriteAssetIds.length;j++) {
+                                if (favoriteAssetIds[j] == itemid) {
+                                    fillBool = "filled";
+                                }
                             }
                         }
                         titleHtml= data[i].title;
@@ -569,6 +577,5 @@ function clickBookmarkIcon(target, fillBool, itemid) {
                 alert(response["responseText"]);
             }
         })
-    }
-    
+    }    
 }
