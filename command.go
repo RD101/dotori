@@ -2797,6 +2797,16 @@ func addFootageItemCmd() {
 	i.OutputDataPath = rootpath + objIDpath + "/data/"
 	i.OutputProxyImgPath = rootpath + objIDpath + "/proxy/"
 
+	// DB에 Asset 추가
+	err = i.CheckError()
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = AddItem(client, i)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	// 3. 데이터
 	datapaths := QuotesPaths2Paths(*flagInputDataPath)
 	var filteredPaths []string
@@ -2839,17 +2849,18 @@ func addFootageItemCmd() {
 		}
 	}
 
-	// DataUploaded true로 바꾸기
-	i.DataUploaded = true
-
-	// 다 잘 업로드 됐으면 status바꾸기
-	i.Status = "fileuploaded"
-
-	err = i.CheckError()
+	// Update 할 item 받아오기
+	updateItem, err := GetItem(client, i.ID.Hex())
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = AddItem(client, i)
+	// DataUploaded true로 바꾸기
+	updateItem.DataUploaded = true
+	// 다 잘 업로드 됐으면 status바꾸기
+	updateItem.Status = "fileuploaded"
+
+	// Update Item
+	err = SetItem(client, updateItem)
 	if err != nil {
 		log.Print(err)
 	}
