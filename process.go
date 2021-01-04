@@ -345,7 +345,13 @@ func queueingItem(jobs chan<- Item) {
 			time.Sleep(time.Second * 10)
 			continue
 		}
-		jobs <- item
+		updatedItem, err := SetStatusAndGetItem(item, "queued for processing")
+		if err != nil {
+			log.Println(err)
+			time.Sleep(time.Second * 10)
+			continue
+		}
+		jobs <- updatedItem
 		// 10초후 다시 queueing 한다.
 		time.Sleep(time.Second * 10)
 	}
