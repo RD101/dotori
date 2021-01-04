@@ -514,6 +514,41 @@ func SetStatus(client *mongo.Client, item Item, status string) error {
 	return nil
 }
 
+//SetStatusAndGetItem 함수는 인수로 받은 item의 Status를 update 하고 update된 item을 return 한다
+func SetStatusAndGetItem(item Item, status string) (Item, error) {
+	var result Item
+
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+	if err != nil {
+		return result, err
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	err = client.Connect(ctx)
+	if err != nil {
+		return result, err
+	}
+	defer client.Disconnect(ctx)
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		return result, err
+	}
+
+	// item의 Status를 업데이트 한다.
+	filter := bson.M{"_id": item.ID}
+	update := bson.M{
+		"$set": bson.M{"status": status},
+	}
+	collection := client.Database(*flagDBName).Collection("items")
+	option := *options.FindOneAndUpdate().SetReturnDocument(options.After)
+	err = collection.FindOneAndUpdate(ctx, filter, update, &option).Err()
+	if err != nil {
+		return result, err
+	}
+	return result, nil
+}
+
 //SetErrStatus 함수는 인수로 받은 item의 Status를 error status로 바꾼다
 func SetErrStatus(client *mongo.Client, id, errmsg string) error {
 	collection := client.Database(*flagDBName).Collection("items")
