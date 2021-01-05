@@ -542,7 +542,7 @@ func SetStatusAndGetItem(item Item, status string) (Item, error) {
 	}
 	collection := client.Database(*flagDBName).Collection("items")
 	option := *options.FindOneAndUpdate().SetReturnDocument(options.After)
-	err = collection.FindOneAndUpdate(ctx, filter, update, &option).Err()
+	err = collection.FindOneAndUpdate(ctx, filter, update, &option).Decode(&result)
 	if err != nil {
 		return result, err
 	}
