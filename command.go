@@ -133,7 +133,17 @@ func addMayaItemCmd() {
 	// 존재하고 유효하면 ThumbClipUploaded true로 바꾸기
 	i.ThumbClipUploaded = true
 
-	// 3. 데이터
+	// 3. DB에 Asset 추가
+	err = i.CheckError()
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = AddItem(client, i)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// 4. 데이터 복사
 	datapaths := QuotesPaths2Paths(*flagInputDataPath)
 	var filteredPaths []string
 	for _, path := range datapaths {
@@ -175,17 +185,15 @@ func addMayaItemCmd() {
 		}
 	}
 
-	// DataUploaded true로 바꾸기
-	i.DataUploaded = true
-
-	// 다 잘 업로드 됐으면 status바꾸기
-	i.Status = "fileuploaded"
-
-	err = i.CheckError()
+	// 5. Asset status 업데이트
+	updateItem, err := GetItem(client, i.ID.Hex())
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = AddItem(client, i)
+	// file upload 완료를 의미하는 status로 변경
+	updateItem.DataUploaded = true
+	updateItem.Status = "fileuploaded"
+	err = SetItem(client, updateItem)
 	if err != nil {
 		log.Print(err)
 	}
@@ -311,7 +319,17 @@ func addMaxItemCmd() {
 	// 존재하고 유효하면 ThumbClipUploaded true로 바꾸기
 	i.ThumbClipUploaded = true
 
-	// 3. 데이터
+	// 3. DB에 Asset 추가
+	err = i.CheckError()
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = AddItem(client, i)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// 4. 데이터 복사
 	datapaths := QuotesPaths2Paths(*flagInputDataPath)
 	var filteredPaths []string
 	for _, path := range datapaths {
@@ -353,17 +371,15 @@ func addMaxItemCmd() {
 		}
 	}
 
-	// DataUploaded true로 바꾸기
-	i.DataUploaded = true
-
-	// 다 잘 업로드 됐으면 status바꾸기
-	i.Status = "fileuploaded"
-
-	err = i.CheckError()
+	// 5. Asset status 업데이트
+	updateItem, err := GetItem(client, i.ID.Hex())
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = AddItem(client, i)
+	// file upload 완료를 의미하는 status로 변경
+	updateItem.DataUploaded = true
+	updateItem.Status = "fileuploaded"
+	err = SetItem(client, updateItem)
 	if err != nil {
 		log.Print(err)
 	}
@@ -489,7 +505,17 @@ func addFusion360ItemCmd() {
 	// 존재하고 유효하면 ThumbClipUploaded true로 바꾸기
 	i.ThumbClipUploaded = true
 
-	// 3. 데이터
+	// 3. DB에 Asset 추가
+	err = i.CheckError()
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = AddItem(client, i)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// 4. 데이터 복사
 	datapaths := QuotesPaths2Paths(*flagInputDataPath)
 	var filteredPaths []string
 	for _, path := range datapaths {
@@ -531,17 +557,15 @@ func addFusion360ItemCmd() {
 		}
 	}
 
-	// DataUploaded true로 바꾸기
-	i.DataUploaded = true
-
-	// 다 잘 업로드 됐으면 status바꾸기
-	i.Status = "fileuploaded"
-
-	err = i.CheckError()
+	// 5. Asset status 업데이트
+	updateItem, err := GetItem(client, i.ID.Hex())
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = AddItem(client, i)
+	// file upload 완료를 의미하는 status로 변경
+	updateItem.DataUploaded = true
+	updateItem.Status = "fileuploaded"
+	err = SetItem(client, updateItem)
 	if err != nil {
 		log.Print(err)
 	}
@@ -667,7 +691,17 @@ func addOpenVDBItemCmd() {
 	// 존재하고 유효하면 ThumbClipUploaded true로 바꾸기
 	i.ThumbClipUploaded = true
 
-	// 3. 데이터
+	// 3. DB에 Asset 추가
+	err = i.CheckError()
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = AddItem(client, i)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// 4. 데이터 복사
 	datapaths := QuotesPaths2Paths(*flagInputDataPath)
 	var filteredPaths []string
 	for _, path := range datapaths {
@@ -709,17 +743,15 @@ func addOpenVDBItemCmd() {
 		}
 	}
 
-	// DataUploaded true로 바꾸기
-	i.DataUploaded = true
-
-	// 다 잘 업로드 됐으면 status바꾸기
-	i.Status = "fileuploaded"
-
-	err = i.CheckError()
+	// 5. Asset status 업데이트
+	updateItem, err := GetItem(client, i.ID.Hex())
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = AddItem(client, i)
+	// file upload 완료를 의미하는 status로 변경
+	updateItem.DataUploaded = true
+	updateItem.Status = "fileuploaded"
+	err = SetItem(client, updateItem)
 	if err != nil {
 		log.Print(err)
 	}
@@ -845,7 +877,17 @@ func addModoItemCmd() {
 	// 존재하고 유효하면 ThumbClipUploaded true로 바꾸기
 	i.ThumbClipUploaded = true
 
-	// 3. 데이터
+	// 3. DB에 Asset 추가
+	err = i.CheckError()
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = AddItem(client, i)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// 4. 데이터 복사
 	datapaths := QuotesPaths2Paths(*flagInputDataPath)
 	var filteredPaths []string
 	for _, path := range datapaths {
@@ -887,17 +929,15 @@ func addModoItemCmd() {
 		}
 	}
 
-	// DataUploaded true로 바꾸기
-	i.DataUploaded = true
-
-	// 다 잘 업로드 됐으면 status바꾸기
-	i.Status = "fileuploaded"
-
-	err = i.CheckError()
+	// 5. Asset status 업데이트
+	updateItem, err := GetItem(client, i.ID.Hex())
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = AddItem(client, i)
+	// file upload 완료를 의미하는 status로 변경
+	updateItem.DataUploaded = true
+	updateItem.Status = "fileuploaded"
+	err = SetItem(client, updateItem)
 	if err != nil {
 		log.Print(err)
 	}
@@ -1023,7 +1063,17 @@ func addKatanaItemCmd() {
 	// 존재하고 유효하면 ThumbClipUploaded true로 바꾸기
 	i.ThumbClipUploaded = true
 
-	// 3. 데이터
+	// 3. DB에 Asset 추가
+	err = i.CheckError()
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = AddItem(client, i)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// 4. 데이터 복사
 	datapaths := QuotesPaths2Paths(*flagInputDataPath)
 	var filteredPaths []string
 	for _, path := range datapaths {
@@ -1065,17 +1115,15 @@ func addKatanaItemCmd() {
 		}
 	}
 
-	// DataUploaded true로 바꾸기
-	i.DataUploaded = true
-
-	// 다 잘 업로드 됐으면 status바꾸기
-	i.Status = "fileuploaded"
-
-	err = i.CheckError()
+	// 5. Asset status 업데이트
+	updateItem, err := GetItem(client, i.ID.Hex())
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = AddItem(client, i)
+	// file upload 완료를 의미하는 status로 변경
+	updateItem.DataUploaded = true
+	updateItem.Status = "fileuploaded"
+	err = SetItem(client, updateItem)
 	if err != nil {
 		log.Print(err)
 	}
@@ -1201,7 +1249,17 @@ func addHoudiniItemCmd() {
 	// 존재하고 유효하면 ThumbClipUploaded true로 바꾸기
 	i.ThumbClipUploaded = true
 
-	// 3. 데이터
+	// 3. DB에 Asset 추가
+	err = i.CheckError()
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = AddItem(client, i)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// 4. 데이터 복사
 	datapaths := QuotesPaths2Paths(*flagInputDataPath)
 	var filteredPaths []string
 	for _, path := range datapaths {
@@ -1243,17 +1301,15 @@ func addHoudiniItemCmd() {
 		}
 	}
 
-	// DataUploaded true로 바꾸기
-	i.DataUploaded = true
-
-	// 다 잘 업로드 됐으면 status바꾸기
-	i.Status = "fileuploaded"
-
-	err = i.CheckError()
+	// 5. Asset status 업데이트
+	updateItem, err := GetItem(client, i.ID.Hex())
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = AddItem(client, i)
+	// file upload 완료를 의미하는 status로 변경
+	updateItem.DataUploaded = true
+	updateItem.Status = "fileuploaded"
+	err = SetItem(client, updateItem)
 	if err != nil {
 		log.Print(err)
 	}
@@ -1379,7 +1435,17 @@ func addBlenderItemCmd() {
 	// 존재하고 유효하면 ThumbClipUploaded true로 바꾸기
 	i.ThumbClipUploaded = true
 
-	// 3. 데이터
+	// 3. DB에 Asset 추가
+	err = i.CheckError()
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = AddItem(client, i)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// 4. 데이터 복사
 	datapaths := QuotesPaths2Paths(*flagInputDataPath)
 	var filteredPaths []string
 	for _, path := range datapaths {
@@ -1421,17 +1487,15 @@ func addBlenderItemCmd() {
 		}
 	}
 
-	// DataUploaded true로 바꾸기
-	i.DataUploaded = true
-
-	// 다 잘 업로드 됐으면 status바꾸기
-	i.Status = "fileuploaded"
-
-	err = i.CheckError()
+	// 5. Asset status 업데이트
+	updateItem, err := GetItem(client, i.ID.Hex())
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = AddItem(client, i)
+	// file upload 완료를 의미하는 status로 변경
+	updateItem.DataUploaded = true
+	updateItem.Status = "fileuploaded"
+	err = SetItem(client, updateItem)
 	if err != nil {
 		log.Print(err)
 	}
@@ -1530,7 +1594,17 @@ func addLutItemCmd() {
 	// 존재하고 유효하면 ThumbImgUploaded true로 바꾸기
 	i.ThumbImgUploaded = true
 
-	// 3. 데이터
+	// 2. DB에 Asset 추가
+	err = i.CheckError()
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = AddItem(client, i)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// 3. 데이터 복사
 	datapaths := QuotesPaths2Paths(*flagInputDataPath)
 	var filteredPaths []string
 	for _, path := range datapaths {
@@ -1573,17 +1647,15 @@ func addLutItemCmd() {
 		}
 	}
 
-	// DataUploaded true로 바꾸기
-	i.DataUploaded = true
-
-	// 다 잘 업로드 됐으면 status바꾸기
-	i.Status = "fileuploaded"
-
-	err = i.CheckError()
+	// 4. Asset status 업데이트
+	updateItem, err := GetItem(client, i.ID.Hex())
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = AddItem(client, i)
+	// file upload 완료를 의미하는 status로 변경
+	updateItem.DataUploaded = true
+	updateItem.Status = "fileuploaded"
+	err = SetItem(client, updateItem)
 	if err != nil {
 		log.Print(err)
 	}
@@ -1659,7 +1731,17 @@ func addClipItemCmd() {
 	i.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/thumbnail.mov"
 	i.OutputDataPath = rootpath + objIDpath + "/data/"
 
-	// 3. 데이터
+	// 1. DB에 Asset 추가
+	err = i.CheckError()
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = AddItem(client, i)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// 2. 데이터 복사
 	datapaths := QuotesPaths2Paths(*flagInputDataPath)
 	var filteredPaths []string
 	for _, path := range datapaths {
@@ -1701,17 +1783,15 @@ func addClipItemCmd() {
 		}
 	}
 
-	// DataUploaded true로 바꾸기
-	i.DataUploaded = true
-
-	// 다 잘 업로드 됐으면 status바꾸기
-	i.Status = "fileuploaded"
-
-	err = i.CheckError()
+	// 3. Asset status 업데이트
+	updateItem, err := GetItem(client, i.ID.Hex())
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = AddItem(client, i)
+	// file upload 완료를 의미하는 status로 변경
+	updateItem.DataUploaded = true
+	updateItem.Status = "fileuploaded"
+	err = SetItem(client, updateItem)
 	if err != nil {
 		log.Print(err)
 	}
@@ -1783,7 +1863,17 @@ func addPdfItemCmd() {
 	i.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/thumbnail.mov"
 	i.OutputDataPath = rootpath + objIDpath + "/data/"
 
-	// 3. 데이터
+	// 1. DB에 Asset 추가
+	err = i.CheckError()
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = AddItem(client, i)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// 2. 데이터 복사
 	datapaths := QuotesPaths2Paths(*flagInputDataPath)
 	var filteredPaths []string
 	for _, path := range datapaths {
@@ -1825,17 +1915,15 @@ func addPdfItemCmd() {
 		}
 	}
 
-	// DataUploaded true로 바꾸기
-	i.DataUploaded = true
-
-	// 다 잘 업로드 됐으면 status바꾸기
-	i.Status = "fileuploaded"
-
-	err = i.CheckError()
+	// 3. Asset status 업데이트
+	updateItem, err := GetItem(client, i.ID.Hex())
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = AddItem(client, i)
+	// file upload 완료를 의미하는 status로 변경
+	updateItem.DataUploaded = true
+	updateItem.Status = "fileuploaded"
+	err = SetItem(client, updateItem)
 	if err != nil {
 		log.Print(err)
 	}
@@ -1907,7 +1995,17 @@ func addIesItemCmd() {
 	i.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/thumbnail.mov"
 	i.OutputDataPath = rootpath + objIDpath + "/data/"
 
-	// 3. 데이터
+	// 1. DB에 Asset 추가
+	err = i.CheckError()
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = AddItem(client, i)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// 2. 데이터 복사
 	datapaths := QuotesPaths2Paths(*flagInputDataPath)
 	var filteredPaths []string
 	for _, path := range datapaths {
@@ -1949,17 +2047,15 @@ func addIesItemCmd() {
 		}
 	}
 
-	// DataUploaded true로 바꾸기
-	i.DataUploaded = true
-
-	// 다 잘 업로드 됐으면 status바꾸기
-	i.Status = "fileuploaded"
-
-	err = i.CheckError()
+	// 3. Asset status 업데이트
+	updateItem, err := GetItem(client, i.ID.Hex())
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = AddItem(client, i)
+	// file upload 완료를 의미하는 status로 변경
+	updateItem.DataUploaded = true
+	updateItem.Status = "fileuploaded"
+	err = SetItem(client, updateItem)
 	if err != nil {
 		log.Print(err)
 	}
@@ -2031,7 +2127,17 @@ func addPptItemCmd() {
 	i.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/thumbnail.mov"
 	i.OutputDataPath = rootpath + objIDpath + "/data/"
 
-	// 3. 데이터
+	// 1. DB에 Asset 추가
+	err = i.CheckError()
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = AddItem(client, i)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// 2. 데이터 복사
 	datapaths := QuotesPaths2Paths(*flagInputDataPath)
 	var filteredPaths []string
 	for _, path := range datapaths {
@@ -2073,17 +2179,15 @@ func addPptItemCmd() {
 		}
 	}
 
-	// DataUploaded true로 바꾸기
-	i.DataUploaded = true
-
-	// 다 잘 업로드 됐으면 status바꾸기
-	i.Status = "fileuploaded"
-
-	err = i.CheckError()
+	// 3. Asset status 업데이트
+	updateItem, err := GetItem(client, i.ID.Hex())
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = AddItem(client, i)
+	// file upload 완료를 의미하는 status로 변경
+	updateItem.DataUploaded = true
+	updateItem.Status = "fileuploaded"
+	err = SetItem(client, updateItem)
 	if err != nil {
 		log.Print(err)
 	}
@@ -2155,7 +2259,17 @@ func addSoundItemCmd() {
 	i.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/thumbnail.mov"
 	i.OutputDataPath = rootpath + objIDpath + "/data/"
 
-	// 3. 데이터
+	// 1. DB에 Asset 추가
+	err = i.CheckError()
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = AddItem(client, i)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// 2. 데이터 복사
 	datapaths := QuotesPaths2Paths(*flagInputDataPath)
 	var filteredPaths []string
 	for _, path := range datapaths {
@@ -2197,17 +2311,15 @@ func addSoundItemCmd() {
 		}
 	}
 
-	// DataUploaded true로 바꾸기
-	i.DataUploaded = true
-
-	// 다 잘 업로드 됐으면 status바꾸기
-	i.Status = "fileuploaded"
-
-	err = i.CheckError()
+	// 3. Asset status 업데이트
+	updateItem, err := GetItem(client, i.ID.Hex())
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = AddItem(client, i)
+	// file upload 완료를 의미하는 status로 변경
+	updateItem.DataUploaded = true
+	updateItem.Status = "fileuploaded"
+	err = SetItem(client, updateItem)
 	if err != nil {
 		log.Print(err)
 	}
@@ -2279,7 +2391,17 @@ func addTextureItemCmd() {
 	i.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/thumbnail.mov"
 	i.OutputDataPath = rootpath + objIDpath + "/data/"
 
-	// 3. 데이터
+	// 1. DB에 Asset 추가
+	err = i.CheckError()
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = AddItem(client, i)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// 2. 데이터 복사
 	datapaths := QuotesPaths2Paths(*flagInputDataPath)
 	var filteredPaths []string
 	for _, path := range datapaths {
@@ -2321,17 +2443,15 @@ func addTextureItemCmd() {
 		}
 	}
 
-	// DataUploaded true로 바꾸기
-	i.DataUploaded = true
-
-	// 다 잘 업로드 됐으면 status바꾸기
-	i.Status = "fileuploaded"
-
-	err = i.CheckError()
+	// 3. Asset status 업데이트
+	updateItem, err := GetItem(client, i.ID.Hex())
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = AddItem(client, i)
+	// file upload 완료를 의미하는 status로 변경
+	updateItem.DataUploaded = true
+	updateItem.Status = "fileuploaded"
+	err = SetItem(client, updateItem)
 	if err != nil {
 		log.Print(err)
 	}
@@ -2403,7 +2523,17 @@ func addHwpItemCmd() {
 	i.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/thumbnail.mov"
 	i.OutputDataPath = rootpath + objIDpath + "/data/"
 
-	// 3. 데이터
+	// 1. DB에 Asset 추가
+	err = i.CheckError()
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = AddItem(client, i)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// 2. 데이터 복사
 	datapaths := QuotesPaths2Paths(*flagInputDataPath)
 	var filteredPaths []string
 	for _, path := range datapaths {
@@ -2445,17 +2575,15 @@ func addHwpItemCmd() {
 		}
 	}
 
-	// DataUploaded true로 바꾸기
-	i.DataUploaded = true
-
-	// 다 잘 업로드 됐으면 status바꾸기
-	i.Status = "fileuploaded"
-
-	err = i.CheckError()
+	// 3. Asset status 업데이트
+	updateItem, err := GetItem(client, i.ID.Hex())
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = AddItem(client, i)
+	// file upload 완료를 의미하는 status로 변경
+	updateItem.DataUploaded = true
+	updateItem.Status = "fileuploaded"
+	err = SetItem(client, updateItem)
 	if err != nil {
 		log.Print(err)
 	}
@@ -2535,7 +2663,17 @@ func addHdriItemCmd() {
 	i.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/thumbnail.mov"
 	i.OutputDataPath = rootpath + objIDpath + "/data/"
 
-	// 3. 데이터
+	// 1. DB에 Asset 추가
+	err = i.CheckError()
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = AddItem(client, i)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// 2. 데이터 복사
 	datapaths := QuotesPaths2Paths(*flagInputDataPath)
 	var filteredPaths []string
 	for _, path := range datapaths {
@@ -2577,17 +2715,15 @@ func addHdriItemCmd() {
 		}
 	}
 
-	// DataUploaded true로 바꾸기
-	i.DataUploaded = true
-
-	// 다 잘 업로드 됐으면 status바꾸기
-	i.Status = "fileuploaded"
-
-	err = i.CheckError()
+	// 3. Asset status 업데이트
+	updateItem, err := GetItem(client, i.ID.Hex())
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = AddItem(client, i)
+	// file upload 완료를 의미하는 status로 변경
+	updateItem.DataUploaded = true
+	updateItem.Status = "fileuploaded"
+	err = SetItem(client, updateItem)
 	if err != nil {
 		log.Print(err)
 	}
@@ -2659,7 +2795,17 @@ func addUnrealItemCmd() {
 	i.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/thumbnail.mov"
 	i.OutputDataPath = rootpath + objIDpath + "/data/"
 
-	// 3. 데이터
+	// 1. DB에 Asset 추가
+	err = i.CheckError()
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = AddItem(client, i)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// 2. 데이터 복사
 	datapaths := QuotesPaths2Paths(*flagInputDataPath)
 	var filteredPaths []string
 	for _, path := range datapaths {
@@ -2701,17 +2847,15 @@ func addUnrealItemCmd() {
 		}
 	}
 
-	// DataUploaded true로 바꾸기
-	i.DataUploaded = true
-
-	// 다 잘 업로드 됐으면 status바꾸기
-	i.Status = "fileuploaded"
-
-	err = i.CheckError()
+	// 3. Asset status 업데이트
+	updateItem, err := GetItem(client, i.ID.Hex())
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = AddItem(client, i)
+	// file upload 완료를 의미하는 status로 변경
+	updateItem.DataUploaded = true
+	updateItem.Status = "fileuploaded"
+	err = SetItem(client, updateItem)
 	if err != nil {
 		log.Print(err)
 	}
@@ -2797,7 +2941,17 @@ func addFootageItemCmd() {
 	i.OutputDataPath = rootpath + objIDpath + "/data/"
 	i.OutputProxyImgPath = rootpath + objIDpath + "/proxy/"
 
-	// 3. 데이터
+	// 1. DB에 Asset 추가
+	err = i.CheckError()
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = AddItem(client, i)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// 2. 데이터 복사
 	datapaths := QuotesPaths2Paths(*flagInputDataPath)
 	var filteredPaths []string
 	for _, path := range datapaths {
@@ -2839,17 +2993,15 @@ func addFootageItemCmd() {
 		}
 	}
 
-	// DataUploaded true로 바꾸기
-	i.DataUploaded = true
-
-	// 다 잘 업로드 됐으면 status바꾸기
-	i.Status = "fileuploaded"
-
-	err = i.CheckError()
+	// 3. Asset status 업데이트
+	updateItem, err := GetItem(client, i.ID.Hex())
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = AddItem(client, i)
+	// file upload 완료를 의미하는 status로 변경
+	updateItem.DataUploaded = true
+	updateItem.Status = "fileuploaded"
+	err = SetItem(client, updateItem)
 	if err != nil {
 		log.Print(err)
 	}
@@ -2975,7 +3127,17 @@ func addUSDItemCmd() {
 	// 존재하고 유효하면 ThumbClipUploaded true로 바꾸기
 	i.ThumbClipUploaded = true
 
-	// 3. 데이터
+	// 3. DB에 Asset 추가
+	err = i.CheckError()
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = AddItem(client, i)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// 4. 데이터 복사
 	datapaths := QuotesPaths2Paths(*flagInputDataPath)
 	var filteredPaths []string
 	for _, path := range datapaths {
@@ -3017,17 +3179,15 @@ func addUSDItemCmd() {
 		}
 	}
 
-	// DataUploaded true로 바꾸기
-	i.DataUploaded = true
-
-	// 다 잘 업로드 됐으면 status바꾸기
-	i.Status = "fileuploaded"
-
-	err = i.CheckError()
+	// 4. Asset status 업데이트
+	updateItem, err := GetItem(client, i.ID.Hex())
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = AddItem(client, i)
+	// file upload 완료를 의미하는 status로 변경
+	updateItem.DataUploaded = true
+	updateItem.Status = "fileuploaded"
+	err = SetItem(client, updateItem)
 	if err != nil {
 		log.Print(err)
 	}
@@ -3153,7 +3313,17 @@ func addAlembicItemCmd() {
 	// 존재하고 유효하면 ThumbClipUploaded true로 바꾸기
 	i.ThumbClipUploaded = true
 
-	// 3. 데이터
+	// 3. DB에 Asset 추가
+	err = i.CheckError()
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = AddItem(client, i)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// 4. 데이터 복사
 	datapaths := QuotesPaths2Paths(*flagInputDataPath)
 	var filteredPaths []string
 	for _, path := range datapaths {
@@ -3195,17 +3365,15 @@ func addAlembicItemCmd() {
 		}
 	}
 
-	// DataUploaded true로 바꾸기
-	i.DataUploaded = true
-
-	// 다 잘 업로드 됐으면 status바꾸기
-	i.Status = "fileuploaded"
-
-	err = i.CheckError()
+	// 5. Asset status 업데이트
+	updateItem, err := GetItem(client, i.ID.Hex())
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = AddItem(client, i)
+	// file upload 완료를 의미하는 status로 변경
+	updateItem.DataUploaded = true
+	updateItem.Status = "fileuploaded"
+	err = SetItem(client, updateItem)
 	if err != nil {
 		log.Print(err)
 	}
@@ -3332,7 +3500,17 @@ func addNukeItemCmd() {
 	// 존재하고 유효하면 ThumbClipUploaded true로 바꾸기
 	i.ThumbClipUploaded = true
 
-	// 3. 데이터
+	// 3. DB에 Asset 추가
+	err = i.CheckError()
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = AddItem(client, i)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// 4. 데이터 복사
 	datapaths := QuotesPaths2Paths(*flagInputDataPath)
 	var filteredPaths []string
 	for _, path := range datapaths {
@@ -3374,17 +3552,15 @@ func addNukeItemCmd() {
 		}
 	}
 
-	// DataUploaded true로 바꾸기
-	i.DataUploaded = true
-
-	// 다 잘 업로드 됐으면 status바꾸기
-	i.Status = "fileuploaded"
-
-	err = i.CheckError()
+	// 5. Asset status 업데이트
+	updateItem, err := GetItem(client, i.ID.Hex())
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = AddItem(client, i)
+	// file upload 완료를 의미하는 status로 변경
+	updateItem.DataUploaded = true
+	updateItem.Status = "fileuploaded"
+	err = SetItem(client, updateItem)
 	if err != nil {
 		log.Print(err)
 	}
