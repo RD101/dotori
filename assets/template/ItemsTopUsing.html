@@ -18,9 +18,6 @@
             <!-- Thumbnail in Card-->
             <div class="card" id="topUsingCard{{$i}}" style="width: {{$thumbnailwidth}}px;">
                 <a class="card-image" href="#" title="image {{$i}}" id="topUsingImageForm{{$i}}"></a>
-                <script src="/assets/js/dotori.js"></script>
-                <script src="/assets/js/jquery-3.1.1.min.js"></script>
-                <script>topUsingClick('{{$.TopUsingTotalItemNum}}', 'next');</script>
                 <!-- Item info in Card -->
                 <div class="card-body">
                     <div id="topUsingCardBody{{$i}}" data-toggle="modal" data-target="#modal-detailview" onclick="setDetailViewModal('{{.ID.Hex}}')">
@@ -60,4 +57,7 @@
             {{end}}    
             {{end}}
     </div>
+    <script src="/assets/js/dotori.js"></script>
+    <script src="/assets/js/jquery-3.1.1.min.js"></script>
+    <script>topUsingClick('{{$.TopUsingTotalItemNum}}', 'init');</script>
 {{end}}
