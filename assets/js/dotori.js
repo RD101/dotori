@@ -244,13 +244,16 @@ function recentlyClick(totalItemNum, buttonState) {
     let clearItemNum = (totalPageNum * 4) - totalItemNum; // 마지막 페이지의 공백처리할 아이템 수
     let currentPageNum = parseInt(document.getElementById("recentlyPage").getAttribute('value')); // 현재 보고있는 페이지
 
-    if (buttonState=="next"){
+    if (buttonState==="init"){
+        currentPageNum = 1;
+    }
+    else if (buttonState==="next"){
         if (currentPageNum===totalPageNum){
             currentPageNum = 1;
         }else{
             currentPageNum++;
         }
-    }else{
+    }else if (buttonState==="prev"){
         if (currentPageNum===1){
             currentPageNum = totalPageNum;
         }else{
@@ -261,9 +264,9 @@ function recentlyClick(totalItemNum, buttonState) {
     document.getElementById("recentlyPage").innerHTML = currentPageNum + " / " + totalPageNum;
     document.getElementById("recentlyPage").setAttribute('value', currentPageNum);
 
-    if(totalPageNum !== 1){
+    if(totalPageNum !== 1 && clearItemNum!==0){
         // 마지막 페이지일 때
-        if(clearItemNum!==0 && currentPageNum===totalPageNum){
+        if(currentPageNum===totalPageNum){
             for(let i = 3; clearItemNum!=0; i--, clearItemNum--){
                 document.getElementById("recentCard"+i).style.visibility="hidden"
             }
@@ -393,13 +396,16 @@ function topUsingClick(totalItemNum, buttonState) {
     let clearItemNum = (totalPageNum * 4) - totalItemNum; // 마지막 페이지의 공백처리할 아이템 수
     let currentPageNum = parseInt(document.getElementById("topUsingPage").getAttribute('value'));
 
-    if (buttonState=="next"){
+    if (buttonState==="init"){
+        currentPageNum = 1;
+    }
+    else if (buttonState==="next"){
         if (currentPageNum===totalPageNum){
             currentPageNum = 1;
         }else{
             currentPageNum++;
         }
-    }else{
+    }else if (buttonState==="prev"){
         if (currentPageNum===1){
             currentPageNum = totalPageNum;
         }else{
@@ -410,9 +416,9 @@ function topUsingClick(totalItemNum, buttonState) {
     document.getElementById("topUsingPage").innerHTML = currentPageNum + " / " + totalPageNum;
     document.getElementById("topUsingPage").setAttribute('value', currentPageNum);
 
-    if(totalPageNum !== 1){
+    if(totalPageNum !== 1 && clearItemNum!=0){
         // 마지막 페이지일 때
-        if(clearItemNum!=0 && currentPageNum==totalPageNum){
+        if(currentPageNum==totalPageNum){
             for(let i = 3; clearItemNum!=0; i--, clearItemNum--){
                 document.getElementById("topUsingCard"+i).style.visibility="hidden";
             }
