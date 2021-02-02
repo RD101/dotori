@@ -513,6 +513,7 @@ func handleEditFootage(w http.ResponseWriter, r *http.Request) {
 		Attributes    map[string]string  `json:"attributes" bson:"attributes"`
 		InColorspace  string             `json:"incolorspace"`
 		OutColorspace string             `json:"outcolorspace"`
+		Fps           string             `json:"fps"`
 		Colorspaces   []Colorspace       `json:"colorspaces"`
 		Token
 		Adminsetting Adminsetting
@@ -571,6 +572,7 @@ func handleEditFootage(w http.ResponseWriter, r *http.Request) {
 		Colorspaces:   ocioConfig.Colorspaces,
 		Token:         token,
 		Adminsetting:  adminsetting,
+		Fps:           item.Fps,
 	}
 
 	err = TEMPLATES.ExecuteTemplate(w, "editfootage", rcp)
