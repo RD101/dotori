@@ -410,6 +410,25 @@ func GetUser(client *mongo.Client, id string) (User, error) {
 	return u, nil
 }
 
+// GetAllUsers 함수는 DB에서 전체 사용자 정보를 가져오는 함수이다.
+func GetAllUsers(client *mongo.Client) ([]User, error) {
+	collection := client.Database(*flagDBName).Collection("users")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	var results []User
+	opts := options.Find()
+	opts.SetSort(bson.M{"id": 1})
+	cursor, err := collection.Find(ctx, bson.D{}, opts)
+	if err != nil {
+		return results, err
+	}
+	err = cursor.All(ctx, &results)
+	if err != nil {
+		return results, err
+	}
+	return results, err
+}
+
 // SetAdminSetting 은 입력받은 어드민셋팅으로 업데이트한다.
 func SetAdminSetting(client *mongo.Client, a Adminsetting) error {
 	collection := client.Database(*flagDBName).Collection("setting.admin")
