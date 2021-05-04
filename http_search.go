@@ -73,10 +73,13 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.TotalNum = totalNum
 	rcp.TotalPage = totalPage
-	// Pages를 설정한다.
-	rcp.Pages = make([]int64, totalPage) // page에 필요한 메모리를 미리 설정한다.
-	for i := range rcp.Pages {
-		rcp.Pages[i] = int64(i) + 1
+	// 10 페이지씩 보이도록 Pages를 설정한다.
+	pageCount := (rcp.CurrentPage - 1) / 10
+	for i := 0; i < 10; i++ {
+		rcp.Pages = append(rcp.Pages, int64(i)+pageCount*10+1)
+		if rcp.Pages[i] == rcp.TotalPage {
+			break
+		}
 	}
 	adminsetting, err := GetAdminSetting(client)
 	if err != nil {
