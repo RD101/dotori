@@ -333,6 +333,7 @@ func webserver() {
 	http.HandleFunc("/editlut-success", handleEditLutSuccess)
 
 	// Admin
+	http.HandleFunc("/users", handleUsers)
 	http.HandleFunc("/adminsetting", handleAdminSetting)
 	http.HandleFunc("/adminsetting-submit", handleAdminSettingSubmit)
 	http.HandleFunc("/adminsetting-success", handleAdminSettingSuccess)
@@ -371,6 +372,7 @@ func webserver() {
 	http.HandleFunc("/api/recentitem", handleAPIRecentItem)
 	http.HandleFunc("/api/topusingitem", handleAPITopUsingItem)
 	http.HandleFunc("/api/favoriteasset", handleAPIFavoriteAsset)
+	http.HandleFunc("/api/initpassword", handleAPIInitPassword)
 
 	// 웹서버 실행
 	if *flagCertFullchain != "" || *flagCertPrivkey != "" {
