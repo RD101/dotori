@@ -10,7 +10,7 @@
                     </a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link btn-darkmode" href="/search?itemtype={{$.ItemType}}&searchword={{$.Searchword}}&page={{PreviousPage .CurrentPage .TotalPage}}" aria-label="Previous">
+                    <a id="previous" class="page-link btn-darkmode" href="/search?itemtype={{$.ItemType}}&searchword={{$.Searchword}}&page={{PreviousPage .CurrentPage .TotalPage}}" aria-label="Previous">
                         <span aria-hidden="true">&#60;</span>
                         <span class="sr-only">Previous</span>
                     </a>
@@ -18,7 +18,7 @@
 
                 {{range .Pages}}
                     <li class="page-item">
-                        <a id="previous" class="{{if eq $.CurrentPage .}}text-white {{end}}page-link btn-darkmode" href="/search?itemtype={{$.ItemType}}&searchword={{$.Searchword}}&page={{.}}">
+                        <a class="{{if eq $.CurrentPage .}}text-white {{end}}page-link btn-darkmode" href="/search?itemtype={{$.ItemType}}&searchword={{$.Searchword}}&page={{.}}">
                             {{.}}
                         </a>
                     </li>

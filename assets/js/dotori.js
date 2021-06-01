@@ -585,3 +585,30 @@ function clickBookmarkIcon(target, fillBool, itemid) {
         })
     }    
 }
+
+// initPasword 함수는 비밀번호 초기화 버튼을 눌렀을 때 실행되는 함수이다.
+function initPasword() {
+    let token = document.getElementById("token").value;
+    let checkboxes = document.querySelectorAll('*[name^="checkbox"]:checked');
+
+    for (i = 0; i < checkboxes.length; i++) {
+        let userID = checkboxes[i].value;
+        $.ajax({
+            url: "/api/initpassword",
+            headers: {
+                "Authorization": "Basic " + token
+            },
+            type: "post",
+            data: {
+                id: userID,
+            },
+            success: function() {
+                alert(userID+" 사용자의 패스워드가 초기화 되었습니다");
+                location.reload();
+            },
+            error: function() {
+                alert(userID+" 사용자의 패스워드를 초기화하는 데 실패하였습니다.")
+            }
+        })
+    }
+}
