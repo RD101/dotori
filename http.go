@@ -61,6 +61,7 @@ func webserver() {
 	defer client.Disconnect(ctx)
 	err = client.Ping(ctx, readpref.Primary())
 	if err != nil {
+		log.Println(*flagMongoDBURI + " 에 mongoDB가 실행되고 있는지 체크해주세요")
 		log.Fatal(err)
 	}
 	// 웹주소 설정
