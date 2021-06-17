@@ -42,6 +42,7 @@ $ tar xpvf ffmpeg-git-amd64-static.tar.xz --strip 1
 원하는 컬러스페이스로 이미지의 컬러스페이스를 변환하기 위해서 OpenColorIO-Configs를 설치합니다.
 ```bash
 $ cd ~
+$ sudo yum install git // CentOS를 최초 설치하면 Git이 설치되어있지 않다. 설치한다.
 $ git clone https://github.com/imageworks/OpenColorIO-Configs
 ```
 
