@@ -58,7 +58,7 @@ Dafault로 설치되어 있는 yum으로는 필요한 라이브러리를 설치�
 
 도토리에서 사용중인 라이브러리는 다음과 같습니다.
 - OpenColorIO
-- OpenImageIO
+- OpenImageIO 2.x 이상
 - FFmpeg
 
 ### 인증서 발급
