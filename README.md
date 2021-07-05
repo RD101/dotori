@@ -53,8 +53,8 @@ Dafault로 설치되어 있는 yum으로는 필요한 라이브러리를 설치�
 - [mongoDB 설치하는 법](https://github.com/cgiseminar/curriculum/blob/master/docs/install_mongodb.md)
 
 ### 기타 라이브러리 및 명령어 설치
-도토리에서 사용하고 있는 라이브러리의 설치는 아래 문서를 참고해주세요.
-- [Library 설치](documents/setlibrary.md)
+도토리에서 사용하고 있는 라이브러리의 설치와 설정방법은 아래 문서를 참고해주세요.
+- [Library 설치 및 설정](documents/setlibrary.md)
 
 도토리에서 사용중인 라이브러리는 다음과 같습니다.
 - OpenColorIO
