@@ -3,7 +3,7 @@
 ## Get
 | URI | Description | Attributes | Curl Example |
 | --- | --- | --- | --- |
-| /api/item | 아이템 가지고 오기 | id | `$ curl "http://192.168.219.104/api/item?id=5e24742f901da0498519f7a7"` |
+| /api/item | 아이템 가지고 오기 | id | `$ curl -k -H "Authorization: Basic <TOKEN>" "https://dotori.lazypic.com/api/item?id=61c0189f3080e2b623db8b43"` |
 
 
 ## Post
