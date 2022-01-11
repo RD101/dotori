@@ -14,8 +14,8 @@ VFX, 애니메이션, 게임, 사운드 등 콘텐츠 제작에 사용되는 에
 - 개발기간: 2019.9 ~ 現
 - 개발방법: 오픈소스 공동개발 프로젝트
 - 개발형태 : Web Application Server
-- 개발언어: Go, Javascript, HTML, CSS
-- 개발주체: [(주)로드원오원](http://rd101.co.kr) + [Lazypic,LLC.](https://lazypic.org)
+- 개발도구: Go, mongoDB, Javascript, HTML, CSS
+- 개발지원: [(주)로드원오원](http://rd101.co.kr), [(주)엔진비주얼웨이브](http://www.enginevw.co.kr), [Lazypic,LLC.](https://lazypic.org)
 - 권리자(발명자): [Contributors](https://github.com/RD101/dotori/graphs/contributors)
 - 테스트서버: https://dotori.lazypic.com
 - [다운로드](https://github.com/RD101/dotori/releases)
