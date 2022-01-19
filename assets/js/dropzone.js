@@ -224,8 +224,9 @@ var Dropzone = function (_Emitter) {
          * If not `null` defines how many files this Dropzone handles. If it exceeds,
          * the event `maxfilesexceeded` will be called. The dropzone element gets the
          * class `dz-max-files-reached` accordingly so you can provide visual feedback.
+         * 업로드 파일 사이즈를 10기가로 제안함.
          */
-        maxFilesize: 256,
+        maxFilesize: 10240,
 
         /**
          * The name of the file param that gets transferred.
