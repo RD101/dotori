@@ -81,6 +81,79 @@ func handleDownloadItem(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, zipFilePath)
 }
 
+func handleAPIDownloadZipfile(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method Only GET", http.StatusMethodNotAllowed)
+		return
+	}
+	q := r.URL.Query()
+	id := q.Get("id")
+	if id == "" {
+		http.Error(w, "Need item id", http.StatusBadRequest)
+		return
+	}
+
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer client.Disconnect(ctx)
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	accesslevel, err := GetAccessLevelFromHeader(r, client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+	if !(accesslevel == "admin" || accesslevel == "default") {
+		http.Error(w, "Need permission", http.StatusUnauthorized)
+		return
+	}
+
+	item, err := GetItem(client, id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	// 임시 디렉토리를 생성한다.
+	tempDir, err := ioutil.TempDir("", "zip")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer os.RemoveAll(tempDir)
+	zipFileName := strings.Join(strings.Split(item.Title, " "), "_") + ".zip"
+	zipFilePath := filepath.Join(tempDir, zipFileName)
+	err = genZipfile(zipFilePath, item)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	// Using Rate(사용률)을 업데이트 한다.
+	_, err = UpdateUsingRate(client, id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Add("Content-Type", "application/zip")
+	w.Header().Add("Content-Disposition", fmt.Sprintf("Attachment; filename=%s", zipFileName))
+	http.ServeFile(w, r, zipFilePath)
+}
+
 func genZipfile(zipFilePath string, item Item) error {
 	// zip 파일을 생성한다.
 	zipFile, err := os.Create(zipFilePath)

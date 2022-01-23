@@ -4,6 +4,8 @@
 | URI | Description | Attributes | Curl Example |
 | --- | --- | --- | --- |
 | /api/item | 아이템 가지고 오기 | id | `$ curl -k -H "Authorization: Basic <TOKEN>" "https://dotori.lazypic.com/api/item?id=61c0189f3080e2b623db8b43"` |
+| /api/donwloadzipfile | 아이템 다운로드 | id | `$ curl -H "Authorization: Basic <TOKEN>" -o "/download/path/filename.zip" "https://dotori.lazypic.com/api/downloadzipfile?id=61ecba13e5fec171fe4e47e8"` |
+
 
 
 ## Post
@@ -87,4 +89,11 @@ request = urllib2.Request("http://192.168.0.9/api/search",data)
 result = urllib2.urlopen(request)
 data = json.load(result)
 print(data)
+```
+
+
+#### Curl을 이용해서 Asset 파일을 다운로드 하기.
+
+```bash
+$ curl -H "Authorization: Basic <TOKEN>" -o "/download/path/filename.zip" "https://dotori.lazypic.com/api/downloadzipfile?id=61ecba13e5fec171fe4e47e8"
 ```
