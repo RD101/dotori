@@ -94,6 +94,9 @@ print(data)
 
 #### Curl을 이용해서 Asset 파일을 다운로드 하기.
 
+curl을 이용해서 원하는 위치에 원하는 이름으로 에셋을 다운로드할 수 있습니다.
+당연히 Javascript, Go, Python을 이용해서도 에셋 다운로드가 가능합니다.
+
 ```bash
 $ curl -H "Authorization: Basic <TOKEN>" -o "/download/path/filename.zip" "https://dotori.lazypic.com/api/downloadzipfile?id=61ecba13e5fec171fe4e47e8"
 ```
