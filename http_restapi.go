@@ -36,6 +36,10 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 		}
 		//accesslevel 체크
 		accesslevel, err := GetAccessLevelFromHeader(r, client)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 		if accesslevel != "default" && accesslevel != "manager" && accesslevel != "admin" {
 			http.Error(w, "등록 권한이 없는 계정입니다", http.StatusUnauthorized)
 			return
@@ -218,6 +222,10 @@ func handleAPIItem(w http.ResponseWriter, r *http.Request) {
 		}
 		//accesslevel 체크
 		accesslevel, err := GetAccessLevelFromHeader(r, client)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 		if accesslevel != "admin" {
 			http.Error(w, "삭제 권한이 없는 계정입니다", http.StatusUnauthorized)
 			return
@@ -343,7 +351,6 @@ func handleAPISearch(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
 	w.Write(data)
-	return
 }
 
 func handleAPIAdminSetting(w http.ResponseWriter, r *http.Request) {
@@ -383,7 +390,6 @@ func handleAPIAdminSetting(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	http.Error(w, "Not Supported Method", http.StatusMethodNotAllowed)
-	return
 }
 
 func handleAPIUsingRate(w http.ResponseWriter, r *http.Request) {
@@ -434,7 +440,6 @@ func handleAPIUsingRate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	http.Error(w, "Not Supported Method", http.StatusMethodNotAllowed)
-	return
 }
 
 // handleAPIRecentItem 는 최근생성된 아이템들을 반환하는 함수임니다.
@@ -481,7 +486,6 @@ func handleAPIRecentItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	http.Error(w, "Not Supported Method", http.StatusMethodNotAllowed)
-	return
 }
 
 // handleAPITopUsingItem 는 많이 사용되는 아이템들을 반환하는 함수임니다.
@@ -528,7 +532,6 @@ func handleAPITopUsingItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	http.Error(w, "Not Supported Method", http.StatusMethodNotAllowed)
-	return
 }
 
 // handleAPIFavoriteAsset는 FavoriteAssetIds에 아이템 id를 추가하거나 제거하는 함수다.
@@ -677,7 +680,7 @@ func handleAPIFavoriteAsset(w http.ResponseWriter, r *http.Request) {
 				deleteBool = true
 			}
 		}
-		if deleteBool == false {
+		if !deleteBool {
 			http.Error(w, "즐겨찾기에 존재하지 않는 itemid입니다", http.StatusBadRequest)
 			return
 		}
@@ -733,6 +736,10 @@ func handleAPIInitPassword(w http.ResponseWriter, r *http.Request) {
 	}
 	//accesslevel 체크
 	accesslevel, err := GetAccessLevelFromHeader(r, client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	if accesslevel != "admin" {
 		http.Error(w, "사용자의 패스워드 초기화 권한이 없는 계정입니다", http.StatusUnauthorized)
 		return

@@ -42,8 +42,7 @@ func Str2Tags(str string) []string {
 
 // StringToMap 함수는 "key:value,key:value" 형식의 문자열을 map 형으로 변환하는 함수이다.
 func StringToMap(str string) (map[string]string, error) {
-	var result map[string]string
-	result = make(map[string]string)
+	result := make(map[string]string)
 
 	str = strings.TrimSpace(str)
 	if str == "" {
