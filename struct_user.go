@@ -21,6 +21,7 @@ type User struct {
 	SignKey          string   `json:"signkey" bson:"signkey"`                   // JWT 토큰을 만들 때 사용하는 SignKey
 	AccessLevel      string   `json:"accesslevel" bson:"accesslevel"`           // admin, manager, default
 	FavoriteAssetIDs []string `json:"favoriteassetids" bson:"favoriteassetids"` // 즐겨찾는 어셋 id 리스트
+	Autoplay         bool     `json:"autoplay"`                                 // 영상 자동재생 옵션
 }
 
 // CreateToken 메소드는 토큰을 생성합니다.
@@ -29,7 +30,7 @@ func (u *User) CreateToken() error {
 		return errors.New("ID is an empty string")
 	}
 	if u.Password == "" {
-		return errors.New("Password is an empty string")
+		return errors.New("password is an empty string")
 	}
 	if u.AccessLevel == "" {
 		return errors.New("AccessLevel is an empty string")
