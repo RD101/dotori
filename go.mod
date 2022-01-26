@@ -1,6 +1,6 @@
 module github.com/rd101/dotori
 
-go 1.17
+go 1.16
 
 require (
 	github.com/disintegration/imaging v1.6.2
