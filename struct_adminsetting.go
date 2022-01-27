@@ -45,7 +45,7 @@ func (a Adminsetting) CheckError() error {
 		return errors.New("FilePermission이 형식에 맞지 않습니다")
 	}
 	if !regexPermission.MatchString(a.Umask) {
-		return errors.New("Umask가 형식에 맞지 않습니다")
+		return errors.New("umask가 형식에 맞지 않습니다")
 	}
 	if a.FFmpeg == "" {
 		return errors.New("FFmpeg 경로를 설정해주세요")

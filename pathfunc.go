@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"os"
 	"path"
 	"path/filepath"
@@ -80,6 +81,9 @@ func searchSeq(searchpath string) ([]Seq, error) {
 		}
 		return nil
 	})
+	if err != nil {
+		log.Printf("error walking the path %q: %v\n", searchpath, err)
+	}
 	var items []Seq
 	for _, value := range paths {
 		items = append(items, value)
@@ -93,7 +97,7 @@ func searchSeq(searchpath string) ([]Seq, error) {
 // Seqnum2Sharp 함수는 경로와 파일명을 받아서 시퀀스부분을 #문자열로 바꾸고 시퀀스의 숫자를 int로 바꾼다.
 // "test.0002.jpg" -> "test.####.jpg", 2, nil
 func Seqnum2Sharp(filename string) (string, int, error) {
-	re, err := regexp.Compile("([0-9]+)(\\.[a-zA-Z]+$)")
+	re, err := regexp.Compile(`([0-9]+)(\.[a-zA-Z]+$)`)
 	// 이 정보를 통해서 파일명을 구하는 방식으로 바꾼다.
 	if err != nil {
 		return filename, -1, errors.New("정규 표현식이 잘못되었습니다")
