@@ -375,6 +375,7 @@ func webserver() {
 	http.HandleFunc("/api/favoriteasset", handleAPIFavoriteAsset)
 	http.HandleFunc("/api/initpassword", handleAPIInitPassword)
 	http.HandleFunc("/api/downloadzipfile", handleAPIDownloadZipfile)
+	http.HandleFunc("/api/user", handleAPIUser)
 
 	// 웹서버 실행
 	if *flagCertFullchain != "" || *flagCertPrivkey != "" {
