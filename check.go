@@ -4,6 +4,7 @@ import (
 	"errors"
 	"os"
 	"regexp"
+	"strings"
 )
 
 var (
@@ -34,4 +35,8 @@ func FileExists(path string) error {
 		return errors.New("파일명까지 입력해주세요")
 	}
 	return nil
+}
+
+func str2bool(str string) bool {
+	return strings.ToLower(str) == "true"
 }

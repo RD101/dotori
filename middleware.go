@@ -89,3 +89,24 @@ func GetAccessLevelFromHeader(r *http.Request, client *mongo.Client) (string, er
 	}
 	return user.AccessLevel, nil
 }
+
+// GetUserFromHeader 함수는 restapi 사용 시 토큰을 체크하고 User값을 반환하는 함수이다.
+func GetUserFromHeader(r *http.Request, client *mongo.Client) (User, error) {
+	user := User{}
+	//header에서 token을 가져온다.
+	auth := strings.SplitN(r.Header.Get("Authorization"), " ", 2)
+	if len(auth) != 2 || auth[0] != "Basic" {
+		return user, errors.New("authorization failed")
+	}
+	token := auth[1]
+	//DB 검색
+	collection := client.Database(*flagDBName).Collection("users")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	err := collection.FindOne(ctx, bson.M{"token": token}).Decode(&user)
+	if err != nil {
+		return user, err
+	}
+	return user, nil
+}
