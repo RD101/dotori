@@ -1,26 +1,23 @@
 {{define "items"}}
-    <!-- Preset Value -->
-    {{$thumbnailwidth := .Adminsetting.ThumbnailImageWidth}}    
-    {{$thumbnailheight := .Adminsetting.ThumbnailImageHeight}}
     <div class="row mx-auto mb-5">
         {{range .Items}}
             {{$itemid := .ID.Hex}}
             <!-- Card Items -->
             <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="card mx-auto" style="width: {{$thumbnailwidth}}px;">
+                <div class="card mx-auto" style="width: {{$.Adminsetting.ThumbnailImageWidth}}px;">
                     <!-- Thumbnail in Card-->
                     {{if eq .ItemType "hwp" "ies" "pdf" "ppt" "sound"}}
-                        <img class="card-img" width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src="/assets/img/{{.ItemType}}thumbnail.svg">
+                        <img class="card-img" width="{{$.Adminsetting.ThumbnailImageWidth}}" height="{{$.Adminsetting.ThumbnailImageHeight}}" src="/assets/img/{{.ItemType}}thumbnail.svg">
                     {{else if eq .ItemType "hdri" "texture" "lut" }}
-                        <img class="card-img" width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src='{{if eq .Status "done" }}/mediadata?id={{.ID.Hex}}&type=png{{else}}/assets/img/noimage.svg{{end}}'>
+                        <img class="card-img" width="{{$.Adminsetting.ThumbnailImageWidth}}" height="{{$.Adminsetting.ThumbnailImageHeight}}" src='{{if eq .Status "done" }}/mediadata?id={{.ID.Hex}}&type=png{{else}}/assets/img/noimage.svg{{end}}'>
                     {{else if eq .ItemType "clip"}}
-                        <video class="card-img" width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" {{if $.User.Autoplay}}autoplay loop{{end}}>
+                        <video class="card-img" width="{{$.Adminsetting.ThumbnailImageWidth}}" height="{{$.Adminsetting.ThumbnailImageHeight}}" {{if $.User.Autoplay}}autoplay loop{{end}}>
                             <source src="/mediadata?id={{.ID.Hex}}&type=mp4" type="video/mp4">
                             <source src="/mediadata?id={{.ID.Hex}}&type=ogg" type="video/ogg">
                             Your browser does not support the video tag.
                         </video>
                     {{else}}
-                        <video class="card-img" width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" {{if $.User.Autoplay}}autoplay loop{{end}} controls poster='{{if eq .Status "done" }}/mediadata?id={{.ID.Hex}}&type=png{{else}}/assets/img/noimage.svg{{end}}'>
+                        <video class="card-img" width="{{$.Adminsetting.ThumbnailImageWidth}}" height="{{$.Adminsetting.ThumbnailImageHeight}}" {{if $.User.Autoplay}}autoplay loop{{end}} controls poster='{{if eq .Status "done" }}/mediadata?id={{.ID.Hex}}&type=png{{else}}/assets/img/noimage.svg{{end}}'>
                             <source src="/mediadata?id={{.ID.Hex}}&type=mp4" type="video/mp4">
                             <source src="/mediadata?id={{.ID.Hex}}&type=ogg" type="video/ogg">
                             Your browser does not support the video tag.
