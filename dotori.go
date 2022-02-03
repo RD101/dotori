@@ -29,7 +29,6 @@ var (
 	flagGetOngoingProcess = flag.Bool("getongoingprocess", false, "get ongoing process")  // 완료되지 않은 프로세스를 가져옵니다.
 	flagProcess           = flag.Bool("process", false, "start processing item")          // 프로세스를 실행시킨다
 	flagDebug             = flag.Bool("debug", false, "debug mode")                       // debug모드
-	flagDevMode           = flag.Bool("devmode", false, "devel mode")                     // 개발모드 활성화
 	flagAccesslevel       = flag.String("accesslevel", "default", "access level of user") // 사용자의 accesslevel을 지정합니다. admin, manager, default
 
 	flagAuthor             = flag.String("author", "", "author")
@@ -48,15 +47,14 @@ var (
 	flagPremultiply        = flag.Bool("premultiply", false, "premultiply")
 
 	// 서비스에 필요한 인수
-	flagMongoDBURI      = flag.String("mongodburi", "mongodb://localhost:27017", "mongoDB URI ex)mongodb://localhost:27017")
-	flagDBName          = flag.String("dbname", "dotori", "DB name")
-	flagHTTPPort        = flag.String("http", "", "Web Service Port Number")
-	flagPagenum         = flag.Int64("pagenum", 9, "maximum number of items in a page")
-	flagCookieAge       = flag.Int("cookieage", 4, "cookie age (hour)") // MPAA 기준 4시간이다.
-	flagMaxProcessNum   = flag.Int("maxprocessnum", 1, "maximum number of process")
-	flagProcessInterval = flag.Int("processinterval", 10, "seconds of interval between processes") // 기본 10초
-	flagCertFullchain   = flag.String("certfullchain", "", "certification fullchain path")
-	flagCertPrivkey     = flag.String("certprivkey", "", "certification privkey path")
+	flagMongoDBURI    = flag.String("mongodburi", "mongodb://localhost:27017", "mongoDB URI ex)mongodb://localhost:27017")
+	flagDBName        = flag.String("dbname", "dotori", "DB name")
+	flagHTTPPort      = flag.String("http", "", "Web Service Port Number")
+	flagPagenum       = flag.Int64("pagenum", 9, "maximum number of items in a page")
+	flagCookieAge     = flag.Int("cookieage", 4, "cookie age (hour)") // MPAA 기준 4시간이다.
+	flagMaxProcessNum = flag.Int("maxprocessnum", 1, "maximum number of process")
+	flagCertFullchain = flag.String("certfullchain", "", "certification fullchain path")
+	flagCertPrivkey   = flag.String("certprivkey", "", "certification privkey path")
 
 	flagItemID = flag.String("itemid", "", "bson ObjectID assigned by mongodb")
 
@@ -225,6 +223,9 @@ func main() {
 		}
 
 		items, err := GetUndoneItem(client)
+		if err != nil {
+			log.Fatal(err)
+		}
 		fmt.Println(items)
 	} else if *flagProcess {
 		ProcessMain()

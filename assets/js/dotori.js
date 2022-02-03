@@ -96,7 +96,7 @@ function setDetailViewModal(itemid) {
                 }
             } else {
                 let thumbnailHtml = `
-                                    <video id="modal-detailview-video" controls>
+                                    <video id="modal-detailview-video" controls autoplay loop>
                                         <source src="/mediadata?id=${itemid}&type=mp4" type="video/mp4">
                                         <source src="/mediadata?id=${itemid}&type=ogg" type="video/ogg">
                                         Your browser does not support the video tag.
@@ -611,4 +611,37 @@ function initPasword() {
             }
         })
     }
+}
+
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+}
+
+
+function SetAutoplay() {
+    fetch('/api/user?autoplay='+document.getElementById("autoplay").checked, {
+        method: 'PUT',
+        headers: {
+            "Authorization": "Basic "+ getCookie("SessionToken"),
+        },
+    })
+    .then((response) => {
+        if (!response.ok) {
+            return response.text().then((data) => {
+                alert(data);
+                return data;
+            })
+        }
+        if (response.ok) {
+            return response.json().then((data) => {
+                return
+            })
+        }
+    })
+    .catch((err) => {
+        alert(err);
+        return err
+    });
 }

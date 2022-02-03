@@ -25,6 +25,14 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group pl-4">
+                        <input class="form-check-input" type="checkbox" id="autoplay" {{if .User.Autoplay}}checked{{end}} onclick="SetAutoplay()">
+                        <label class="form-check-label text-muted" for="autoplay">Autoplay 활성화</label>
+                    </div>
+                </div>
+            </div>
         </div>
     {{template "footer"}}
 </body>
