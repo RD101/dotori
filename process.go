@@ -324,6 +324,16 @@ func processingItem(item Item) {
 			return
 		}
 		return
+	case "matte":
+		err = ProcessMatteItem(client, adminSetting, item)
+		if err != nil {
+			err = SetErrStatus(client, item.ID.Hex(), err.Error())
+			if err != nil {
+				log.Println(err)
+			}
+			return
+		}
+		return
 	default:
 		log.Println("약속된 type이 아닙니다")
 		return
@@ -1100,6 +1110,39 @@ func ProcessLutItem(client *mongo.Client, adminSetting Adminsetting, item Item) 
 	if err != nil {
 		return err
 	}
+	err = SetStatus(client, item, "done")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// ProcessMatteItem 함수는 Matte 아이템을 연산한다.
+func ProcessMatteItem(client *mongo.Client, adminSetting Adminsetting, item Item) error {
+	// Thumbnail 폴더를 생성한다.
+	err := SetStatus(client, item, "creating thumbnail directory")
+	if err != nil {
+		return err
+	}
+	err = genThumbDir(adminSetting, item)
+	if err != nil {
+		return err
+	}
+
+	// 썸네일 이미지를 생성한다.
+	err = SetStatus(client, item, "creating thumbnail image")
+	if err != nil {
+		return err
+	}
+	err = genThumbTexture(adminSetting, item)
+	if err != nil {
+		return err
+	}
+	err = SetThumbImgUploaded(client, item, true) // 썸네일이 생성되었으니 썸네일이 업로드 되었다고 체크한다.
+	if err != nil {
+		return err
+	}
+	// 완료
 	err = SetStatus(client, item, "done")
 	if err != nil {
 		return err

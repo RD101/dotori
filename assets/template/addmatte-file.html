@@ -1,0 +1,43 @@
+{{define "addmatte-file"}}
+{{template "head"}}
+<body>
+{{template "navbar" .}}
+<!--dropzone-->
+<div class="container py-5 px-2">
+    <div class="col-lg-6 col-md-8 col-sm-12 mx-auto">
+        <div class="pt-3 pb-3">
+            <h2 class="text-muted">Add Matte Asset</h2>
+        </div>
+        <div class="">
+            <form id="matteDropzone" action="/uploadmatte-file" method="post" class="dropzone" enctype="multipart/form-data">
+                <div class="fallback">
+                    <input name="file" type="file" />
+                </div>
+            </form>
+            <div class="mt-2">
+                <button id="btn-upload-file" class="btn btn-outline-danger btn-block">Upload Files</button>
+            </div>
+            <div class="mt-2">
+                <small class="form-text text-muted">업로드할 Matte 소스 파일을 Drag & Drop 해주세요.</small>
+                <small class="form-text text-muted">.exr, .png, .jpg, .tga, .tif, .tiff, .hdr, .hdri</small>
+            </div>
+        </div>
+    </div>
+    <div class="text-center pt-5">
+        <form method="get" action="/uploadmatte-checkdata">
+            <button id="btn-register-item" type="submit" class="btn btn-outline-warning" disabled>등록</button>
+        </form>
+    </div>
+</div>
+</div>
+</form>
+
+{{template "footer"}}
+</body>
+<!--add javascript-->
+<script src="/assets/js/jquery-3.1.1.min.js"></script>
+<script src="/assets/bootstrap-4/js/bootstrap.min.js"></script>
+<script src="/assets/js/dropzone.js"></script>
+<script src="/assets/js/dotori.js"></script>
+</html>
+{{end}}

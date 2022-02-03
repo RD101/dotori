@@ -333,6 +333,18 @@ func webserver() {
 	http.HandleFunc("/editlut-submit", handleEditLutSubmit)
 	http.HandleFunc("/editlut-success", handleEditLutSuccess)
 
+	// Matte
+	http.HandleFunc("/addmatte", handleAddMatte)
+	http.HandleFunc("/addmatte-item", handleAddMatteItem)
+	http.HandleFunc("/uploadmatte-item", handleUploadMatteItem)
+	http.HandleFunc("/addmatte-file", handleAddMatteFile)
+	http.HandleFunc("/uploadmatte-file", handleUploadMatteFile)
+	http.HandleFunc("/uploadmatte-checkdata", handleUploadMatteCheckData)
+	http.HandleFunc("/addmatte-success", handleAddMatteSuccess)
+	http.HandleFunc("/editmatte", handleEditMatte)
+	http.HandleFunc("/editmatte-submit", handleEditMatteSubmit)
+	http.HandleFunc("/editmatte-success", handleEditMatteSuccess)
+
 	// Admin
 	http.HandleFunc("/users", handleUsers)
 	http.HandleFunc("/adminsetting", handleAdminSetting)
