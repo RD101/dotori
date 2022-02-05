@@ -18,18 +18,18 @@ import (
 	"golang.org/x/sys/unix"
 )
 
-// handleAddHDRI 함수는 URL에 objectID를 붙여서 /addhdri-item 페이지로 redirect한다.
-func handleAddHDRI(w http.ResponseWriter, r *http.Request) {
+// handleAddMatte 함수는 URL에 objectID를 붙여서 /addmatte-item 페이지로 redirect한다.
+func handleAddMatte(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
 		return
 	}
 	objectID := primitive.NewObjectID().Hex()
-	http.Redirect(w, r, fmt.Sprintf("/addhdri-item?objectid=%s", objectID), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/addmatte-item?objectid=%s", objectID), http.StatusSeeOther)
 }
 
-func handleAddHDRIItem(w http.ResponseWriter, r *http.Request) {
+func handleAddMatteItem(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -68,28 +68,27 @@ func handleAddHDRIItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rcp.Adminsetting = adminsetting
-	user, err := GetUser(client, token.ID)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	rcp.User = user
 	ocioConfig, err := loadOCIOConfig(rcp.Adminsetting.OCIOConfig)
 	if err != nil {
 		http.Redirect(w, r, "/error-ocio", http.StatusSeeOther)
 		return
 	}
 	rcp.Colorspaces = ocioConfig.Colorspaces
+	rcp.User, err = GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "addhdri-item", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "addmatte-item", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
 
-// handleUploadHDRIItem 핸들러는 HDRI 아이템을 생성한다.
-func handleUploadHDRIItem(w http.ResponseWriter, r *http.Request) {
+func handleUploadMatteItem(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -113,7 +112,7 @@ func handleUploadHDRIItem(w http.ResponseWriter, r *http.Request) {
 	item.OutColorspace = r.FormValue("outcolorspace")
 	tags := Str2Tags(r.FormValue("tags"))
 	item.Tags = tags
-	item.ItemType = "hdri"
+	item.ItemType = "matte"
 	attr := make(map[string]string)
 	attrNum, err := strconv.Atoi(r.FormValue("attributesNum"))
 	if err != nil {
@@ -180,11 +179,11 @@ func handleUploadHDRIItem(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	http.Redirect(w, r, fmt.Sprintf("/addhdri-file?objectid=%s", objectID), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/addmatte-file?objectid=%s", objectID), http.StatusSeeOther)
 }
 
-// handleAddHDRIFile 함수는 HDRI 파일을 추가하는 페이지 이다.
-func handleAddHDRIFile(w http.ResponseWriter, r *http.Request) {
+// handleAddMatteFile 함수는 Matte 소스 파일을 추가하는 페이지 이다.
+func handleAddMatteFile(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -222,15 +221,15 @@ func handleAddHDRIFile(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Adminsetting = adminsetting
 	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "addhdri-file", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "addmatte-file", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
 
-// handleUploadHDRIFile 함수는 HDRI 파일을 DB에 업로드하는 페이지를 연다. dropzone에 파일을 올릴 경우 실행된다.
-func handleUploadHDRIFile(w http.ResponseWriter, r *http.Request) {
+// handleUploadMatteFile 함수는 Matte 소스 파일을 DB에 업로드하는 페이지를 연다. dropzone에 파일을 올릴 경우 실행된다.
+func handleUploadMatteFile(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -241,11 +240,11 @@ func handleUploadHDRIFile(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	uploadHDRIFile(w, r, objectID)
+	uploadMatteFile(w, r, objectID)
 }
 
-// uploadHDRIFile 함수는 HDRI 파일 정보를 DB에 업로드하고 파일을 storage에 복사한다.
-func uploadHDRIFile(w http.ResponseWriter, r *http.Request, objectID string) {
+// uploadMatteFile 함수는 Matte 소스 파일 정보를 DB에 업로드하고 파일을 storage에 복사한다.
+func uploadMatteFile(w http.ResponseWriter, r *http.Request, objectID string) {
 	//mongoDB client 연결
 	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 	if err != nil {
@@ -328,10 +327,9 @@ func uploadHDRIFile(w http.ResponseWriter, r *http.Request, objectID string) {
 			unix.Umask(umask)
 			mimeType := f.Header.Get("Content-Type")
 			switch mimeType {
-
-			case "application/octet-stream":
+			case "application/octet-stream", "image/jpeg", "image/png", "image/tiff", "image/x-tiff", "image/x-tga":
 				ext := strings.ToLower(filepath.Ext(f.Filename))
-				if ext != ".hdr" && ext != ".hdri" && ext != ".exr" { // .hdr .hdri .exr 외에는 허용하지 않는다.
+				if !(ext == ".exr" || ext == ".png" || ext == ".jpg" || ext == ".tga" || ext == ".tif" || ext == ".tiff" || ext == ".hdr" || ext == ".hdri") {
 					http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
 					return
 				}
@@ -362,6 +360,18 @@ func uploadHDRIFile(w http.ResponseWriter, r *http.Request, objectID string) {
 				http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
 				return
 			}
+			tags := FilenameToTags(f.Filename)
+			for _, tag := range tags {
+				has := false // 중복되는 tag가 있다면 append하지 않는다.
+				for _, t := range item.Tags {
+					if tag == t {
+						has = true
+					}
+				}
+				if !has {
+					item.Tags = append(item.Tags, tag)
+				}
+			}
 		}
 	}
 	if item.DataUploaded {
@@ -374,8 +384,7 @@ func uploadHDRIFile(w http.ResponseWriter, r *http.Request, objectID string) {
 	}
 }
 
-// handleUploadHDRICheckData 함수는 필요한 파일들을 모두 업로드했는지 체크하고, /addhdri-success 페이지로 redirect한다.
-func handleUploadHDRICheckData(w http.ResponseWriter, r *http.Request) {
+func handleUploadMatteCheckData(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -428,17 +437,17 @@ func handleUploadHDRICheckData(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Item = item
 	if !item.DataUploaded {
-		err = TEMPLATES.ExecuteTemplate(w, "checkhdri-file", rcp)
+		err = TEMPLATES.ExecuteTemplate(w, "checkmatte-file", rcp)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		return
 	}
-	http.Redirect(w, r, "/addhdri-success", http.StatusSeeOther)
+	http.Redirect(w, r, "/addmatte-success", http.StatusSeeOther)
 }
 
-func handleAddHDRISuccess(w http.ResponseWriter, r *http.Request) {
+func handleAddMatteSuccess(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -476,14 +485,14 @@ func handleAddHDRISuccess(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Adminsetting = adminsetting
 	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "addhdri-success", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "addmatte-success", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
 
-func handleEditHDRI(w http.ResponseWriter, r *http.Request) {
+func handleEditMatte(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -560,15 +569,15 @@ func handleEditHDRI(w http.ResponseWriter, r *http.Request) {
 		Adminsetting:  adminsetting,
 	}
 
-	err = TEMPLATES.ExecuteTemplate(w, "edithdri", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "editmatte", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
 
-//handleEditHDRISubmit 함수는 HDRI 아이템을 수정하는 페이지에서 UPDATE버튼을 누르면 작동하는 함수다.
-func handleEditHDRISubmit(w http.ResponseWriter, r *http.Request) {
+//handleEditMatteSubmit 함수는 Matte 아이템을 수정하는 페이지에서 UPDATE 버튼을 누르면 작동하는 함수다.
+func handleEditMatteSubmit(w http.ResponseWriter, r *http.Request) {
 	_, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -630,10 +639,10 @@ func handleEditHDRISubmit(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	http.Redirect(w, r, "/edithdri-success", http.StatusSeeOther)
+	http.Redirect(w, r, "/editmatte-success", http.StatusSeeOther)
 }
 
-func handleEditHDRISuccess(w http.ResponseWriter, r *http.Request) {
+func handleEditMatteSuccess(w http.ResponseWriter, r *http.Request) {
 	token, err := GetTokenFromHeader(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
@@ -671,7 +680,7 @@ func handleEditHDRISuccess(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Adminsetting = adminsetting
 	w.Header().Set("Content-Type", "text/html")
-	err = TEMPLATES.ExecuteTemplate(w, "edithdri-success", rcp)
+	err = TEMPLATES.ExecuteTemplate(w, "editmatte-success", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

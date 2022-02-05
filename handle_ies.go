@@ -253,11 +253,6 @@ func uploadIesFile(w http.ResponseWriter, r *http.Request, objectID string) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	err = client.Ping(ctx, readpref.Primary())
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
 	item, err := GetItem(client, objectID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
