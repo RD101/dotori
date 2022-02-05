@@ -1,26 +1,47 @@
-# DOTORI(가제)
+# DOTORI
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/rd101/dotori)](https://goreportcard.com/report/github.com/rd101/dotori)
 
 VFX, 애니메이션, 게임, 사운드 등 콘텐츠 제작에 사용되는 에셋 관리 솔루션
 
-#### Screenshot
+## Screenshot
+
 ![screenshot](documents/screenshot.png)
 
-#### Demo
+## Demo
+
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/VNBdlPDKzTc/0.jpg)](http://www.youtube.com/watch?v=VNBdlPDKzTc "Asset Library System - DOTORI")
 
-### 기본정보
+## 기본정보
+
 - 개발기간: 2019.9 ~ 現
 - 개발방법: 오픈소스 공동개발 프로젝트
 - 개발형태 : Web Application Server
 - 개발도구: Go, mongoDB, Javascript, HTML, CSS
 - 개발지원: [(주)로드원오원](http://rd101.co.kr), [(주)엔진비주얼웨이브](http://www.enginevw.co.kr), [Lazypic,LLC.](https://lazypic.org)
 - 권리자(발명자): [Contributors](https://github.com/RD101/dotori/graphs/contributors)
-- 테스트서버: https://dotori.lazypic.com
+- 테스트서버: <https://dotori.lazypic.com>
 - [다운로드](https://github.com/RD101/dotori/releases)
 
+## Roadmap
+
+- bootstrap5 추가
+- 풋티지 업로드시, 묶음 폴더처럼 보이게 수정, 풋티지 exr 시퀀스 파일 다중 업로드.(Firefox에서 기본적으로 작동될 수 있도록)
+- 어셋 소스 업로드 후 파일 네임이 리네임 기능추가
+- (태그가 기록돼 있는) 어셋 소스 하단에 'copy path' 버튼 추가 (어셋 소스를 multi select 할 때는 한 번에 'copy path'가 단축키 설정 )
+- 어셋 소스 플레이시 RV연동. rvlink와 연결하기
+- 어셋의 속성(Tag)를 다중으로 Overwrite, Remove, Add 가능하게 수정(멀티 선택기능)
+- 어셋 소스 multi Selct 기능 기본 추가 필요
+- 태그 페이지 제작
+- 메인 화면에 어셋이 NEW 4개 / TOP 4개 총 8개까지 보여지고 있으나, 10개 또는 30개까지 보일 수 있도록 개인별로 선택할 수 있게 옵션값 생성
+- 검색 엔진 상단 카테고리 종류 Hide/추가할 수 있게 커스텀 가능하게 수정
+- 검색 엔진에 여러 가지를 검색할 때 'and'의 개념이 아니라 'or'의 기능 추가 (샷그리드에서 콤마쓰듯이)
+- 태그가 배열되는 순서를 알파벳 순서 등으로 sorting 가능하게 수정 필요
+- 'Users'에서 계정 어드민 권한 부여 또는 수정 바로 가능하게 수정
+- User별 즐겨찾기 페이지 추가 필요
+
 ## 특 징
+
 - 검색엔진 인터페이스
 - 태그 시스템
 - 에셋 Attribute 설정
@@ -37,72 +58,95 @@ VFX, 애니메이션, 게임, 사운드 등 콘텐츠 제작에 사용되는 에
 ## 사용 방법
 
 ### 서버 권장 사항
+
 - OS: Linux, macOS 또는 Windows Server
 - 메모리: 32기가 이상
 
 ### yum명령어 최신으로 업데이트
+
 Dafault로 설치되어 있는 yum으로는 필요한 라이브러리를 설치할 수 없습니다.
 아래 명령어를 통해 업데이트 해주세요.
 
- ```
- # yum install epel-release
+ ```bash
+ sudo yum install epel-release
  ```
 
 ### DB 설치 및 실행
+
 도토리는 mongoDB를 사용하고 있습니다. mongoDB를 설치해주세요.
+
 - [mongoDB 설치하는 법](https://github.com/cgiseminar/curriculum/blob/master/docs/install_mongodb.md)
 
 ### 기타 라이브러리 및 명령어 설치
+
 도토리에서 사용하고 있는 라이브러리의 설치와 설정방법은 아래 문서를 참고해주세요.
+
 - [Library 설치 및 설정](documents/setlibrary.md)
 
 도토리에서 사용중인 라이브러리는 다음과 같습니다.
+
 - OpenColorIO
 - OpenImageIO 2.x 이상
 - FFmpeg
 
 ### 인증서 발급
+
 https 보안프로토콜을 사용하기 위해서는 인증서를 발급받아야 합니다. 아래 문서를 참고해주세요.
+
 - [인증서 만드는 방법](documents/how_to_make_certification.md)
 
 ### 웹서버 실행
+
 준비가 되었다면 아래 명령어를 통해 웹서버를 실행시켜 주세요.
+
 ```bash
-$ sudo dotori -http :80
+sudo dotori -http :80
 ```
+
 > 여러분이 macOS를 사용한다면 기본적으로 80포트는 아파치 서버가 사용중일 수 있습니다. `:80` 포트에 실행되는 아파치 서버를 종료하기 위해서 $ sudo apachectl stop 를 터미널에 입력해주세요.
 
 ### CentOS 방화벽 설정
+
 다른 컴퓨터에서의 접근을 허용하기 위해서 해당 포트에 대한 방화벽을 해제합니다.
- ```
-# firewall-cmd --zone=public --add-port=80/tcp --permanent
-# firewall-cmd --reload
+
+```bash
+sudo firewall-cmd --zone=public --add-port=80/tcp --permanent
+sudo firewall-cmd --reload
 ```
 
 ### 백업
+
 회사의 무형 자산을 안전하게 지키기 위해서는 정기적인 백업이 중요합니다.
 mongoDB를 백업하는 방법은 아래 문서를 참고해 주세요.
+
 - [backup](documents/backup.md)
 
 ## 개발자 API
+
 도토리는 `웹`, `command line`, `REST API`를 이용해서 조작할 수 있습니다.
 
 ### Command-line
+
 command를 통해 dotori를 제어할 수 있습니다.
+
 - [Item](documents/command_item.md)
 - [User](documents/command_user.md)
 
 ### REST API
+
 Dotori는 REST API를 지원합니다. Python, Go, Java, Javascript, node.JS, C++, C, C# 등 수많은 언어를 통해 Dotori를 이용할 수 있습니다.
 아래는 Dotori의  REST API reference 문서입니다.
+
 - [item](documents/restapi_item.md)
 - [user](documents/restapi_user.md)
 - [admin setting](documents/restapi_adminsetting.md)
 
-## 개발에 기여하고 싶다면...
+## 개발에 기여하고 싶다면
+
 도토리는 오픈소스로 진행 중인 프로젝트입니다. 개발에 기여하고 싶다면 아래 내용을 참고해주세요!
 
 ### 개발환경셋팅
+
 Go에서 컴파일된 파일이 생성되는 경로를 설정하기 위해 GOBIN 환경변수 셋팅이 필요합니다.
 
 리눅스라면 .bashrc에 선언해주세요.
@@ -124,26 +168,30 @@ Default env_keep=PATH # 새로 추가
 ```
 
 ### 예제파일 안내
+
 에셋 라이브러리 개발에 사용된 예제 파일에 대한 안내 문서입니다.
+
 - 작은용량의 예제 파일들은 `examples` 폴더에 들어있습니다.
 - 용량이 큰 파일은 가벼운 리포지터리 관리를 위해 TD교육에 사용된 예제파일 리포지터리에 저장되어있습니다.
 - Footage 데이터
-    - footage 데이터는 95메가 정도의 용량을 가지고 있습니다.
-    - 리포지터리에는 최대한 가벼운 파일, 코드만 올리기 위해 위 폴더에 footage 데이터는 들어가 있지 않습니다.
-    - footage 예제파일은 https://github.com/lazypic/tdcourse_examples/tree/master/footage 에서 다운받을 수 있습니다.
+  - footage 데이터는 95메가 정도의 용량을 가지고 있습니다.
+  - 리포지터리에는 최대한 가벼운 파일, 코드만 올리기 위해 위 폴더에 footage 데이터는 들어가 있지 않습니다.
+  - footage 예제파일은 <https://github.com/lazypic/tdcourse_examples/tree/master/footage> 에서 다운받을 수 있습니다.
 - HDRI 데이터
-    - HDRI 데이터는 55메가 정도의 용량을 가지고 있습니다.
-    - 리포지터리에는 최대한 가벼운 파일, 코드만 올리기 위해 위 폴더에 HDRI 데이터는 들어가 있지 않습니다.
-    - HDRI 예제파일은 https://github.com/lazypic/tdcourse_examples/tree/master/hdri 에서 다운받을 수 있습니다.
+  - HDRI 데이터는 55메가 정도의 용량을 가지고 있습니다.
+  - 리포지터리에는 최대한 가벼운 파일, 코드만 올리기 위해 위 폴더에 HDRI 데이터는 들어가 있지 않습니다.
+  - HDRI 예제파일은 <https://github.com/lazypic/tdcourse_examples/tree/master/hdri> 에서 다운받을 수 있습니다.
 - Mov 데이터
-    - Prores422HQ 코덱의 mov 데이터는 2초에 43메가 정도의 용량을 가지고 있습니다.
-    - 리포지터리에는 최대한 가벼운 파일, 코드만 올리기 위해 위 폴더에 Prores422HQ mov 데이터는 들어가 있지 않습니다.
-    - HDRI 예제파일은 https://github.com/lazypic/tdcourse_examples/tree/master/movs 에서 다운받을 수 있습니다.
+  - Prores422HQ 코덱의 mov 데이터는 2초에 43메가 정도의 용량을 가지고 있습니다.
+  - 리포지터리에는 최대한 가벼운 파일, 코드만 올리기 위해 위 폴더에 Prores422HQ mov 데이터는 들어가 있지 않습니다.
+  - HDRI 예제파일은 <https://github.com/lazypic/tdcourse_examples/tree/master/movs> 에서 다운받을 수 있습니다.
 
 ### 위키 및 개발시 주의사항
+
 - 상단의 [wiki](https://github.com/RD101/dotori/wiki) 탭을 통해서 개발에 필요한 정보를 접근할 수 있습니다.
 - 프로젝트의 전반적인 규칙, 공유되어야 할 내용이 적혀있습니다.
 - 회사 특이사항 및 관련된 코드를 내부에 하드코딩하지 말아주세요.
 
 ### License
+
 [BSD-3-Clause License](https://github.com/RD101/dotori/blob/master/LICENSE)
