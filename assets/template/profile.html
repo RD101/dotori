@@ -1,7 +1,7 @@
 {{define "profile"}}
-{{template "head"}}
+{{template "head-bootstrap5"}}
 <body>
-    {{template "navbar" .}}
+    {{template "navbar-bootstrap5" .}}
     <div class="pt-5 pb-5">
         <h2 class="text-center section-heading text-muted">Profile: {{.User.ID}}</h2>
     </div>
@@ -11,25 +11,26 @@
                 <div class="col">
                     <div class="form-group">
                         <label class="h4 text-muted">AccessLevel</label>
-                        <input type="text" class="form-control" value="{{.User.AccessLevel}}" disabled>
-                        <small class="form-text text-muted">권한</small>
+                        <input type="text" class="form-control" value="{{.User.AccessLevel}}" readonly>
+                        <small class="form-text text-muted">사용자 권한</small>
                     </div>
                 </div>
-            </div>
-            <div class="row">
                 <div class="col">
                     <div class="form-group">
                         <label class="h4 text-muted">Token</label>
-                        <input type="text" class="form-control" value="{{.User.Token}}" disabled>
+                        <input type="text" class="form-control finger" value="{{.User.Token}}" onclick="copyClipboard('{{.User.Token}}')" readonly>
                         <small class="form-text text-muted">RestAPI에 접근할 수 있는 Token</small>
                     </div>
                 </div>
             </div>
-            <div class="row">
+            
+            <div class="row pt-3">
                 <div class="col">
-                    <div class="form-group pl-4">
-                        <input class="form-check-input" type="checkbox" id="autoplay" {{if .User.Autoplay}}checked{{end}} onclick="SetAutoplay()">
-                        <label class="form-check-label text-muted" for="autoplay">Autoplay 활성화</label>
+                    <div class="from-group">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="autoplay" {{if .User.Autoplay}}checked{{end}} onclick="SetAutoplay()">
+                            <label class="form-check-label text-muted" for="autoplay">Autoplay 활성화</label>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -38,7 +39,7 @@
 </body>
 <!--add javascript-->
 <script src="/assets/js/jquery-3.1.1.min.js"></script>
-<script src="/assets/bootstrap-4/js/bootstrap.min.js"></script>
+<script src="/assets/bootstrap-5.1.3-dist/js/bootstrap.bundle.js"></script>
 <script src="/assets/js/dotori.js"></script>
 </html>
 {{end}}
