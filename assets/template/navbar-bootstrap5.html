@@ -1,0 +1,72 @@
+{{define "navbar-bootstrap5"}}
+<nav class="navbar navbar-expand-lg navbar-darkmode">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/" data-bs-toggle="tooltip" data-bs-placement="right" title="홈으로 이동합니다.">{{$.Adminsetting.Appname}}</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+               Add
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="/addmaya">Maya</a>
+                <a class="dropdown-item" href="/addmax">Max</a>
+                <a class="dropdown-item" href="/addnuke">Nuke</a>
+                <a class="dropdown-item" href="/addhoudini">Houdini</a>
+                <a class="dropdown-item" href="/addblender">Blender</a>
+                <a class="dropdown-item" href="/addfootage">Footage</a>
+                <a class="dropdown-item" href="/addalembic">Alembic</a>
+                <a class="dropdown-item" href="/addusd">USD</a>
+                <a class="dropdown-item" href="/addunreal">Unreal</a>
+                <a class="dropdown-item" href="/addopenvdb">OpenVDB</a>
+                <a class="dropdown-item" href="/addsound">Sound</a>
+                <a class="dropdown-item" href="/addmodo">Modo</a>
+                <a class="dropdown-item" href="/addkatana">Katana</a>
+                <a class="dropdown-item" href="/addhwp">HWP</a>
+                <a class="dropdown-item" href="/addpdf">PDF</a>
+                <a class="dropdown-item" href="/addppt">PPT</a>
+                <a class="dropdown-item" href="/addies">IES</a>
+                <a class="dropdown-item" href="/addlut">LUT</a>
+                <a class="dropdown-item" href="/addhdri">HDRI</a>
+                <a class="dropdown-item" href="/addtexture">Texture</a>
+                <a class="dropdown-item" href="/addclip">Clip</a>
+                <a class="dropdown-item" href="/addfusion360">Fusion360</a>
+                <a class="dropdown-item" href="/addmatte">Matte</a>
+            </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/item-process">Process</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/help">Help</a>
+        </li>
+        {{if eq $.Token.AccessLevel "admin"}}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-danger" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+               Admin
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="/users">Users</a>
+                <a class="dropdown-item" href="/adminsetting">Admin Setting</a>
+                <a class="dropdown-item" href="/cleanup-db">Clean Up DB</a>
+            </div>
+          </li>
+        {{end}}
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+             {{if $.Token.ID}}{{$.Token.ID}}{{else}}User{{end}}
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="/profile">Profile</a>
+              <a class="dropdown-item" href="/favoriteassets">Favorite Assets</a>
+              <a class="dropdown-item" href="/signout">SignOut</a>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+{{end}}
