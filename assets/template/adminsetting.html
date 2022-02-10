@@ -1,7 +1,7 @@
 {{define "adminsetting"}}
-{{template "head"}}
+{{template "head-bootstrap5"}}
 <body>
-    {{template "navbar" .}}
+    {{template "navbar-bootstrap5" .}}
     <div class="container p-5">
         <form action="/adminsetting-submit" method="POST">
             <div class="col-lg-6 col-md-8 col-sm-12 mx-auto">
@@ -176,14 +176,14 @@
                         <div class="form-group">
                             <label class="text-muted">동영상 Width</label>
                             <input type="text" name="mediawidth" class="form-control" placeholder="1280" value="{{if eq .Adminsetting.MediaWidth 0}}1280{{else}}{{.Adminsetting.MediaWidth}}{{end}}" onkeyup=handlerNumCheck(this)>
-                            <small class="form-text text-muted">업로드할 동영상의 가로 사이즈를 입력해주세요.</small>
+                            <small class="form-text text-muted">동영상 가로 사이즈를 입력해주세요.</small>
                         </div>
                     </div>
                     <div class="col-sm">
                         <div class="form-group">
                             <label class="text-muted">동영상 Height</label>
                             <input type="text" name="mediaheight" class="form-control" placeholder="720" value="{{if eq .Adminsetting.MediaHeight 0}}720{{else}}{{.Adminsetting.MediaHeight}}{{end}}" onkeyup=handlerNumCheck(this)>
-                            <small class="form-text text-muted">업로드할 동영상의 세로 사이즈를 입력해주세요.</small>
+                            <small class="form-text text-muted">동영상 세로 사이즈를 입력해주세요.</small>
                         </div>
                     </div>
                 </div>
@@ -261,9 +261,7 @@
     </div>
 {{template "footer"}}
 </body>
-<!--add javascript-->
-<script src="/assets/js/jquery-3.1.1.min.js"></script>
-<script src="/assets/bootstrap-4/js/bootstrap.min.js"></script>
+<script src="/assets/bootstrap-5.1.3-dist/js/bootstrap.bundle.js"></script>
 <script src="/assets/js/dropzone.js"></script>
 <script src="/assets/js/dotori.js"></script>
 </html>
