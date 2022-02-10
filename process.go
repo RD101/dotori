@@ -1245,7 +1245,7 @@ func genThumbFootage(adminSetting Adminsetting, item Item) error {
 	}
 	os.Setenv("OCIO", adminSetting.OCIOConfig)
 	if *flagDebug {
-		fmt.Println(args)
+		fmt.Println(adminSetting.OpenImageIO, strings.Join(args, " "))
 	}
 	err = exec.Command(adminSetting.OpenImageIO, args...).Run()
 	if err != nil {
@@ -1289,7 +1289,7 @@ func genThumbHDRI(adminSetting Adminsetting, item Item) error {
 	}
 	os.Setenv("OCIO", adminSetting.OCIOConfig)
 	if *flagDebug {
-		fmt.Println(args)
+		fmt.Println(adminSetting.OpenImageIO, strings.Join(args, " "))
 	}
 	err = exec.Command(adminSetting.OpenImageIO, args...).Run()
 	if err != nil {
@@ -1333,7 +1333,7 @@ func genThumbTexture(adminSetting Adminsetting, item Item) error {
 	}
 	os.Setenv("OCIO", adminSetting.OCIOConfig)
 	if *flagDebug {
-		fmt.Println(args)
+		fmt.Println(adminSetting.OpenImageIO, strings.Join(args, " "))
 	}
 	err = exec.Command(adminSetting.OpenImageIO, args...).Run()
 	if err != nil {
