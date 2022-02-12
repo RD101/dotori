@@ -139,6 +139,8 @@ func handleAdminSettingSubmit(w http.ResponseWriter, r *http.Request) {
 	a.VideoCodecMov = r.FormValue("videocodecmov")
 	a.AudioCodec = r.FormValue("audiocodec")
 	a.InitPassword = r.FormValue("initpassword")
+	// 지원 포멧 셋팅
+	a.Maya = str2bool(r.FormValue("maya"))
 	//mongoDB client 연결
 	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 	if err != nil {

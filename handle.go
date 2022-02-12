@@ -173,6 +173,7 @@ func webserver() {
 	http.HandleFunc("/uploadhoudini-item", handleUploadHoudiniItem)
 	http.HandleFunc("/uploadhoudini-file", handleUploadHoudiniFile)
 	http.HandleFunc("/uploadhoudini-checkdata", handleUploadHoudiniCheckData)
+	http.HandleFunc("/addhoudini-success", handleAddHoudiniSuccess)
 	http.HandleFunc("/edithoudini", handleEditHoudini)
 	http.HandleFunc("/edithoudini-submit", handleEditHoudiniSubmit)
 	http.HandleFunc("/edithoudini-success", handleEditHoudiniSuccess)
