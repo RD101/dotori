@@ -311,6 +311,18 @@
                             <label class="form-check-label text-muted" for="unreal">Unreal</label>
                         </div>
                     </div>
+                    <div class="from-group">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="openvdb" name="openvdb" value="true" {{if .Adminsetting.OpenVDB}}checked{{end}}>
+                            <label class="form-check-label text-muted" for="openvdb">OpenVDB</label>
+                        </div>
+                    </div>
+                    <div class="from-group">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="sound" name="sound" value="true" {{if .Adminsetting.Sound}}checked{{end}}>
+                            <label class="form-check-label text-muted" for="sound">Sound</label>
+                        </div>
+                    </div>
                 </div>
             </div>
             
