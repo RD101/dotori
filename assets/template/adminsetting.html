@@ -23,7 +23,7 @@
                             <div class="form-group">
                                 <label class="text-muted">Rootpath</label>
                                 <input type="text" name="rootpath" class="form-control" placeholder="/rootpath" value="{{.Adminsetting.Rootpath}}">
-                                <small class="form-text text-warning">에셋 라이브러리 위치를 설정해주세요.</small>
+                                <small class="form-text text-warning">에셋 라이브러리 저장 위치를 설정해주세요.</small>
                             </div>
                         </div>
                     </div>
@@ -271,12 +271,6 @@
                     </div>
                     <div class="from-group">
                         <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="nuke" name="nuke" value="true" {{if .Adminsetting.Nuke}}checked{{end}}>
-                            <label class="form-check-label text-muted" for="nuke">Nuke</label>
-                        </div>
-                    </div>
-                    <div class="from-group">
-                        <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="houdini" name="houdini" value="true" {{if .Adminsetting.Houdini}}checked{{end}}>
                             <label class="form-check-label text-muted" for="houdini">Houdini</label>
                         </div>
@@ -285,12 +279,6 @@
                         <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="blender" name="blender" value="true" {{if .Adminsetting.Blender}}checked{{end}}>
                             <label class="form-check-label text-muted" for="blender">Blender</label>
-                        </div>
-                    </div>
-                    <div class="from-group">
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="footage" name="footage" value="true" {{if .Adminsetting.Footage}}checked{{end}}>
-                            <label class="form-check-label text-muted" for="footage">Footage</label>
                         </div>
                     </div>
                     <div class="from-group">
@@ -319,14 +307,14 @@
                     </div>
                     <div class="from-group">
                         <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="sound" name="sound" value="true" {{if .Adminsetting.Sound}}checked{{end}}>
-                            <label class="form-check-label text-muted" for="sound">Sound</label>
+                            <input class="form-check-input" type="checkbox" id="modo" name="modo" value="true" {{if .Adminsetting.Modo}}checked{{end}}>
+                            <label class="form-check-label text-muted" for="modo">Modo</label>
                         </div>
                     </div>
                     <div class="from-group">
                         <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="modo" name="modo" value="true" {{if .Adminsetting.Modo}}checked{{end}}>
-                            <label class="form-check-label text-muted" for="modo">Modo</label>
+                            <input class="form-check-input" type="checkbox" id="fusion360" name="fusion360" value="true" {{if .Adminsetting.Fusion360}}checked{{end}}>
+                            <label class="form-check-label text-muted" for="fusion360">Fusion360</label>
                         </div>
                     </div>
                     <div class="from-group">
@@ -355,12 +343,6 @@
                     </div>
                     <div class="from-group">
                         <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="ies" name="ies" value="true" {{if .Adminsetting.IES}}checked{{end}}>
-                            <label class="form-check-label text-muted" for="ies">IES</label>
-                        </div>
-                    </div>
-                    <div class="from-group">
-                        <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="lut" name="lut" value="true" {{if .Adminsetting.LUT}}checked{{end}}>
                             <label class="form-check-label text-muted" for="lut">LUT</label>
                         </div>
@@ -373,8 +355,26 @@
                     </div>
                     <div class="from-group">
                         <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="ies" name="ies" value="true" {{if .Adminsetting.IES}}checked{{end}}>
+                            <label class="form-check-label text-muted" for="ies">IES</label>
+                        </div>
+                    </div>
+                    <div class="from-group">
+                        <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="texture" name="texture" value="true" {{if .Adminsetting.Texture}}checked{{end}}>
                             <label class="form-check-label text-muted" for="texture">Texture</label>
+                        </div>
+                    </div>
+                    <div class="from-group">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="matte" name="matte" value="true" {{if .Adminsetting.Matte}}checked{{end}}>
+                            <label class="form-check-label text-muted" for="matte">Matte</label>
+                        </div>
+                    </div>
+                    <div class="from-group">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="footage" name="footage" value="true" {{if .Adminsetting.Footage}}checked{{end}}>
+                            <label class="form-check-label text-muted" for="footage">Footage</label>
                         </div>
                     </div>
                     <div class="from-group">
@@ -385,14 +385,14 @@
                     </div>
                     <div class="from-group">
                         <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="fusion360" name="fusion360" value="true" {{if .Adminsetting.Fusion360}}checked{{end}}>
-                            <label class="form-check-label text-muted" for="fusion360">Fusion360</label>
+                            <input class="form-check-input" type="checkbox" id="nuke" name="nuke" value="true" {{if .Adminsetting.Nuke}}checked{{end}}>
+                            <label class="form-check-label text-muted" for="nuke">Nuke</label>
                         </div>
                     </div>
                     <div class="from-group">
                         <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="matte" name="matte" value="true" {{if .Adminsetting.Matte}}checked{{end}}>
-                            <label class="form-check-label text-muted" for="matte">Matte</label>
+                            <input class="form-check-input" type="checkbox" id="sound" name="sound" value="true" {{if .Adminsetting.Sound}}checked{{end}}>
+                            <label class="form-check-label text-muted" for="sound">Sound</label>
                         </div>
                     </div>
                 </div>
