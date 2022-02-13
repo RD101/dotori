@@ -12,29 +12,29 @@
                Add
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="/addmaya">Maya</a>
-                <a class="dropdown-item" href="/addmax">Max</a>
-                <a class="dropdown-item" href="/addnuke">Nuke</a>
-                <a class="dropdown-item" href="/addhoudini">Houdini</a>
-                <a class="dropdown-item" href="/addblender">Blender</a>
-                <a class="dropdown-item" href="/addfootage">Footage</a>
-                <a class="dropdown-item" href="/addalembic">Alembic</a>
-                <a class="dropdown-item" href="/addusd">USD</a>
-                <a class="dropdown-item" href="/addunreal">Unreal</a>
-                <a class="dropdown-item" href="/addopenvdb">OpenVDB</a>
-                <a class="dropdown-item" href="/addsound">Sound</a>
-                <a class="dropdown-item" href="/addmodo">Modo</a>
-                <a class="dropdown-item" href="/addkatana">Katana</a>
-                <a class="dropdown-item" href="/addhwp">HWP</a>
-                <a class="dropdown-item" href="/addpdf">PDF</a>
-                <a class="dropdown-item" href="/addppt">PPT</a>
-                <a class="dropdown-item" href="/addies">IES</a>
-                <a class="dropdown-item" href="/addlut">LUT</a>
-                <a class="dropdown-item" href="/addhdri">HDRI</a>
-                <a class="dropdown-item" href="/addtexture">Texture</a>
-                <a class="dropdown-item" href="/addclip">Clip</a>
-                <a class="dropdown-item" href="/addfusion360">Fusion360</a>
-                <a class="dropdown-item" href="/addmatte">Matte</a>
+              {{if $.Adminsetting.Maya}}<a class="dropdown-item" href="/addmaya">Maya</a>{{end}}
+              {{if $.Adminsetting.Max}}<a class="dropdown-item" href="/addmax">Max</a>{{end}}
+              {{if $.Adminsetting.Houdini}}<a class="dropdown-item" href="/addhoudini">Houdini</a>{{end}}
+              {{if $.Adminsetting.Blender}}<a class="dropdown-item" href="/addblender">Blender</a>{{end}}
+              {{if $.Adminsetting.Alembic}}<a class="dropdown-item" href="/addalembic">Alembic</a>{{end}}
+              {{if $.Adminsetting.USD}}<a class="dropdown-item" href="/addusd">USD</a>{{end}}
+              {{if $.Adminsetting.Unreal}}<a class="dropdown-item" href="/addunreal">Unreal</a>{{end}}
+              {{if $.Adminsetting.OpenVDB}}<a class="dropdown-item" href="/addopenvdb">OpenVDB</a>{{end}}
+              {{if $.Adminsetting.Modo}}<a class="dropdown-item" href="/addmodo">Modo</a>{{end}}
+              {{if $.Adminsetting.Fusion360}}<a class="dropdown-item" href="/addfusion360">Fusion360</a>{{end}}
+              {{if $.Adminsetting.Katana}}<a class="dropdown-item" href="/addkatana">Katana</a>{{end}}
+              {{if $.Adminsetting.HWP}}<a class="dropdown-item" href="/addhwp">HWP</a>{{end}}
+              {{if $.Adminsetting.PDF}}<a class="dropdown-item" href="/addpdf">PDF</a>{{end}}
+              {{if $.Adminsetting.PPT}}<a class="dropdown-item" href="/addppt">PPT</a>{{end}}
+              {{if $.Adminsetting.LUT}}<a class="dropdown-item" href="/addlut">LUT</a>{{end}}
+              {{if $.Adminsetting.HDRI}}<a class="dropdown-item" href="/addhdri">HDRI</a>{{end}}
+              {{if $.Adminsetting.IES}}<a class="dropdown-item" href="/addies">IES</a>{{end}}
+              {{if $.Adminsetting.Texture}}<a class="dropdown-item" href="/addtexture">Texture</a>{{end}}
+              {{if $.Adminsetting.Matte}}<a class="dropdown-item" href="/addmatte">Matte</a>{{end}}
+              {{if $.Adminsetting.Footage}}<a class="dropdown-item" href="/addfootage">Footage</a>{{end}}
+              {{if $.Adminsetting.Clip}}<a class="dropdown-item" href="/addclip">Clip</a>{{end}}
+              {{if $.Adminsetting.Nuke}}<a class="dropdown-item" href="/addnuke">Nuke</a>{{end}}
+              {{if $.Adminsetting.Sound}}<a class="dropdown-item" href="/addsound">Sound</a>{{end}}
             </div>
         </li>
         <li class="nav-item">
