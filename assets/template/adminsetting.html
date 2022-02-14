@@ -3,257 +3,401 @@
 <body>
     {{template "navbar-bootstrap5" .}}
     <div class="container p-5">
+        <div class="pt-3 pb-3">
+            <h2 class="text-center section-heading text-muted">Admin Setting</h2>
+        </div>
         <form action="/adminsetting-submit" method="POST">
-            <div class="col-lg-6 col-md-8 col-sm-12 mx-auto">
-                <div class="pt-3 pb-3">
-                    <h2 class="section-heading text-muted">Admin Setting</h2>
-                </div>
-                <div class="row">
-                    <div class="col-sm">
-                        <div class="form-group">
-                            <label class="text-muted">Appname</label>
-                            <input type="text" name="appname" class="form-control" placeholder="dotori" value="{{.Adminsetting.Appname}}">
-                            <small class="form-text text-muted">웹 어플리케이션 이름을 설정할 수 있습니다.</small>
+            <div class="row">
+                <div class="col-lg-6 col-md-8 col-sm-12 mx-auto">
+                    <div class="row">
+                        <div class="col-sm">
+                            <div class="form-group">
+                                <label class="text-muted">Appname</label>
+                                <input type="text" name="appname" class="form-control" placeholder="dotori" value="{{.Adminsetting.Appname}}">
+                                <small class="form-text text-muted">웹 어플리케이션 이름을 설정할 수 있습니다.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <div class="form-group">
+                                <label class="text-muted">Rootpath</label>
+                                <input type="text" name="rootpath" class="form-control" placeholder="/rootpath" value="{{.Adminsetting.Rootpath}}">
+                                <small class="form-text text-warning">에셋 라이브러리 저장 위치를 설정해주세요.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <div class="form-group">
+                                <label class="text-muted">Linux Protocol Path</label>
+                                <input type="text" name="linuxprotocolpath" class="form-control" placeholder="/linux/path" value="{{.Adminsetting.LinuxProtocolPath}}">
+                                <small class="form-text text-muted">Linux 클라이언트가 사용하는 라이브러리 위치를 설정해주세요.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <div class="form-group">
+                                <label class="text-muted">Windows Protocol Path</label>
+                                <input type="text" name="windowsprotocolpath" class="form-control" placeholder="/windows/path" value="{{.Adminsetting.WindowsProtocolPath}}">
+                                <small class="form-text text-muted">Windows 클라이언트가 사용하는 라이브러리 위치를 설정해주세요.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <div class="form-group">
+                                <label class="text-muted">macOS Protocol Path</label>
+                                <input type="text" name="macosprotocolpath" class="form-control" placeholder="/macos/path" value="{{.Adminsetting.MacosProtocolPath}}">
+                                <small class="form-text text-muted">macOS 클라이언트가 사용하는 라이브러리 경로를 설정해주세요.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <div class="form-group">
+                                <label class="text-muted">Windows UNC Prefix</label>
+                                <input type="text" name="windowsuncprefix" class="form-control" placeholder="\" value="{{.Adminsetting.WindowsUNCPrefix}}">
+                                <small class="form-text text-muted">Windows에서 CopyPath를 실행했을 때 UNC 경로 앞에 붙는 문자열</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <div class="form-group">
+                                <label class="text-muted">Umask</label>
+                                <input type="text" name="umask" class="form-control" placeholder="0000" value="{{.Adminsetting.Umask}}" maxlength="4" onkeyup=handlerNumCheck(this)>
+                                <small class="form-text text-muted">Umask 값을 설정해주세요.</small>
+                            </div>
+                        </div>
+                        <div class="col-sm">
+                            <div class="form-group">
+                                <label class="text-muted">Folder Permission</label>
+                                <input type="text" name="folderpermission" class="form-control" placeholder="0775" value="{{.Adminsetting.FolderPermission}}" maxlength="4" onkeyup=handlerNumCheck(this)>
+                                <small class="form-text text-muted">폴더 권한을 설정해주세요.</small>
+                            </div>
+                        </div>
+                        <div class="col-sm">
+                            <div class="form-group">
+                                <label class="text-muted">File Permission</label>
+                                <input type="text" name="filepermission" class="form-control" placeholder="0440" value="{{.Adminsetting.FilePermission}}" maxlength="4" onkeyup=handlerNumCheck(this)>
+                                <small class="form-text text-muted">파일 권한을 설정해주세요.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <div class="form-group">
+                                <label class="text-muted">UID</label>
+                                <input type="text" name="uid" class="form-control" placeholder="501" value="{{.Adminsetting.UID}}" onkeyup=handlerNumCheck(this)>
+                                <small class="form-text text-muted">User ID를 설정해주세요.</small>
+                            </div>
+                        </div>
+                        <div class="col-sm">
+                            <div class="form-group">
+                                <label class="text-muted">GID</label>
+                                <input type="text" name="gid" class="form-control" placeholder="20" value="{{.Adminsetting.GID}}" onkeyup=handlerNumCheck(this)>
+                                <small class="form-text text-muted">Group ID를 설정해주세요.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <div class="form-group">
+                                <label class="text-muted">Process Buffer Size</label>
+                                <input type="text" name="processbuffersize" class="form-control" placeholder="50" value="{{.Adminsetting.ProcessBufferSize}}">
+                                <small class="form-text text-muted">프로세스의 버퍼 사이즈를 설정해주세요. 회사의 인원수로 설정하는 것을 권장합니다.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <div class="form-group">
+                                <label class="text-muted">FFmpeg</label>
+                                <input type="text" name="ffmpeg" class="form-control" placeholder="/path/ffmpeg" value="{{.Adminsetting.FFmpeg}}">
+                                <small class="form-text text-muted">동영상 변환을 위한 FFmpeg 명령어 위치를 설정해주세요.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <div class="form-group">
+                                <label class="text-muted">OCIO Config</label>
+                                <input type="text" name="ocioconfig" class="form-control" placeholder="/path/ocio.config" value="{{.Adminsetting.OCIOConfig}}">
+                                <small class="form-text text-muted">컬러메니징을 위한 OpenColorIO ocio.config의 위치를 설정해 주세요.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <div class="form-group">
+                                <label class="text-muted">OpenImageIO</label>
+                                <input type="text" name="openimageio" class="form-control" placeholder="/path/oiiotool" value="{{.Adminsetting.OpenImageIO}}">
+                                <small class="form-text text-muted">이미지 변환을 위한 OpenImageIO 명령어 위치를 설정해 주세요.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <div class="form-group">
+                                <label class="text-muted">LD_LIBRARY_PATH</label>
+                                <input type="text" name="ldlibrarypath" class="form-control" placeholder="/path/lib:/path/lib" value="{{.Adminsetting.LDLibraryPath}}">
+                                <small class="form-text text-muted">연산에 필요한 라이브러리 경로를 설정해주세요. 구분은 : 문자로 합니다.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <div class="form-group">
+                                <label class="text-muted">MultipartForm Buffer Size</label>
+                                <input type="number" name="multipartformbuffersize" class="form-control" placeholder="200000" value="{{.Adminsetting.MultipartFormBufferSize}}">
+                                <small class="form-text text-muted">MultipartForm Buffersize</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <div class="form-group">
+                                <label class="text-muted">썸네일 이미지 Width</label>
+                                <input type="text" name="thumbnailimagewidth" class="form-control" placeholder="320" value="{{if eq .Adminsetting.ThumbnailImageWidth 0}}320{{else}}{{.Adminsetting.ThumbnailImageWidth}}{{end}}" onkeyup=handlerNumCheck(this)>
+                                <small class="form-text text-muted">썸네일 이미지 가로 사이즈를 입력해주세요.</small>
+                            </div>
+                        </div>
+                        <div class="col-sm">
+                            <div class="form-group">
+                                <label class="text-muted">썸네일 이미지 Height</label>
+                                <input type="text" name="thumbnailimageheight" class="form-control" placeholder="180" value="{{if eq .Adminsetting.ThumbnailImageHeight 0}}180{{else}}{{.Adminsetting.ThumbnailImageHeight}}{{end}}" onkeyup=handlerNumCheck(this)>
+                                <small class="form-text text-muted">썸네일 이미지 세로 사이즈를 입력해주세요.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <div class="form-group">
+                                <label class="text-muted">동영상 Width</label>
+                                <input type="text" name="mediawidth" class="form-control" placeholder="1280" value="{{if eq .Adminsetting.MediaWidth 0}}1280{{else}}{{.Adminsetting.MediaWidth}}{{end}}" onkeyup=handlerNumCheck(this)>
+                                <small class="form-text text-muted">동영상 가로 사이즈를 입력해주세요.</small>
+                            </div>
+                        </div>
+                        <div class="col-sm">
+                            <div class="form-group">
+                                <label class="text-muted">동영상 Height</label>
+                                <input type="text" name="mediaheight" class="form-control" placeholder="720" value="{{if eq .Adminsetting.MediaHeight 0}}720{{else}}{{.Adminsetting.MediaHeight}}{{end}}" onkeyup=handlerNumCheck(this)>
+                                <small class="form-text text-muted">동영상 세로 사이즈를 입력해주세요.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <div class="form-group">
+                                <label class="text-muted">Mov 비디오 코덱</label>
+                                <select name="videocodecmov" class="form-control">
+                                    <option value="libx264" {{if eq .Adminsetting.VideoCodecMov "libx264" "" }}selected{{end}}>H.264(libx264)</option>
+                                    <option value="hevc" {{if eq .Adminsetting.VideoCodecMov "hevc" }}selected{{end}}>H.265(hevc)</option>
+                                    <option value="libaom-av1" {{if eq .Adminsetting.VideoCodecMov "libaom-av1" }}selected{{end}}>AV1(libaom-av1)</option>
+                                    <option value="libvpx" {{if eq .Adminsetting.VideoCodecMov "libvpx" }}selected{{end}}>Google VP8(libvpx)</option>
+                                    <option value="libvpx-vp9" {{if eq .Adminsetting.VideoCodecMov "libvpx-vp9" }}selected{{end}}>Google VP9(libvpx-vp9)</option>
+                                </select>
+                                <small class="form-text text-muted">동영상 인코딩 코덱을 선택해주세요.</small>
+                            </div>
+                        </div>
+                        <div class="col-sm">
+                            <div class="form-group">
+                                <label class="text-muted">Mp4 비디오 코덱</label>
+                                <select name="videocodecmp4" class="form-control">
+                                    <option value="libx264" {{if eq .Adminsetting.VideoCodecMp4 "libx264" "" }}selected{{end}}>H.264(libx264)</option>
+                                    <option value="hevc" {{if eq .Adminsetting.VideoCodecMp4 "hevc" }}selected{{end}}>H.265(hevc)</option>
+                                    <option value="libaom-av1" {{if eq .Adminsetting.VideoCodecMp4 "libaom-av1" }}selected{{end}}>AV1(libaom-av1)</option>
+                                    <option value="libvpx" {{if eq .Adminsetting.VideoCodecMp4 "libvpx" }}selected{{end}}>Google VP8(libvpx)</option>
+                                    <option value="libvpx-vp9" {{if eq .Adminsetting.VideoCodecMp4 "libvpx-vp9" }}selected{{end}}>Google VP9(libvpx-vp9)</option>
+                                </select>
+                                <small class="form-text text-muted">오디오 인코딩 코덱을 선택해주세요.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <div class="form-group">
+                                <label class="text-muted">Ogg 비디오 코덱</label>
+                                <select name="videocodecogg" class="form-control">
+                                    <option value="libtheora" {{if eq .Adminsetting.VideoCodecOgg "libtheora" "" }}selected{{end}}>LibTheora</option>
+                                    <option value="libaom-av1" {{if eq .Adminsetting.VideoCodecOgg "libaom-av1" }}selected{{end}}>AV1(libaom-av1)</option>
+                                    <option value="libvpx" {{if eq .Adminsetting.VideoCodecOgg "libvpx" }}selected{{end}}>Google VP8(libvpx)</option>
+                                    <option value="libvpx-vp9" {{if eq .Adminsetting.VideoCodecOgg "libvpx-vp9" }}selected{{end}}>Google VP9(libvpx-vp9)</option>
+                                </select>
+                                <small class="form-text text-muted">동영상 인코딩 코덱을 선택해주세요.</small>
+                            </div>
+                        </div>
+                        <div class="col-sm">
+                            <div class="form-group">
+                                <label class="text-muted">오디오 코덱</label>
+                                <select name="audiocodec" class="form-control">
+                                    <option value="nosound" {{if eq .Adminsetting.AudioCodec "nosound" "" }}selected{{end}}>No Sound</option>
+                                    <option value="copy" {{if eq .Adminsetting.AudioCodec "copy" }}selected{{end}}>Copy</option>
+                                    <option value="ac3" {{if eq .Adminsetting.AudioCodec "ac3" }}selected{{end}}>Audio Coding-3(ac3)</option>
+                                    <option value="aac" {{if eq .Adminsetting.AudioCodec "aac" }}selected{{end}}>Advanced Adio Coding(aac)</option>
+                                    <option value="mp3" {{if eq .Adminsetting.AudioCodec "mp3" }}selected{{end}}>MPEG-1 Audio Layer-3(mp3)</option>
+                                    <option value="dtc" {{if eq .Adminsetting.AudioCodec "dca" }}selected{{end}}>DCA (DTS Coherent Acoustics)</option>
+                                    <option value="flac" {{if eq .Adminsetting.AudioCodec "flac" }}selected{{end}}>Free Lossless Audio Codec(flac)</option>
+                                </select>
+                                <small class="form-text text-muted">오디오 인코딩 코덱을 선택해주세요.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-sm">
+                            <div class="form-group">
+                                <label class="text-muted">Init Password</label>
+                                <input type="password" name="initpassword" class="form-control" placeholder="패스워드 초기값" value="{{.Adminsetting.InitPassword}}">
+                                <small class="form-text text-muted">사용자의 패스워드 초기화 값을 설정해주세요.</small>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-sm">
-                        <div class="form-group">
-                            <label class="text-muted">Rootpath</label>
-                            <input type="text" name="rootpath" class="form-control" placeholder="/rootpath" value="{{.Adminsetting.Rootpath}}">
-                            <small class="form-text text-warning">에셋 라이브러리 위치를 설정해주세요.</small>
+                <div class="col-lg-2 col-md-2 col-sm-12 mx-auto">
+                    <label class="text-muted pb-3">Support Add Menu</label>
+                    <div class="from-group">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="maya" name="maya" value="true" {{if .Adminsetting.Maya}}checked{{end}}>
+                            <label class="form-check-label text-muted" for="maya">Maya</label>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm">
-                        <div class="form-group">
-                            <label class="text-muted">Linux Protocol Path</label>
-                            <input type="text" name="linuxprotocolpath" class="form-control" placeholder="/linux/path" value="{{.Adminsetting.LinuxProtocolPath}}">
-                            <small class="form-text text-muted">Linux 클라이언트가 사용하는 라이브러리 위치를 설정해주세요.</small>
+                    <div class="from-group">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="max" name="max" value="true" {{if .Adminsetting.Max}}checked{{end}}>
+                            <label class="form-check-label text-muted" for="max">Max</label>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm">
-                        <div class="form-group">
-                            <label class="text-muted">Windows Protocol Path</label>
-                            <input type="text" name="windowsprotocolpath" class="form-control" placeholder="/windows/path" value="{{.Adminsetting.WindowsProtocolPath}}">
-                            <small class="form-text text-muted">Windows 클라이언트가 사용하는 라이브러리 위치를 설정해주세요.</small>
+                    <div class="from-group">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="houdini" name="houdini" value="true" {{if .Adminsetting.Houdini}}checked{{end}}>
+                            <label class="form-check-label text-muted" for="houdini">Houdini</label>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm">
-                        <div class="form-group">
-                            <label class="text-muted">macOS Protocol Path</label>
-                            <input type="text" name="macosprotocolpath" class="form-control" placeholder="/macos/path" value="{{.Adminsetting.MacosProtocolPath}}">
-                            <small class="form-text text-muted">macOS 클라이언트가 사용하는 라이브러리 경로를 설정해주세요.</small>
+                    <div class="from-group">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="blender" name="blender" value="true" {{if .Adminsetting.Blender}}checked{{end}}>
+                            <label class="form-check-label text-muted" for="blender">Blender</label>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm">
-                        <div class="form-group">
-                            <label class="text-muted">Windows UNC Prefix</label>
-                            <input type="text" name="windowsuncprefix" class="form-control" placeholder="\" value="{{.Adminsetting.WindowsUNCPrefix}}">
-                            <small class="form-text text-muted">Windows에서 CopyPath를 실행했을 때 UNC 경로 앞에 붙는 문자열</small>
+                    <div class="from-group">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="alembic" name="alembic" value="true" {{if .Adminsetting.Alembic}}checked{{end}}>
+                            <label class="form-check-label text-muted" for="alembic">Alembic</label>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm">
-                        <div class="form-group">
-                            <label class="text-muted">Umask</label>
-                            <input type="text" name="umask" class="form-control" placeholder="0000" value="{{.Adminsetting.Umask}}" maxlength="4" onkeyup=handlerNumCheck(this)>
-                            <small class="form-text text-muted">Umask 값을 설정해주세요.</small>
+                    <div class="from-group">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="usd" name="usd" value="true" {{if .Adminsetting.USD}}checked{{end}}>
+                            <label class="form-check-label text-muted" for="usd">USD</label>
                         </div>
                     </div>
-                    <div class="col-sm">
-                        <div class="form-group">
-                            <label class="text-muted">Folder Permission</label>
-                            <input type="text" name="folderpermission" class="form-control" placeholder="0775" value="{{.Adminsetting.FolderPermission}}" maxlength="4" onkeyup=handlerNumCheck(this)>
-                            <small class="form-text text-muted">폴더 권한을 설정해주세요.</small>
+                    <div class="from-group">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="unreal" name="unreal" value="true" {{if .Adminsetting.Unreal}}checked{{end}}>
+                            <label class="form-check-label text-muted" for="unreal">Unreal</label>
                         </div>
                     </div>
-                    <div class="col-sm">
-                        <div class="form-group">
-                            <label class="text-muted">File Permission</label>
-                            <input type="text" name="filepermission" class="form-control" placeholder="0440" value="{{.Adminsetting.FilePermission}}" maxlength="4" onkeyup=handlerNumCheck(this)>
-                            <small class="form-text text-muted">파일 권한을 설정해주세요.</small>
+                    <div class="from-group">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="openvdb" name="openvdb" value="true" {{if .Adminsetting.OpenVDB}}checked{{end}}>
+                            <label class="form-check-label text-muted" for="openvdb">OpenVDB</label>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm">
-                        <div class="form-group">
-                            <label class="text-muted">UID</label>
-                            <input type="text" name="uid" class="form-control" placeholder="501" value="{{.Adminsetting.UID}}" onkeyup=handlerNumCheck(this)>
-                            <small class="form-text text-muted">User ID를 설정해주세요.</small>
+                    <div class="from-group">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="modo" name="modo" value="true" {{if .Adminsetting.Modo}}checked{{end}}>
+                            <label class="form-check-label text-muted" for="modo">Modo</label>
                         </div>
                     </div>
-                    <div class="col-sm">
-                        <div class="form-group">
-                            <label class="text-muted">GID</label>
-                            <input type="text" name="gid" class="form-control" placeholder="20" value="{{.Adminsetting.GID}}" onkeyup=handlerNumCheck(this)>
-                            <small class="form-text text-muted">Group ID를 설정해주세요.</small>
+                    <div class="from-group">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="fusion360" name="fusion360" value="true" {{if .Adminsetting.Fusion360}}checked{{end}}>
+                            <label class="form-check-label text-muted" for="fusion360">Fusion360</label>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm">
-                        <div class="form-group">
-                            <label class="text-muted">Process Buffer Size</label>
-                            <input type="text" name="processbuffersize" class="form-control" placeholder="50" value="{{.Adminsetting.ProcessBufferSize}}">
-                            <small class="form-text text-muted">프로세스의 버퍼 사이즈를 설정해주세요. 회사의 인원수로 설정하는 것을 권장합니다.</small>
+                    <div class="from-group">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="katana" name="katana" value="true" {{if .Adminsetting.Katana}}checked{{end}}>
+                            <label class="form-check-label text-muted" for="katana">Katana</label>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm">
-                        <div class="form-group">
-                            <label class="text-muted">FFmpeg</label>
-                            <input type="text" name="ffmpeg" class="form-control" placeholder="/path/ffmpeg" value="{{.Adminsetting.FFmpeg}}">
-                            <small class="form-text text-muted">동영상 변환을 위한 FFmpeg 명령어 위치를 설정해주세요.</small>
+                    <div class="from-group">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="hwp" name="hwp" value="true" {{if .Adminsetting.HWP}}checked{{end}}>
+                            <label class="form-check-label text-muted" for="hwp">HWP</label>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm">
-                        <div class="form-group">
-                            <label class="text-muted">OCIO Config</label>
-                            <input type="text" name="ocioconfig" class="form-control" placeholder="/path/ocio.config" value="{{.Adminsetting.OCIOConfig}}">
-                            <small class="form-text text-muted">컬러메니징을 위한 OpenColorIO ocio.config의 위치를 설정해 주세요.</small>
+                    <div class="from-group">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="pdf" name="pdf" value="true" {{if .Adminsetting.PDF}}checked{{end}}>
+                            <label class="form-check-label text-muted" for="pdf">PDF</label>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm">
-                        <div class="form-group">
-                            <label class="text-muted">OpenImageIO</label>
-                            <input type="text" name="openimageio" class="form-control" placeholder="/path/oiiotool" value="{{.Adminsetting.OpenImageIO}}">
-                            <small class="form-text text-muted">이미지 변환을 위한 OpenImageIO 명령어 위치를 설정해 주세요.</small>
+                    <div class="from-group">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="ppt" name="ppt" value="true" {{if .Adminsetting.PPT}}checked{{end}}>
+                            <label class="form-check-label text-muted" for="ppt">PPT</label>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm">
-                        <div class="form-group">
-                            <label class="text-muted">LD_LIBRARY_PATH</label>
-                            <input type="text" name="ldlibrarypath" class="form-control" placeholder="/path/lib:/path/lib" value="{{.Adminsetting.LDLibraryPath}}">
-                            <small class="form-text text-muted">연산에 필요한 라이브러리 경로를 설정해주세요. 구분은 : 문자로 합니다.</small>
+                    <div class="from-group">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="lut" name="lut" value="true" {{if .Adminsetting.LUT}}checked{{end}}>
+                            <label class="form-check-label text-muted" for="lut">LUT</label>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm">
-                        <div class="form-group">
-                            <label class="text-muted">MultipartForm Buffer Size</label>
-                            <input type="number" name="multipartformbuffersize" class="form-control" placeholder="200000" value="{{.Adminsetting.MultipartFormBufferSize}}">
-                            <small class="form-text text-muted">MultipartForm Buffersize</small>
+                    <div class="from-group">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="hdri" name="hdri" value="true" {{if .Adminsetting.HDRI}}checked{{end}}>
+                            <label class="form-check-label text-muted" for="hdri">HDRI</label>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm">
-                        <div class="form-group">
-                            <label class="text-muted">썸네일 이미지 Width</label>
-                            <input type="text" name="thumbnailimagewidth" class="form-control" placeholder="320" value="{{if eq .Adminsetting.ThumbnailImageWidth 0}}320{{else}}{{.Adminsetting.ThumbnailImageWidth}}{{end}}" onkeyup=handlerNumCheck(this)>
-                            <small class="form-text text-muted">썸네일 이미지 가로 사이즈를 입력해주세요.</small>
+                    <div class="from-group">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="ies" name="ies" value="true" {{if .Adminsetting.IES}}checked{{end}}>
+                            <label class="form-check-label text-muted" for="ies">IES</label>
                         </div>
                     </div>
-                    <div class="col-sm">
-                        <div class="form-group">
-                            <label class="text-muted">썸네일 이미지 Height</label>
-                            <input type="text" name="thumbnailimageheight" class="form-control" placeholder="180" value="{{if eq .Adminsetting.ThumbnailImageHeight 0}}180{{else}}{{.Adminsetting.ThumbnailImageHeight}}{{end}}" onkeyup=handlerNumCheck(this)>
-                            <small class="form-text text-muted">썸네일 이미지 세로 사이즈를 입력해주세요.</small>
+                    <div class="from-group">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="texture" name="texture" value="true" {{if .Adminsetting.Texture}}checked{{end}}>
+                            <label class="form-check-label text-muted" for="texture">Texture</label>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm">
-                        <div class="form-group">
-                            <label class="text-muted">동영상 Width</label>
-                            <input type="text" name="mediawidth" class="form-control" placeholder="1280" value="{{if eq .Adminsetting.MediaWidth 0}}1280{{else}}{{.Adminsetting.MediaWidth}}{{end}}" onkeyup=handlerNumCheck(this)>
-                            <small class="form-text text-muted">동영상 가로 사이즈를 입력해주세요.</small>
+                    <div class="from-group">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="matte" name="matte" value="true" {{if .Adminsetting.Matte}}checked{{end}}>
+                            <label class="form-check-label text-muted" for="matte">Matte</label>
                         </div>
                     </div>
-                    <div class="col-sm">
-                        <div class="form-group">
-                            <label class="text-muted">동영상 Height</label>
-                            <input type="text" name="mediaheight" class="form-control" placeholder="720" value="{{if eq .Adminsetting.MediaHeight 0}}720{{else}}{{.Adminsetting.MediaHeight}}{{end}}" onkeyup=handlerNumCheck(this)>
-                            <small class="form-text text-muted">동영상 세로 사이즈를 입력해주세요.</small>
+                    <div class="from-group">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="footage" name="footage" value="true" {{if .Adminsetting.Footage}}checked{{end}}>
+                            <label class="form-check-label text-muted" for="footage">Footage</label>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm">
-                        <div class="form-group">
-                            <label class="text-muted">Mov 비디오 코덱</label>
-                            <select name="videocodecmov" class="form-control">
-								<option value="libx264" {{if eq .Adminsetting.VideoCodecMov "libx264" "" }}selected{{end}}>H.264(libx264)</option>
-                                <option value="hevc" {{if eq .Adminsetting.VideoCodecMov "hevc" }}selected{{end}}>H.265(hevc)</option>
-                                <option value="libaom-av1" {{if eq .Adminsetting.VideoCodecMov "libaom-av1" }}selected{{end}}>AV1(libaom-av1)</option>
-                                <option value="libvpx" {{if eq .Adminsetting.VideoCodecMov "libvpx" }}selected{{end}}>Google VP8(libvpx)</option>
-                                <option value="libvpx-vp9" {{if eq .Adminsetting.VideoCodecMov "libvpx-vp9" }}selected{{end}}>Google VP9(libvpx-vp9)</option>
-							</select>
-                            <small class="form-text text-muted">동영상 인코딩 코덱을 선택해주세요.</small>
+                    <div class="from-group">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="clip" name="clip" value="true" {{if .Adminsetting.Clip}}checked{{end}}>
+                            <label class="form-check-label text-muted" for="clip">Clip</label>
                         </div>
                     </div>
-                    <div class="col-sm">
-                        <div class="form-group">
-                            <label class="text-muted">Mp4 비디오 코덱</label>
-                            <select name="videocodecmp4" class="form-control">
-								<option value="libx264" {{if eq .Adminsetting.VideoCodecMp4 "libx264" "" }}selected{{end}}>H.264(libx264)</option>
-                                <option value="hevc" {{if eq .Adminsetting.VideoCodecMp4 "hevc" }}selected{{end}}>H.265(hevc)</option>
-                                <option value="libaom-av1" {{if eq .Adminsetting.VideoCodecMp4 "libaom-av1" }}selected{{end}}>AV1(libaom-av1)</option>
-                                <option value="libvpx" {{if eq .Adminsetting.VideoCodecMp4 "libvpx" }}selected{{end}}>Google VP8(libvpx)</option>
-                                <option value="libvpx-vp9" {{if eq .Adminsetting.VideoCodecMp4 "libvpx-vp9" }}selected{{end}}>Google VP9(libvpx-vp9)</option>
-							</select>
-                            <small class="form-text text-muted">오디오 인코딩 코덱을 선택해주세요.</small>
+                    <div class="from-group">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="nuke" name="nuke" value="true" {{if .Adminsetting.Nuke}}checked{{end}}>
+                            <label class="form-check-label text-muted" for="nuke">Nuke</label>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm">
-                        <div class="form-group">
-                            <label class="text-muted">Ogg 비디오 코덱</label>
-                            <select name="videocodecogg" class="form-control">
-								<option value="libtheora" {{if eq .Adminsetting.VideoCodecOgg "libtheora" "" }}selected{{end}}>LibTheora</option>
-                                <option value="libaom-av1" {{if eq .Adminsetting.VideoCodecOgg "libaom-av1" }}selected{{end}}>AV1(libaom-av1)</option>
-                                <option value="libvpx" {{if eq .Adminsetting.VideoCodecOgg "libvpx" }}selected{{end}}>Google VP8(libvpx)</option>
-                                <option value="libvpx-vp9" {{if eq .Adminsetting.VideoCodecOgg "libvpx-vp9" }}selected{{end}}>Google VP9(libvpx-vp9)</option>
-							</select>
-                            <small class="form-text text-muted">동영상 인코딩 코덱을 선택해주세요.</small>
-                        </div>
-                    </div>
-                    <div class="col-sm">
-                        <div class="form-group">
-                            <label class="text-muted">오디오 코덱</label>
-                            <select name="audiocodec" class="form-control">
-								<option value="nosound" {{if eq .Adminsetting.AudioCodec "nosound" "" }}selected{{end}}>No Sound</option>
-                                <option value="copy" {{if eq .Adminsetting.AudioCodec "copy" }}selected{{end}}>Copy</option>
-                                <option value="ac3" {{if eq .Adminsetting.AudioCodec "ac3" }}selected{{end}}>Audio Coding-3(ac3)</option>
-                                <option value="aac" {{if eq .Adminsetting.AudioCodec "aac" }}selected{{end}}>Advanced Adio Coding(aac)</option>
-                                <option value="mp3" {{if eq .Adminsetting.AudioCodec "mp3" }}selected{{end}}>MPEG-1 Audio Layer-3(mp3)</option>
-                                <option value="dtc" {{if eq .Adminsetting.AudioCodec "dca" }}selected{{end}}>DCA (DTS Coherent Acoustics)</option>
-                                <option value="flac" {{if eq .Adminsetting.AudioCodec "flac" }}selected{{end}}>Free Lossless Audio Codec(flac)</option>
-							</select>
-                            <small class="form-text text-muted">오디오 인코딩 코덱을 선택해주세요.</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm">
-                        <div class="form-group">
-                            <label class="text-muted">Init Password</label>
-                            <input type="password" name="initpassword" class="form-control" placeholder="패스워드 초기값" value="{{.Adminsetting.InitPassword}}">
-                            <small class="form-text text-muted">사용자의 패스워드 초기화 값을 설정해주세요.</small>
+                    <div class="from-group">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="sound" name="sound" value="true" {{if .Adminsetting.Sound}}checked{{end}}>
+                            <label class="form-check-label text-muted" for="sound">Sound</label>
                         </div>
                     </div>
                 </div>
             </div>
+            
             <div class="text-center pt-5">
                 <button type="submit" class="btn btn-outline-danger">UPDATE</button>
             </div>
