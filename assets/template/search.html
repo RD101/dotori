@@ -6,28 +6,29 @@
 				<div class="input-group-prepend">
 					<select name="itemtype" class="custom-select left-radius">
 						<option value="" {{if eq .ItemType "" }}selected{{end}}>All</option>
-						<option value="maya" {{if eq .ItemType "maya" }}selected{{end}}>Maya</option>
-						<option value="max" {{if eq .ItemType "max" }}selected{{end}}>Max</option>
-						<option value="nuke" {{if eq .ItemType "nuke" }}selected{{end}}>Nuke</option>
-						<option value="houdini" {{if eq .ItemType "houdini" }}selected{{end}}>Houdini</option>
-						<option value="blender" {{if eq .ItemType "blender" }}selected{{end}}>Blender</option>
-						<option value="footage" {{if eq .ItemType "footage" }}selected{{end}}>Footage</option>
-						<option value="alembic" {{if eq .ItemType "alembic" }}selected{{end}}>Alembic</option>
-						<option value="usd" {{if eq .ItemType "usd" }}selected{{end}}>USD</option>
-						<option value="unreal" {{if eq .ItemType "unreal" }}selected{{end}}>Unreal</option>
-						<option value="openvdb" {{if eq .ItemType "openvdb" }}selected{{end}}>OpenVDB</option>						
-						<option value="sound" {{if eq .ItemType "sound" }}selected{{end}}>Sound</option>
-						<option value="modo" {{if eq .ItemType "modo" }}selected{{end}}>Modo</option>
-						<option value="katana" {{if eq .ItemType "katana" }}selected{{end}}>Katana</option>
-						<option value="hwp" {{if eq .ItemType "hwp" }}selected{{end}}>HWP</option>
-						<option value="pdf" {{if eq .ItemType "pdf" }}selected{{end}}>PDF</option>
-						<option value="ppt" {{if eq .ItemType "ppt" }}selected{{end}}>PPT</option>
-						<option value="lut" {{if eq .ItemType "lut" }}selected{{end}}>LUT</option>
-						<option value="ies" {{if eq .ItemType "ies" }}selected{{end}}>IES</option>
-						<option value="hdri" {{if eq .ItemType "hdri" }}selected{{end}}>HDRI</option>
-						<option value="texture" {{if eq .ItemType "texture" }}selected{{end}}>Texture</option>
-						<option value="clip" {{if eq .ItemType "clip" }}selected{{end}}>Clip</option>
-						<option value="fusion360" {{if eq .ItemType "fusion360" }}selected{{end}}>Fusion360</option>
+						{{if $.Adminsetting.Maya}}<option value="maya" {{if eq .ItemType "maya" }}selected{{end}}>Maya</option>{{end}}
+						{{if $.Adminsetting.Max}}<option value="max" {{if eq .ItemType "max" }}selected{{end}}>Max</option>{{end}}
+						{{if $.Adminsetting.Houdini}}<option value="houdini" {{if eq .ItemType "houdini" }}selected{{end}}>Houdini</option>{{end}}
+						{{if $.Adminsetting.Blender}}<option value="blender" {{if eq .ItemType "blender" }}selected{{end}}>Blender</option>{{end}}
+						{{if $.Adminsetting.Alembic}}<option value="alembic" {{if eq .ItemType "alembic" }}selected{{end}}>Alembic</option>{{end}}
+						{{if $.Adminsetting.USD}}<option value="usd" {{if eq .ItemType "usd" }}selected{{end}}>USD</option>{{end}}
+						{{if $.Adminsetting.Unreal}}<option value="unreal" {{if eq .ItemType "unreal" }}selected{{end}}>Unreal</option>{{end}}
+						{{if $.Adminsetting.OpenVDB}}<option value="openvdb" {{if eq .ItemType "openvdb" }}selected{{end}}>OpenVDB</option>{{end}}
+						{{if $.Adminsetting.Modo}}<option value="modo" {{if eq .ItemType "modo" }}selected{{end}}>Modo</option>{{end}}
+						{{if $.Adminsetting.Fusion360}}<option value="fusion360" {{if eq .ItemType "fusion360" }}selected{{end}}>Fusion360</option>{{end}}
+						{{if $.Adminsetting.Katana}}<option value="katana" {{if eq .ItemType "katana" }}selected{{end}}>Katana</option>{{end}}
+						{{if $.Adminsetting.HWP}}<option value="hwp" {{if eq .ItemType "hwp" }}selected{{end}}>HWP</option>{{end}}
+						{{if $.Adminsetting.PDF}}<option value="pdf" {{if eq .ItemType "pdf" }}selected{{end}}>PDF</option>{{end}}
+						{{if $.Adminsetting.PPT}}<option value="ppt" {{if eq .ItemType "ppt" }}selected{{end}}>PPT</option>{{end}}
+						{{if $.Adminsetting.LUT}}<option value="lut" {{if eq .ItemType "lut" }}selected{{end}}>LUT</option>{{end}}
+						{{if $.Adminsetting.HDRI}}<option value="hdri" {{if eq .ItemType "hdri" }}selected{{end}}>HDRI</option>{{end}}
+						{{if $.Adminsetting.IES}}<option value="ies" {{if eq .ItemType "ies" }}selected{{end}}>IES</option>{{end}}
+						{{if $.Adminsetting.Texture}}<option value="texture" {{if eq .ItemType "texture" }}selected{{end}}>Texture</option>{{end}}
+						{{if $.Adminsetting.Matte}}<option value="matte" {{if eq .ItemType "matte" }}selected{{end}}>Matte</option>{{end}}
+						{{if $.Adminsetting.Footage}}<option value="footage" {{if eq .ItemType "footage" }}selected{{end}}>Footage</option>{{end}}
+						{{if $.Adminsetting.Clip}}<option value="clip" {{if eq .ItemType "clip" }}selected{{end}}>Clip</option>{{end}}
+						{{if $.Adminsetting.Nuke}}<option value="nuke" {{if eq .ItemType "nuke" }}selected{{end}}>Nuke</option>{{end}}
+						{{if $.Adminsetting.Sound}}<option value="sound" {{if eq .ItemType "sound" }}selected{{end}}>Sound</option>{{end}}
 					</select>
 				</div>
 				
