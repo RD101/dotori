@@ -35,29 +35,30 @@ type Adminsetting struct {
 	AudioCodec              string `json:"audiocodec" bson:"audiocodec"`                           // 오디오 코덱
 	InitPassword            string `json:"initpassword" bson:"initpassword"`                       // 사용자가 패스워드를 잃어버렸을 때 초기화하는 패스워드
 	// Support Add menu
-	Maya      bool `json:"maya" bson:"maya"`           // Maya
-	Max       bool `json:"max" bson:"max"`             // Max
-	Nuke      bool `json:"nuke" bson:"nuke"`           // Nuke
-	Houdini   bool `json:"houdini" bson:"houdini"`     // Houdini
-	Blender   bool `json:"blender" bson:"blender"`     // Blender
-	Footage   bool `json:"footage" bson:"footage"`     // Footage
-	Alembic   bool `json:"alembic" bson:"alembic"`     // Alembic
-	USD       bool `json:"usd" bson:"usd"`             // Usd
-	Unreal    bool `json:"unreal" bson:"unreal"`       // Unreal
-	OpenVDB   bool `json:"openvdb" bson:"openvdb"`     // OpenVDB
-	Sound     bool `json:"sound" bson:"sound"`         // Sound
-	Modo      bool `json:"modo" bson:"modo"`           // Modo
-	Katana    bool `json:"katana" bson:"katana"`       // Katana
-	HWP       bool `json:"hwp" bson:"hwp"`             // HWP
-	PDF       bool `json:"pdf" bson:"pdf"`             // PDF
-	PPT       bool `json:"ppt" bson:"ppt"`             // PPT
-	IES       bool `json:"ies" bson:"ies"`             // IES
-	LUT       bool `json:"lut" bson:"lut"`             // LUT
-	HDRI      bool `json:"hdri" bson:"hdri"`           // HDRI
-	Texture   bool `json:"texture" bson:"texture"`     // Texture
-	Clip      bool `json:"clip" bson:"clip"`           // Clip
-	Fusion360 bool `json:"fusion360" bson:"fusion360"` // Fusion360
-	Matte     bool `json:"matte" bson:"matte"`         // Matte
+	Maya            bool `json:"maya" bson:"maya"`                       // Maya
+	Max             bool `json:"max" bson:"max"`                         // Max
+	Nuke            bool `json:"nuke" bson:"nuke"`                       // Nuke
+	Houdini         bool `json:"houdini" bson:"houdini"`                 // Houdini
+	Blender         bool `json:"blender" bson:"blender"`                 // Blender
+	Footage         bool `json:"footage" bson:"footage"`                 // Footage
+	MultipleFootage bool `json:"multiplefootage" bson:"multiplefootage"` // Multiple Footage
+	Alembic         bool `json:"alembic" bson:"alembic"`                 // Alembic
+	USD             bool `json:"usd" bson:"usd"`                         // Usd
+	Unreal          bool `json:"unreal" bson:"unreal"`                   // Unreal
+	OpenVDB         bool `json:"openvdb" bson:"openvdb"`                 // OpenVDB
+	Sound           bool `json:"sound" bson:"sound"`                     // Sound
+	Modo            bool `json:"modo" bson:"modo"`                       // Modo
+	Katana          bool `json:"katana" bson:"katana"`                   // Katana
+	HWP             bool `json:"hwp" bson:"hwp"`                         // HWP
+	PDF             bool `json:"pdf" bson:"pdf"`                         // PDF
+	PPT             bool `json:"ppt" bson:"ppt"`                         // PPT
+	IES             bool `json:"ies" bson:"ies"`                         // IES
+	LUT             bool `json:"lut" bson:"lut"`                         // LUT
+	HDRI            bool `json:"hdri" bson:"hdri"`                       // HDRI
+	Texture         bool `json:"texture" bson:"texture"`                 // Texture
+	Clip            bool `json:"clip" bson:"clip"`                       // Clip
+	Fusion360       bool `json:"fusion360" bson:"fusion360"`             // Fusion360
+	Matte           bool `json:"matte" bson:"matte"`                     // Matte
 }
 
 // CheckError 는 Adminsetting 자료구조에 값이 정확히 들어갔는지 확인하는 메소드이다.
