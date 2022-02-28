@@ -26,7 +26,5 @@ type Seq struct {
 	OutputCodec string  `json:"outputcodec" bson:"outputcodec"` // 설정하는 아웃풋 코덱. 웹이라서 일반적으로 H.264를 사용한다.
 	Fps         float64 `json:"fps" bson:"fps"`                 // FPS
 	Rollmedia   string  `json:"rollmedia" bson:"rollmedia"`     // 촬영한 데이터라면, 카메라에서 생성된 데이터 이름
-
-	// 자동설정
-	Error string // 에러기록
+	Error       string  `json:"error" bson:"error"`             // 에러기록
 }

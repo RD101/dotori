@@ -118,6 +118,7 @@ func webserver() {
 	http.HandleFunc("/editfootage", handleEditFootage)
 	http.HandleFunc("/editfootage-submit", handleEditFootageSubmit)
 	http.HandleFunc("/editfootage-success", handleEditFootageSuccess)
+	http.HandleFunc("/api/searchfootages", handleAPISearchFootages)
 
 	// Clip
 	http.HandleFunc("/addclip", handleAddClip)
