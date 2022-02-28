@@ -31,11 +31,12 @@
         <div class="row">
             <div class="col-sm">
                 <div class="w-100 btn-group btn-group-sm rounded-bottom" role="group" aria-label="Basic example">
+                    <button type="button" class="btn btn-outline-darkmode" id="download-pdf">Download PDF</button>
+                    <button type="button" class="btn btn-outline-darkmode" id="download-xlsx">Download XLSX</button>
                     <button type="button" class="btn btn-outline-darkmode" id="download-csv">Download CSV</button>
                     <button type="button" class="btn btn-outline-darkmode" id="download-json">Download JSON</button>
-                    <button type="button" class="btn btn-outline-darkmode" id="download-xlsx">Download XLSX</button>
-                    <button type="button" class="btn btn-outline-darkmode" id="download-pdf">Download PDF</button>
                     <button type="button" class="btn btn-outline-darkmode" id="download-html">Download HTML</button>
+                    <button type="button" class="btn btn-outline-darkmode" id="print-table">Print Source</button>
                 </div>
             </div>
         </div>
@@ -202,6 +203,11 @@
         paginationSizeSelector:[5, 10, 15, 20],
         movableColumns:true,
         paginationCounter:"rows",
+        clipboard:true,
+        clipboardPasteAction:"replace",
+        printAsHtml:true,
+        printHeader:"<h3><center>Sources</center></h3>",
+        printFooter:"<h5></h5>",
         columns:[ //Define Table Columns
             {formatter:"rowSelection", titleFormatter:"rowSelection", width:10, headerHozAlign:"center", hozAlign:"center", headerSort:false, cellClick:function(e, cell){
                 cell.getRow().toggleSelect();
@@ -239,6 +245,11 @@
     //trigger download of data.html file
     document.getElementById("download-html").addEventListener("click", function(){
         table.download("html", "data.html", {style:true});
+    });
+
+    //print button
+    document.getElementById("print-table").addEventListener("click", function(){
+        table.print("active", true, {columnGroups:false});
     });
 </script>
 </html>
