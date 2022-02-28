@@ -31,11 +31,11 @@
         <div class="row">
             <div class="col-sm">
                 <div class="w-100 btn-group btn-group-sm rounded-bottom" role="group" aria-label="Basic example">
-                    <button type="button" class="btn btn-outline-darkmode">Download CSV</button>
-                    <button type="button" class="btn btn-outline-darkmode">Download JSON</button>
-                    <button type="button" class="btn btn-outline-darkmode">Download XLSX</button>
-                    <button type="button" class="btn btn-outline-darkmode">Download PDF</button>
-                    <button type="button" class="btn btn-outline-darkmode">Download HTML</button>
+                    <button type="button" class="btn btn-outline-darkmode" id="download-csv">Download CSV</button>
+                    <button type="button" class="btn btn-outline-darkmode" id="download-json">Download JSON</button>
+                    <button type="button" class="btn btn-outline-darkmode" id="download-xlsx">Download XLSX</button>
+                    <button type="button" class="btn btn-outline-darkmode" id="download-pdf">Download PDF</button>
+                    <button type="button" class="btn btn-outline-darkmode" id="download-html">Download HTML</button>
                 </div>
             </div>
         </div>
@@ -171,6 +171,9 @@
 <script src="/assets/bootstrap-5.1.3-dist/js/bootstrap.bundle.js"></script>
 <script src="/assets/js/dotori.js"></script>
 <script src="/assets/tabulator5.1/js/tabulator.min.js"></script>
+<script src="/assets/js/exports/jspdf.umd.min.js"></script>
+<script src="/assets/js/exports/jspdf.plugin.autotable.min.js"></script>
+<script src="/assets/js/exports/xlsx.full.min.js"></script>
 <script>
     //define some sample data
     var sources = [
@@ -210,12 +213,33 @@
         ],
     });
 
-    //trigger an alert message when the row is clicked
-    /*
-    table.on("rowClick", function(e, row){ 
-        alert("Row " + row.getData().id + " Clicked!!!!");
+    //trigger download of data.csv file
+    document.getElementById("download-csv").addEventListener("click", function(){
+        table.download("csv", "data.csv");
     });
-    */
+
+    //trigger download of data.json file
+    document.getElementById("download-json").addEventListener("click", function(){
+        table.download("json", "data.json");
+    });
+
+    //trigger download of data.xlsx file
+    document.getElementById("download-xlsx").addEventListener("click", function(){
+        table.download("xlsx", "data.xlsx", {sheetName:"Source Data"});
+    });
+
+    //trigger download of data.pdf file
+    document.getElementById("download-pdf").addEventListener("click", function(){
+        table.download("pdf", "data.pdf", {
+            orientation:"portrait", //set page orientation to portrait
+            title:"Example Report", //add title to report
+        });
+    });
+
+    //trigger download of data.html file
+    document.getElementById("download-html").addEventListener("click", function(){
+        table.download("html", "data.html", {style:true});
+    });
 </script>
 </html>
 {{end}}
