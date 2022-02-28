@@ -185,6 +185,10 @@ body {
 	border:1px solid rgb(66, 66, 62);
 }
 
+.border-table {
+	border:1px solid #A7A59C !important;
+}
+
 .progress {
 	background-color: rgb(37, 37, 37);
 	-webkit-box-shadow: none;
