@@ -666,6 +666,7 @@ function searchFootages() {
         if (response.ok) {
             return response.json().then((data) => {
                 console.log(data)
+                table.replaceData(data); //update data
                 return
             })
         }
