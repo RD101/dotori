@@ -646,6 +646,37 @@ function SetAutoplay() {
     });
 }
 
+function searchFootages() {
+    fetch('/api/searchfootages', {
+        method: 'POST',
+        headers: {
+            "Authorization": "Basic "+ getCookie("SessionToken"),
+        },
+        body: new URLSearchParams({
+            "path":  document.getElementById("searchpath").value,
+        })
+    })
+    .then((response) => {
+        if (!response.ok) {
+            return response.text().then((data) => {
+                alert(data);
+                return data;
+            })
+        }
+        if (response.ok) {
+            return response.json().then((data) => {
+                console.log(data)
+                table.replaceData(data); //update data
+                return
+            })
+        }
+    })
+    .catch((err) => {
+        alert(err);
+        return err
+    });
+}
+
 // copyClipboard 는 value 값을 받아서, 클립보드로 복사하는 기능이다.
 function copyClipboard(value) {
     let id = document.createElement("input");   // input요소를 만듬

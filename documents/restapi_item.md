@@ -12,7 +12,8 @@
 | URI | Description | Attributes | Curl Example |
 | --- | --- | --- | --- |
 | /api/item | asset 등록하기 | itemtype, title, author, description, tags | `$ curl -H "Authorization: Basic <TOKEN>" -X POST \`<br>`-F "file1=@thumbnail.jpg;type=image/jpeg" \` <br>`-F "file2=@thumbnail.mov;type=video/quicktime" \`<br>`-F "file3=@data.abc;type=application/octet-stream" \` <br>`-F "itemtype=alembic" \` <br>`-F "title=abc restapi test" \` <br>`-F "author=dchecheb" \` <br>`-F "description=3" \` <br>`-F "tags=test" \` <br>`-F "attribute=key1:value1,key2:value2" \` <br>`http://192.168.219.104/api/item` |
-| /api/usingrate | Using Rate 올리기 | id | `$ curl -X POST -d "id=5eaa5758eafdfd2dae3bb050" http://192.168.219.104/api/usingrate`
+| /api/searchfootages | Footage 검색 | path | `$ curl -X POST -H "Authorization: Basic <TOKEN>" -d "path=/searchpath" "https://dotori.lazypic.com/api/searchfootages"` |
+| /api/usingrate | Using Rate 올리기 | id | `$ curl -X POST -d "id=5eaa5758eafdfd2dae3bb050" http://192.168.219.104/api/usingrate` |
 
 
 ## Delete

@@ -30,9 +30,9 @@ func searchSeq(searchpath string) ([]Seq, error) {
 	}
 	paths := make(map[string]Seq)
 	err = filepath.Walk(searchpath, func(path string, info os.FileInfo, err error) error {
-		// 숨김폴더
+		// 숨김폴더는 스킵한다.
 		if info.IsDir() && strings.HasPrefix(info.Name(), ".") {
-			return filepath.SkipDir
+			return nil //filepath.SkipDir
 		}
 		// 숨김파일
 		if strings.HasPrefix(info.Name(), ".") {
@@ -49,7 +49,7 @@ func searchSeq(searchpath string) ([]Seq, error) {
 				ConvertExt: ".exr",
 			}
 			paths[path] = item
-		case ".dpx", ".exr", ".png":
+		case ".dpx", ".exr", ".png", ".jpg":
 			key, num, err := Seqnum2Sharp(path)
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "%s\n", err)
