@@ -16,7 +16,7 @@
                     <label class="text-muted">Find Path</label>
                     <div class="input-group">
                         <input type="text" class="form-control" placeholder="Path" id="searchpath">
-                        <button class="btn btn-outline-warning" type="button" onclick="searchFootages()">ScanPath</button>
+                        <button class="btn btn-outline-warning" type="button" id="searchfootages">ScanPath</button>
                     </div>
                     <small class="form-text text-danger">OS에서 보안상 제약이 걸린 경로가 포함된 경우, 너무 많은 소스가 존재하는 경로를 설정할 경우 웹서버에 부하를 줄 수 있습니다.</small>
                 </div>
@@ -25,7 +25,7 @@
 
         <div class="row pt-2">
             <div class="col-sm">
-                <div class="border-table rounded" id="source-table"></div>
+                <div class="border-table rounded unselectable" id="source-table"></div>
             </div>
         </div>
         <div class="row">
@@ -39,6 +39,7 @@
                     <button type="button" class="btn btn-outline-darkmode" id="print-table">Print Table</button>
                 </div>
             </div>
+            <small class="form-text text-warning">항목을 드레그하면 연산순서를 바꿀 수 있습니다. 파일명을 더블 클릭하면 연산에서 제거됩니다.</small>
         </div>
 
         <div class="row pt-3">
@@ -150,7 +151,7 @@
         </div>
     </div>
     <div class="text-center pt-5">
-        <button type="submit" class="btn btn-outline-warning">SUBMIT PROCESS</button>
+        <button type="submit" class="btn btn-outline-warning" id="submitFootages">SUBMIT PROCESS</button>
     </div>
 </div>
 
@@ -171,13 +172,16 @@
     ];
     //create Tabulator on DOM element with id "example-table"
     var table = new Tabulator("#source-table", {
-        height:212, // set height of table (in CSS or here), this enables the Virtual DOM and improves render speed dramatically (can be any valid css height value)
+        height:370, // set height of table (in CSS or here), this enables the Virtual DOM and improves render speed dramatically (can be any valid css height value)
         data:sources, //assign data to table
         layout:"fitColumns", //fit columns to width of table (optional)
         pagination:"local",
-        paginationSize:5,
-        paginationSizeSelector:[5, 10, 15, 20],
+        paginationSize:10,
+        paginationSizeSelector:[10, 20],
         movableColumns:true,
+        movableRows:true,
+        reactiveData:true, //turn on data reactivity
+        selectable:true, //make rows selectable
         paginationCounter:"rows",
         clipboard:true,
         clipboardPasteAction:"replace",
@@ -185,15 +189,19 @@
         printHeader:"<h3><center>Sources</center></h3>",
         printFooter:"<h5></h5>",
         columns:[ //Define Table Columns
-            {formatter:"rowSelection", titleFormatter:"rowSelection", width:10, headerHozAlign:"center", hozAlign:"center", headerSort:false, cellClick:function(e, cell){
-                cell.getRow().toggleSelect();
-            }},
-            {title:"Dir", field:"dir", hozAlign: "left", headerHozAlign:"center"},
-            {title:"Base", field:"base", hozAlign:"left", headerHozAlign:"center"},
-            {title:"In", field:"framein", hozAlign:"center", headerHozAlign:"center", width:100},
-            {title:"Out", field:"frameout", hozAlign:"center", headerHozAlign:"center", width:100},
-            {title:"Length", field:"length", hozAlign:"center", headerHozAlign:"center", width:100},
+            {rowHandle:true, formatter:"handle", headerSort:false, frozen:true, width:30, minWidth:30},
+            {title:"Dir", field:"dir", hozAlign: "left", headerHozAlign:"center", headerSort:false},
+            {title:"Base", field:"base", hozAlign:"left", headerHozAlign:"center", headerSort:false, cellDblClick:function(e, cell){cell.getRow().delete();}},
+            {title:"In", field:"framein", hozAlign:"center", headerHozAlign:"center", width:100, headerSort:false},
+            {title:"Out", field:"frameout", hozAlign:"center", headerHozAlign:"center", width:100, headerSort:false},
+            {title:"Length", field:"length", hozAlign:"center", headerHozAlign:"center", width:100, headerSort:false},
         ],
+    });
+
+    //listen for row move
+    table.on("rowMoved", function(row){
+        sources = table.getData(); // 테이블 데이터의 순서가 sources 순서로 되어야 한다.
+        table.replaceData(sources)
     });
 
     //trigger download of data.csv file
@@ -227,6 +235,43 @@
     //print button
     document.getElementById("print-table").addEventListener("click", function(){
         table.print("active", true, {columnGroups:false});
+    });
+
+    //submit Footages
+    document.getElementById("submitFootages").addEventListener("click", function(){
+        console.log(table.getData());
+    });
+
+    document.getElementById("searchfootages").addEventListener("click", function(){
+        fetch('/api/searchfootages', {
+            method: 'POST',
+            headers: {
+                "Authorization": "Basic "+ getCookie("SessionToken"),
+            },
+            body: new URLSearchParams({
+                "path":  document.getElementById("searchpath").value,
+            })
+        })
+        .then((response) => {
+            if (!response.ok) {
+                return response.text().then((data) => {
+                    alert(data);
+                    //return data;
+                })
+            }
+            if (response.ok) {
+                return response.json().then((data) => {
+                    sources = data;
+                    table.replaceData(data); //update data
+                    //table.updateData();
+                    //return
+                })
+            }
+        })
+        .catch((err) => {
+            alert(err);
+            //return err
+        });
     });
 </script>
 <script src="/assets/js/dotori.js"></script>
