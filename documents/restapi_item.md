@@ -11,15 +11,15 @@
 ## Post
 | URI | Description | Attributes | Curl Example |
 | --- | --- | --- | --- |
-| /api/item | asset 등록하기 | itemtype, title, author, description, tags | `$ curl -H "Authorization: Basic <TOKEN>" -X POST \`<br>`-F "file1=@thumbnail.jpg;type=image/jpeg" \` <br>`-F "file2=@thumbnail.mov;type=video/quicktime" \`<br>`-F "file3=@data.abc;type=application/octet-stream" \` <br>`-F "itemtype=alembic" \` <br>`-F "title=abc restapi test" \` <br>`-F "author=dchecheb" \` <br>`-F "description=3" \` <br>`-F "tags=test" \` <br>`-F "attribute=key1:value1,key2:value2" \` <br>`http://192.168.219.104/api/item` |
+| /api/item | asset 등록하기 | itemtype, title, author, description, tags | `$ curl -H "Authorization: Basic <TOKEN>" -X POST \`<br>`-F "file1=@thumbnail.jpg;type=image/jpeg" \` <br>`-F "file2=@thumbnail.mov;type=video/quicktime" \`<br>`-F "file3=@data.abc;type=application/octet-stream" \` <br>`-F "itemtype=alembic" \` <br>`-F "title=abc restapi test" \` <br>`-F "author=dchecheb" \` <br>`-F "description=3" \` <br>`-F "tags=test" \` <br>`-F "attribute=key1:value1,key2:value2" \` <br>`https://dotori.lazypic.com/api/item` |
 | /api/searchfootages | Footage 검색 | path | `$ curl -X POST -H "Authorization: Basic <TOKEN>" -d "path=/searchpath" "https://dotori.lazypic.com/api/searchfootages"` |
-| /api/usingrate | Using Rate 올리기 | id | `$ curl -X POST -d "id=5eaa5758eafdfd2dae3bb050" http://192.168.219.104/api/usingrate` |
+| /api/usingrate | Using Rate 올리기 | id | `$ curl -X POST -d "id=5eaa5758eafdfd2dae3bb050" https://dotori.lazypic.com/api/usingrate` |
 
 
 ## Delete
 | URI | Description | Attributes | Curl Example |
 | --- | --- | --- | --- |
-| /api/item | 삭제하기 | id | `curl -H "Authorization: Basic <Token>" -X DELETE "http://192.168.219.104/api/item?id=5ec37a67e048d951ee46a45a"`
+| /api/item | 삭제하기 | id | `curl -H "Authorization: Basic <Token>" -X DELETE "https://dotori.lazypic.com/api/item?id=5ec37a67e048d951ee46a45a"`
 
 ## Python example
 
