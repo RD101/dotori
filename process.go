@@ -643,6 +643,16 @@ func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item It
 	}
 
 	// InputData의 파일을 복사한다.
+	if item.RequireCopyInProcess {
+		err := SetStatus(client, item, "copy input data")
+		if err != nil {
+			return err
+		}
+		err = copyInputDataToOutputDataPath(adminSetting, item)
+		if err != nil {
+			return err
+		}
+	}
 
 	// Thumbnail 폴더를 생성한다.
 	err := SetStatus(client, item, "creating thumbnail directory")
@@ -1160,6 +1170,31 @@ func ProcessMatteItem(client *mongo.Client, adminSetting Adminsetting, item Item
 	err = SetStatus(client, item, "done")
 	if err != nil {
 		return err
+	}
+	return nil
+}
+
+// copyInputDataToOuputDataPath 함수는 인풋데이터를 아웃풋 데이터 경로에 복사한다.
+func copyInputDataToOutputDataPath(adminSetting Adminsetting, item Item) error {
+	// 복사할 파일의 권한을 불러온다.
+	fileP := adminSetting.FilePermission
+	filePerm, err := strconv.ParseInt(fileP, 8, 64)
+	if err != nil {
+		return err
+	}
+
+	for i := item.InputData.FrameIn; i <= item.InputData.FrameOut; i++ {
+		src := fmt.Sprintf(item.InputData.Dir+"/"+item.InputData.Base, i)
+		dest := fmt.Sprintf(item.OutputDataPath+"/"+item.InputData.Base, i)
+		// file을 복사한다.
+		bytesRead, err := ioutil.ReadFile(src)
+		if err != nil {
+			return err
+		}
+		err = ioutil.WriteFile(dest, bytesRead, os.FileMode(filePerm))
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
