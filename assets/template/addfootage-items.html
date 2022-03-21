@@ -48,19 +48,19 @@
                     <div class="col">
                         <div class="form-group">
                             <label class="text-muted">Title / 에셋제목</label>
-                            <input id="addTitle" type="text" name="title" class="form-control" placeholder="에셋 제목">
+                            <input type="text" id="title" class="form-control" placeholder="에셋 제목">
                         </div>
                         <div class="form-group">
                             <label class="text-muted">Author / 제작자</label>
-                            <input id="addAuthor" type="text" name="author" class="form-control" placeholder="에셋 제작자 이름">
+                            <input type="text" id="author" class="form-control" placeholder="에셋 제작자 이름">
                         </div>
                         <div class="form-group">
                             <label class="text-muted">Tags / 태그</label>
-                            <input id="addTags" type="text" name="tags" class="form-control" placeholder="태그1, 태그2">
+                            <input type="text" id="tags" class="form-control" placeholder="태그1, 태그2">
                         </div>
                         <div class="form-group">
                             <label class="text-muted">FPS</label>
-                            <select name="fps" class="form-control">
+                            <select id="fps" class="form-control">
                                 <option value="24">24</option>
                                 <option value="23.976">23.976</option>
                                 <option value="23.98">23.98</option>
@@ -76,7 +76,7 @@
                     <div class="col">
                         <div class="form-group">
                             <label class="text-muted">Description</label>
-                            <textarea id="addDescription" name="description" class="form-control" rows="9"></textarea>
+                            <textarea id="description" class="form-control" rows="9"></textarea>
                             <small class="form-text text-muted">에셋 사용시 참고해야할 사항</small>
                         </div>
                     </div>
@@ -112,7 +112,7 @@
             <div class="col-sm">
                 <div class="from-group">
                     <div class="form-check form-switch">
-                        <input class="form-check-input finger" type="checkbox" id="premult" name="premult">
+                        <input class="form-check-input finger" type="checkbox" id="premult">
                         <label class="form-check-label finger unselectable text-muted" for="premult">Premultiply</label>
                     </div>
                 </div>
@@ -239,6 +239,15 @@
 
     //submit Footages
     document.getElementById("submitFootages").addEventListener("click", function(){
+        let title = document.getElementById("title").value
+        let description = document.getElementById("description").value
+        let author = document.getElementById("author").value
+        let tags = document.getElementById("tags").value
+        let fps = document.getElementById("fps").value
+        let premult = document.getElementById("premult").checked
+        let incolorspace = document.getElementById("incolorspace").value
+        let outcolorspace = document.getElementById("outcolorspace").value
+        console.log(title, description, author, tags, fps, premult, incolorspace, outcolorspace);
         console.log(table.getData());
     });
 

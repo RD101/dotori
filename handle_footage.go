@@ -857,7 +857,7 @@ func handleAPIAddFootage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	item.InputData.FrameOut = frameOut
-	item.RequireCopy = true
+	item.RequireCopyInProcess = true
 	item.Title = r.FormValue("title")
 	item.Author = r.FormValue("author")
 	item.Description = r.FormValue("description")

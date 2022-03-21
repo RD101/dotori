@@ -36,7 +36,8 @@ type Item struct {
 	Fps                    string             `json:"fps" bson:"fps"`                                       // fps값 ffmpeg 연산에 사용되는 값이기 때문에 문자열로 처리함.
 	Premultiply            bool               `json:"premultiply" bson:"premultiply"`                       // proxy sequence to video 연산 과정에서 Premultiply 적용 여부 체크
 	KindOfUSD              string             `json:"kindofusd" bson:"kindofusd"`                           // Kind Of USD
-	RequireCopy            bool               `json:"requirecopy" bson:"requirecopy"`                       // InputData로 부터 데이터 카피에 대한 필요 여부(예)인트라넷 Footage)
+	RequireCopyInProcess   bool               `json:"requirecopyinprocess" bson:"requirecopyinprocess"`     // Process 단계에서 InputData로 부터 데이터 카피에 대한 필요 여부(예)인트라넷 Footage)
+	RequireMkdirInProcess  bool               `json:"requiremkdirinprocess" bson:"requiremkdirinprocess"`   // Process 단계에서 데이터 복사시 해당 id의 폴더를 생성할지 여부
 	InputData              InputData          // 최초 소스 정보 (예)인트라넷 Footage)
 }
 
