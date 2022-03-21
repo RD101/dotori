@@ -630,6 +630,20 @@ func ProcessHoudiniItem(client *mongo.Client, adminSetting Adminsetting, item It
 
 // ProcessFootageItem 함수는 footage 아이템을 연산한다.
 func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item Item) error {
+	// Item의 Data가 복사될 경로를 생성한다.
+	if item.RequireMkdirInProcess {
+		err := SetStatus(client, item, "creating item data directory")
+		if err != nil {
+			return err
+		}
+		err = genOutputDataPath(adminSetting, item)
+		if err != nil {
+			return err
+		}
+	}
+
+	// InputData의 파일을 복사한다.
+
 	// Thumbnail 폴더를 생성한다.
 	err := SetStatus(client, item, "creating thumbnail directory")
 	if err != nil {
@@ -1144,6 +1158,27 @@ func ProcessMatteItem(client *mongo.Client, adminSetting Adminsetting, item Item
 	}
 	// 완료
 	err = SetStatus(client, item, "done")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+//genOutputDataPath Item의 data 경로를 생성한다.
+func genOutputDataPath(adminSetting Adminsetting, item Item) error {
+	// umask, 권한 셋팅
+	umask, err := strconv.Atoi(adminSetting.Umask)
+	if err != nil {
+		return err
+	}
+	unix.Umask(umask)
+	per, err := strconv.ParseInt(adminSetting.FolderPermission, 8, 64)
+	if err != nil {
+		return err
+	}
+	// 생성할 경로를 가져온다.
+	path := path.Dir(item.OutputDataPath)
+	err = os.MkdirAll(path, os.FileMode(per))
 	if err != nil {
 		return err
 	}
