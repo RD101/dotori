@@ -1473,6 +1473,8 @@ func genThumbOggMedia(adminSetting Adminsetting, item Item) error {
 		args = append(args, "-c:a")
 		args = append(args, adminSetting.AudioCodec)
 	}
+	// 영상의 세로 픽셀이 홀수일 때 연산되지 않는다. -vf 옵션이 마지막으로 한번 붙어야 한다.
+	args = append(args, []string{"-vf", "pad=ceil(iw/2)*2:ceil(ih/2)*2"}...)
 	args = append(args, item.OutputThumbnailOggPath)
 	if *flagDebug {
 		fmt.Println(adminSetting.FFmpeg, strings.Join(args, " "))
@@ -1510,6 +1512,8 @@ func genThumbMovMedia(adminSetting Adminsetting, item Item) error {
 		args = append(args, "-c:a")
 		args = append(args, adminSetting.AudioCodec)
 	}
+	// 영상의 세로 픽셀이 홀수일 때 연산되지 않는다. -vf 옵션이 마지막으로 한번 붙어야 한다.
+	args = append(args, []string{"-vf", "pad=ceil(iw/2)*2:ceil(ih/2)*2"}...)
 	args = append(args, item.OutputThumbnailMovPath)
 	if *flagDebug {
 		fmt.Println(adminSetting.FFmpeg, strings.Join(args, " "))
@@ -1547,6 +1551,8 @@ func genThumbMp4Media(adminSetting Adminsetting, item Item) error {
 		args = append(args, "-c:a")
 		args = append(args, adminSetting.AudioCodec)
 	}
+	// 영상의 세로 픽셀이 홀수일 때 연산되지 않는다. -vf 옵션이 마지막으로 한번 붙어야 한다.
+	args = append(args, []string{"-vf", "pad=ceil(iw/2)*2:ceil(ih/2)*2"}...)
 	args = append(args, item.OutputThumbnailMp4Path)
 	if *flagDebug {
 		fmt.Println(adminSetting.FFmpeg, strings.Join(args, " "))
@@ -1606,6 +1612,8 @@ func genProxyToOggMedia(adminSetting Adminsetting, item Item) error {
 		args = append(args, "-c:a")
 		args = append(args, adminSetting.AudioCodec)
 	}
+	// 영상의 세로 픽셀이 홀수일 때 연산되지 않는다. -vf 옵션이 마지막으로 한번 붙어야 한다.
+	args = append(args, []string{"-vf", "pad=ceil(iw/2)*2:ceil(ih/2)*2"}...)
 	args = append(args, item.OutputThumbnailOggPath)
 	if *flagDebug {
 		fmt.Println(adminSetting.FFmpeg, strings.Join(args, " "))
@@ -1654,6 +1662,8 @@ func genClipToOggMedia(adminSetting Adminsetting, item Item) error {
 		args = append(args, "-c:a")
 		args = append(args, adminSetting.AudioCodec)
 	}
+	// 영상의 세로 픽셀이 홀수일 때 연산되지 않는다. -vf 옵션이 마지막으로 한번 붙어야 한다.
+	args = append(args, []string{"-vf", "pad=ceil(iw/2)*2:ceil(ih/2)*2"}...)
 	args = append(args, item.OutputThumbnailOggPath)
 	if *flagDebug {
 		fmt.Println(adminSetting.FFmpeg, strings.Join(args, " "))
@@ -1714,6 +1724,8 @@ func genProxyToMovMedia(adminSetting Adminsetting, item Item) error {
 		args = append(args, "-c:a")
 		args = append(args, adminSetting.AudioCodec)
 	}
+	// 영상의 세로 픽셀이 홀수일 때 연산되지 않는다. -vf 옵션이 마지막으로 한번 붙어야 한다.
+	args = append(args, []string{"-vf", "pad=ceil(iw/2)*2:ceil(ih/2)*2"}...)
 	args = append(args, item.OutputThumbnailMovPath)
 	if *flagDebug {
 		fmt.Println(adminSetting.FFmpeg, strings.Join(args, " "))
@@ -1761,6 +1773,8 @@ func genClipToMovMedia(adminSetting Adminsetting, item Item) error {
 		args = append(args, "-c:a")
 		args = append(args, adminSetting.AudioCodec)
 	}
+	// 영상의 세로 픽셀이 홀수일 때 연산되지 않는다. -vf 옵션이 마지막으로 한번 붙어야 한다.
+	args = append(args, []string{"-vf", "pad=ceil(iw/2)*2:ceil(ih/2)*2"}...)
 	args = append(args, item.OutputThumbnailMovPath)
 	if *flagDebug {
 		fmt.Println(adminSetting.FFmpeg, strings.Join(args, " "))
@@ -1820,6 +1834,8 @@ func genProxyToMp4Media(adminSetting Adminsetting, item Item) error {
 		args = append(args, "-c:a")
 		args = append(args, adminSetting.AudioCodec)
 	}
+	// 영상의 세로 픽셀이 홀수일 때 연산되지 않는다. -vf 옵션이 마지막으로 한번 붙어야 한다.
+	args = append(args, []string{"-vf", "pad=ceil(iw/2)*2:ceil(ih/2)*2"}...)
 	args = append(args, item.OutputThumbnailMp4Path)
 	if *flagDebug {
 		fmt.Println(adminSetting.FFmpeg, strings.Join(args, " "))
@@ -1867,6 +1883,8 @@ func genClipToMp4Media(adminSetting Adminsetting, item Item) error {
 		args = append(args, "-c:a")
 		args = append(args, adminSetting.AudioCodec)
 	}
+	// 영상의 세로 픽셀이 홀수일 때 연산되지 않는다. -vf 옵션이 마지막으로 한번 붙어야 한다.
+	args = append(args, []string{"-vf", "pad=ceil(iw/2)*2:ceil(ih/2)*2"}...)
 	args = append(args, item.OutputThumbnailMp4Path)
 	if *flagDebug {
 		fmt.Println(adminSetting.FFmpeg, strings.Join(args, " "))

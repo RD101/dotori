@@ -857,6 +857,7 @@ func handleAPIAddFootage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	item.InputData.FrameOut = frameOut
+	item.RequireMkdirInProcess = true
 	item.RequireCopyInProcess = true
 	item.Title = r.FormValue("title")
 	item.Author = r.FormValue("author")
@@ -891,7 +892,7 @@ func handleAPIAddFootage(w http.ResponseWriter, r *http.Request) {
 		}
 		item.Attributes = attr
 	*/
-	item.Status = "ready"
+	item.Status = "fileuploaded" // <- 이 부분은 모순이 있지만 input 소스를 이용해서 경로가 입력된 상황이다.
 	item.Logs = append(item.Logs, "아이템이 생성되었습니다.")
 	item.ThumbImgUploaded = false
 	item.ThumbClipUploaded = false
@@ -916,9 +917,6 @@ func handleAPIAddFootage(w http.ResponseWriter, r *http.Request) {
 	item.OutputDataPath = rootpath + objIDpath + "/data/"
 	item.OutputProxyImgPath = rootpath + objIDpath + "/proxy/"
 
-	// 경로를 생성하고 퍼미션을 설정하기 <- process에 들어가야 한다. golang default bool is false
-	// 서버에 있는 데이터를 /data/ 폴더로 복사하기 <- process에 들어가야 한다.
-
 	// 에러체크
 	err = item.CheckError()
 	if err != nil {
@@ -927,13 +925,12 @@ func handleAPIAddFootage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// 연산 목록에 등록
-	/*
-		err = AddItem(client, item)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-	*/
+	err = AddItem(client, item)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	// json 반환
 	data, err := json.Marshal(item)
 	if err != nil {

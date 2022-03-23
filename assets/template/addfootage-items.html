@@ -240,8 +240,28 @@
     //submit Footages
     document.getElementById("submitFootages").addEventListener("click", function(){
         sources = table.getData();
-        // for문 돌리기
+        
         for (let i = 0; i < sources.length; i += 1) {
+            /*
+            // debug
+            
+            console.log(
+                sources[i].dir,
+                sources[i].base,
+                sources[i].framein,
+                sources[i].frameout,
+                document.getElementById("title").value,
+                document.getElementById("description").value,
+                document.getElementById("author").value,
+                document.getElementById("tags").value,
+                document.getElementById("fps").value,
+                document.getElementById("premult").checked,
+                document.getElementById("incolorspace").value,
+                document.getElementById("outcolorspace").value,
+            )
+            */
+            
+            // process
             fetch('/api/addfootage', {
                 method: 'POST',
                 headers: {
@@ -274,6 +294,7 @@
             .catch((err) => {
                 alert(err)
             });
+            
         }
     });
 
