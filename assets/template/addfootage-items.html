@@ -239,16 +239,42 @@
 
     //submit Footages
     document.getElementById("submitFootages").addEventListener("click", function(){
-        let title = document.getElementById("title").value
-        let description = document.getElementById("description").value
-        let author = document.getElementById("author").value
-        let tags = document.getElementById("tags").value
-        let fps = document.getElementById("fps").value
-        let premult = document.getElementById("premult").checked
-        let incolorspace = document.getElementById("incolorspace").value
-        let outcolorspace = document.getElementById("outcolorspace").value
-        console.log(title, description, author, tags, fps, premult, incolorspace, outcolorspace);
-        console.log(table.getData());
+        sources = table.getData();
+        // for문 돌리기
+        for (let i = 0; i < sources.length; i += 1) {
+            fetch('/api/addfootage', {
+                method: 'POST',
+                headers: {
+                    "Authorization": "Basic "+ getCookie("SessionToken"),
+                },
+                body: new URLSearchParams({
+                    "base": sources[i].base,
+                    "dir": sources[i].dir,
+                    "framein": sources[i].framein,
+                    "frameout": sources[i].frameout,
+                    "title": document.getElementById("title").value,
+                    "description": document.getElementById("description").value,
+                    "author": document.getElementById("author").value,
+                    "tags":document.getElementById("tags").value,
+                    "fps": document.getElementById("fps").value,
+                    "premult": document.getElementById("premult").checked,
+                    "incolorspace": document.getElementById("incolorspace").value,
+                    "outcolorspace": document.getElementById("outcolorspace").value,
+                })
+            })
+            .then((response) => {
+                if (!response.ok) {
+                    throw Error(response.statusText + " - " + response.url);
+                }
+                return response.json()
+            })
+            .then((data) => {
+                console.log(data)
+            })
+            .catch((err) => {
+                alert(err)
+            });
+        }
     });
 
     document.getElementById("searchfootages").addEventListener("click", function(){
