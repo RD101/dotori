@@ -859,6 +859,7 @@ func handleAPIAddFootage(w http.ResponseWriter, r *http.Request) {
 	item.InputData.FrameOut = frameOut
 	item.RequireMkdirInProcess = true
 	item.RequireCopyInProcess = true
+	item.DataUploaded = true
 	item.Title = r.FormValue("title")
 	item.Author = r.FormValue("author")
 	item.Description = r.FormValue("description")
@@ -873,7 +874,7 @@ func handleAPIAddFootage(w http.ResponseWriter, r *http.Request) {
 	} else {
 		item.Premultiply = true
 	}
-
+	item.Attributes = make(map[string]string)
 	/*
 		// json으로 들어와서 설정되면 좋겠다고 생각함.
 		attr := make(map[string]string)
@@ -896,7 +897,6 @@ func handleAPIAddFootage(w http.ResponseWriter, r *http.Request) {
 	item.Logs = append(item.Logs, "아이템이 생성되었습니다.")
 	item.ThumbImgUploaded = false
 	item.ThumbClipUploaded = false
-	item.DataUploaded = false
 
 	objIDpath, err := idToPath(item.ID.Hex())
 	if err != nil {

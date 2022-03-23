@@ -1457,13 +1457,6 @@ func genThumbOggMedia(adminSetting Adminsetting, item Item) error {
 		adminSetting.VideoCodecOgg,
 		"-qscale:v",
 		"7",
-		"-vf",
-		fmt.Sprintf("scale=%d:%d,crop=%d:%d:0:0,setsar=1",
-			adminSetting.MediaWidth,
-			adminSetting.MediaHeight,
-			adminSetting.MediaWidth,
-			adminSetting.MediaHeight,
-		),
 	}
 	if adminSetting.AudioCodec == "nosound" {
 		// nosound라면 사운드를 넣지 않는 옵션을 추가한다.
@@ -1475,6 +1468,7 @@ func genThumbOggMedia(adminSetting Adminsetting, item Item) error {
 	}
 	// 영상의 세로 픽셀이 홀수일 때 연산되지 않는다. -vf 옵션이 마지막으로 한번 붙어야 한다.
 	args = append(args, []string{"-vf", "pad=ceil(iw/2)*2:ceil(ih/2)*2"}...)
+	args = append(args, []string{"-vf", fmt.Sprintf("scale=%d:%d,crop=%d:%d:0:0,setsar=1", adminSetting.MediaWidth, adminSetting.MediaHeight, adminSetting.MediaWidth, adminSetting.MediaHeight)}...)
 	args = append(args, item.OutputThumbnailOggPath)
 	if *flagDebug {
 		fmt.Println(adminSetting.FFmpeg, strings.Join(args, " "))
@@ -1496,13 +1490,6 @@ func genThumbMovMedia(adminSetting Adminsetting, item Item) error {
 		adminSetting.VideoCodecMov,
 		"-qscale:v",
 		"7",
-		"-vf",
-		fmt.Sprintf("scale=%d:%d,crop=%d:%d:0:0,setsar=1",
-			adminSetting.MediaWidth,
-			adminSetting.MediaHeight,
-			adminSetting.MediaWidth,
-			adminSetting.MediaHeight,
-		),
 	}
 	if adminSetting.AudioCodec == "nosound" {
 		// nosound라면 사운드를 넣지 않는 옵션을 추가한다.
@@ -1514,6 +1501,7 @@ func genThumbMovMedia(adminSetting Adminsetting, item Item) error {
 	}
 	// 영상의 세로 픽셀이 홀수일 때 연산되지 않는다. -vf 옵션이 마지막으로 한번 붙어야 한다.
 	args = append(args, []string{"-vf", "pad=ceil(iw/2)*2:ceil(ih/2)*2"}...)
+	args = append(args, []string{"-vf", fmt.Sprintf("scale=%d:%d,crop=%d:%d:0:0,setsar=1", adminSetting.MediaWidth, adminSetting.MediaHeight, adminSetting.MediaWidth, adminSetting.MediaHeight)}...)
 	args = append(args, item.OutputThumbnailMovPath)
 	if *flagDebug {
 		fmt.Println(adminSetting.FFmpeg, strings.Join(args, " "))
@@ -1535,13 +1523,6 @@ func genThumbMp4Media(adminSetting Adminsetting, item Item) error {
 		adminSetting.VideoCodecMp4,
 		"-qscale:v",
 		"7",
-		"-vf",
-		fmt.Sprintf("scale=%d:%d,crop=%d:%d:0:0,setsar=1",
-			adminSetting.MediaWidth,
-			adminSetting.MediaHeight,
-			adminSetting.MediaWidth,
-			adminSetting.MediaHeight,
-		),
 	}
 	if adminSetting.AudioCodec == "nosound" {
 		// nosound라면 사운드를 넣지 않는 옵션을 추가한다.
@@ -1553,6 +1534,7 @@ func genThumbMp4Media(adminSetting Adminsetting, item Item) error {
 	}
 	// 영상의 세로 픽셀이 홀수일 때 연산되지 않는다. -vf 옵션이 마지막으로 한번 붙어야 한다.
 	args = append(args, []string{"-vf", "pad=ceil(iw/2)*2:ceil(ih/2)*2"}...)
+	args = append(args, []string{"-vf", fmt.Sprintf("scale=%d:%d,crop=%d:%d:0:0,setsar=1", adminSetting.MediaWidth, adminSetting.MediaHeight, adminSetting.MediaWidth, adminSetting.MediaHeight)}...)
 	args = append(args, item.OutputThumbnailMp4Path)
 	if *flagDebug {
 		fmt.Println(adminSetting.FFmpeg, strings.Join(args, " "))
@@ -1593,13 +1575,6 @@ func genProxyToOggMedia(adminSetting Adminsetting, item Item) error {
 		adminSetting.VideoCodecOgg,
 		"-qscale:v",
 		"7",
-		"-vf",
-		fmt.Sprintf("scale=%d:%d,crop=%d:%d:0:0,setsar=1",
-			adminSetting.MediaWidth,
-			adminSetting.MediaHeight,
-			adminSetting.MediaWidth,
-			adminSetting.MediaHeight,
-		),
 	}
 	if item.Premultiply {
 		args = append(args, []string{"-vf", "premultiply=inplace=1"}...)
@@ -1614,6 +1589,7 @@ func genProxyToOggMedia(adminSetting Adminsetting, item Item) error {
 	}
 	// 영상의 세로 픽셀이 홀수일 때 연산되지 않는다. -vf 옵션이 마지막으로 한번 붙어야 한다.
 	args = append(args, []string{"-vf", "pad=ceil(iw/2)*2:ceil(ih/2)*2"}...)
+	args = append(args, []string{"-vf", fmt.Sprintf("scale=%d:%d,crop=%d:%d:0:0,setsar=1", adminSetting.MediaWidth, adminSetting.MediaHeight, adminSetting.MediaWidth, adminSetting.MediaHeight)}...)
 	args = append(args, item.OutputThumbnailOggPath)
 	if *flagDebug {
 		fmt.Println(adminSetting.FFmpeg, strings.Join(args, " "))
@@ -1646,13 +1622,6 @@ func genClipToOggMedia(adminSetting Adminsetting, item Item) error {
 		adminSetting.VideoCodecOgg,
 		"-qscale:v",
 		"7",
-		"-vf",
-		fmt.Sprintf("scale=%d:%d,crop=%d:%d:0:0,setsar=1",
-			adminSetting.MediaWidth,
-			adminSetting.MediaHeight,
-			adminSetting.MediaWidth,
-			adminSetting.MediaHeight,
-		),
 	}
 	if adminSetting.AudioCodec == "nosound" {
 		// nosound라면 사운드를 넣지 않는 옵션을 추가한다.
@@ -1664,6 +1633,7 @@ func genClipToOggMedia(adminSetting Adminsetting, item Item) error {
 	}
 	// 영상의 세로 픽셀이 홀수일 때 연산되지 않는다. -vf 옵션이 마지막으로 한번 붙어야 한다.
 	args = append(args, []string{"-vf", "pad=ceil(iw/2)*2:ceil(ih/2)*2"}...)
+	args = append(args, []string{"-vf", fmt.Sprintf("scale=%d:%d,crop=%d:%d:0:0,setsar=1", adminSetting.MediaWidth, adminSetting.MediaHeight, adminSetting.MediaWidth, adminSetting.MediaHeight)}...)
 	args = append(args, item.OutputThumbnailOggPath)
 	if *flagDebug {
 		fmt.Println(adminSetting.FFmpeg, strings.Join(args, " "))
@@ -1705,13 +1675,6 @@ func genProxyToMovMedia(adminSetting Adminsetting, item Item) error {
 		adminSetting.VideoCodecMov,
 		"-qscale:v",
 		"7",
-		"-vf",
-		fmt.Sprintf("scale=%d:%d,crop=%d:%d:0:0,setsar=1",
-			adminSetting.MediaWidth,
-			adminSetting.MediaHeight,
-			adminSetting.MediaWidth,
-			adminSetting.MediaHeight,
-		),
 	}
 	if item.Premultiply {
 		args = append(args, []string{"-vf", "premultiply=inplace=1"}...)
@@ -1726,6 +1689,7 @@ func genProxyToMovMedia(adminSetting Adminsetting, item Item) error {
 	}
 	// 영상의 세로 픽셀이 홀수일 때 연산되지 않는다. -vf 옵션이 마지막으로 한번 붙어야 한다.
 	args = append(args, []string{"-vf", "pad=ceil(iw/2)*2:ceil(ih/2)*2"}...)
+	args = append(args, []string{"-vf", fmt.Sprintf("scale=%d:%d,crop=%d:%d:0:0,setsar=1", adminSetting.MediaWidth, adminSetting.MediaHeight, adminSetting.MediaWidth, adminSetting.MediaHeight)}...)
 	args = append(args, item.OutputThumbnailMovPath)
 	if *flagDebug {
 		fmt.Println(adminSetting.FFmpeg, strings.Join(args, " "))
@@ -1757,13 +1721,6 @@ func genClipToMovMedia(adminSetting Adminsetting, item Item) error {
 		adminSetting.VideoCodecMov,
 		"-qscale:v",
 		"7",
-		"-vf",
-		fmt.Sprintf("scale=%d:%d,crop=%d:%d:0:0,setsar=1",
-			adminSetting.MediaWidth,
-			adminSetting.MediaHeight,
-			adminSetting.MediaWidth,
-			adminSetting.MediaHeight,
-		),
 	}
 	if adminSetting.AudioCodec == "nosound" {
 		// nosound라면 사운드를 넣지 않는 옵션을 추가한다.
@@ -1775,6 +1732,7 @@ func genClipToMovMedia(adminSetting Adminsetting, item Item) error {
 	}
 	// 영상의 세로 픽셀이 홀수일 때 연산되지 않는다. -vf 옵션이 마지막으로 한번 붙어야 한다.
 	args = append(args, []string{"-vf", "pad=ceil(iw/2)*2:ceil(ih/2)*2"}...)
+	args = append(args, []string{"-vf", fmt.Sprintf("scale=%d:%d,crop=%d:%d:0:0,setsar=1", adminSetting.MediaWidth, adminSetting.MediaHeight, adminSetting.MediaWidth, adminSetting.MediaHeight)}...)
 	args = append(args, item.OutputThumbnailMovPath)
 	if *flagDebug {
 		fmt.Println(adminSetting.FFmpeg, strings.Join(args, " "))
@@ -1815,13 +1773,6 @@ func genProxyToMp4Media(adminSetting Adminsetting, item Item) error {
 		adminSetting.VideoCodecMp4,
 		"-qscale:v",
 		"7",
-		"-vf",
-		fmt.Sprintf("scale=%d:%d,crop=%d:%d:0:0,setsar=1",
-			adminSetting.MediaWidth,
-			adminSetting.MediaHeight,
-			adminSetting.MediaWidth,
-			adminSetting.MediaHeight,
-		),
 	}
 	if item.Premultiply {
 		args = append(args, []string{"-vf", "premultiply=inplace=1"}...)
@@ -1836,6 +1787,7 @@ func genProxyToMp4Media(adminSetting Adminsetting, item Item) error {
 	}
 	// 영상의 세로 픽셀이 홀수일 때 연산되지 않는다. -vf 옵션이 마지막으로 한번 붙어야 한다.
 	args = append(args, []string{"-vf", "pad=ceil(iw/2)*2:ceil(ih/2)*2"}...)
+	args = append(args, []string{"-vf", fmt.Sprintf("scale=%d:%d,crop=%d:%d:0:0,setsar=1", adminSetting.MediaWidth, adminSetting.MediaHeight, adminSetting.MediaWidth, adminSetting.MediaHeight)}...)
 	args = append(args, item.OutputThumbnailMp4Path)
 	if *flagDebug {
 		fmt.Println(adminSetting.FFmpeg, strings.Join(args, " "))
@@ -1867,13 +1819,6 @@ func genClipToMp4Media(adminSetting Adminsetting, item Item) error {
 		adminSetting.VideoCodecMp4,
 		"-qscale:v",
 		"7",
-		"-vf",
-		fmt.Sprintf("scale=%d:%d,crop=%d:%d:0:0,setsar=1",
-			adminSetting.MediaWidth,
-			adminSetting.MediaHeight,
-			adminSetting.MediaWidth,
-			adminSetting.MediaHeight,
-		),
 	}
 	if adminSetting.AudioCodec == "nosound" {
 		// nosound라면 사운드를 넣지 않는 옵션을 추가한다.
@@ -1885,6 +1830,7 @@ func genClipToMp4Media(adminSetting Adminsetting, item Item) error {
 	}
 	// 영상의 세로 픽셀이 홀수일 때 연산되지 않는다. -vf 옵션이 마지막으로 한번 붙어야 한다.
 	args = append(args, []string{"-vf", "pad=ceil(iw/2)*2:ceil(ih/2)*2"}...)
+	args = append(args, []string{"-vf", fmt.Sprintf("scale=%d:%d,crop=%d:%d:0:0,setsar=1", adminSetting.MediaWidth, adminSetting.MediaHeight, adminSetting.MediaWidth, adminSetting.MediaHeight)}...)
 	args = append(args, item.OutputThumbnailMp4Path)
 	if *flagDebug {
 		fmt.Println(adminSetting.FFmpeg, strings.Join(args, " "))
