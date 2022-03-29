@@ -1,5 +1,11 @@
 {{define "addfootage-items"}}
 {{template "head-bootstrap5"}}
+<!-- Core Stylesheet -->
+<link rel="stylesheet" href="css/eggy.css" />
+<!-- Progressbar Styles -->
+<link rel="stylesheet" href="css/progressbar.css" />
+<!-- Themes -->
+<link rel="stylesheet" href="css/theme.css" />
 <body>
 {{template "navbar-bootstrap5" .}}
 {{template "modal" .}}
@@ -164,6 +170,7 @@
 <script src="/assets/js/exports/jspdf.umd.min.js"></script>
 <script src="/assets/js/exports/jspdf.plugin.autotable.min.js"></script>
 <script src="/assets/js/exports/xlsx.full.min.js"></script>
+<script src="/assets/tata/tata.js"></script>
 <script>
     //define some sample data
     var sources = [
@@ -296,6 +303,13 @@
             });
             
         }
+        // Toast 띄우기
+        tata.success('Submit Process', sources.length + " items have been sent.", {
+            position: 'tr',
+            duration: 10000,
+            onClick: goProcessPage,
+            onClose: null,
+        })
     });
 
     document.getElementById("searchfootages").addEventListener("click", function(){
@@ -329,6 +343,12 @@
             //return err
         });
     });
+
+    
+
+    function goProcessPage() {
+        window.location.replace("item-process")
+    }
 </script>
 <script src="/assets/js/dotori.js"></script>
 </html>
