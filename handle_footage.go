@@ -220,7 +220,7 @@ func handleUploadFootageItem(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	// admin settin에서 rootpath를 가져와서 경로를 생성한다.
+	// admin setting에서 rootpath를 가져와서 경로를 생성한다.
 	rootpath, err := GetRootPath(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -795,6 +795,144 @@ func handleAPISearchFootages(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	data, err := json.Marshal(seqs)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	w.Write(data)
+}
+
+func handleAPIAddFootage(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method Only POST", http.StatusMethodNotAllowed)
+		return
+	}
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer client.Disconnect(ctx)
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	// 권한체크
+	user, err := GetUserFromHeader(r, client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+	if !(user.AccessLevel == "admin" || user.AccessLevel == "default") {
+		http.Error(w, "Need permission", http.StatusUnauthorized)
+		return
+	}
+	// 옵션 파싱
+	r.ParseForm()
+	item := Item{}
+	item.ID = primitive.NewObjectID()
+	item.InputData.Base = r.FormValue("base")
+	item.InputData.Dir = r.FormValue("dir")
+	frameIn, err := strconv.Atoi(r.FormValue("framein"))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	item.InputData.FrameIn = frameIn
+	frameOut, err := strconv.Atoi(r.FormValue("frameout"))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	item.InputData.FrameOut = frameOut
+	item.RequireMkdirInProcess = true
+	item.RequireCopyInProcess = true
+	item.DataUploaded = true
+	item.Title = r.FormValue("title")
+	item.Author = r.FormValue("author")
+	item.Description = r.FormValue("description")
+	item.InColorspace = r.FormValue("incolorspace")
+	item.OutColorspace = r.FormValue("outcolorspace")
+	item.Fps = r.FormValue("fps")
+	tags := Str2Tags(r.FormValue("tags"))
+	item.Tags = tags
+	item.ItemType = "footage"
+	if r.FormValue("premult") == "" {
+		item.Premultiply = false
+	} else {
+		item.Premultiply = true
+	}
+	item.Attributes = make(map[string]string)
+	/*
+		// json으로 들어와서 설정되면 좋겠다고 생각함.
+		attr := make(map[string]string)
+		attrNum, err := strconv.Atoi(r.FormValue("attributesNum"))
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		for i := 0; i < attrNum; i++ {
+			key := r.FormValue(fmt.Sprintf("key%d", i))
+			value := r.FormValue(fmt.Sprintf("value%d", i))
+			if key == "" || value == "" {
+				continue
+			}
+			attr[key] = value
+		}
+		item.Attributes = attr
+	*/
+	item.Status = "fileuploaded" // <- 이 부분은 모순이 있지만 input 소스를 이용해서 경로가 입력된 상황이다.
+	item.Logs = append(item.Logs, "아이템이 생성되었습니다.")
+	item.ThumbImgUploaded = false
+	item.ThumbClipUploaded = false
+
+	objIDpath, err := idToPath(item.ID.Hex())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rootpath, err := GetRootPath(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	item.InputThumbnailImgPath = rootpath + objIDpath + "/originalthumbimg/"
+	item.InputThumbnailClipPath = rootpath + objIDpath + "/originalthumbmov/"
+	item.OutputThumbnailPngPath = rootpath + objIDpath + "/thumbnail/thumbnail.png"
+	item.OutputThumbnailMp4Path = rootpath + objIDpath + "/thumbnail/thumbnail.mp4"
+	item.OutputThumbnailOggPath = rootpath + objIDpath + "/thumbnail/thumbnail.ogg"
+	item.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/thumbnail.mov"
+	item.OutputDataPath = rootpath + objIDpath + "/data/"
+	item.OutputProxyImgPath = rootpath + objIDpath + "/proxy/"
+
+	// 에러체크
+	err = item.CheckError()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// 연산 목록에 등록
+	err = AddItem(client, item)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// json 반환
+	data, err := json.Marshal(item)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

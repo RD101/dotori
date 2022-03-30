@@ -2,7 +2,7 @@
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/rd101/dotori)](https://goreportcard.com/report/github.com/rd101/dotori)
 
-VFX, 애니메이션, 게임, 사운드 등 콘텐츠 제작에 사용되는 에셋 관리 솔루션
+VFX, 애니메이션, 게임, 사운드, 레퍼런스, 기타 데이터 관리 등 콘텐츠 제작에 사용되는 에셋 관리 솔루션
 
 ## Screenshot
 
@@ -25,9 +25,8 @@ VFX, 애니메이션, 게임, 사운드 등 콘텐츠 제작에 사용되는 에
 
 ## Roadmap
 
-- bootstrap5 추가
 - 풋티지 업로드시, 묶음 폴더처럼 보이게 수정, 풋티지 exr 시퀀스 파일 다중 업로드.(Firefox에서 기본적으로 작동될 수 있도록)
-- 어셋 소스 업로드 후 파일 네임이 리네임 기능추가
+- 어셋 소스 업로드 후 파일명 리네임 기능추가
 - (태그가 기록돼 있는) 어셋 소스 하단에 'copy path' 버튼 추가 (어셋 소스를 multi select 할 때는 한 번에 'copy path'가 단축키 설정 )
 - 어셋 소스 플레이시 RV연동. rvlink와 연결하기
 - 어셋의 속성(Tag)를 다중으로 Overwrite, Remove, Add 가능하게 수정(멀티 선택기능)
@@ -195,3 +194,6 @@ Default env_keep=PATH # 새로 추가
 ### License
 
 [BSD-3-Clause License](https://github.com/RD101/dotori/blob/master/LICENSE)
+
+#### Third party
+- [Tata](https://www.cssscript.com/toast-prompt-tata/)

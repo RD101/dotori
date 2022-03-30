@@ -159,6 +159,7 @@ function setDetailViewModal(itemid) {
             <button type="button" class="btn btn-outline-danger" id="modal-detailview-delete-button" data-dismiss="modal" data-toggle="modal" data-target="#modal-rmitem">Delete</button>
             `
             if (document.getElementById("accesslevel").value == "admin") {
+                console.log("test")
                 document.getElementById("modal-rmitem-itemid").value = itemid;
                 document.getElementById("modal-detailview-footer").innerHTML = footerHtmlForAdmin       // admin 계정일 때만 delete 버튼이 보인다.
             } else {

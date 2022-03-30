@@ -1,5 +1,11 @@
 {{define "addfootage-items"}}
 {{template "head-bootstrap5"}}
+<!-- Core Stylesheet -->
+<link rel="stylesheet" href="css/eggy.css" />
+<!-- Progressbar Styles -->
+<link rel="stylesheet" href="css/progressbar.css" />
+<!-- Themes -->
+<link rel="stylesheet" href="css/theme.css" />
 <body>
 {{template "navbar-bootstrap5" .}}
 {{template "modal" .}}
@@ -48,19 +54,19 @@
                     <div class="col">
                         <div class="form-group">
                             <label class="text-muted">Title / 에셋제목</label>
-                            <input id="addTitle" type="text" name="title" class="form-control" placeholder="에셋 제목">
+                            <input type="text" id="title" class="form-control" placeholder="에셋 제목">
                         </div>
                         <div class="form-group">
                             <label class="text-muted">Author / 제작자</label>
-                            <input id="addAuthor" type="text" name="author" class="form-control" placeholder="에셋 제작자 이름">
+                            <input type="text" id="author" class="form-control" placeholder="에셋 제작자 이름">
                         </div>
                         <div class="form-group">
                             <label class="text-muted">Tags / 태그</label>
-                            <input id="addTags" type="text" name="tags" class="form-control" placeholder="태그1, 태그2">
+                            <input type="text" id="tags" class="form-control" placeholder="태그1, 태그2">
                         </div>
                         <div class="form-group">
                             <label class="text-muted">FPS</label>
-                            <select name="fps" class="form-control">
+                            <select id="fps" class="form-control">
                                 <option value="24">24</option>
                                 <option value="23.976">23.976</option>
                                 <option value="23.98">23.98</option>
@@ -76,7 +82,7 @@
                     <div class="col">
                         <div class="form-group">
                             <label class="text-muted">Description</label>
-                            <textarea id="addDescription" name="description" class="form-control" rows="9"></textarea>
+                            <textarea id="description" class="form-control" rows="9"></textarea>
                             <small class="form-text text-muted">에셋 사용시 참고해야할 사항</small>
                         </div>
                     </div>
@@ -112,7 +118,7 @@
             <div class="col-sm">
                 <div class="from-group">
                     <div class="form-check form-switch">
-                        <input class="form-check-input finger" type="checkbox" id="premult" name="premult">
+                        <input class="form-check-input finger" type="checkbox" id="premult">
                         <label class="form-check-label finger unselectable text-muted" for="premult">Premultiply</label>
                     </div>
                 </div>
@@ -164,6 +170,7 @@
 <script src="/assets/js/exports/jspdf.umd.min.js"></script>
 <script src="/assets/js/exports/jspdf.plugin.autotable.min.js"></script>
 <script src="/assets/js/exports/xlsx.full.min.js"></script>
+<script src="/assets/tata/tata.js"></script>
 <script>
     //define some sample data
     var sources = [
@@ -239,7 +246,70 @@
 
     //submit Footages
     document.getElementById("submitFootages").addEventListener("click", function(){
-        console.log(table.getData());
+        sources = table.getData();
+        
+        for (let i = 0; i < sources.length; i += 1) {
+            /*
+            // debug
+            
+            console.log(
+                sources[i].dir,
+                sources[i].base,
+                sources[i].framein,
+                sources[i].frameout,
+                document.getElementById("title").value,
+                document.getElementById("description").value,
+                document.getElementById("author").value,
+                document.getElementById("tags").value,
+                document.getElementById("fps").value,
+                document.getElementById("premult").checked,
+                document.getElementById("incolorspace").value,
+                document.getElementById("outcolorspace").value,
+            )
+            */
+            
+            // process
+            fetch('/api/addfootage', {
+                method: 'POST',
+                headers: {
+                    "Authorization": "Basic "+ getCookie("SessionToken"),
+                },
+                body: new URLSearchParams({
+                    "base": sources[i].base,
+                    "dir": sources[i].dir,
+                    "framein": sources[i].framein,
+                    "frameout": sources[i].frameout,
+                    "title": document.getElementById("title").value,
+                    "description": document.getElementById("description").value,
+                    "author": document.getElementById("author").value,
+                    "tags":document.getElementById("tags").value,
+                    "fps": document.getElementById("fps").value,
+                    "premult": document.getElementById("premult").checked,
+                    "incolorspace": document.getElementById("incolorspace").value,
+                    "outcolorspace": document.getElementById("outcolorspace").value,
+                })
+            })
+            .then((response) => {
+                if (!response.ok) {
+                    throw Error(response.statusText + " - " + response.url);
+                }
+                return response.json()
+            })
+            .then((data) => {
+                console.log(data)
+            })
+            .catch((err) => {
+                alert(err)
+            });
+            
+        }
+        // Toast 띄우기
+        tata.success('Submit Process', sources.length + " items have been sent.", {
+            position: 'tr',
+            duration: 10000,
+            onClick: goProcessPage,
+            onClose: null,
+        })
     });
 
     document.getElementById("searchfootages").addEventListener("click", function(){
@@ -273,6 +343,12 @@
             //return err
         });
     });
+
+    
+
+    function goProcessPage() {
+        window.location.replace("item-process")
+    }
 </script>
 <script src="/assets/js/dotori.js"></script>
 </html>
