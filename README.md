@@ -196,4 +196,5 @@ Default env_keep=PATH # 새로 추가
 [BSD-3-Clause License](https://github.com/RD101/dotori/blob/master/LICENSE)
 
 #### Third party
-- [Tata](https://www.cssscript.com/toast-prompt-tata/)
+- [Tata](https://www.cssscript.com/toast-prompt-tata/): MIT License
+- [Tabulator](http://tabulator.info): MIT License

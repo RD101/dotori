@@ -246,6 +246,40 @@
 
     //submit Footages
     document.getElementById("submitFootages").addEventListener("click", function(){
+        // error 처리
+        let title = document.getElementById("title").value
+        if (title == "") {
+            tata.error('Error', "Need title", {
+            position: 'tr',
+            duration: 10000,
+            })
+            return
+        }
+        let description = document.getElementById("description").value
+        if (description == "") {
+            tata.error('Error', "Need Description", {
+            position: 'tr',
+            duration: 10000,
+            })
+            return
+        }
+        let author = document.getElementById("author").value
+        if (author == "") {
+            tata.error('Error', "Need Author", {
+            position: 'tr',
+            duration: 10000,
+            })
+            return
+        }
+        let tags = document.getElementById("tags").value
+        if (tags == "") {
+            tata.error('Error', "Need Tags", {
+            position: 'tr',
+            duration: 10000,
+            })
+            return
+        }
+        // going process
         sources = table.getData();
         
         for (let i = 0; i < sources.length; i += 1) {
@@ -279,10 +313,10 @@
                     "dir": sources[i].dir,
                     "framein": sources[i].framein,
                     "frameout": sources[i].frameout,
-                    "title": document.getElementById("title").value,
-                    "description": document.getElementById("description").value,
-                    "author": document.getElementById("author").value,
-                    "tags":document.getElementById("tags").value,
+                    "title": title,
+                    "description": description,
+                    "author": author,
+                    "tags": tags,
                     "fps": document.getElementById("fps").value,
                     "premult": document.getElementById("premult").checked,
                     "incolorspace": document.getElementById("incolorspace").value,
