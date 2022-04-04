@@ -331,6 +331,10 @@
             })
             .then((data) => {
                 console.log(data)
+                let button = document.getElementById("submitFootages")
+                button.disabled = true
+                button.classList.remove("btn-outline-warning");
+                button.classList.add("btn-outline-secondary");
             })
             .catch((err) => {
                 alert(err)
