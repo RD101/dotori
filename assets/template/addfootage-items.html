@@ -125,34 +125,17 @@
             </div>
         </div>
 
-        <div class="row pt-3">
+        <!--Attribute Table-->
+        <div class="row pt-2">
             <div class="col-sm">
-                <div class="form-group">
-                    <label class="text-muted">Attributes</label>
-                    <div id="attributes">
-                        <div class="row">
-                            <div class="col">
-                                <div class="form-group p-0 m-0">
-                                    <input type="text" class="form-control" placeholder="key" value="" id="key0" name="key0">
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="form-group p-0 m-0">
-                                    <input type="text" class="form-control" placeholder="value" value="" id="value0" name="value0">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-                        <input type="hidden" id="attributesNum" name="attributesNum" value="1">
-                        <div class="col">
-                            <small class="form-text text-muted float-right">필요시 속성을 추가해 주세요.</small>
-                            <br>
-                            <span class="add float-right" onclick="addAttribute();">+</span>
-                        </div>
-                    </div>
-                </div>
+                <div class="border-table rounded unselectable" id="attributes"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <small class="form-text text-muted float-right">필요시 속성을 추가해 주세요.</small>
+                <span class="add float-right" id="addAttribute">+</span>
+                <span class="add float-right" id="rmAttribute">-</span>
             </div>
         </div>
     </div>
@@ -203,6 +186,29 @@
             {title:"Out", field:"frameout", hozAlign:"center", headerHozAlign:"center", width:100, headerSort:false},
             {title:"Length", field:"length", hozAlign:"center", headerHozAlign:"center", width:100, headerSort:false},
         ],
+    });
+
+    var attributes = [];
+    var attributesTable = new Tabulator("#attributes", {
+        height:150, // set height of table (in CSS or here), this enables the Virtual DOM and improves render speed dramatically (can be any valid css height value)
+        data:attributes, //assign data to table
+        layout:"fitColumns", //fit columns to width of table (optional)
+        reactiveData:true, //turn on data reactivity
+        clipboard:true,
+        columns:[ //Define Table Columns
+            {title:"Key", field:"key", hozAlign: "left", headerHozAlign:"left", headerSort:false, editor:"input", validator:"required"},
+            {title:"Value", field:"value", hozAlign:"left", headerHozAlign:"left", headerSort:false, editor:"input", validator:"required"},
+        ],
+    });
+
+    //print button
+    document.getElementById("addAttribute").addEventListener("click", function(){
+        attributes.push({key:"", value:""});
+        //attributesTable.addRow({});
+    });
+
+    document.getElementById("rmAttribute").addEventListener("click", function(){
+        attributes.pop();
     });
 
     //listen for row move
@@ -388,6 +394,6 @@
         window.location.replace("item-process")
     }
 </script>
-<script src="/assets/js/dotori.js"></script>
+<!--<script src="/assets/js/dotori.js"></script>-->
 </html>
 {{end}}
