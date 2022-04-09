@@ -874,25 +874,15 @@ func handleAPIAddFootage(w http.ResponseWriter, r *http.Request) {
 	} else {
 		item.Premultiply = true
 	}
-	item.Attributes = make(map[string]string)
-	/*
-		// json으로 들어와서 설정되면 좋겠다고 생각함.
-		attr := make(map[string]string)
-		attrNum, err := strconv.Atoi(r.FormValue("attributesNum"))
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		for i := 0; i < attrNum; i++ {
-			key := r.FormValue(fmt.Sprintf("key%d", i))
-			value := r.FormValue(fmt.Sprintf("value%d", i))
-			if key == "" || value == "" {
-				continue
-			}
-			attr[key] = value
-		}
-		item.Attributes = attr
-	*/
+	// set Attribute
+	item.Attributes = make(map[string]string) // init
+	jsonAttributes := JsonAttributes{}
+	item.Attributes, err = jsonAttributes.ToAttributes(r.FormValue("attributes"))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	item.Status = "fileuploaded" // <- 이 부분은 모순이 있지만 input 소스를 이용해서 경로가 입력된 상황이다.
 	item.Logs = append(item.Logs, "아이템이 생성되었습니다.")
 	item.ThumbImgUploaded = false

@@ -204,7 +204,6 @@
     //print button
     document.getElementById("addAttribute").addEventListener("click", function(){
         attributes.push({key:"", value:""});
-        //attributesTable.addRow({});
     });
 
     document.getElementById("rmAttribute").addEventListener("click", function(){
@@ -327,6 +326,7 @@
                     "premult": document.getElementById("premult").checked,
                     "incolorspace": document.getElementById("incolorspace").value,
                     "outcolorspace": document.getElementById("outcolorspace").value,
+                    "attributes": JSON.stringify(attributesTable.getData()),
                 })
             })
             .then((response) => {
@@ -394,6 +394,6 @@
         window.location.replace("item-process")
     }
 </script>
-<!--<script src="/assets/js/dotori.js"></script>-->
+<script src="/assets/js/dotori.js"></script>
 </html>
 {{end}}
