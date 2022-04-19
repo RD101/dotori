@@ -7,10 +7,10 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
         <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                Add
             </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <div class="dropdown-menu">
                 {{if $.Adminsetting.Maya}}<a class="dropdown-item" href="/addmaya">Maya</a>{{end}}
                 {{if $.Adminsetting.Max}}<a class="dropdown-item" href="/addmax">Max</a>{{end}}
                 {{if $.Adminsetting.Houdini}}<a class="dropdown-item" href="/addhoudini">Houdini</a>{{end}}
@@ -45,10 +45,10 @@
         </li>
         {{if eq $.Token.AccessLevel "admin"}}
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle text-danger" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <a class="nav-link dropdown-toggle text-danger" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                Admin
             </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <div class="dropdown-menu">
                 <a class="dropdown-item" href="/users">Users</a>
                 <a class="dropdown-item" href="/adminsetting">Admin Setting</a>
                 <a class="dropdown-item" href="/cleanup-db">Clean Up DB</a>
@@ -56,10 +56,10 @@
           </li>
         {{end}}
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
              {{if $.Token.ID}}{{$.Token.ID}}{{else}}User{{end}}
           </a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <div class="dropdown-menu">
               <a class="dropdown-item" href="/profile">Profile</a>
               <a class="dropdown-item" href="/favoriteassets">Favorite Assets</a>
               <a class="dropdown-item" href="/signout">SignOut</a>
