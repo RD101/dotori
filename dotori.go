@@ -52,7 +52,7 @@ var (
 	flagHTTPPort      = flag.String("http", "", "Web Service Port Number")
 	flagPagenum       = flag.Int64("pagenum", 9, "maximum number of items in a page")
 	flagCookieAge     = flag.Int("cookieage", 4, "cookie age (hour)") // MPAA 기준 4시간이다.
-	flagMaxProcessNum = flag.Int("maxprocessnum", 1, "maximum number of process")
+	flagMaxProcessNum = flag.Int("maxprocessnum", 4, "maximum number of process")
 	flagCertFullchain = flag.String("certfullchain", "", "certification fullchain path")
 	flagCertPrivkey   = flag.String("certprivkey", "", "certification privkey path")
 

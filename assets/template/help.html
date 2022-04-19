@@ -18,8 +18,13 @@
                     Build Time: {{.BuildTime}}<br>
                 {{end}}
                 {{if .Sha1ver}}
-                    Git SHA1: <a href="https://github.com/rd101/dotori/commit/{{.Sha1ver}}" class="text-warning">{{.Sha1ver}}</a>
+                    Git SHA1: <a href="https://github.com/rd101/dotori/commit/{{.Sha1ver}}" class="text-warning">{{.Sha1ver}}</a><br>
                 {{end}}
+            </small>
+            <small class="text-darkmode">
+                Number of CPU: {{.NumCPU}}<br>
+                Number of Max Process: {{.MaxProcessNum}}<br>
+                Number of ProcessBufferSize: {{.Adminsetting.ProcessBufferSize}}<br>
             </small>
         </p>
     </div>

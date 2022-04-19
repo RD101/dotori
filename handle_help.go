@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"net/http"
+	"runtime"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -18,14 +19,17 @@ func handleHelp(w http.ResponseWriter, r *http.Request) {
 	}
 	type recipe struct {
 		Token
-		Adminsetting Adminsetting
-		Sha1ver      string
-		BuildTime    string
+		Adminsetting  Adminsetting
+		Sha1ver       string
+		BuildTime     string
+		NumCPU        int // server CPU 갯수
+		MaxProcessNum int // 최대 동시 연산 갯수
 	}
-
 	rcp := recipe{}
 	rcp.Sha1ver = SHA1VER
 	rcp.BuildTime = BUILDTIME
+	rcp.MaxProcessNum = *flagMaxProcessNum
+	rcp.NumCPU = runtime.NumCPU()
 	rcp.Token = token
 	//mongoDB client 연결
 	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
