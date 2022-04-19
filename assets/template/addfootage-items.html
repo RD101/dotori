@@ -182,8 +182,8 @@
             {rowHandle:true, formatter:"handle", headerSort:false, frozen:true, width:30, minWidth:30},
             {title:"Dir", field:"dir", hozAlign: "left", headerHozAlign:"center", headerSort:false},
             {title:"Base", field:"base", hozAlign:"left", headerHozAlign:"center", headerSort:false, cellDblClick:function(e, cell){cell.getRow().delete();}},
-            {title:"In", field:"framein", hozAlign:"center", headerHozAlign:"center", width:100, headerSort:false},
-            {title:"Out", field:"frameout", hozAlign:"center", headerHozAlign:"center", width:100, headerSort:false},
+            {title:"In", field:"framein", hozAlign:"center", headerHozAlign:"center", width:100, headerSort:false, editor:"input",},
+            {title:"Out", field:"frameout", hozAlign:"center", headerHozAlign:"center", width:100, headerSort:false, editor:"input",},
             {title:"Length", field:"length", hozAlign:"center", headerHozAlign:"center", width:100, headerSort:false},
         ],
     });
