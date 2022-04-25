@@ -57,6 +57,7 @@ type Adminsetting struct {
 	HDRI            bool `json:"hdri" bson:"hdri"`                       // HDRI
 	Texture         bool `json:"texture" bson:"texture"`                 // Texture
 	Clip            bool `json:"clip" bson:"clip"`                       // Clip
+	MultipleClip    bool `json:"multipleclip" bson:"multipleclip"`       // Multiple Clip
 	Fusion360       bool `json:"fusion360" bson:"fusion360"`             // Fusion360
 	Matte           bool `json:"matte" bson:"matte"`                     // Matte
 }

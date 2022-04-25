@@ -21,14 +21,14 @@ import (
 	"golang.org/x/sys/unix"
 )
 
-// searchSeq 함수는 탐색할 경로를 입력받고 dpx, exr, png, mov 정보를 수집 반환한다.
-func searchSeq(searchpath string) ([]Seq, error) {
+// searchSeq 함수는 탐색할 경로를 입력받고 dpx, exr, png 정보를 수집 반환한다.
+func searchSeq(searchpath string) ([]Source, error) {
 	// 경로가 존재하는지 체크한다.
 	_, err := os.Stat(searchpath)
 	if err != nil {
 		return nil, err
 	}
-	paths := make(map[string]Seq)
+	paths := make(map[string]Source)
 	err = filepath.Walk(searchpath, func(path string, info os.FileInfo, err error) error {
 		// 숨김폴더는 스킵한다.
 		if info.IsDir() && strings.HasPrefix(info.Name(), ".") {
@@ -40,15 +40,6 @@ func searchSeq(searchpath string) ([]Seq, error) {
 		}
 		ext := strings.ToLower(filepath.Ext(path))
 		switch ext {
-		case ".mov", ".mp4":
-			item := Seq{
-				Searchpath: searchpath,
-				Dir:        filepath.Dir(path),
-				Base:       filepath.Base(path),
-				Ext:        ext,
-				ConvertExt: ".exr",
-			}
-			paths[path] = item
 		case ".dpx", ".exr", ".png", ".jpg":
 			key, num, err := Seqnum2Sharp(path)
 			if err != nil {
@@ -64,7 +55,7 @@ func searchSeq(searchpath string) ([]Seq, error) {
 				paths[key] = item
 			} else {
 				// 이전에 수집된 경로가 존재하지 않으면 처리되는 코드
-				item := Seq{
+				item := Source{
 					Searchpath: searchpath,
 					Dir:        filepath.Dir(path),
 					Base:       filepath.Base(key),
@@ -84,7 +75,53 @@ func searchSeq(searchpath string) ([]Seq, error) {
 	if err != nil {
 		log.Printf("error walking the path %q: %v\n", searchpath, err)
 	}
-	var items []Seq
+	var items []Source
+	for _, value := range paths {
+		items = append(items, value)
+	}
+	if len(items) == 0 {
+		return nil, errors.New("소스가 존재하지 않습니다")
+	}
+	return items, nil
+}
+
+// searchClip 함수는 탐색할 경로를 입력받고 mp4, mov 정보를 수집 반환한다.
+func searchClip(searchpath string) ([]Source, error) {
+	// 경로가 존재하는지 체크한다.
+	_, err := os.Stat(searchpath)
+	if err != nil {
+		return nil, err
+	}
+	paths := make(map[string]Source)
+	err = filepath.Walk(searchpath, func(path string, info os.FileInfo, err error) error {
+		// 숨김폴더는 스킵한다.
+		if info.IsDir() && strings.HasPrefix(info.Name(), ".") {
+			return nil //filepath.SkipDir
+		}
+		// 숨김파일
+		if strings.HasPrefix(info.Name(), ".") {
+			return nil
+		}
+		ext := strings.ToLower(filepath.Ext(path))
+		switch ext {
+		case ".mov", ".mp4":
+			item := Source{
+				Searchpath: searchpath,
+				Dir:        filepath.Dir(path),
+				Base:       filepath.Base(path),
+				Ext:        ext,
+				ConvertExt: ".mp4",
+			}
+			paths[path] = item
+		default:
+			return nil
+		}
+		return nil
+	})
+	if err != nil {
+		log.Printf("error walking the path %q: %v\n", searchpath, err)
+	}
+	var items []Source
 	for _, value := range paths {
 		items = append(items, value)
 	}
