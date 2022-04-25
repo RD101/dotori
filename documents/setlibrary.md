@@ -15,7 +15,7 @@ $ brew install ffmpeg
 
 ```bash
 $ cd ~
-$ git clone https://github.com/imageworks/OpenColorIO-Configs
+$ git clone https://github.com/colour-science/OpenColorIO-Configs
 ```
 
 #### OpenImageIO

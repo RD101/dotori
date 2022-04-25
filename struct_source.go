@@ -1,7 +1,7 @@
 package main
 
-// Seq 자료구조는 시퀀스를 분석할 때 사용하는 자료구조이다.
-type Seq struct {
+// Source 자료구조는 시퀀스를 분석할 때 사용하는 자료구조이다.
+type Source struct {
 	// 사용자 입력값
 	InColorspace  string `json:"incolorspace" bson:"incolorspace"`   // 시퀀스의 IN 컬러스페이스
 	OutColorspace string `json:"outcolorspace" bson:"outcolorspace"` // 시퀀스의 OUT 컬러스페이스

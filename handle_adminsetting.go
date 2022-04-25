@@ -159,9 +159,10 @@ func handleAdminSettingSubmit(w http.ResponseWriter, r *http.Request) {
 	a.IES = str2bool(r.FormValue("ies"))
 	a.Texture = str2bool(r.FormValue("texture"))
 	a.Matte = str2bool(r.FormValue("matte"))
-	a.MultipleFootage = str2bool(r.FormValue("multiplefootage"))
 	a.Footage = str2bool(r.FormValue("footage"))
+	a.MultipleFootage = str2bool(r.FormValue("multiplefootage"))
 	a.Clip = str2bool(r.FormValue("clip"))
+	a.MultipleClip = str2bool(r.FormValue("multipleclip"))
 	a.Nuke = str2bool(r.FormValue("nuke"))
 	a.Sound = str2bool(r.FormValue("sound"))
 	//mongoDB client 연결
