@@ -40,6 +40,15 @@ func searchSeq(searchpath string) ([]Source, error) {
 		}
 		ext := strings.ToLower(filepath.Ext(path))
 		switch ext {
+		case ".mov", ".mp4":
+			item := Source{
+				Searchpath: searchpath,
+				Dir:        filepath.Dir(path),
+				Base:       filepath.Base(path),
+				Ext:        ext,
+				ConvertExt: ".mp4",
+			}
+			paths[path] = item
 		case ".dpx", ".exr", ".png", ".jpg":
 			key, num, err := Seqnum2Sharp(path)
 			if err != nil {

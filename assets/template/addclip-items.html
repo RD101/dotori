@@ -1,4 +1,4 @@
-{{define "addfootage-items"}}
+{{define "addclip-items"}}
 {{template "head-bootstrap5"}}
 <!-- Core Stylesheet -->
 <link rel="stylesheet" href="css/eggy.css" />
@@ -13,7 +13,7 @@
 <div class="container py-5 px-2">
     <div class="col-lg-12 col-md-12 col-sm-12 mx-auto">
         <div class="pt-3 pb-3">
-            <h2 class="text-muted">Add Multiple Footage Assets</h2>
+            <h2 class="text-muted">Add Multiple Clip Assets</h2>
         </div>
 
         <div class="row">
@@ -22,7 +22,7 @@
                     <label class="text-muted">Find Path</label>
                     <div class="input-group">
                         <input type="text" class="form-control" placeholder="Path" id="searchpath">
-                        <button class="btn btn-outline-warning" type="button" id="searchclipfootages">ScanPath</button>
+                        <button class="btn btn-outline-warning" type="button" id="searchclips">ScanPath</button>
                     </div>
                     <small class="form-text text-danger">OS에서 보안상 제약이 걸린 경로가 포함된 경우, 너무 많은 소스가 존재하는 경로를 설정할 경우 웹서버에 부하를 줄 수 있습니다.</small>
                 </div>
@@ -64,64 +64,16 @@
                             <label class="text-muted">Tags / 태그</label>
                             <input type="text" id="tags" class="form-control" placeholder="태그1, 태그2">
                         </div>
-                        <div class="form-group">
-                            <label class="text-muted">FPS</label>
-                            <select id="fps" class="form-control">
-                                <option value="24">24</option>
-                                <option value="23.976">23.976</option>
-                                <option value="23.98">23.98</option>
-                                <option value="30">30</option>
-                                <option value="25">25</option>
-                                <option value="29.97">29.97</option>
-                                <option value="60">60</option>
-                                <option value="59.94">59.94</option>
-                            </select>
-                            <small class="form-text text-muted">촬영 Footage의 FPS를 입력해주세요.</small>
-                        </div>
                     </div>
                     <div class="col">
                         <div class="form-group">
                             <label class="text-muted">Description</label>
-                            <textarea id="description" class="form-control" rows="9"></textarea>
+                            <textarea id="description" class="form-control" rows="6"></textarea>
                             <small class="form-text text-muted">에셋 사용시 참고해야할 사항</small>
                         </div>
                     </div>
                 </div>
                 
-            </div>
-        </div>
-        
-        <div class="row pt-3">
-            <div class="col-sm">
-                <div class="form-group">
-                    <label class="text-muted">Colorspace</label>
-                    <span class="preset-button float-end" data-bs-toggle="modal" data-bs-target="#modal-preset-colorspace">Preset</span>
-                    <div class="row">
-                        <div class="col">
-                            <select id="incolorspace" name="incolorspace" class="form-control">
-                                {{range .Colorspaces}}<option value="{{.Name}}">{{.Name}}</option>{{end}}
-                            </select>
-                            <small class="form-text text-muted">In Colorspace</small>
-                        </div>
-                        <div class="col">
-                            <select id="outcolorspace" name="outcolorspace" class="form-control">
-                                {{range .Colorspaces}}<option value="{{.Name}}">{{.Name}}</option>{{end}}
-                            </select>
-                            <small class="form-text text-muted">Out Colorspace</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row pt-3">
-            <div class="col-sm">
-                <div class="from-group">
-                    <div class="form-check form-switch">
-                        <input class="form-check-input finger" type="checkbox" id="premult">
-                        <label class="form-check-label finger unselectable text-muted" for="premult">Premultiply</label>
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -140,7 +92,7 @@
         </div>
     </div>
     <div class="text-center pt-5">
-        <button type="submit" class="btn btn-outline-warning" id="submitFootages">SUBMIT PROCESS</button>
+        <button type="submit" class="btn btn-outline-warning" id="submitClips">SUBMIT PROCESS</button>
     </div>
 </div>
 
@@ -157,8 +109,8 @@
 <script>
     //define some sample data
     var sources = [
-        {id:1,dir:"/path/example1",base:"example1.%04d.exr",framein:"1001",frameout:"1005",length:5},
-        {id:2,dir:"/path/example2",base:"example2.%04d.exr",framein:"1001",frameout:"1005",length:5},
+        {id:1,dir:"/path/example1",base:"example1.mov"},
+        {id:2,dir:"/path/example2",base:"example2.mp4"},
     ];
     //create Tabulator on DOM element with id "example-table"
     var table = new Tabulator("#source-table", {
@@ -182,9 +134,6 @@
             {rowHandle:true, formatter:"handle", headerSort:false, frozen:true, width:30, minWidth:30},
             {title:"Dir", field:"dir", hozAlign: "left", headerHozAlign:"center", headerSort:false},
             {title:"Base", field:"base", hozAlign:"left", headerHozAlign:"center", headerSort:false, cellDblClick:function(e, cell){cell.getRow().delete();}},
-            {title:"In", field:"framein", hozAlign:"center", headerHozAlign:"center", width:100, headerSort:false, editor:"input",},
-            {title:"Out", field:"frameout", hozAlign:"center", headerHozAlign:"center", width:100, headerSort:false, editor:"input",},
-            {title:"Length", field:"length", hozAlign:"center", headerHozAlign:"center", width:100, headerSort:false},
         ],
     });
 
@@ -249,8 +198,8 @@
         table.print("active", true, {columnGroups:false});
     });
 
-    //submit Footages
-    document.getElementById("submitFootages").addEventListener("click", function(){
+    //submit Clips
+    document.getElementById("submitClips").addEventListener("click", function(){
         // error 처리
         let title = document.getElementById("title").value
         if (title == "") {
@@ -308,7 +257,7 @@
             */
             
             // process
-            fetch('/api/addfootage', {
+            fetch('/api/addclip', {
                 method: 'POST',
                 headers: {
                     "Authorization": "Basic "+ getCookie("SessionToken"),
@@ -316,16 +265,10 @@
                 body: new URLSearchParams({
                     "base": sources[i].base,
                     "dir": sources[i].dir,
-                    "framein": sources[i].framein,
-                    "frameout": sources[i].frameout,
                     "title": title,
                     "description": description,
                     "author": author,
                     "tags": tags,
-                    "fps": document.getElementById("fps").value,
-                    "premult": document.getElementById("premult").checked,
-                    "incolorspace": document.getElementById("incolorspace").value,
-                    "outcolorspace": document.getElementById("outcolorspace").value,
                     "attributes": JSON.stringify(attributesTable.getData()),
                 })
             })
@@ -337,7 +280,7 @@
             })
             .then((data) => {
                 console.log(data)
-                let button = document.getElementById("submitFootages")
+                let button = document.getElementById("submitClips")
                 button.disabled = true
                 button.classList.remove("btn-outline-warning");
                 button.classList.add("btn-outline-secondary");
@@ -356,8 +299,8 @@
         })
     });
 
-    document.getElementById("searchfootages").addEventListener("click", function(){
-        fetch('/api/searchfootages', {
+    document.getElementById("searchclips").addEventListener("click", function(){
+        fetch('/api/searchclips', {
             method: 'POST',
             headers: {
                 "Authorization": "Basic "+ getCookie("SessionToken"),

@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -68,6 +69,58 @@ func handleAddClipItem(w http.ResponseWriter, r *http.Request) {
 	rcp.Adminsetting = adminsetting
 	w.Header().Set("Content-Type", "text/html")
 	err = TEMPLATES.ExecuteTemplate(w, "addclip-item", rcp)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func handleAddClipItems(w http.ResponseWriter, r *http.Request) {
+	token, err := GetTokenFromHeader(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/signin", http.StatusSeeOther)
+		return
+	}
+	type recipe struct {
+		Token
+		Adminsetting Adminsetting
+		User         User
+	}
+	rcp := recipe{}
+	rcp.Token = token
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer client.Disconnect(ctx)
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	adminsetting, err := GetAdminSetting(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp.Adminsetting = adminsetting
+	user, err := GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp.User = user
+	w.Header().Set("Content-Type", "text/html")
+	err = TEMPLATES.ExecuteTemplate(w, "addclip-items", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -650,4 +703,168 @@ func handleEditClipSuccess(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+}
+
+func handleAPISearchClips(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method Only POST", http.StatusMethodNotAllowed)
+		return
+	}
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer client.Disconnect(ctx)
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	user, err := GetUserFromHeader(r, client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+	if !(user.AccessLevel == "admin" || user.AccessLevel == "default") {
+		http.Error(w, "Need permission", http.StatusUnauthorized)
+		return
+	}
+
+	r.ParseForm()
+	path := r.FormValue("path")
+	if path == "" {
+		http.Error(w, "path 를 설정해주세요", http.StatusBadRequest)
+		return
+	}
+	clips, err := searchClip(path)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	data, err := json.Marshal(clips)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	w.Write(data)
+}
+
+func handleAPIAddClip(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method Only POST", http.StatusMethodNotAllowed)
+		return
+	}
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer client.Disconnect(ctx)
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	// 권한체크
+	user, err := GetUserFromHeader(r, client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+	if !(user.AccessLevel == "admin" || user.AccessLevel == "default") {
+		http.Error(w, "Need permission", http.StatusUnauthorized)
+		return
+	}
+	// 옵션 파싱
+	r.ParseForm()
+	item := Item{}
+	item.ID = primitive.NewObjectID()
+	item.InputData.Base = r.FormValue("base")
+	item.InputData.Dir = r.FormValue("dir")
+	item.RequireMkdirInProcess = true
+	item.RequireCopyInProcess = true
+	item.DataUploaded = true
+	item.Title = r.FormValue("title")
+	item.Author = r.FormValue("author")
+	item.Description = r.FormValue("description")
+	tags := Str2Tags(r.FormValue("tags"))
+	item.Tags = tags
+	item.ItemType = "clip"
+	// set Attribute
+	item.Attributes = make(map[string]string) // init
+	jsonAttributes := JsonAttributes{}
+	item.Attributes, err = jsonAttributes.ToAttributes(r.FormValue("attributes"))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	item.Status = "fileuploaded" // <- 이 부분은 모순이 있지만 input 소스를 이용해서 경로가 입력된 상황이다.
+	item.Logs = append(item.Logs, "아이템이 생성되었습니다.")
+	item.ThumbImgUploaded = false
+	item.ThumbClipUploaded = false
+
+	objIDpath, err := idToPath(item.ID.Hex())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rootpath, err := GetRootPath(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	item.InputThumbnailImgPath = rootpath + objIDpath + "/originalthumbimg/"
+	item.InputThumbnailClipPath = rootpath + objIDpath + "/originalthumbmov/"
+	item.OutputThumbnailPngPath = rootpath + objIDpath + "/thumbnail/thumbnail.png"
+	item.OutputThumbnailMp4Path = rootpath + objIDpath + "/thumbnail/thumbnail.mp4"
+	item.OutputThumbnailOggPath = rootpath + objIDpath + "/thumbnail/thumbnail.ogg"
+	item.OutputThumbnailMovPath = rootpath + objIDpath + "/thumbnail/thumbnail.mov"
+	item.OutputDataPath = rootpath + objIDpath + "/data/"
+	item.OutputProxyImgPath = rootpath + objIDpath + "/proxy/"
+
+	// 에러체크
+	err = item.CheckError()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// 연산 목록에 등록
+	err = AddItem(client, item)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// json 반환
+	data, err := json.Marshal(item)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	w.Write(data)
 }
