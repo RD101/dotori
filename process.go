@@ -1594,7 +1594,7 @@ func genThumbMp4Media(adminSetting Adminsetting, item Item) error {
 
 // genProxyToOggMedia 함수는 인수로 받은 아이템의 .ogg 동영상을 만든다.
 func genProxyToOggMedia(adminSetting Adminsetting, item Item) error {
-	seqs, err := searchSeq(item.OutputProxyImgPath)
+	seqs, err := searchSeqAndClip(item.OutputProxyImgPath)
 	if err != nil {
 		return err
 	}
@@ -1650,7 +1650,7 @@ func genProxyToOggMedia(adminSetting Adminsetting, item Item) error {
 
 // genClipToOggMedia 함수는 인수로 받은 아이템의 .ogg 동영상을 만든다.
 func genClipToOggMedia(adminSetting Adminsetting, item Item) error {
-	files, err := searchSeq(item.OutputDataPath)
+	files, err := searchSeqAndClip(item.OutputDataPath)
 	if err != nil {
 		return err
 	}
@@ -1693,7 +1693,7 @@ func genClipToOggMedia(adminSetting Adminsetting, item Item) error {
 
 // genProxyToMovMedia 함수는 인수로 받은 아이템의 .mov 동영상을 만든다.
 func genProxyToMovMedia(adminSetting Adminsetting, item Item) error {
-	seqs, err := searchSeq(item.OutputProxyImgPath)
+	seqs, err := searchSeqAndClip(item.OutputProxyImgPath)
 	if err != nil {
 		return err
 	}
@@ -1749,7 +1749,7 @@ func genProxyToMovMedia(adminSetting Adminsetting, item Item) error {
 
 // genClipToMovMedia 함수는 인수로 받은 아이템의 .mov 동영상을 만든다.
 func genClipToMovMedia(adminSetting Adminsetting, item Item) error {
-	files, err := searchSeq(item.OutputDataPath)
+	files, err := searchSeqAndClip(item.OutputDataPath)
 	if err != nil {
 		return err
 	}
@@ -1792,7 +1792,7 @@ func genClipToMovMedia(adminSetting Adminsetting, item Item) error {
 
 // genProxyToMp4Media 함수는 인수로 받은 아이템의 .mp4 동영상을 만든다.
 func genProxyToMp4Media(adminSetting Adminsetting, item Item) error {
-	seqs, err := searchSeq(item.OutputProxyImgPath)
+	seqs, err := searchSeqAndClip(item.OutputProxyImgPath)
 	if err != nil {
 		return err
 	}
@@ -1847,7 +1847,7 @@ func genProxyToMp4Media(adminSetting Adminsetting, item Item) error {
 
 // genClipToMp4Media 함수는 인수로 받은 아이템의 .mp4 동영상을 만든다.
 func genClipToMp4Media(adminSetting Adminsetting, item Item) error {
-	files, err := searchSeq(item.OutputDataPath)
+	files, err := searchSeqAndClip(item.OutputDataPath)
 	if err != nil {
 		return err
 	}

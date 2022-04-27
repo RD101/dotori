@@ -748,7 +748,7 @@ func handleEditFootageSuccess(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func handleAPISearchFootages(w http.ResponseWriter, r *http.Request) {
+func handleAPISearchFootageAndClip(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method Only POST", http.StatusMethodNotAllowed)
 		return
@@ -789,12 +789,12 @@ func handleAPISearchFootages(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "path 를 설정해주세요", http.StatusBadRequest)
 		return
 	}
-	seqs, err := searchSeq(path)
+	items, err := searchSeqAndClip(path)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	data, err := json.Marshal(seqs)
+	data, err := json.Marshal(items)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

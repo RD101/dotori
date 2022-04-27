@@ -21,8 +21,8 @@ import (
 	"golang.org/x/sys/unix"
 )
 
-// searchSeq 함수는 탐색할 경로를 입력받고 dpx, exr, png 정보를 수집 반환한다.
-func searchSeq(searchpath string) ([]Source, error) {
+// searchSeqAndClip 함수는 탐색할 경로를 입력받고 dpx, exr, png, mp4 정보를 수집 반환한다.
+func searchSeqAndClip(searchpath string) ([]Source, error) {
 	// 경로가 존재하는지 체크한다.
 	_, err := os.Stat(searchpath)
 	if err != nil {
@@ -52,7 +52,9 @@ func searchSeq(searchpath string) ([]Source, error) {
 		case ".dpx", ".exr", ".png", ".jpg":
 			key, num, err := Seqnum2Sharp(path)
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "%s\n", err)
+				if *flagDebug {
+					fmt.Fprintf(os.Stderr, "%s\n", err)
+				}
 				return nil
 			}
 			if _, has := paths[key]; has {
