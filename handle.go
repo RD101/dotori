@@ -124,6 +124,7 @@ func webserver() {
 	// Clip
 	http.HandleFunc("/addclip", handleAddClip)
 	http.HandleFunc("/addclip-item", handleAddClipItem)
+	http.HandleFunc("/addclip-items", handleAddClipItems)
 	http.HandleFunc("/uploadclip-item", handleUploadClipItem)
 	http.HandleFunc("/addclip-file", handleAddClipFile)
 	http.HandleFunc("/uploadclip-file", handleUploadClipFile)
@@ -132,6 +133,8 @@ func webserver() {
 	http.HandleFunc("/editclip", handleEditClip)
 	http.HandleFunc("/editclip-submit", handleEditClipSubmit)
 	http.HandleFunc("/editclip-success", handleEditClipSuccess)
+	http.HandleFunc("/api/searchclips", handleAPISearchClips)
+	http.HandleFunc("/api/addclip", handleAPIAddClip)
 
 	// HDRI
 	http.HandleFunc("/addhdri", handleAddHDRI)

@@ -531,8 +531,32 @@ func ProcessFusion360Item(client *mongo.Client, adminSetting Adminsetting, item 
 
 // ProcessClipItem 함수는 clip 아이템을 연산한다.
 func ProcessClipItem(client *mongo.Client, adminSetting Adminsetting, item Item) error {
-	// thumbnail 폴더를 생성한다.
-	err := SetStatus(client, item, "creating thumbdir")
+	// Item의 Data가 복사될 경로를 생성한다.
+	if item.RequireMkdirInProcess {
+		err := SetStatus(client, item, "creating item data directory")
+		if err != nil {
+			return err
+		}
+		err = genOutputDataPath(adminSetting, item)
+		if err != nil {
+			return err
+		}
+	}
+
+	// InputData의 파일을 복사한다.
+	if item.RequireCopyInProcess {
+		err := SetStatus(client, item, "copy input data")
+		if err != nil {
+			return err
+		}
+		err = copyInputDataToOutputDataPathClip(adminSetting, item)
+		if err != nil {
+			return err
+		}
+	}
+
+	// Thumbnail 폴더를 생성한다.
+	err := SetStatus(client, item, "creating thumbnail directory")
 	if err != nil {
 		return err
 	}
@@ -648,7 +672,7 @@ func ProcessFootageItem(client *mongo.Client, adminSetting Adminsetting, item It
 		if err != nil {
 			return err
 		}
-		err = copyInputDataToOutputDataPath(adminSetting, item)
+		err = copyInputDataToOutputDataPathFootage(adminSetting, item)
 		if err != nil {
 			return err
 		}
@@ -1174,8 +1198,8 @@ func ProcessMatteItem(client *mongo.Client, adminSetting Adminsetting, item Item
 	return nil
 }
 
-// copyInputDataToOuputDataPath 함수는 인풋데이터를 아웃풋 데이터 경로에 복사한다.
-func copyInputDataToOutputDataPath(adminSetting Adminsetting, item Item) error {
+// copyInputDataToOuputDataPathFootage 함수는 인풋데이터를 아웃풋 데이터 경로에 복사한다.
+func copyInputDataToOutputDataPathFootage(adminSetting Adminsetting, item Item) error {
 	// 복사할 파일의 권한을 불러온다.
 	fileP := adminSetting.FilePermission
 	filePerm, err := strconv.ParseInt(fileP, 8, 64)
@@ -1195,6 +1219,28 @@ func copyInputDataToOutputDataPath(adminSetting Adminsetting, item Item) error {
 		if err != nil {
 			return err
 		}
+	}
+	return nil
+}
+
+// copyInputDataToOuputDataPathClip 함수는 인풋데이터를 아웃풋 데이터 경로에 복사한다.
+func copyInputDataToOutputDataPathClip(adminSetting Adminsetting, item Item) error {
+	// 복사할 파일의 권한을 불러온다.
+	fileP := adminSetting.FilePermission
+	filePerm, err := strconv.ParseInt(fileP, 8, 64)
+	if err != nil {
+		return err
+	}
+	src := fmt.Sprintf(item.InputData.Dir + "/" + item.InputData.Base)
+	dest := fmt.Sprintf(item.OutputDataPath + "/" + item.InputData.Base)
+	// file을 복사한다.
+	bytesRead, err := ioutil.ReadFile(src)
+	if err != nil {
+		return err
+	}
+	err = ioutil.WriteFile(dest, bytesRead, os.FileMode(filePerm))
+	if err != nil {
+		return err
 	}
 	return nil
 }
