@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
@@ -74,11 +75,15 @@ func main() {
 		log.Fatal(err)
 	}
 	if *flagSeek {
-		items, err := searchSeq(*flagInputDataPath)
+		items, err := searchSeqAndClip(*flagInputDataPath)
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println(items)
+		data, err := json.Marshal(items)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println(string(data))
 		os.Exit(0)
 	} else if *flagSearch {
 		//mongoDB client 연결
