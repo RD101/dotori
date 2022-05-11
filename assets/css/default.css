@@ -177,6 +177,14 @@ body {
 	color: rgb(226, 224, 211);
 }
 
+.badge-outline-warning, .badge-outline-warning:link, .badge-outline-warning:active, .badge-outline-warning:hover {
+	background-color:  #212121!important;
+	border:1px solid #a87b00;
+	color: #ac7e00;
+	text-decoration: none;
+	vertical-align: middle;
+}
+
 .finger {
 	cursor: pointer;
 }

@@ -40,14 +40,14 @@
                                 </div>
                             </h5>
                             <div class="row m-0 mb-2"style="align-items: center;">
-                                <img class="download-icon" src="/assets/img/download-solid.svg">
-                                <p class="card-text">{{.UsingRate}}</p>
+                                <img class="download-icon" src="/assets/img/download-solid.svg"><p class="card-text">{{.UsingRate}}</p>
                             </div>
                         </div>
                         <div>
                             {{range .Tags}}
                                 <a href="/search?searchword=tag:{{.}}" class="tag badge badge-outline-darkmode">{{.}}</a>
                             {{end}}
+                            <div class="tag finger badge badge-outline-warning" onclick="copyPath('{{.OutputDataPath}}')">copypath</div>
                         </div>
                     </div>
                 </div>

@@ -34,35 +34,7 @@ document.onkeydown = function(e) {
     }
 };
 
-// copyButton 은 아이디값을 받아서, 클립보드로 복사하는 기능이다.
-function copyButton(elementId) {
-    let windowsUNCPrefix = "";
-    $.ajax({
-        url: `/api/adminsetting`,
-        type: "get",
-        headers: {
-            "Authorization": "Basic " + document.getElementById("token").value
-        },
-        dataType: "json",
-        async: false,
-        success: function(data) {
-            windowsUNCPrefix = data.windowsuncprefix;
-        },
-        error: function(){
-            alert("admin 셋팅에서 Windows UNC Prefix 값을 가지고 올 수 없습니다.");  
-        }
-    });
-    if (navigator.userAgent.indexOf("Win") != -1) { // windows 경우
-        elementId = elementId.replace(/\//g, "\\")
-        elementId = windowsUNCPrefix + elementId
-    }
-    let id = document.createElement("input");                       // input요소를 만듬
-    id.setAttribute("value", elementId);                            // input요소에 값을 추가
-    document.getElementById("modal-detailview").appendChild(id);    // modal에 요소 추가
-    id.select();                                                    // input요소를 선택
-    document.execCommand("copy");                                   // 복사기능 실행
-    document.getElementById("modal-detailview").removeChild(id);    // modal에서 요소 삭제
-}
+
 
 // setDetailViewModal 은 아이템을 선택했을 때 볼 수 있는 detailview 모달창에 어셋 정보를 세팅해주는 함수이다.
 function setDetailViewModal(itemid) {
@@ -151,11 +123,11 @@ function setDetailViewModal(itemid) {
             let outputdatapath=response["outputdatapath"]
             let footerHtml = `
             <button type="button" class="btn btn-outline-darkmode" id="modal-detailview-download-button" onclick="location.href='/download-item?id=${itemid}'">Download</button>
-            <button type="button" class="btn btn-outline-darkmode" id="modal-detailview-copypath-button" onclick="copyButton('${outputdatapath}'); alert('경로가 복사되었습니다.');">Copy Path</button>
+            <button type="button" class="btn btn-outline-darkmode" id="modal-detailview-copypath-button" onclick="copyPath('${outputdatapath}')">Copy Path</button>
             `
             let footerHtmlForAdmin=`
             <button type="button" class="btn btn-outline-darkmode" id="modal-detailview-download-button" onclick="location.href='/download-item?id=${itemid}'">Download</button>
-            <button type="button" class="btn btn-outline-darkmode" id="modal-detailview-copypath-button" onclick="copyButton('${outputdatapath}'); alert('경로가 복사되었습니다.');">Copy Path</button>
+            <button type="button" class="btn btn-outline-darkmode" id="modal-detailview-copypath-button" onclick="copyPath('${outputdatapath}')">Copy Path</button>
             <button type="button" class="btn btn-outline-danger" id="modal-detailview-delete-button" data-dismiss="modal" data-toggle="modal" data-target="#modal-rmitem">Delete</button>
             `
             if (document.getElementById("accesslevel").value == "admin") {
@@ -656,4 +628,28 @@ function copyClipboard(value) {
     document.execCommand("copy");               // 복사기능 실행
     document.body.removeChild(id);              // body에 요소 삭제
     alert(value + ' 값이 복사되었습니다.')
+}
+
+// copyPath 함수는 아이디값을 받아서, 클립보드로 복사하는 기능이다.
+function copyPath(path) {
+    let windowsUNCPrefix = "";
+    $.ajax({
+        url: `/api/adminsetting`,
+        type: "get",
+        headers: {
+            "Authorization": "Basic " + document.getElementById("token").value
+        },
+        dataType: "json",
+        async: false,
+        success: function(data) {
+            windowsUNCPrefix = data.windowsuncprefix;
+        },
+        error: function(){
+            alert("admin 셋팅에서 Windows UNC Prefix 값을 가지고 올 수 없습니다.");  
+        }
+    });
+    if (navigator.userAgent.indexOf("Win") != -1) { // windows 경우
+        path = windowsUNCPrefix + path.replace(/\//g, "\\")
+    }
+    copyClipboard(path)
 }
