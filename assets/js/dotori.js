@@ -627,7 +627,13 @@ function copyClipboard(value) {
     id.select();                                // input요소를 선택
     document.execCommand("copy");               // 복사기능 실행
     document.body.removeChild(id);              // body에 요소 삭제
-    alert(value + ' 값이 복사되었습니다.')
+
+    // Toast 띄우기
+    tata.success('Copy Clipboard', "Data path copyed!", {
+        position: 'tr',
+        duration: 1000,
+        onClose: null,
+    })
 }
 
 // copyPath 함수는 아이디값을 받아서, 클립보드로 복사하는 기능이다.
