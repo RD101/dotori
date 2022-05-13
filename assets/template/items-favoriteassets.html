@@ -61,6 +61,7 @@
                             {{range .Tags}}
                                 <a href="/search?searchword=tag:{{.}}" class="tag badge badge-outline-darkmode">{{.}}</a>
                             {{end}}
+                            <div class="tag finger badge badge-outline-warning" onclick="copyPath('{{.OutputDataPath}}')">copypath</div>
                         </div>
                     </div>
                 </div>
@@ -72,6 +73,7 @@
 <!--add javascript-->
 <script src="/assets/js/jquery-3.1.1.min.js"></script>
 <script src="/assets/bootstrap-4/js/bootstrap.min.js"></script>
+<script src="/assets/tata/tata.js"></script>
 <script src="/assets/js/dotori.js"></script>
 </html>
 {{end}}

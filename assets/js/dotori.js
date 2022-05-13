@@ -333,6 +333,7 @@ function recentlyClick(totalItemNum, buttonState) {
                         for (let j=0;j<data[i].tags.length;j++) {
                             tagsHtml += '<a href="/search?searchword=tag:' + data[i].tags[j] + '" class="tag badge badge-outline-darkmode">' + data[i].tags[j] + '</a>';
                         }
+                        tagsHtml += `<div class="tag finger badge badge-outline-warning" onclick="copyPath('${data[i].outputdatapath}')">copypath</div>`
                         document.getElementById("recentCardTags"+i).innerHTML = tagsHtml;                             
                         // 즐겨찾기 아이콘 스위칭
                         let fillBool = "unfilled";
@@ -483,6 +484,7 @@ function topUsingClick(totalItemNum, buttonState) {
                         for (let j=0;j<data[i].tags.length;j++) {
                             tagsHtml += '<a href="/search?searchword=tag:' + data[i].tags[j] + '" class="tag badge badge-outline-darkmode">' + data[i].tags[j] + '</a>';
                         }
+                        tagsHtml += `<div class="tag finger badge badge-outline-warning" onclick="copyPath('${data[i].outputdatapath}')">copypath</div>`
                         document.getElementById("topUsingCardTags"+i).innerHTML = tagsHtml;  
                         // 즐겨찾기 아이콘 스위칭
                         let fillBool = "unfilled";
