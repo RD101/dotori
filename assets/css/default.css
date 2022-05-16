@@ -185,6 +185,14 @@ body {
 	vertical-align: middle;
 }
 
+.badge-outline-rvgreen, .badge-outline-rvgreen:link, .badge-outline-rvgreen:active, .badge-outline-rvgreen:hover {
+	background-color:  #212121!important;
+	border:1px solid #038B4A;
+	color: #038B4A;
+	text-decoration: none;
+	vertical-align: middle;
+}
+
 .finger {
 	cursor: pointer;
 }

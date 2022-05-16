@@ -212,6 +212,25 @@ function toggleItems(){
 
 // recentlyClick 은 초기페이지에서 최근등록된 아이템의 next, prev 버튼을 눌렀을때 실행하는 함수이다.
 function recentlyClick(totalItemNum, buttonState) {
+    let admin = new Object()
+    fetch('/api/adminsetting', {
+        method: 'GET',
+        headers: {
+            "Authorization": "Basic "+ document.getElementById("token").value,
+        },
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw Error(response.statusText + " - " + response.url);
+        }
+        return response.json()
+    })
+    .then((data) => {
+        admin = data;
+    })
+    .catch((err) => {
+        alert(err)
+    });
     // totalItemNum 최근에셋의 전체 아이템 수
     let totalPageNum = Math.ceil(totalItemNum / 4); // 전체 페이지 수
     let clearItemNum = (totalPageNum * 4) - totalItemNum; // 마지막 페이지의 공백처리할 아이템 수
@@ -333,7 +352,15 @@ function recentlyClick(totalItemNum, buttonState) {
                         for (let j=0;j<data[i].tags.length;j++) {
                             tagsHtml += '<a href="/search?searchword=tag:' + data[i].tags[j] + '" class="tag badge badge-outline-darkmode">' + data[i].tags[j] + '</a>';
                         }
-                        tagsHtml += `<div class="tag finger badge badge-outline-warning" onclick="copyPath('${data[i].outputdatapath}')">copypath</div>`
+                        tagsHtml += `<div class="tag finger badge badge-outline-warning" onclick="copyPath('${data[i].outputdatapath}')">Path</div>`
+
+                        if (admin.enablervlink) {
+                            if (data[i].itemtype == "footage" || data[i].itemtype == "clip" || data[i].itemtype == "hdri") {
+                                tagsHtml += `<a class="tag finger badge badge-outline-rvgreen" href="rvlink://${data[i].outputdatapath}">RV</a>`
+                            }
+                        }
+                        
+
                         document.getElementById("recentCardTags"+i).innerHTML = tagsHtml;                             
                         // 즐겨찾기 아이콘 스위칭
                         let fillBool = "unfilled";
@@ -365,6 +392,25 @@ function recentlyClick(totalItemNum, buttonState) {
 
 // topUsingClick 은 초기페이지에서 가장 많이 사용되는 아이템의 next, prev 버튼을 눌렀을 때 실행하는 함수이다.
 function topUsingClick(totalItemNum, buttonState) {
+    let admin = new Object()
+    fetch('/api/adminsetting', {
+        method: 'GET',
+        headers: {
+            "Authorization": "Basic "+ document.getElementById("token").value,
+        },
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw Error(response.statusText + " - " + response.url);
+        }
+        return response.json()
+    })
+    .then((data) => {
+        admin = data;
+    })
+    .catch((err) => {
+        alert(err)
+    });
     // RecentlyTotalNum 가장 많이 사용된 에셋의 전체 아이템 수
     let totalPageNum = Math.ceil(totalItemNum / 4); // 전체 페이지 수
     let clearItemNum = (totalPageNum * 4) - totalItemNum; // 마지막 페이지의 공백처리할 아이템 수
@@ -484,7 +530,12 @@ function topUsingClick(totalItemNum, buttonState) {
                         for (let j=0;j<data[i].tags.length;j++) {
                             tagsHtml += '<a href="/search?searchword=tag:' + data[i].tags[j] + '" class="tag badge badge-outline-darkmode">' + data[i].tags[j] + '</a>';
                         }
-                        tagsHtml += `<div class="tag finger badge badge-outline-warning" onclick="copyPath('${data[i].outputdatapath}')">copypath</div>`
+                        tagsHtml += `<div class="tag finger badge badge-outline-warning" onclick="copyPath('${data[i].outputdatapath}')">Path</div>`
+                        if (admin.enablervlink) {
+                            if (data[i].itemtype == "footage" || data[i].itemtype == "clip" || data[i].itemtype == "hdri") {
+                                tagsHtml += `<a class="tag finger badge badge-outline-rvgreen" href="rvlink://${data[i].outputdatapath}">RV</a>`
+                            }
+                        }
                         document.getElementById("topUsingCardTags"+i).innerHTML = tagsHtml;  
                         // 즐겨찾기 아이콘 스위칭
                         let fillBool = "unfilled";
@@ -640,24 +691,28 @@ function copyClipboard(value) {
 
 // copyPath 함수는 아이디값을 받아서, 클립보드로 복사하는 기능이다.
 function copyPath(path) {
-    let windowsUNCPrefix = "";
-    $.ajax({
-        url: `/api/adminsetting`,
-        type: "get",
+    let admin = new Object()
+    fetch('/api/adminsetting', {
+        method: 'GET',
         headers: {
-            "Authorization": "Basic " + document.getElementById("token").value
+            "Authorization": "Basic "+ document.getElementById("token").value,
         },
-        dataType: "json",
-        async: false,
-        success: function(data) {
-            windowsUNCPrefix = data.windowsuncprefix;
-        },
-        error: function(){
-            alert("admin 셋팅에서 Windows UNC Prefix 값을 가지고 올 수 없습니다.");  
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw Error(response.statusText + " - " + response.url);
         }
+        return response.json()
+    })
+    .then((data) => {
+        admin = data;
+    })
+    .catch((err) => {
+        alert(err)
     });
+
     if (navigator.userAgent.indexOf("Win") != -1) { // windows 경우
-        path = windowsUNCPrefix + path.replace(/\//g, "\\")
+        path = admin.windowsuncprefix + path.replace(/\//g, "\\")
     }
     copyClipboard(path)
 }
