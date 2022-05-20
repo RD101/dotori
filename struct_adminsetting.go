@@ -34,6 +34,7 @@ type Adminsetting struct {
 	VideoCodecMov           string `json:"videocodecmov" bson:"videocodecmov"`                     // 비디오 코덱
 	AudioCodec              string `json:"audiocodec" bson:"audiocodec"`                           // 오디오 코덱
 	InitPassword            string `json:"initpassword" bson:"initpassword"`                       // 사용자가 패스워드를 잃어버렸을 때 초기화하는 패스워드
+	EnableRVLink            bool   `json:"enablervlink" bson:"enablervlink"`                       // RVLink 활성화
 	// Support Add menu
 	Maya            bool `json:"maya" bson:"maya"`                       // Maya
 	Max             bool `json:"max" bson:"max"`                         // Max

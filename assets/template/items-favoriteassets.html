@@ -61,7 +61,12 @@
                             {{range .Tags}}
                                 <a href="/search?searchword=tag:{{.}}" class="tag badge badge-outline-darkmode">{{.}}</a>
                             {{end}}
-                            <div class="tag finger badge badge-outline-warning" onclick="copyPath('{{.OutputDataPath}}')">copypath</div>
+                            <div class="tag finger badge badge-outline-warning" onclick="copyPath('{{.OutputDataPath}}')">Path</div>
+                            {{if $.Adminsetting.EnableRVLink}}
+                                {{if eq .ItemType "clip" "footage" "hdri"}}
+                                    <div class="tag finger badge badge-outline-rvgreen" onclick="rvlink('{{.OutputDataPath}}')">RV</div>
+                                {{end}}
+                            {{end}}
                         </div>
                     </div>
                 </div>

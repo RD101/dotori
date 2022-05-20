@@ -139,6 +139,7 @@ func handleAdminSettingSubmit(w http.ResponseWriter, r *http.Request) {
 	a.VideoCodecMov = r.FormValue("videocodecmov")
 	a.AudioCodec = r.FormValue("audiocodec")
 	a.InitPassword = r.FormValue("initpassword")
+	a.EnableRVLink = str2bool(r.FormValue("enablervlink"))
 	// 지원 포멧 셋팅
 	a.Maya = str2bool(r.FormValue("maya"))
 	a.Max = str2bool(r.FormValue("max"))
