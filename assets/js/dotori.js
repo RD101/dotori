@@ -689,6 +689,7 @@ function copyClipboard(value) {
     })
 }
 
+
 // copyPath 함수는 아이디값을 받아서, 클립보드로 복사하는 기능이다.
 function copyPath(path) {
     let admin = new Object()
@@ -715,4 +716,38 @@ function copyPath(path) {
         path = admin.windowsuncprefix + path.replace(/\//g, "\\")
     }
     copyClipboard(path)
+}
+
+
+// copyPath 함수는 아이디값을 받아서, 클립보드로 복사하는 기능이다.
+function rvlink(path) {
+    let admin = new Object()
+    fetch('/api/adminsetting', {
+        method: 'GET',
+        headers: {
+            "Authorization": "Basic "+ document.getElementById("token").value,
+        },
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw Error(response.statusText + " - " + response.url);
+        }
+        return response.json()
+    })
+    .then((data) => {
+        admin = data;
+    })
+    .catch((err) => {
+        alert(err)
+    });
+
+    if (navigator.userAgent.indexOf("Win") != -1) { // windows 경우
+        path = admin.windowsuncprefix + path.replace(/\//g, "\\")
+    }
+
+    let obj = document.createElement("a");   // input요소를 만듬
+    obj.href = "rvlink://" + path
+    document.body.appendChild(obj);
+    obj.click()
+    document.body.removeChild(obj);
 }
