@@ -356,7 +356,7 @@ function recentlyClick(totalItemNum, buttonState) {
 
                         if (admin.enablervlink) {
                             if (data[i].itemtype == "footage" || data[i].itemtype == "clip" || data[i].itemtype == "hdri") {
-                                tagsHtml += `<a class="tag finger badge badge-outline-rvgreen" href="rvlink://${data[i].outputdatapath}">RV</a>`
+                                tagsHtml += `<div class="tag finger badge badge-outline-rvgreen" onclick="rvlink('${data[i].outputdatapath}')">RV</div>`
                             }
                         }
                         
@@ -533,7 +533,7 @@ function topUsingClick(totalItemNum, buttonState) {
                         tagsHtml += `<div class="tag finger badge badge-outline-warning" onclick="copyPath('${data[i].outputdatapath}')">Path</div>`
                         if (admin.enablervlink) {
                             if (data[i].itemtype == "footage" || data[i].itemtype == "clip" || data[i].itemtype == "hdri") {
-                                tagsHtml += `<a class="tag finger badge badge-outline-rvgreen" href="rvlink://${data[i].outputdatapath}">RV</a>`
+                                tagsHtml += `<div class="tag finger badge badge-outline-rvgreen" onclick="rvlink('${data[i].outputdatapath}')">RV</div>`
                             }
                         }
                         document.getElementById("topUsingCardTags"+i).innerHTML = tagsHtml;  

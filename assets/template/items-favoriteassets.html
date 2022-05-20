@@ -64,7 +64,7 @@
                             <div class="tag finger badge badge-outline-warning" onclick="copyPath('{{.OutputDataPath}}')">Path</div>
                             {{if $.Adminsetting.EnableRVLink}}
                                 {{if eq .ItemType "clip" "footage" "hdri"}}
-                                    <a class="tag finger badge badge-outline-rvgreen" href="rvlink://{{.OutputDataPath}}">RV</a>
+                                    <div class="tag finger badge badge-outline-rvgreen" onclick="rvlink('{{.OutputDataPath}}')">RV</div>
                                 {{end}}
                             {{end}}
                         </div>
