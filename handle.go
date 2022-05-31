@@ -72,6 +72,10 @@ func webserver() {
 	r.HandleFunc("/search", handleSearch)
 	r.HandleFunc("/search-submit", handleSearchSubmit)
 
+	// Rename
+	r.HandleFunc("/rename/{id}", handleRename)
+	r.HandleFunc("/api/searchfile", handleAPISearchFile)
+
 	// Maya
 	r.HandleFunc("/addmaya", handleAddMaya)
 	r.HandleFunc("/addmaya-item", handleAddMayaItem)
