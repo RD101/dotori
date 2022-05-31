@@ -748,6 +748,77 @@ func handleEditFootageSuccess(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func handleAPISearchFile(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method Only POST", http.StatusMethodNotAllowed)
+		return
+	}
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer client.Disconnect(ctx)
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	user, err := GetUserFromHeader(r, client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+	if !(user.AccessLevel == "admin" || user.AccessLevel == "default") {
+		http.Error(w, "Need permission", http.StatusUnauthorized)
+		return
+	}
+
+	r.ParseForm()
+	path := r.FormValue("path")
+	if path == "" {
+		http.Error(w, "path 를 설정해주세요", http.StatusBadRequest)
+		return
+	}
+	// 경로에서 파일을 불러온다.
+	files, err := ioutil.ReadDir(path)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	type Rename struct {
+		Src string `json:"src"`
+		Dst string `json:"dst"`
+	}
+	rcp := []Rename{}
+	for _, file := range files {
+		if file.IsDir() {
+			continue
+		}
+		fileInfo := Rename{}
+		fileInfo.Src = file.Name()
+		fileInfo.Dst = file.Name()
+		rcp = append(rcp, fileInfo)
+	}
+	data, err := json.Marshal(rcp)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	w.Write(data)
+}
+
 func handleAPISearchFootageAndClip(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method Only POST", http.StatusMethodNotAllowed)

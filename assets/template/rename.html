@@ -1,0 +1,224 @@
+{{define "rename"}}
+{{template "head-bootstrap5"}}
+<!-- Core Stylesheet -->
+<link rel="stylesheet" href="css/eggy.css" />
+<!-- Progressbar Styles -->
+<link rel="stylesheet" href="css/progressbar.css" />
+<!-- Themes -->
+<link rel="stylesheet" href="css/theme.css" />
+<body>
+{{template "navbar-bootstrap5" .}}
+{{template "modal" .}}
+
+<div class="container py-5 px-2">
+    <div class="col-lg-12 col-md-12 col-sm-12 mx-auto">
+        <div class="pt-3 pb-3">
+            <h2 class="text-muted">Rename</h2>
+        </div>
+
+        <div class="row">
+            <div class="col-sm">
+                <div class="form-group">
+                    <label class="text-muted">Find Path</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Path" id="searchpath" value="{{$.Item.OutputDataPath}}">
+                        <button class="btn btn-outline-warning" type="button" id="searchfiles">SearchFiles</button>
+                    </div>
+                    <small class="form-text text-danger">OS에서 보안상 제약이 걸린 경로가 포함된 경우, 너무 많은 소스가 존재하는 경로를 설정할 경우 웹서버에 부하를 줄 수 있습니다.</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="row pt-2">
+            <div class="col-sm">
+                <div class="border-table rounded unselectable" id="source-table"></div>
+            </div>
+        </div>
+
+        <div class="row pt-3">
+            <div class="col-sm">
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label class="text-muted">Find</label>
+                            <input type="text" id="find" class="form-control" placeholder="찾을 문자열" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <label class="text-muted">Replace</label>
+                            <input type="text" id="replace" class="form-control" placeholder="바꿀 문자열" autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="text-center pt-5">
+        <button type="submit" class="btn btn-outline-warning" id="submitSimulation">SIMULATION</button>
+        <button type="submit" class="btn btn-outline-danger" id="submitRename">RENAME</button>
+    </div>
+</div>
+
+{{template "footer"}}
+</body>
+<!--add javascript-->
+<script src="/assets/bootstrap-5.1.3-dist/js/bootstrap.bundle.js"></script>
+<script src="/assets/tabulator5.1/js/tabulator.min.js"></script>
+<script src="/assets/tata/tata.js"></script>
+<script>
+    //define some sample data
+    var sources = [];
+    //create Tabulator on DOM element with id "example-table"
+    var table = new Tabulator("#source-table", {
+        height:370, // set height of table (in CSS or here), this enables the Virtual DOM and improves render speed dramatically (can be any valid css height value)
+        data:sources, //assign data to table
+        layout:"fitColumns", //fit columns to width of table (optional)
+        pagination:"local",
+        paginationSize:10,
+        paginationSizeSelector:[10, 20],
+        reactiveData:true, //turn on data reactivity
+        selectable:true, //make rows selectable
+        paginationCounter:"rows",
+        clipboard:true,
+        clipboardPasteAction:"replace",
+        columns:[ //Define Table Columns
+            {title:"Source", field:"src", hozAlign: "left", headerHozAlign:"center", headerSort:false},
+            {title:"Destination", field:"dst", hozAlign:"left", headerHozAlign:"center", headerSort:false},
+        ],
+    });
+
+    //submit Simulation
+    document.getElementById("submitSimulation").addEventListener("click", function(){
+        // error 처리
+        let find = document.getElementById("find").value
+        if (find == "") {
+            tata.error('Error', "Need find string", {
+            position: 'tr',
+            duration: 10000,
+            })
+            return
+        }
+        let replace = document.getElementById("replace").value
+        if (replace == "") {
+            tata.error('Error', "Need replace string", {
+            position: 'tr',
+            duration: 10000,
+            })
+            return
+        }
+        let data = table.getData();
+        // 이름을 찾아서 바꾼다.
+        for (let i = 0; i < data.length; i += 1) {
+            data[i].dst = data[i].src.replace(find, replace);
+        }
+        table.replaceData(data); //update data
+    });
+
+    //submit Rename
+    document.getElementById("submitRename").addEventListener("click", function(){
+        // error 처리
+        let title = document.getElementById("find").value
+        if (title == "") {
+            tata.error('Error', "Need find string", {
+            position: 'tr',
+            duration: 10000,
+            })
+            return
+        }
+        let description = document.getElementById("replace").value
+        if (description == "") {
+            tata.error('Error', "Need replace string", {
+            position: 'tr',
+            duration: 10000,
+            })
+            return
+        }
+        
+        // going process
+        sources = table.getData();
+        
+        for (let i = 0; i < sources.length; i += 1) {
+            
+            // process
+            fetch('/api/addfootage', {
+                method: 'POST',
+                headers: {
+                    "Authorization": "Basic "+ getCookie("SessionToken"),
+                },
+                body: new URLSearchParams({
+                    "base": sources[i].base,
+                    "dir": sources[i].dir,
+                    "framein": sources[i].framein,
+                    "frameout": sources[i].frameout,
+                    "title": title,
+                    "description": description,
+                    "author": author,
+                    "tags": tags,
+                    "fps": document.getElementById("fps").value,
+                    "premult": document.getElementById("premult").checked,
+                    "incolorspace": document.getElementById("incolorspace").value,
+                    "outcolorspace": document.getElementById("outcolorspace").value,
+                    "attributes": JSON.stringify(attributesTable.getData()),
+                })
+            })
+            .then((response) => {
+                if (!response.ok) {
+                    throw Error(response.statusText + " - " + response.url);
+                }
+                return response.json()
+            })
+            .then((data) => {
+                console.log(data)
+                let button = document.getElementById("submitFootages")
+                button.disabled = true
+                button.classList.remove("btn-outline-warning");
+                button.classList.add("btn-outline-secondary");
+            })
+            .catch((err) => {
+                alert(err)
+            });
+            
+        }
+        // Toast 띄우기
+        tata.success('Submit Process', sources.length + " items have been sent.", {
+            position: 'tr',
+            duration: 10000,
+            onClick: goProcessPage,
+            onClose: null,
+        })
+    });
+
+    document.getElementById("searchfiles").addEventListener("click", function(){
+        fetch('/api/searchfile', {
+            method: 'POST',
+            headers: {
+                "Authorization": "Basic "+ getCookie("SessionToken"),
+            },
+            body: new URLSearchParams({
+                "path":  document.getElementById("searchpath").value,
+            })
+        })
+        .then((response) => {
+            if (!response.ok) {
+                return response.text().then((data) => {
+                    alert(data);
+                    //return data;
+                })
+            }
+            if (response.ok) {
+                return response.json().then((data) => {
+                    sources = data; // source 변수를 업데이트한다.
+                    table.replaceData(sources); // 테이블 값을 업데이트 한다.
+                })
+            }
+        })
+        .catch((err) => {
+            alert(err);
+            //return err
+        });
+    });
+</script>
+<script src="/assets/js/dotori.js"></script>
+</html>
+{{end}}

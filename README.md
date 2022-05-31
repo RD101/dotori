@@ -21,11 +21,10 @@ VFX, 애니메이션, 게임, 사운드, 레퍼런스, 기타 데이터 관리 �
 - 개발지원: [(주)로드원오원](http://rd101.co.kr), [(주)엔진비주얼웨이브](http://www.enginevw.co.kr), [Lazypic,LLC.](https://lazypic.org)
 - 권리자(발명자): [Contributors](https://github.com/RD101/dotori/graphs/contributors)
 - 테스트서버: <https://dotori.lazypic.com>
-- [다운로드](https://github.com/RD101/dotori/releases)
 
 ## Roadmap
 
-- 에셋 소스 업로드 후 파일명 리네임 기능추가
+- 에셋 소스 업로드 후 파일명 리네임 기능추가(진행중)
 - 에셋의 속성(Tag)를 다중으로 Overwrite, Remove, Add 가능하게 수정(멀티 선택기능)
 - 에셋 소스 multi Selct 기능 기본 추가 필요
 - 에셋 소스를 multi select 할 때 한 번에 'copy path'가 단축키 설정
