@@ -83,7 +83,7 @@ function setDetailViewModal(itemid) {
             }
 
             // title, id, author, description 세팅
-            document.getElementById("modal-detailview-title").innerHTML = response["title"] + `<button type="button" onclick="location.href='/edit${itemtype}?id=${itemid}'" class="btn btn-outline-warning float-right" id="modal-detailview-edit-button">Edit</span>`;
+            document.getElementById("modal-detailview-title").innerHTML = response["title"] + `<button type="button" onclick="location.href='/edit${itemtype}?id=${itemid}'" class="btn btn-sm btn-outline-warning float-right" id="modal-detailview-edit-button">Edit</span>`;
             document.getElementById("modal-detailview-itemid").innerHTML = itemid;
             document.getElementById("modal-detailview-itemtype").innerHTML = itemtype;
             document.getElementById("modal-detailview-author").innerHTML = response["author"];
@@ -122,13 +122,14 @@ function setDetailViewModal(itemid) {
             document.getElementById("modal-detailview-edit-button").href=`/edit${itemtype}?itemtype=${itemtype}&id=${itemid}`
             let outputdatapath=response["outputdatapath"]
             let footerHtml = `
-            <button type="button" class="btn btn-outline-darkmode" id="modal-detailview-download-button" onclick="location.href='/download-item?id=${itemid}'">Download</button>
-            <button type="button" class="btn btn-outline-darkmode" id="modal-detailview-copypath-button" onclick="copyPath('${outputdatapath}')">Copy Path</button>
+            <button type="button" class="btn btn-sm btn-outline-darkmode" id="modal-detailview-download-button" onclick="location.href='/download-item?id=${itemid}'">Download</button>
+            <button type="button" class="btn btn-sm btn-outline-darkmode" id="modal-detailview-copypath-button" onclick="copyPath('${outputdatapath}')">Copy Path</button>
             `
             let footerHtmlForAdmin=`
-            <button type="button" class="btn btn-outline-darkmode" id="modal-detailview-download-button" onclick="location.href='/download-item?id=${itemid}'">Download</button>
-            <button type="button" class="btn btn-outline-darkmode" id="modal-detailview-copypath-button" onclick="copyPath('${outputdatapath}')">Copy Path</button>
-            <button type="button" class="btn btn-outline-danger" id="modal-detailview-delete-button" data-dismiss="modal" data-toggle="modal" data-target="#modal-rmitem">Delete</button>
+            <button type="button" class="btn btn-sm btn-outline-darkmode" id="modal-detailview-download-button" onclick="location.href='/download-item?id=${itemid}'">Download</button>
+            <button type="button" class="btn btn-sm btn-outline-darkmode" id="modal-detailview-copypath-button" onclick="copyPath('${outputdatapath}')">Copy Path</button>
+            <button type="button" class="btn btn-sm btn-outline-danger" id="modal-detailview-download-button" onclick="location.href='/rename/${itemid}'">Rename</button>
+            <button type="button" class="btn btn-sm btn-outline-danger" id="modal-detailview-delete-button" data-dismiss="modal" data-toggle="modal" data-target="#modal-rmitem">Delete</button>
             `
             if (document.getElementById("accesslevel").value == "admin") {
                 console.log("test")
