@@ -75,6 +75,7 @@ func webserver() {
 	// Rename
 	r.HandleFunc("/rename/{id}", handleRename)
 	r.HandleFunc("/api/searchfile", handleAPISearchFile)
+	r.HandleFunc("/api/rename", handleAPIRename).Methods(http.MethodPost, http.MethodOptions)
 
 	// Maya
 	r.HandleFunc("/addmaya", handleAddMaya)

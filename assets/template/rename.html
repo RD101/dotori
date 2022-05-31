@@ -118,73 +118,54 @@
     //submit Rename
     document.getElementById("submitRename").addEventListener("click", function(){
         // error 처리
-        let title = document.getElementById("find").value
-        if (title == "") {
+        let path = document.getElementById("searchpath").value
+        let find = document.getElementById("find").value
+        if (find == "") {
             tata.error('Error', "Need find string", {
             position: 'tr',
             duration: 10000,
             })
             return
         }
-        let description = document.getElementById("replace").value
-        if (description == "") {
+        let replace = document.getElementById("replace").value
+        if (replace == "") {
             tata.error('Error', "Need replace string", {
             position: 'tr',
             duration: 10000,
             })
             return
         }
-        
-        // going process
-        sources = table.getData();
-        
-        for (let i = 0; i < sources.length; i += 1) {
+
+        // rename
+        let opt = new Object()
+        opt.path = path
+        opt.find = find
+        opt.replace = replace
+        fetch('/api/rename', {
+            method: 'POST',
+            headers: {
+                "Authorization": "Basic "+ getCookie("SessionToken"),
+            },
+            body: JSON.stringify(opt),
+        })
+        .then((response) => {
+            if (!response.ok) {
+                throw Error(response.statusText + " - " + response.url);
+            }
+            return response.json()
+        })
+        .then((data) => {
+            console.log(data)
+        })
+        .catch((err) => {
+            alert(err)
+        });
             
-            // process
-            fetch('/api/addfootage', {
-                method: 'POST',
-                headers: {
-                    "Authorization": "Basic "+ getCookie("SessionToken"),
-                },
-                body: new URLSearchParams({
-                    "base": sources[i].base,
-                    "dir": sources[i].dir,
-                    "framein": sources[i].framein,
-                    "frameout": sources[i].frameout,
-                    "title": title,
-                    "description": description,
-                    "author": author,
-                    "tags": tags,
-                    "fps": document.getElementById("fps").value,
-                    "premult": document.getElementById("premult").checked,
-                    "incolorspace": document.getElementById("incolorspace").value,
-                    "outcolorspace": document.getElementById("outcolorspace").value,
-                    "attributes": JSON.stringify(attributesTable.getData()),
-                })
-            })
-            .then((response) => {
-                if (!response.ok) {
-                    throw Error(response.statusText + " - " + response.url);
-                }
-                return response.json()
-            })
-            .then((data) => {
-                console.log(data)
-                let button = document.getElementById("submitFootages")
-                button.disabled = true
-                button.classList.remove("btn-outline-warning");
-                button.classList.add("btn-outline-secondary");
-            })
-            .catch((err) => {
-                alert(err)
-            });
-            
-        }
+        
         // Toast 띄우기
-        tata.success('Submit Process', sources.length + " items have been sent.", {
+        tata.success('Submit Rename', sources.length + " file renamed.", {
             position: 'tr',
             duration: 10000,
-            onClick: goProcessPage,
             onClose: null,
         })
     });
