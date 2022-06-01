@@ -136,31 +136,26 @@
     //submit Rename
     document.getElementById("submitRename").addEventListener("click", function(){
         // error 처리
-        let path = document.getElementById("searchpath").value
-        let find = document.getElementById("find").value
-        let replace = document.getElementById("replace").value
-        let permission = document.getElementById("permission").checked
-        if (find == "") {
+        let opt = new Object()
+        opt.path = document.getElementById("searchpath").value
+        opt.find = document.getElementById("find").value
+        opt.replace = document.getElementById("replace").value
+        opt.permission = document.getElementById("permission").checked
+        if (opt.find == "") {
             tata.error('Error', "Need find string", {
             position: 'tr',
             duration: 10000,
             })
             return
         }
-        if (replace == "") {
+        if (opt.replace == "") {
             tata.error('Error', "Need replace string", {
             position: 'tr',
             duration: 10000,
             })
             return
         }
-
-        // rename
-        let opt = new Object()
-        opt.path = path
-        opt.find = find
-        opt.replace = replace
-        opt.permission = permission
+        
         fetch('/api/rename', {
             method: 'POST',
             headers: {
