@@ -128,7 +128,7 @@ command를 통해 dotori를 제어할 수 있습니다.
 - [Item](documents/command_item.md)
 - [User](documents/command_user.md)
 
-### REST API
+### RestAPI
 
 Dotori는 REST API를 지원합니다. Python, Go, Java, Javascript, node.JS, C++, C, C# 등 수많은 언어를 통해 Dotori를 이용할 수 있습니다.
 아래는 Dotori의  REST API reference 문서입니다.
@@ -193,5 +193,13 @@ Default env_keep=PATH # 새로 추가
 [BSD-3-Clause License](https://github.com/RD101/dotori/blob/master/LICENSE)
 
 #### Third party
+
+- [Dropzone](https://www.dropzonejs.com): MIT License
+- [VFS](https://github.com/blang/vfs): MIT license
+- [HttpFS](https://github.com/shurcooL/httpfs): MIT license
+- [VFSgen](https://github.com/shurcooL/vfsgen): MIT license
+- [JWT go](https://github.com/golang-jwt/jwt): MIT license
+- [OpenColorIO](https://github.com/AcademySoftwareFoundation/OpenColorIO): BSD 3-Clause License
+- [Gollia Mux](https://github.com/gorilla/mux): BSD 3-Clause License
 - [Tata](https://www.cssscript.com/toast-prompt-tata/): MIT License
 - [Tabulator](http://tabulator.info): MIT License
