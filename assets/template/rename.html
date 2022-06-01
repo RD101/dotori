@@ -24,7 +24,8 @@
                         <input type="text" class="form-control" placeholder="Path" id="searchpath" value="{{$.Item.OutputDataPath}}">
                         <button class="btn btn-outline-warning" type="button" id="searchfiles">SearchFiles</button>
                     </div>
-                    <small class="form-text text-danger">OS에서 보안상 제약이 걸린 경로가 포함된 경우, 너무 많은 소스가 존재하는 경로를 설정할 경우 웹서버에 부하를 줄 수 있습니다.</small>
+                    <small class="form-text text-danger">OS에서 보안 제약이 걸린 경로, 너무 많은 파일이 존재하는 경로를 설정할 경우 웹서버에 부하를 줄 수 있습니다.</small>
+                    <small class="form-text text-danger">물리적인 파일명이 변경되는 작업이니 주의해주세요.</small>
                 </div>
             </div>
         </div>
@@ -35,25 +36,35 @@
             </div>
         </div>
 
-        <div class="row pt-3">
+        <div class="pt-3">
+            <div class="row">
+                <div class="col">
+                    <label class="text-muted">Find</label>
+                </div>
+                <div class="col">
+                    <label class="text-muted float-end">Replace</label>
+                </div>
+            </div>
+            
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" id="find" placeholder="Find" aria-label="Find" autocomplete="off">
+                <span id="change" class="input-group-text finger btn-outline-darkmode"><-></span>
+                <input type="text" class="form-control" id="replace" placeholder="Replace" aria-label="Replace" autocomplete="off">
+            </div>
+            
+        </div>
+        <div class="row mb-4">
             <div class="col-sm">
-                <div class="row">
-                    <div class="col">
-                        <div class="form-group">
-                            <label class="text-muted">Find</label>
-                            <input type="text" id="find" class="form-control" placeholder="찾을 문자열" autocomplete="off">
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="form-group">
-                            <label class="text-muted">Replace</label>
-                            <input type="text" id="replace" class="form-control" placeholder="바꿀 문자열" autocomplete="off">
-                        </div>
+                <div class="from-group">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="permission" name="permission" value="false">
+                        <label class="form-check-label text-muted" for="permission">Use Adminsetting Permission</label>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    
     <div class="text-center pt-5">
         <button type="submit" class="btn btn-outline-warning" id="submitSimulation">SIMULATION</button>
         <button type="submit" class="btn btn-outline-danger" id="submitRename">RENAME</button>
@@ -88,6 +99,13 @@
         ],
     });
 
+    document.getElementById("change").addEventListener("click", function(){
+        let find = document.getElementById("find").value
+        let replace = document.getElementById("replace").value
+        document.getElementById("find").value = replace
+        document.getElementById("replace").value = find
+    });
+
     //submit Simulation
     document.getElementById("submitSimulation").addEventListener("click", function(){
         // error 처리
@@ -118,16 +136,19 @@
     //submit Rename
     document.getElementById("submitRename").addEventListener("click", function(){
         // error 처리
-        let title = document.getElementById("find").value
-        if (title == "") {
+        let opt = new Object()
+        opt.path = document.getElementById("searchpath").value
+        opt.find = document.getElementById("find").value
+        opt.replace = document.getElementById("replace").value
+        opt.permission = document.getElementById("permission").checked
+        if (opt.find == "") {
             tata.error('Error', "Need find string", {
             position: 'tr',
             duration: 10000,
             })
             return
         }
-        let description = document.getElementById("replace").value
-        if (description == "") {
+        if (opt.replace == "") {
             tata.error('Error', "Need replace string", {
             position: 'tr',
             duration: 10000,
@@ -135,56 +156,31 @@
             return
         }
         
-        // going process
-        sources = table.getData();
+        fetch('/api/rename', {
+            method: 'POST',
+            headers: {
+                "Authorization": "Basic "+ getCookie("SessionToken"),
+            },
+            body: JSON.stringify(opt),
+        })
+        .then((response) => {
+            if (!response.ok) {
+                throw Error(response.statusText + " - " + response.url);
+            }
+            return response.json()
+        })
+        .then((data) => {
+            console.log(data)
+        })
+        .catch((err) => {
+            alert(err)
+        });
+            
         
-        for (let i = 0; i < sources.length; i += 1) {
-            
-            // process
-            fetch('/api/addfootage', {
-                method: 'POST',
-                headers: {
-                    "Authorization": "Basic "+ getCookie("SessionToken"),
-                },
-                body: new URLSearchParams({
-                    "base": sources[i].base,
-                    "dir": sources[i].dir,
-                    "framein": sources[i].framein,
-                    "frameout": sources[i].frameout,
-                    "title": title,
-                    "description": description,
-                    "author": author,
-                    "tags": tags,
-                    "fps": document.getElementById("fps").value,
-                    "premult": document.getElementById("premult").checked,
-                    "incolorspace": document.getElementById("incolorspace").value,
-                    "outcolorspace": document.getElementById("outcolorspace").value,
-                    "attributes": JSON.stringify(attributesTable.getData()),
-                })
-            })
-            .then((response) => {
-                if (!response.ok) {
-                    throw Error(response.statusText + " - " + response.url);
-                }
-                return response.json()
-            })
-            .then((data) => {
-                console.log(data)
-                let button = document.getElementById("submitFootages")
-                button.disabled = true
-                button.classList.remove("btn-outline-warning");
-                button.classList.add("btn-outline-secondary");
-            })
-            .catch((err) => {
-                alert(err)
-            });
-            
-        }
         // Toast 띄우기
-        tata.success('Submit Process', sources.length + " items have been sent.", {
+        tata.success('Submit Rename', sources.length + " file renamed.", {
             position: 'tr',
             duration: 10000,
-            onClick: goProcessPage,
             onClose: null,
         })
     });

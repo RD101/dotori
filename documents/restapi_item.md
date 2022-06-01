@@ -1,18 +1,19 @@
 # RestAPI - Item
 
 ## Get
+
 | URI | Description | Attributes | Curl Example |
 | --- | --- | --- | --- |
-| /api/item | 아이템 가지고 오기 | id | `$ curl -k -H "Authorization: Basic <TOKEN>" "https://dotori.lazypic.com/api/item?id=61c0189f3080e2b623db8b43"` |
-| /api/donwloadzipfile | 아이템 다운로드 | id | `$ curl -H "Authorization: Basic <TOKEN>" -o "/download/path/filename.zip" "https://dotori.lazypic.com/api/downloadzipfile?id=61ecba13e5fec171fe4e47e8"` |
-
+| /api/item | 아이템 가지고 오기 | id | `$ curl -k -H "Authorization: Basic {TOKEN}" "https://dotori.lazypic.com/api/item?id=61c0189f3080e2b623db8b43"` |
+| /api/donwloadzipfile | 아이템 다운로드 | id | `$ curl -H "Authorization: Basic {TOKEN}" -o "/download/path/filename.zip" "https://dotori.lazypic.com/api/downloadzipfile?id=61ecba13e5fec171fe4e47e8"` |
 
 
 ## Post
+
 | URI | Description | Attributes | Curl Example |
 | --- | --- | --- | --- |
-| /api/item | asset 등록하기 | itemtype, title, author, description, tags | `$ curl -H "Authorization: Basic <TOKEN>" -X POST \`<br>`-F "file1=@thumbnail.jpg;type=image/jpeg" \` <br>`-F "file2=@thumbnail.mov;type=video/quicktime" \`<br>`-F "file3=@data.abc;type=application/octet-stream" \` <br>`-F "itemtype=alembic" \` <br>`-F "title=abc restapi test" \` <br>`-F "author=dchecheb" \` <br>`-F "description=3" \` <br>`-F "tags=test" \` <br>`-F "attribute=key1:value1,key2:value2" \` <br>`https://dotori.lazypic.com/api/item` |
-| /api/searchfootages | Footage 검색 | path | `$ curl -X POST -H "Authorization: Basic <TOKEN>" -d "path=/searchpath" "https://dotori.lazypic.com/api/searchfootages"` |
+| /api/item | asset 등록하기 | itemtype, title, author, description, tags | `$ curl -H "Authorization: Basic {TOKEN}" -X POST \`<br>`-F "file1=@thumbnail.jpg;type=image/jpeg" \` <br>`-F "file2=@thumbnail.mov;type=video/quicktime" \`<br>`-F "file3=@data.abc;type=application/octet-stream" \` <br>`-F "itemtype=alembic" \` <br>`-F "title=abc restapi test" \` <br>`-F "author=dchecheb" \` <br>`-F "description=3" \` <br>`-F "tags=test" \` <br>`-F "attribute=key1:value1,key2:value2" \` <br>`https://dotori.lazypic.com/api/item` |
+| /api/searchfootages | Footage 검색 | path | `$ curl -X POST -H "Authorization: Basic {TOKEN}" -d "path=/searchpath" "https://dotori.lazypic.com/api/searchfootages"` |
 | /api/usingrate | Using Rate 올리기 | id | `$ curl -X POST -d "id=5eaa5758eafdfd2dae3bb050" https://dotori.lazypic.com/api/usingrate` |
 
 
@@ -42,6 +43,7 @@ print(data)
 ### POST
 
 #### Asset 등록하기
+
 ```python
 #!/usr/bin/python
 #coding:utf-8
@@ -99,5 +101,5 @@ curl을 이용해서 원하는 위치에 원하는 이름으로 에셋을 다운
 당연히 Javascript, Go, Python을 이용해서도 에셋 다운로드가 가능합니다.
 
 ```bash
-$ curl -H "Authorization: Basic <TOKEN>" -o "/download/path/filename.zip" "https://dotori.lazypic.com/api/downloadzipfile?id=61ecba13e5fec171fe4e47e8"
+$ curl -H "Authorization: Basic {TOKEN}" -o "/download/path/filename.zip" "https://dotori.lazypic.com/api/downloadzipfile?id=61ecba13e5fec171fe4e47e8"
 ```
