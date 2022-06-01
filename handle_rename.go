@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -67,12 +68,13 @@ func handleRename(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	rcp.Item, err = GetItem(client, id)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+	if id != "" {
+		rcp.Item, err = GetItem(client, id)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 	}
-
 	w.Header().Set("Content-Type", "text/html")
 	err = TEMPLATES.ExecuteTemplate(w, "rename", rcp)
 	if err != nil {
@@ -112,9 +114,10 @@ func handleAPIRename(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	type Option struct {
-		Path    string `json:"path"`
-		Find    string `json:"find"`
-		Replace string `json:"replace"`
+		Path       string `json:"path"`
+		Find       string `json:"find"`
+		Replace    string `json:"replace"`
+		Permission bool   `json:"permission"`
 	}
 	opt := Option{}
 	var unmarshalErr *json.UnmarshalTypeError
@@ -130,6 +133,27 @@ func handleAPIRename(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
+	}
+	// 관리자 설정을 불러옵니다.
+	adminsetting, err := GetAdminSetting(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	uid, err := strconv.Atoi(adminsetting.UID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	gid, err := strconv.Atoi(adminsetting.GID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	filePerm, err := strconv.ParseInt(adminsetting.FilePermission, 8, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	files, err := ioutil.ReadDir(opt.Path)
@@ -148,6 +172,18 @@ func handleAPIRename(w http.ResponseWriter, r *http.Request) {
 			err = os.Rename(src, dst)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+			if opt.Permission {
+				err = os.Chown(dst, uid, gid)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				err = os.Chmod(dst, os.FileMode(filePerm))
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
 			}
 		}
 	}

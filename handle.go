@@ -73,7 +73,8 @@ func webserver() {
 	r.HandleFunc("/search-submit", handleSearchSubmit)
 
 	// Rename
-	r.HandleFunc("/rename/{id}", handleRename)
+	r.HandleFunc("/rename", handleRename).Methods(http.MethodGet)
+	r.HandleFunc("/rename/{id}", handleRename).Methods(http.MethodGet)
 	r.HandleFunc("/api/searchfile", handleAPISearchFile)
 	r.HandleFunc("/api/rename", handleAPIRename).Methods(http.MethodPost, http.MethodOptions)
 
