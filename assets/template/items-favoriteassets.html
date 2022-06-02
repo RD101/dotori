@@ -25,13 +25,13 @@
                     {{else if eq .ItemType "hdri" "texture" "lut" }}
                         <img class="card-img" width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" src='{{if eq .Status "done" }}/mediadata?id={{.ID.Hex}}&type=png{{else}}/assets/img/noimage.svg{{end}}'>
                     {{else if eq .ItemType "clip"}}
-                        <video class="card-img" width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" autoplay loop>
+                        <video class="card-img" width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" {{if $.User.Autoplay}}autoplay loop{{end}}>
                             <source src="/mediadata?id={{.ID.Hex}}&type=mp4" type="video/mp4">
                             <source src="/mediadata?id={{.ID.Hex}}&type=ogg" type="video/ogg">
                             Your browser does not support the video tag.
                         </video>
                     {{else}}
-                        <video class="card-img" width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" controls poster='{{if eq .Status "done" }}/mediadata?id={{.ID.Hex}}&type=png{{else}}/assets/img/noimage.svg{{end}}'>
+                        <video class="card-img" width="{{$thumbnailwidth}}" height="{{$thumbnailheight}}" {{if $.User.Autoplay}}autoplay loop{{end}} poster='{{if eq .Status "done" }}/mediadata?id={{.ID.Hex}}&type=png{{else}}/assets/img/noimage.svg{{end}}'>
                             <source src="/mediadata?id={{.ID.Hex}}&type=mp4" type="video/mp4">
                             <source src="/mediadata?id={{.ID.Hex}}&type=ogg" type="video/ogg">
                             Your browser does not support the video tag.
@@ -39,25 +39,36 @@
                     {{end}}    
                      <!-- Item info in Card -->
                     <div class="card-body">
-                        <div data-toggle="modal" data-target="#modal-detailview" onclick="setDetailViewModal('{{.ID.Hex}}')">
-                            <h5 class="card-title">{{.Title}}
-                            <!-- Favorite Icon -->
-                            <div class="bookmark-icon">
-                                {{$fillBool := "unfilled"}}
-                                {{range $index, $favoriteid := $.User.FavoriteAssetIDs}}
-                                    {{if eq $itemid $favoriteid}}
-                                        {{$fillBool = "filled"}}
+                        <div class="row">
+                            <div class="col">
+                                <div class="pretty p-default p-curve">
+                                    <input type="checkbox" class="select-item" value="{{.ID.Hex}}" id="checkbox-{{.ID.Hex}}">
+                                    <div class="state p-warning-o">
+                                        <label class="card-title unselectable finger">{{.Title}}</label>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <div class="col">
+                                <!-- Favorite Icon -->
+                                <div class="bookmark-icon">
+                                    {{$fillBool := "unfilled"}}
+                                    {{range $index, $favoriteid := $.User.FavoriteAssetIDs}}
+                                        {{if eq $itemid $favoriteid}}
+                                            {{$fillBool = "filled"}}
+                                        {{end}}
                                     {{end}}
-                                {{end}}
-                                <div class="bookmark-clicklistener" onclick="clickBookmarkIcon(this, '{{$fillBool}}','{{$itemid}}');event.stopPropagation()"></div>
-                                <object type="image/svg+xml" data="/assets/img/bookmark-{{$fillBool}}.svg" class="bookmark-{{$fillBool}}-icon"></object>
-                            </h5>
-                            <div class="row m-0 mb-2"style="align-items: center;">
-                                <img class="download-icon" src="/assets/img/download-solid.svg">
-                                <p class="card-text">{{.UsingRate}}</p>
+                                    <div class="bookmark-clicklistener" onclick="clickBookmarkIcon(this, '{{$fillBool}}','{{$itemid}}');event.stopPropagation()"></div>
+                                    <object type="image/svg+xml" data="/assets/img/bookmark-{{$fillBool}}.svg" class="bookmark-{{$fillBool}}-icon"></object>
+                                </div>
                             </div>
                         </div>
+
+                        <div class="row m-0 mb-2" style="align-items: center;">
+                            <img class="download-icon" src="/assets/img/download-solid.svg"><p class="card-text">{{.UsingRate}}</p>
+                        </div>
                         <div>
+                            <img class="finger" src="/assets/img/info.svg" data-toggle="modal" data-target="#modal-detailview" onclick="setDetailViewModal('{{.ID.Hex}}')">
                             {{range .Tags}}
                                 <a href="/search?searchword=tag:{{.}}" class="tag badge badge-outline-darkmode">{{.}}</a>
                             {{end}}

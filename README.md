@@ -202,3 +202,4 @@ Default env_keep=PATH # 새로 추가
 - [Gollia Mux](https://github.com/gorilla/mux): BSD 3-Clause License
 - [Tata](https://www.cssscript.com/toast-prompt-tata/): MIT License
 - [Tabulator](http://tabulator.info): MIT License
+- [Pretty-checkbox](https://github.com/lokesh-coder/pretty-checkbox): MIT License
