@@ -14,7 +14,7 @@ VFX, 애니메이션, 게임, 사운드, 레퍼런스, 기타 데이터 관리 �
 
 ## 기본정보
 
-- 개발기간: 2019.9 ~ 現
+- 개발기간: 2019.9 ~ 진행중
 - 개발방법: 오픈소스 공동개발 프로젝트
 - 개발형태 : Web Application Server
 - 개발도구: Go, mongoDB, Javascript, HTML, CSS
@@ -22,19 +22,18 @@ VFX, 애니메이션, 게임, 사운드, 레퍼런스, 기타 데이터 관리 �
 - 권리자(발명자): [Contributors](https://github.com/RD101/dotori/graphs/contributors)
 - 테스트서버: <https://dotori.lazypic.com>
 
-## Roadmap
+## Roadmap 2022
 
-- 에셋 소스 업로드 후 파일명 리네임 기능추가(진행중)
+- 에셋 소스 multi Select 기능 기본 추가 필요(진행중)
 - 에셋의 속성(Tag)를 다중으로 Overwrite, Remove, Add 가능하게 수정(멀티 선택기능)
-- 에셋 소스 multi Selct 기능 기본 추가 필요
 - 에셋 소스를 multi select 할 때 한 번에 'copy path'가 단축키 설정
 - 태그 페이지 제작
 - 메인 화면에 에셋이 NEW 4개 / TOP 4개 총 8개까지 보여지고 있으나, 10개 또는 30개까지 보일 수 있도록 개인별로 선택할 수 있게 옵션값 생성
+- 카테고리 자료구조 추가하기
 - 검색 엔진 상단 카테고리 종류 Hide/추가할 수 있게 커스텀 가능하게 수정
 - 검색 엔진에 여러 가지를 검색할 때 'and'의 개념이 아니라 'or'의 기능 추가 (샷그리드에서 콤마쓰듯이)
 - 태그가 배열되는 순서를 알파벳 순서 등으로 sorting 가능하게 수정 필요
 - 'Users'에서 계정 어드민 권한 부여 또는 수정 바로 가능하게 수정
-- User별 즐겨찾기 페이지 추가 필요
 
 ## 특 징
 
