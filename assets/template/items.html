@@ -27,13 +27,13 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col">
-                                <div class="form-check">
-                                    <input class="form-check-input select-item" type="checkbox" value="{{.ID.Hex}}" id="checkbox-{{.ID.Hex}}">
-                                    <label class="form-check-label" for="checkbox-{{.ID.Hex}}">
-                                        <h5 class="card-title unselectable finger">{{.Title}}</h5>
-                                    </label>
-                                    <img class="pl-1 finger align-baseline" src="/assets/img/info.svg" data-toggle="modal" data-target="#modal-detailview" onclick="setDetailViewModal('{{.ID.Hex}}')">
+                                <div class="pretty p-default p-curve">
+                                    <input type="checkbox" class="select-item" value="{{.ID.Hex}}" id="checkbox-{{.ID.Hex}}">
+                                    <div class="state p-warning-o">
+                                        <label class="card-title unselectable finger">{{.Title}}</label>
+                                    </div>
                                 </div>
+                                
                             </div>
                             <div class="col">
                                 <!-- Favorite Icon -->
@@ -55,6 +55,7 @@
                         </div>
                         
                         <div>
+                            <img class="finger" src="/assets/img/info.svg" data-toggle="modal" data-target="#modal-detailview" onclick="setDetailViewModal('{{.ID.Hex}}')">
                             {{range .Tags}}
                                 <a href="/search?searchword=tag:{{.}}" class="tag badge badge-outline-darkmode">{{.}}</a>
                             {{end}}
