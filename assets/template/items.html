@@ -17,7 +17,7 @@
                             Your browser does not support the video tag.
                         </video>
                     {{else}}
-                        <video class="card-img" width="{{$.Adminsetting.ThumbnailImageWidth}}" height="{{$.Adminsetting.ThumbnailImageHeight}}" {{if $.User.Autoplay}}autoplay loop{{end}} controls poster='{{if eq .Status "done" }}/mediadata?id={{.ID.Hex}}&type=png{{else}}/assets/img/noimage.svg{{end}}'>
+                        <video class="card-img" width="{{$.Adminsetting.ThumbnailImageWidth}}" height="{{$.Adminsetting.ThumbnailImageHeight}}" {{if $.User.Autoplay}}autoplay loop{{end}} poster='{{if eq .Status "done" }}/mediadata?id={{.ID.Hex}}&type=png{{else}}/assets/img/noimage.svg{{end}}'>
                             <source src="/mediadata?id={{.ID.Hex}}&type=mp4" type="video/mp4">
                             <source src="/mediadata?id={{.ID.Hex}}&type=ogg" type="video/ogg">
                             Your browser does not support the video tag.
