@@ -24,7 +24,6 @@ VFX, 애니메이션, 게임, 사운드, 레퍼런스, 기타 데이터 관리 �
 
 ## Roadmap 2022
 
-- 에셋 소스 multi Select 기능 기본 추가 필요(진행중)
 - 에셋의 속성(Tag)를 다중으로 Overwrite, Remove, Add 가능하게 수정(멀티 선택기능)
 - 에셋 소스를 multi select 할 때 한 번에 'copy path'가 단축키 설정
 - 태그 페이지 제작
