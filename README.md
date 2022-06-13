@@ -131,9 +131,10 @@ command를 통해 dotori를 제어할 수 있습니다.
 Dotori는 REST API를 지원합니다. Python, Go, Java, Javascript, node.JS, C++, C, C# 등 수많은 언어를 통해 Dotori를 이용할 수 있습니다.
 아래는 Dotori의  REST API reference 문서입니다.
 
-- [Item](documents/restapi_item.md)
-- [User](documents/restapi_user.md)
 - [AdminSetting](documents/restapi_adminsetting.md)
+- [User](documents/restapi_user.md)
+- [Item](documents/restapi_item.md)
+- [Tags](documents/restapi_tags.md)
 
 ## 개발에 기여하고 싶다면
 
