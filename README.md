@@ -136,32 +136,6 @@ Dotori는 REST API를 지원합니다. Python, Go, Java, Javascript, node.JS, C+
 - [Item](documents/restapi_item.md)
 - [Tags](documents/restapi_tags.md)
 
-## 개발에 기여하고 싶다면
-
-도토리는 오픈소스로 진행 중인 프로젝트입니다. 개발에 기여하고 싶다면 아래 내용을 참고해주세요!
-
-### 개발환경셋팅
-
-Go에서 컴파일된 파일이 생성되는 경로를 설정하기 위해 GOBIN 환경변수 셋팅이 필요합니다.
-
-리눅스라면 .bashrc에 선언해주세요.
-macOS이고 zsh쉘을 사용한다면 `.zshenv` 에 bash쉘을 사용한다면 `.bashrc`에 아래 설정을 추가해주세요.
-
-```bash
-export GOBIN=$HOME/bin
-export PATH=$PATH:$GOBIN
-```
-
-dotori는 sudo로 실행해야 합니다. 그러나 linux의 경우, sudo가 현재 계정의 PATH를 다 가져오지 못하는 경우가 있습니다. 그럴 때는 /etc/visudoers 파일을 아래처럼 변경해주세요.
-
-```bash
-$ sudo visudo
-...
-
-#Default secure_path="/usr/local/sbin:/usr/local/bin:/usr/bin" # 기존 부분 주석 처리
-Default env_keep=PATH # 새로 추가
-```
-
 ### 예제파일 안내
 
 에셋 라이브러리 개발에 사용된 예제 파일에 대한 안내 문서입니다.
