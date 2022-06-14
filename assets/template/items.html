@@ -28,7 +28,7 @@
                         <div class="row">
                             <div class="col">
                                 <div class="pretty p-default p-curve">
-                                    <input type="checkbox" class="select-item" value="{{.ID.Hex}}" id="checkbox-{{.ID.Hex}}">
+                                    <input type="checkbox" class="select-item" value="{{.ID.Hex}}" id="idcheckbox-{{.ID.Hex}}">
                                     <div class="state p-warning-o">
                                         <label class="card-title unselectable finger">{{.Title}}</label>
                                     </div>
@@ -54,11 +54,14 @@
                             <img class="download-icon" src="/assets/img/download-solid.svg"><p class="card-text">{{.UsingRate}}</p>
                         </div>
                         
-                        <div>
-                            <img class="finger" src="/assets/img/info.svg" data-toggle="modal" data-target="#modal-detailview" onclick="setDetailViewModal('{{.ID.Hex}}')">
-                            {{range .Tags}}
-                                <a href="/search?searchword=tag:{{.}}" class="tag badge badge-outline-darkmode">{{.}}</a>
-                            {{end}}
+                        <div class="row">
+                            <img class="finger ml-2 mr-1" src="/assets/img/info.svg" data-toggle="modal" data-target="#modal-detailview" onclick="setDetailViewModal('{{.ID.Hex}}')">
+                            <div id="tags-{{.ID.Hex}}">
+                                {{range .Tags}}
+                                    <a href="/search?searchword=tag:{{.}}" class="tag badge badge-outline-darkmode">{{.}}</a>
+                                {{end}}
+                            </div>
+                            
                             <div class="tag finger badge badge-outline-warning" onclick="copyPath('{{.OutputDataPath}}')">Path</div>
                             {{if $.Adminsetting.EnableRVLink}}
                                 {{if eq .ItemType "clip" "footage" "hdri"}}

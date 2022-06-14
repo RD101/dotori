@@ -116,17 +116,15 @@
                         <div class="col">
                             <div class="form-group">
                                 <label class="pt-1 text-darkmode">Tags</label>
-                                <input type="text" class="form-control" id="modal-edittags-tags" placeholder="Tags">
-                                <small class="text-warning">"," 문자를 이용해서 태그를 입력하세요.</small>
+                                <input type="text" class="form-control" id="modal-edittags-tags" placeholder="Tags" autocomplete="off">
+                                <small class="text-darkmode">"," 문자를 이용해서 태그를 입력하세요.</small>
                             </div>
                         </div>
-                    </div>
-                        
-                    
+                    </div>                    
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-darkmode" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-outline-warning" data-dismiss="modal">Edit</button>
+                    <button type="button" class="btn btn-outline-warning" onclick="EditTags()" data-dismiss="modal">Edit</button>
                 </div>
             </div>
         </div>

@@ -126,7 +126,7 @@ func putTagsHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	data, err := json.Marshal(rcp)
+	data, err := json.Marshal(item)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
