@@ -752,3 +752,70 @@ function rvlink(path) {
     obj.click()
     document.body.removeChild(obj);
 }
+
+function EditTags() {
+    let tags = new Object()
+    tags.tags = string2array(document.getElementById("modal-edittags-tags").value)
+    if (tags.tags.length === 0) {
+        tata.error('Error', "태그를 입력해주세요.", {position: 'tr',duration: 5000,onClose: null})
+        return
+    }
+    // 선택한 ID를 출력한다.
+    let idcheckboxs = document.querySelectorAll("[id^='idcheckbox-']")
+    let ids = []
+    for (let i = 0; i < idcheckboxs.length; i += 1) {
+        if (!idcheckboxs[i].checked) {
+            continue
+        }
+        ids.push(idcheckboxs[i].value)
+    }
+    if (ids.length === 0) {
+        tata.error('Error', "Item을 선택해주세요.", {position: 'tr',duration: 5000,onClose: null})
+        return
+    }
+    for (let i = 0; i < ids.length; i += 1) {
+        let id = ids[i]
+        fetch('/api/tags/'+id, {
+            method: 'PUT',
+            headers: {
+                "Authorization": "Basic "+ document.getElementById("token").value,
+            },
+            body: JSON.stringify(tags),
+        })
+        .then((response) => {
+            if (!response.ok) {
+                response.text().then(function (text) {
+                    tata.error('Error', text, {position: 'tr',duration: 5000,onClose: null})
+                    return
+                });
+            }
+            return response.json()
+        })
+        .then((obj) => {
+            // 내부를 비운다.
+            let e = document.getElementById("tags-"+id)
+            e.innerHTML = ""
+            // UX를 업데이트 한다.
+            for (let t = 0; t < obj.tags.length; t += 1) {
+                let html = `<a href="/search?searchword=tag:${obj.tags[t]}" class="tag badge badge-outline-darkmode">${obj.tags[t]}</a>`
+                e.innerHTML = html + e.innerHTML
+            }            
+        })
+        .catch((err) => {
+            console.log(err)
+        });
+    }
+    tata.success('Edit', "태그가 편집되었습니다.", {position: 'tr',duration: 5000,onClose: null})
+}
+
+function string2array(str) {
+    let newArr = [];
+    if (str === "") {
+        return newArr
+    }
+    let arr = str.split(",");
+    for (let i = 0; i < arr.length; i += 1) {
+        newArr.push(arr[i].trim())
+    }
+    return newArr;
+}

@@ -39,6 +39,13 @@ var funcMap = template.FuncMap{
 	"IntToSlice":     IntToSlice,
 }
 
+func helpMethodOptionsHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	if r.Method == http.MethodOptions {
+		return
+	}
+}
+
 func webserver() {
 	// 템플릿 로딩을 위해서 vfs(가상파일시스템)을 로딩합니다.
 	vfsTemplate, err := LoadTemplates()
@@ -392,7 +399,7 @@ func webserver() {
 	r.HandleFunc("/signout", handleSignOut)
 	r.HandleFunc("/invalidaccess", handleInvalidAccess)
 
-	// REST API
+	// RestAPI
 	r.HandleFunc("/api/item", handleAPIItem)
 	r.HandleFunc("/api/search", handleAPISearch)
 	r.HandleFunc("/api/adminsetting", handleAPIAdminSetting)
@@ -403,6 +410,11 @@ func webserver() {
 	r.HandleFunc("/api/initpassword", handleAPIInitPassword)
 	r.HandleFunc("/api/downloadzipfile", handleAPIDownloadZipfile)
 	r.HandleFunc("/api/user", handleAPIUser)
+
+	// RestAPI Tags
+	r.HandleFunc("/api/tags", helpMethodOptionsHandler).Methods(http.MethodGet, http.MethodPut, http.MethodOptions)
+	r.HandleFunc("/api/tags/{id}", getTagsHandler).Methods("GET")
+	r.HandleFunc("/api/tags/{id}", putTagsHandler).Methods("PUT")
 
 	r.Use(mux.CORSMethodMiddleware(r))
 	http.Handle("/", r)
