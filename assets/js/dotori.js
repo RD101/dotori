@@ -808,6 +808,52 @@ function EditTags() {
     tata.success('Edit', "태그가 편집되었습니다.", {position: 'tr',duration: 5000,onClose: null})
 }
 
+async function CopyPaths() {
+    let idcheckboxs = document.querySelectorAll("[id^='idcheckbox-']")
+    let ids = []
+    for (let i = 0; i < idcheckboxs.length; i += 1) {
+        if (!idcheckboxs[i].checked) {
+            continue
+        }
+        ids.push(idcheckboxs[i].value)
+    }
+    if (ids.length === 0) {
+        tata.error('Error', "Item을 선택해주세요.", {position: 'tr',duration: 5000,onClose: null})
+        return
+    }
+    let paths = []
+    for (let i = 0; i < ids.length; i += 1) {
+        let id = ids[i]
+        await fetch('/api/item?id='+id, {
+            method: 'GET',
+            headers: {
+                "Authorization": "Basic "+ document.getElementById("token").value,
+            },
+        })
+        .then((response) => {
+            if (!response.ok) {
+                response.text().then(function (text) {
+                    tata.error('Error', text, {position: 'tr',duration: 5000,onClose: null})
+                    return
+                });
+            }
+            return response.json()
+        })
+        .then((obj) => {
+            console.log(obj)
+            paths.push(obj.outputdatapath)
+        })
+        .catch((err) => {
+            console.log(err)
+        });
+    }
+    console.log(paths)
+    
+    console.log(paths.join(" "))
+    //copyClipboard(paths.join(" "))
+    copyClipboard("test")
+}
+
 function string2array(str) {
     let newArr = [];
     if (str === "") {
