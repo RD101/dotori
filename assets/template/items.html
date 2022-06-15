@@ -55,7 +55,7 @@
                         </div>
                         
                         <div class="row">
-                            <img class="finger ml-2 mr-1" src="/assets/img/info.svg" data-toggle="modal" data-target="#modal-detailview" onclick="setDetailViewModal('{{.ID.Hex}}')">
+                            <img class="finger ml-2 mr-1" width="24px" height="24px" src="/assets/img/info.svg" data-toggle="modal" data-target="#modal-detailview" onclick="setDetailViewModal('{{.ID.Hex}}')">
                             <div id="tags-{{.ID.Hex}}">
                                 {{range .Tags}}
                                     <a href="/search?searchword=tag:{{.}}" class="tag badge badge-outline-darkmode">{{.}}</a>
