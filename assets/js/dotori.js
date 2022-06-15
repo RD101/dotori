@@ -812,7 +812,7 @@ function CopyPaths() {
     GetOutputDataPaths().then(function(data) { // Promise 타입은 then을 이용해서 값을 가지고 와야한다.
         let copyText = data.join(" ");
         console.log(copyText) // 디버그를 위해서 남겨둔다.
-        copyClipboard(copyText)        
+        copyClipboard(copyText)
     });    
 }
 
