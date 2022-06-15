@@ -683,7 +683,7 @@ function copyClipboard(value) {
     document.body.removeChild(id);              // body에 요소 삭제
 
     // Toast 띄우기
-    tata.success('Copy Clipboard', "Data path copyed!", {
+    tata.success('Copy Clipboard', "Data path copied!", {
         position: 'tr',
         duration: 1000,
         onClose: null,
@@ -807,8 +807,17 @@ function EditTags() {
     }
     tata.success('Edit', "태그가 편집되었습니다.", {position: 'tr',duration: 5000,onClose: null})
 }
+  
+function CopyPaths() {
+    GetOutputDataPaths().then(function(data) { // Promise 타입은 then을 이용해서 값을 가지고 와야한다.
+        let copyText = data.join(" ");
+        console.log(copyText)
+        copyClipboard(copyText)
+        
+    });    
+}
 
-async function CopyPaths() {
+async function GetOutputDataPaths() {
     let idcheckboxs = document.querySelectorAll("[id^='idcheckbox-']")
     let ids = []
     for (let i = 0; i < idcheckboxs.length; i += 1) {
@@ -840,18 +849,13 @@ async function CopyPaths() {
             return response.json()
         })
         .then((obj) => {
-            console.log(obj)
             paths.push(obj.outputdatapath)
         })
         .catch((err) => {
             console.log(err)
         });
     }
-    console.log(paths)
-    
-    console.log(paths.join(" "))
-    //copyClipboard(paths.join(" "))
-    copyClipboard("test")
+    return paths
 }
 
 function string2array(str) {
