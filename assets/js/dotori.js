@@ -814,6 +814,7 @@ function CopyPaths() {
     GetOutputDataPaths().then(function(data) { // Promise 타입은 then을 이용해서 값을 가지고 와야한다.
         let copyText = data.join(" ");
         console.log(copyText) // 디버그를 위해서 남겨둔다.
+        // 나중에 Textarea를 만들고 그곳에서 엔터문자를 복사할 수 있도록 여지를 남겨둘 것
         copyClipboard(copyText)
     });    
 }
