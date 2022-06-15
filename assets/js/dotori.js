@@ -31,6 +31,8 @@ document.onkeydown = function(e) {
         document.getElementById("previous").click();
     } else if (e.which == 39) { // arrow right
         document.getElementById("next").click();
+    } else if (e.ctrlKey && e.altKey && e.shiftKey && e.which == 80) { // Ctrl+Alt+Shift+P
+        CopyPaths()
     }
 };
 
