@@ -31,6 +31,8 @@ document.onkeydown = function(e) {
         document.getElementById("previous").click();
     } else if (e.which == 39) { // arrow right
         document.getElementById("next").click();
+    } else if (e.ctrlKey && e.altKey && e.shiftKey && e.which == 80) { // Ctrl+Alt+Shift+P
+        CopyPaths()
     }
 };
 
@@ -683,7 +685,7 @@ function copyClipboard(value) {
     document.body.removeChild(id);              // body에 요소 삭제
 
     // Toast 띄우기
-    tata.success('Copy Clipboard', "Data path copyed!", {
+    tata.success('Copy Clipboard', "Data path copied!", {
         position: 'tr',
         duration: 1000,
         onClose: null,
@@ -806,6 +808,56 @@ function EditTags() {
         });
     }
     tata.success('Edit', "태그가 편집되었습니다.", {position: 'tr',duration: 5000,onClose: null})
+}
+  
+function CopyPaths() {
+    GetOutputDataPaths().then(function(data) { // Promise 타입은 then을 이용해서 값을 가지고 와야한다.
+        let copyText = data.join(" ");
+        console.log(copyText) // 디버그를 위해서 남겨둔다.
+        // 나중에 Textarea를 만들고 그곳에서 엔터문자를 복사할 수 있도록 여지를 남겨둘 것
+        copyClipboard(copyText)
+    });    
+}
+
+async function GetOutputDataPaths() {
+    let idcheckboxs = document.querySelectorAll("[id^='idcheckbox-']")
+    let ids = []
+    for (let i = 0; i < idcheckboxs.length; i += 1) {
+        if (!idcheckboxs[i].checked) {
+            continue
+        }
+        ids.push(idcheckboxs[i].value)
+    }
+    if (ids.length === 0) {
+        tata.error('Error', "Item을 선택해주세요.", {position: 'tr',duration: 5000,onClose: null})
+        return
+    }
+    let paths = []
+    for (let i = 0; i < ids.length; i += 1) {
+        let id = ids[i]
+        await fetch('/api/item?id='+id, {
+            method: 'GET',
+            headers: {
+                "Authorization": "Basic "+ document.getElementById("token").value,
+            },
+        })
+        .then((response) => {
+            if (!response.ok) {
+                response.text().then(function (text) {
+                    tata.error('Error', text, {position: 'tr',duration: 5000,onClose: null})
+                    return
+                });
+            }
+            return response.json()
+        })
+        .then((obj) => {
+            paths.push(obj.outputdatapath)
+        })
+        .catch((err) => {
+            console.log(err)
+        });
+    }
+    return paths
 }
 
 function string2array(str) {
