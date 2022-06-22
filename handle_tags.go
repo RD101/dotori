@@ -187,6 +187,12 @@ func handleTags(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	rcp.Tags, err = GetTags(client) // 전체 tag 정보 가져옴
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	err = TEMPLATES.ExecuteTemplate(w, "tags", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
