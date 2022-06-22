@@ -147,6 +147,9 @@ func handleTags(w http.ResponseWriter, r *http.Request) {
 		Adminsetting Adminsetting
 		User         User
 		Tags         []string
+		ItemType     string
+		Searchword   string
+		TotalNum     int64
 	}
 	rcp := recipe{}
 	rcp.Token = token
