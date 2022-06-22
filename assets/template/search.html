@@ -4,7 +4,7 @@
 		<div class="col-lg-7">
 			<div class="input-group mb-3">
 				<div class="input-group-prepend">
-					<select name="itemtype" class="custom-select left-radius">
+					<select name="itemtype" class="form-select custom-select left-radius">
 						<option value="" {{if eq .ItemType "" }}selected{{end}}>All</option>
 						{{if $.Adminsetting.Maya}}<option value="maya" {{if eq .ItemType "maya" }}selected{{end}}>Maya</option>{{end}}
 						{{if $.Adminsetting.Max}}<option value="max" {{if eq .ItemType "max" }}selected{{end}}>Max</option>{{end}}
