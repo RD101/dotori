@@ -221,6 +221,10 @@ func getTaglistHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	tags, err := GetTags(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	// json 으로 결과 전송
 	data, err := json.Marshal(tags)
