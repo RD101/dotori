@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
+	"sort"
 	"strings"
 	"time"
 
@@ -776,4 +778,21 @@ func SetThumbClipUploaded(client *mongo.Client, item Item, status bool) error {
 		return err
 	}
 	return nil
+}
+
+// GetTags 는 DB에서 전체 태그 정보를 가져오는 함수입니다.
+func GetTags(client *mongo.Client) ([]string, error) {
+	collection := client.Database(*flagDBName).Collection("items")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	var results []string
+	values, err := collection.Distinct(ctx, "tags", bson.D{})
+	if err != nil {
+		return results, err
+	}
+	for _, value := range values {
+		results = append(results, fmt.Sprintf("%v", value))
+	}
+	sort.Strings(results)
+	return results, nil
 }
