@@ -78,6 +78,7 @@ func webserver() {
 	r.HandleFunc("/mediadata", handleMediaData)
 	r.HandleFunc("/search", handleSearch)
 	r.HandleFunc("/search-submit", handleSearchSubmit)
+	r.HandleFunc("/tags", handleTags)
 
 	// Rename
 	r.HandleFunc("/rename", handleRename).Methods(http.MethodGet)

@@ -1,0 +1,22 @@
+{{define "tags"}}
+    {{template "head-bootstrap5"}}
+    <body>
+      <!-- Preset Value -->
+      <input type="hidden" id="token" value="{{$.User.Token}}">
+      <input type="hidden" id="userid" value="{{$.User.ID}}">
+      <!-- Templates -->
+      {{template "modal-bootstrap5" .}}
+      {{template "navbar-bootstrap5" .}}
+      {{template "search" .}}
+      <div class="init-tags">
+          {{range .Tags}}
+              <a href="/search?searchword=tag:{{.}}" class="tag btn btn-outline-darkmode">{{.}}</a>
+          {{end}}
+      </div>
+      {{template "footer"}}
+    </body>
+    <script src="/assets/bootstrap-5.1.3-dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/tata/tata.js"></script>
+    <script src="/assets/js/dotori.js"></script>
+    </html>
+{{end}}
