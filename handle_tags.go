@@ -190,3 +190,45 @@ func handleTags(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+func getTaglistHandler(w http.ResponseWriter, r *http.Request) {
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer client.Disconnect(ctx)
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	//accesslevel 체크
+	accesslevel, err := GetAccessLevelFromHeader(r, client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if accesslevel != "default" && accesslevel != "manager" && accesslevel != "admin" {
+		http.Error(w, "등록 권한이 없는 계정입니다", http.StatusUnauthorized)
+		return
+	}
+	tags, err := GetTags(client)
+
+	// json 으로 결과 전송
+	data, err := json.Marshal(tags)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	w.Write(data)
+}
