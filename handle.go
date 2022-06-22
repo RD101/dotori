@@ -412,10 +412,14 @@ func webserver() {
 	r.HandleFunc("/api/downloadzipfile", handleAPIDownloadZipfile)
 	r.HandleFunc("/api/user", handleAPIUser)
 
-	// RestAPI Tags
+	// RestAPI Tags for an item
 	r.HandleFunc("/api/tags", helpMethodOptionsHandler).Methods(http.MethodGet, http.MethodPut, http.MethodOptions)
 	r.HandleFunc("/api/tags/{id}", getTagsHandler).Methods("GET")
 	r.HandleFunc("/api/tags/{id}", putTagsHandler).Methods("PUT")
+
+	// REST API Tag list for all item
+	r.HandleFunc("/api/taglist", helpMethodOptionsHandler).Methods(http.MethodOptions)
+	r.HandleFunc("/api/taglist", getTaglistHandler).Methods("GET")
 
 	r.Use(mux.CORSMethodMiddleware(r))
 	http.Handle("/", r)
