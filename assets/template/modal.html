@@ -2,6 +2,31 @@
 <div class="">
     <!-- Modal : Preset Value -->
     <input type="hidden" id="accesslevel" value="{{$.User.AccessLevel}}">
+    <!-- Modal : Copypath -->
+    <div class="modal" id="modal-copypath" tabindex="-1" role="dialog" aria-labeledby="modal-copypath" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content text-darkmode" style="background-color: #2e2d2d">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-copypath-title">Copypath</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" class="text-darkmode">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="modal-rmitem-itemid" class="col-form-label">경로 정보는 다음과 같습니다.</label>
+                        <textarea class="form-control text-warning" id="modal-copypath-text" rows="5" disabled></textarea>
+                        <small class="text-darkmode">
+                            Copy & Paste 해서 사용해주세요. Nuke 형태의 툴에 붙혀넣기 해주세요.
+                        </small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-darkmode" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Modal : Remove Item -->
     <div class="modal fade" id="modal-rmitem" tabindex="-1" role="dialog" aria-labeledby="modal-rmitem" aria-hidden="true">
         <div class="modal-dialog" role="document">
