@@ -810,7 +810,7 @@ function EditTags() {
   
 function CopyPaths() {
     GetOutputDataPaths().then(function(data) { // Promise 타입은 then을 이용해서 값을 가지고 와야한다.
-        document.getElementById("modal-copypath-text").value = data.join("\n")
+        document.getElementById("modal-copypaths-text").value = data.join("\n")
     });    
 }
 
