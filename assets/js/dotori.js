@@ -647,8 +647,8 @@ function getCookie(name) {
 }
 
 
-function SetAutoplay() {
-    fetch('/api/user?autoplay='+document.getElementById("autoplay").checked, {
+function SetUserAutoplay() {
+    fetch('/api/user/autoplay?value='+document.getElementById("autoplay").checked, {
         method: 'PUT',
         headers: {
             "Authorization": "Basic "+ getCookie("SessionToken"),
@@ -672,6 +672,59 @@ function SetAutoplay() {
         return err
     });
 }
+
+function SetUserNewsNum() {
+    fetch('/api/user/newsnum?value='+document.getElementById("newsnum").value, {
+        method: 'PUT',
+        headers: {
+            "Authorization": "Basic "+ getCookie("SessionToken"),
+        },
+    })
+    .then((response) => {
+        if (!response.ok) {
+            return response.text().then((data) => {
+                alert(data);
+                return data;
+            })
+        }
+        if (response.ok) {
+            return response.json().then((data) => {
+                return
+            })
+        }
+    })
+    .catch((err) => {
+        alert(err);
+        return err
+    });
+}
+
+function SetUserTopNum() {
+    fetch('/api/user/topnum?value='+document.getElementById("topnum").value, {
+        method: 'PUT',
+        headers: {
+            "Authorization": "Basic "+ getCookie("SessionToken"),
+        },
+    })
+    .then((response) => {
+        if (!response.ok) {
+            return response.text().then((data) => {
+                alert(data);
+                return data;
+            })
+        }
+        if (response.ok) {
+            return response.json().then((data) => {
+                return
+            })
+        }
+    })
+    .catch((err) => {
+        alert(err);
+        return err
+    });
+}
+
 
 // copyClipboard 는 value 값을 받아서, 클립보드로 복사하는 기능이다.
 function copyClipboard(value) {
