@@ -4,4 +4,6 @@
 
 | URI | Description | Attributes | Curl Example |
 | --- | --- | --- | --- |
-| /api/autoplay | autoplay 설정 | autoplay | `$ curl -k -X PUT -H "Authorization: Basic {TOKEN}" "https://dotori.lazypic.com/api/user?autoplay=true"` |
+| /api/user/autoplay | autoplay 설정 | value | `$ curl -k -X PUT -H "Authorization: Basic {TOKEN}" "https://dotori.lazypic.com/api/user/autoplay?value=true"` |
+| /api/user/newsnum | news 갯수 설정 | value | `$ curl -k -X PUT -H "Authorization: Basic {TOKEN}" "https://dotori.lazypic.com/api/user/newsnum?value=4"` |
+| /api/user/topnum | top 갯수 설정 | value | `$ curl -k -X PUT -H "Authorization: Basic {TOKEN}" "https://dotori.lazypic.com/api/user/topnum?value=4"` |
