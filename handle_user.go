@@ -176,6 +176,8 @@ func handleSignupSubmit(w http.ResponseWriter, r *http.Request) {
 	u.AccessLevel = "default"
 	u.ID = id
 	u.Password = encryptedPW
+	u.NewsNum = 4
+	u.TopNum = 4
 	err = u.CreateToken()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
