@@ -22,6 +22,8 @@ type User struct {
 	AccessLevel      string   `json:"accesslevel"`      // admin, manager, default
 	FavoriteAssetIDs []string `json:"favoriteassetids"` // 즐겨찾는 어셋 id 리스트
 	Autoplay         bool     `json:"autoplay"`         // 영상 자동재생 옵션
+	NewsNum          int      `json:"newsnum"`          // 새로 추가된 에셋 표시갯수
+	TopNum           int      `json:"topnum"`           // 자주 사용하는 에셋 표시갯수
 }
 
 // CreateToken 메소드는 토큰을 생성합니다.

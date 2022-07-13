@@ -10,25 +10,43 @@
             <div class="row">
                 <div class="col">
                     <div class="form-group">
-                        <label class="h4 text-muted">AccessLevel</label>
+                        <label class="h5 text-muted">AccessLevel</label>
                         <input type="text" class="form-control" value="{{.User.AccessLevel}}" readonly>
                         <small class="form-text text-muted">사용자 권한</small>
                     </div>
                 </div>
                 <div class="col">
                     <div class="form-group">
-                        <label class="h4 text-muted">Token</label>
+                        <label class="h5 text-muted">Token</label>
                         <input type="text" class="form-control finger" value="{{.User.Token}}" onclick="copyClipboard('{{.User.Token}}')" readonly>
                         <small class="form-text text-muted">RestAPI에 접근할 수 있는 Token</small>
                     </div>
                 </div>
             </div>
             
+            
+            <div class="row pt-3">
+                <div class="col">
+                    <div class="form-group">
+                        <label class="h5 text-muted">News</label>
+                        <input type="number" min=0 class="form-control" value="{{.User.NewsNum}}" id="newsnum" onchange="SetUserNewsNum()">
+                        <small class="form-text text-muted">새로 생성된 에셋 표시 갯수</small>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label class="h5 text-muted">Top</label>
+                        <input type="number" min=0 class="form-control" value="{{.User.TopNum}}" id="topnum" onchange="SetUserTopNum()">
+                        <small class="form-text text-muted">자주 사용하는 에셋 표시 갯수</small>
+                    </div>
+                </div>
+            </div>
+
             <div class="row pt-3">
                 <div class="col">
                     <div class="from-group">
                         <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="autoplay" {{if .User.Autoplay}}checked{{end}} onclick="SetAutoplay()">
+                            <input class="form-check-input" type="checkbox" id="autoplay" {{if .User.Autoplay}}checked{{end}} onclick="SetUserAutoplay()">
                             <label class="form-check-label text-muted" for="autoplay">Autoplay 활성화</label>
                         </div>
                     </div>

@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"strconv"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -175,6 +176,8 @@ func handleSignupSubmit(w http.ResponseWriter, r *http.Request) {
 	u.AccessLevel = "default"
 	u.ID = id
 	u.Password = encryptedPW
+	u.NewsNum = 4
+	u.TopNum = 4
 	err = u.CreateToken()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -349,13 +352,9 @@ func handleInvalidAccess(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func handleAPIUser(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPut {
-		http.Error(w, "Method Only PUT", http.StatusMethodNotAllowed)
-		return
-	}
+func handleAPIUserAutoplay(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query()
-	autoplay := q.Get("autoplay")
+	autoplay := q.Get("value")
 	if autoplay == "" {
 		http.Error(w, "autoplay value must be true or false", http.StatusBadRequest)
 		return
@@ -391,6 +390,128 @@ func handleAPIUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	user.Autoplay = str2bool(autoplay)
+	err = SetUser(client, user)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+	data, err := json.Marshal(user)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	w.Write(data)
+}
+
+func handleAPIUserNewsNum(w http.ResponseWriter, r *http.Request) {
+	q := r.URL.Query()
+	value := q.Get("value")
+	if value == "" {
+		http.Error(w, "value must be only number", http.StatusBadRequest)
+		return
+	}
+
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer client.Disconnect(ctx)
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	user, err := GetUserFromHeader(r, client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+	if !(user.AccessLevel == "admin" || user.AccessLevel == "default") {
+		http.Error(w, "Need permission", http.StatusUnauthorized)
+		return
+	}
+	n, err := strconv.Atoi(value)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+	if n == 0 { // 만약 사용자 값이 0이면 4로 설정한다.
+		n = 4
+	}
+	user.NewsNum = n
+	err = SetUser(client, user)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+	data, err := json.Marshal(user)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	w.Write(data)
+}
+
+func handleAPIUserTopNum(w http.ResponseWriter, r *http.Request) {
+	q := r.URL.Query()
+	value := q.Get("value")
+	if value == "" {
+		http.Error(w, "value must be only number", http.StatusBadRequest)
+		return
+	}
+
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer client.Disconnect(ctx)
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	user, err := GetUserFromHeader(r, client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+	if !(user.AccessLevel == "admin" || user.AccessLevel == "default") {
+		http.Error(w, "Need permission", http.StatusUnauthorized)
+		return
+	}
+	n, err := strconv.Atoi(value)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+	if n == 0 { // 만약 사용자 값이 0이면 4로 설정한다.
+		n = 4
+	}
+	user.TopNum = n
 	err = SetUser(client, user)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusUnauthorized)
