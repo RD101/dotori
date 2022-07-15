@@ -77,17 +77,8 @@ func handleInit(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.AllItemCount = humanize.Comma(num) // 숫자를 1000단위마다 comma를 찍음(string형으로 변경)
 
-	if num > 100 {
-		rcp.RecentlyTotalItemNum = 100
-	} else {
-		rcp.RecentlyTotalItemNum = num
-	}
-
-	if num > 20 {
-		rcp.TopUsingTotalItemNum = 20
-	} else {
-		rcp.TopUsingTotalItemNum = num
-	}
+	rcp.RecentlyTotalItemNum = int64(rcp.User.NewsNum)
+	rcp.TopUsingTotalItemNum = int64(rcp.User.TopNum)
 
 	RecentlyTagItems, err := GetRecentlyCreatedItems(client, 20, 1) // 최근생성된 20개의 아이템들을 가져옴
 	if err != nil {
@@ -97,14 +88,14 @@ func handleInit(w http.ResponseWriter, r *http.Request) {
 
 	rcp.RecentTags = ItemsTagsDeduplication(RecentlyTagItems) // 중복 태그를 정리함
 
-	RecentlyCreateItems, err := GetRecentlyCreatedItems(client, 4, 1) // 최근생성된 100개의 아이템들을 가져옴
+	RecentlyCreateItems, err := GetRecentlyCreatedItems(client, int64(rcp.User.NewsNum), 1) // 최근생성된 100개의 아이템들을 가져옴
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	rcp.RecentlyCreateItems = RecentlyCreateItems
 
-	TopUsingItems, err := GetTopUsingItems(client, 4, 1) // 사용률이 높은 20개의 아이템들을 가져옴
+	TopUsingItems, err := GetTopUsingItems(client, int64(rcp.User.TopNum), 1) // 사용률이 높은 20개의 아이템들을 가져옴
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
