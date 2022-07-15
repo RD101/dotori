@@ -1,64 +1,80 @@
 {{define "itemsTopUsing"}}
-    <!-- Preset Value -->
-    {{$thumbnailwidth := .Adminsetting.ThumbnailImageWidth}}
-    {{$thumbnailheight := .Adminsetting.ThumbnailImageHeight}}  
     <!-- Switching Button -->
-    <h6 class="init-title">TOP {{$.TopUsingTotalItemNum}}
-        <div class="slider-icon float-right">
-            <span class="btn carousel-control-prev-icon" aria-hidden="true" onclick="topUsingClick('{{.TopUsingTotalItemNum}}', 'prev');" ></span>
-            <span class="slider-text" id="topUsingPage" value="1">1 / {{divCeil $.TopUsingTotalItemNum 4}}</span>
-            <span class="btn carousel-control-next-icon" aria-hidden="true" onclick="topUsingClick('{{.TopUsingTotalItemNum}}', 'next');" ></span>
-        </div>
-    </h6>
+    <h6 class="init-title">TOP {{$.TopUsingTotalItemNum}}</h6>
     <!-- Card Items -->
-    <div class="row init-items">
-        {{range $i, $q := .TopUsingItems}}
-            {{$itemtype := .ItemType}}
+    <div class="row mx-auto mb-5">
+        {{range .TopUsingItems}}
             {{$itemid := .ID.Hex}}
-            <!-- Thumbnail in Card-->
-            <div class="card" id="topUsingCard{{$i}}" style="width: {{$thumbnailwidth}}px;">
-                <a class="card-image" href="#" title="image {{$i}}" id="topUsingImageForm{{$i}}"></a>
-                <!-- Item info in Card -->
-                <div class="card-body">
-                    <div id="topUsingCardBody{{$i}}" data-toggle="modal" data-target="#modal-detailview" onclick="setDetailViewModal('{{.ID.Hex}}')">
-                        <!-- Favorite Icon -->
-                        <h5 class="card-title" id="topUsingTitle{{$i}}">{{.Title}}
-                            <div class="bookmark-icon">
-                                {{$fillBool := "unfilled"}}
-                                {{range $index, $favoriteid := $.User.FavoriteAssetIDs}}
-                                    {{if eq $itemid $favoriteid}}
-                                        {{$fillBool = "filled"}}
-                                    {{end}}
-                                {{end}}
-                                <div class="bookmark-clicklistener" onclick="clickBookmarkIcon(this, '{{$fillBool}}','{{$itemid}}');event.stopPropagation()"></div>
-                                <object type="image/svg+xml" data="/assets/img/bookmark-{{$fillBool}}.svg" class="bookmark-{{$fillBool}}-icon"></object>
+            <!-- Card Items -->
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="card mx-auto" style="width: {{$.Adminsetting.ThumbnailImageWidth}}px;">
+                    <!-- Thumbnail in Card-->
+                    {{if eq .ItemType "hwp" "ies" "pdf" "ppt" "sound"}}
+                        <img class="card-img" width="{{$.Adminsetting.ThumbnailImageWidth}}" height="{{$.Adminsetting.ThumbnailImageHeight}}" src="/assets/img/{{.ItemType}}thumbnail.svg">
+                    {{else if eq .ItemType "hdri" "texture" "lut" }}
+                        <img class="card-img" width="{{$.Adminsetting.ThumbnailImageWidth}}" height="{{$.Adminsetting.ThumbnailImageHeight}}" src='{{if eq .Status "done" }}/mediadata?id={{.ID.Hex}}&type=png{{else}}/assets/img/noimage.svg{{end}}'>
+                    {{else if eq .ItemType "clip"}}
+                        <video class="card-img" width="{{$.Adminsetting.ThumbnailImageWidth}}" height="{{$.Adminsetting.ThumbnailImageHeight}}" {{if $.User.Autoplay}}autoplay loop{{end}}>
+                            <source src="/mediadata?id={{.ID.Hex}}&type=mp4" type="video/mp4">
+                            <source src="/mediadata?id={{.ID.Hex}}&type=ogg" type="video/ogg">
+                            Your browser does not support the video tag.
+                        </video>
+                    {{else}}
+                        <video class="card-img" width="{{$.Adminsetting.ThumbnailImageWidth}}" height="{{$.Adminsetting.ThumbnailImageHeight}}" {{if $.User.Autoplay}}autoplay loop{{end}} poster='{{if eq .Status "done" }}/mediadata?id={{.ID.Hex}}&type=png{{else}}/assets/img/noimage.svg{{end}}'>
+                            <source src="/mediadata?id={{.ID.Hex}}&type=mp4" type="video/mp4">
+                            <source src="/mediadata?id={{.ID.Hex}}&type=ogg" type="video/ogg">
+                            Your browser does not support the video tag.
+                        </video>
+                    {{end}}    
+                    <!-- Item info in Card -->
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">
+                                <div class="pretty p-default p-curve">
+                                    <input type="checkbox" class="select-item" value="{{.ID.Hex}}" id="idcheckbox-{{.ID.Hex}}">
+                                    <div class="state p-warning-o">
+                                        <label class="card-title unselectable finger">{{.Title}}</label>
+                                    </div>
+                                </div>
+                                
                             </div>
-                        </h5>
-                        <div class="row m-0 mb-2"style="align-items: center;">
-                            <img class="download-icon" src="/assets/img/download-solid.svg">
-                            <p class="card-text" id="topUsingRate{{$i}}">{{.UsingRate}}</p>
+                            <div class="col">
+                                <!-- Favorite Icon -->
+                                <div class="bookmark-icon">
+                                    {{$fillBool := "unfilled"}}
+                                    {{range $index, $favoriteid := $.User.FavoriteAssetIDs}}
+                                        {{if eq $itemid $favoriteid}}
+                                            {{$fillBool = "filled"}}
+                                        {{end}}
+                                    {{end}}
+                                    <div class="bookmark-clicklistener" onclick="clickBookmarkIcon(this, '{{$fillBool}}','{{$itemid}}');event.stopPropagation()"></div>
+                                    <object type="image/svg+xml" data="/assets/img/bookmark-{{$fillBool}}.svg" class="bookmark-{{$fillBool}}-icon"></object>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div id="topUsingCardTags{{$i}}">
-                        {{range .Tags}}
-                            <a href="/search?searchword=tag:{{.}}" class="tag badge badge-outline-darkmode">{{.}}</a>
-                        {{end}}
-                        <div class="tag finger badge badge-outline-warning" onclick="copyPath('{{.OutputDataPath}}')">Path</div>
+
+                        <div class="row m-0 mb-2" style="align-items: center;">
+                            <img class="download-icon" src="/assets/img/download-solid.svg"><p class="card-text">{{.UsingRate}}</p>
+                        </div>
+                        
+                        <div class="row">
+                            <img class="finger ml-2 mr-1" width="24px" height="24px" src="/assets/img/info.svg" data-toggle="modal" data-target="#modal-detailview" onclick="setDetailViewModal('{{.ID.Hex}}')">
+                            <div id="tags-{{.ID.Hex}}">
+                                {{range .Tags}}
+                                    <a href="/search?searchword=tag:{{.}}" class="tag badge badge-outline-darkmode">{{.}}</a>
+                                {{end}}
+                            </div>
+                            
+                            <div class="tag finger badge badge-outline-warning" onclick="copyPath('{{.OutputDataPath}}')">Path</div>
+                            {{if $.Adminsetting.EnableRVLink}}
+                                {{if eq .ItemType "clip" "footage" "hdri"}}
+                                    <div class="tag finger badge badge-outline-rvgreen" onclick="rvlink('{{.OutputDataPath}}')">RV</div>
+                                {{end}}
+                            {{end}}
+                        </div>
                     </div>
                 </div>
             </div>
-            {{end}}
-            {{$len := len .TopUsingItems}}
-            {{$modlen := mod $len 4}}
-            {{if eq $modlen 0}}
-            {{else}}
-            {{$len = sub 4 $modlen}}
-            {{range $index, $i := IntToSlice $len}}
-                <div class="card" id="topUsingCard{{add $modlen $index}}" style="width: {{$thumbnailwidth}}px; visibility: hidden;" value="{{$modlen}}"></div>
-            {{end}}    
-            {{end}}
+        {{end}}
     </div>
-    <script src="/assets/js/dotori.js"></script>
-    <script src="/assets/js/jquery-3.1.1.min.js"></script>
-    <script>topUsingClick('{{$.TopUsingTotalItemNum}}', 'init');</script>
 {{end}}
