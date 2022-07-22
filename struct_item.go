@@ -39,7 +39,7 @@ type Item struct {
 	RequireCopyInProcess   bool               `json:"requirecopyinprocess" bson:"requirecopyinprocess"`     // Process 단계에서 InputData로 부터 데이터 카피에 대한 필요 여부(예)인트라넷 Footage)
 	RequireMkdirInProcess  bool               `json:"requiremkdirinprocess" bson:"requiremkdirinprocess"`   // Process 단계에서 데이터 복사시 해당 id의 폴더를 생성할지 여부
 	InputData              InputData          // 최초 소스 정보 (예)인트라넷 Footage)
-	Categories             []string           `json:"categories" bson:"categories"` // 카테고리 리스트. 메인 > 서브 형태로 저장되는 구조이다.
+	Categories             []string           `json:"categories" bson:"categories"` // 카테고리 리스트. []string{"mainname"}, []string{"mainname","subname"} 형태로 저장되는 구조이다.
 }
 
 type InputData struct {
