@@ -423,6 +423,13 @@ func webserver() {
 	r.HandleFunc("/api/taglist", helpMethodOptionsHandler).Methods(http.MethodOptions)
 	r.HandleFunc("/api/taglist", getTaglistHandler).Methods("GET")
 
+	// REST API Category
+	//r.HandleFunc("/api/category", helpMethodOptionsHandler).Methods(http.MethodOptions)
+	r.HandleFunc("/api/category", postCategoryHandler).Methods("POST")
+	// r.HandleFunc("/api/category/{id}", getCategoryHandler).Methods("GET")
+	// r.HandleFunc("/api/category/{id}", putCategoryHandler).Methods("PUT")
+	// r.HandleFunc("/api/category/{id}", deleteCategoryHandler).Methods("DELETE")
+
 	r.Use(mux.CORSMethodMiddleware(r))
 	http.Handle("/", r)
 	// 웹서버 실행

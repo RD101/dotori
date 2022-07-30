@@ -796,3 +796,26 @@ func GetTags(client *mongo.Client) ([]string, error) {
 	sort.Strings(results)
 	return results, nil
 }
+
+func addCategory(client *mongo.Client, c Category) error {
+	err := c.CheckError()
+	if err != nil {
+		return err
+	}
+	collection := client.Database(*flagDBName).Collection("category")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	num, err := collection.CountDocuments(ctx, bson.M{"name": c.Name})
+	if err != nil {
+		return err
+	}
+	if num != 0 {
+		return errors.New("같은 이름을 가진 데이터가 있습니다")
+	}
+	_, err = collection.InsertOne(ctx, c)
+	if err != nil {
+		return err
+	}
+	return nil
+}
