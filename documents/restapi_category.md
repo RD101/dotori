@@ -12,7 +12,7 @@ Tags Restapi 입니다.
 
 | URI | Description | Attributes | Curl Example |
 | --- | --- | --- | --- |
-|/api/tags/{id}|기존 tags 정보를 수정합니다|tags|curl -X PUT -H "Authorization: Basic {TOKEN}“ -d '{"tags":["tag1","tag2","tag3"]}' "https://dotori.lazypic.com/api/tags/{id}"
+| /api/category/{id} | 기존 Category 정보를 수정합니다 | name, parentname |curl -X PUT -H "Authorization: Basic {TOKEN}“ -d '{"name":"env","parentname":""}' "https://dotori.lazypic.com/api/category/{id}"
 
 
 ## POST
