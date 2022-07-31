@@ -34,7 +34,7 @@ curl https://dotori.lazypic.com/api/category -v
 
 ```bash
 HTTP/1.1 200 OK
-< Access-Control-Allow-Methods: GET,PUT,OPTIONS
+< Access-Control-Allow-Methods: GET,PUT,DELETE,POST,OPTIONS
 < Access-Control-Allow-Origin: *
 < Date: Tue, 17 May 2022 02:10:41 GMT
 < Content-Length: 0
