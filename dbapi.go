@@ -796,3 +796,72 @@ func GetTags(client *mongo.Client) ([]string, error) {
 	sort.Strings(results)
 	return results, nil
 }
+
+func addCategory(client *mongo.Client, c Category) error {
+	err := c.CheckError()
+	if err != nil {
+		return err
+	}
+	collection := client.Database(*flagDBName).Collection("category")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	num, err := collection.CountDocuments(ctx, bson.M{"name": c.Name})
+	if err != nil {
+		return err
+	}
+	if num != 0 {
+		return errors.New("같은 이름을 가진 데이터가 있습니다")
+	}
+	_, err = collection.InsertOne(ctx, c)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func GetCategory(client *mongo.Client, id string) (Category, error) {
+	collection := client.Database(*flagDBName).Collection("category")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	var result Category
+	objID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return result, err
+	}
+	err = collection.FindOne(ctx, bson.M{"_id": objID}).Decode(&result)
+	if err != nil {
+		return result, err
+	}
+	return result, nil
+}
+
+func SetCategory(client *mongo.Client, c Category) error {
+	collection := client.Database(*flagDBName).Collection("category")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	_, err := collection.UpdateOne(
+		ctx,
+		bson.M{"_id": c.ID},
+		bson.D{{Key: "$set", Value: c}},
+	)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func RmCategory(client *mongo.Client, id string) error {
+	collection := client.Database(*flagDBName).Collection("category")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	objID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return err
+	}
+	_, err = collection.DeleteOne(ctx, bson.M{"_id": objID})
+	if err != nil {
+		return err
+	}
+	return nil
+}
