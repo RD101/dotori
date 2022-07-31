@@ -29,7 +29,7 @@ Tags Restapi 입니다.
 ## Option 체크
 
 ```bash
-curl https://dotori.lazypic.com/api/tags -v
+curl https://dotori.lazypic.com/api/category -v
 ```
 
 ```bash
