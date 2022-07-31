@@ -850,3 +850,18 @@ func SetCategory(client *mongo.Client, c Category) error {
 	}
 	return nil
 }
+
+func RmCategory(client *mongo.Client, id string) error {
+	collection := client.Database(*flagDBName).Collection("category")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	objID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return err
+	}
+	_, err = collection.DeleteOne(ctx, bson.M{"_id": objID})
+	if err != nil {
+		return err
+	}
+	return nil
+}
