@@ -1,6 +1,6 @@
-# RestAPI Tags
+# RestAPI Category
 
-Tags Restapi 입니다.
+Category Restapi 입니다.
 
 ## GET
 
