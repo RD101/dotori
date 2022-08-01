@@ -135,6 +135,7 @@ Dotori는 REST API를 지원합니다. Python, Go, Java, Javascript, node.JS, C+
 - [User](documents/restapi_user.md)
 - [Item](documents/restapi_item.md)
 - [Tags](documents/restapi_tags.md)
+- [Category](documents/restapi_category.md)
 
 ### 예제파일 안내
 
