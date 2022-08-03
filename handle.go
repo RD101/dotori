@@ -429,8 +429,8 @@ func webserver() {
 	r.HandleFunc("/api/category/{id}", getCategoryHandler).Methods("GET")
 	r.HandleFunc("/api/category/{id}", putCategoryHandler).Methods("PUT")
 	r.HandleFunc("/api/category/{id}", deleteCategoryHandler).Methods("DELETE")
-	r.HandleFunc("/api/categories", getCategoriesHandler).Methods("GET")                 // 메인 카테고리를 가지고 온다.
-	r.HandleFunc("/api/categories/{parentname}", getSubCategoriesHandler).Methods("GET") // Sub 카테고리를 가지고 온다.
+	r.HandleFunc("/api/rootcategories", getRootCategoriesHandler).Methods("GET")            // 메인 카테고리를 가지고 온다.
+	r.HandleFunc("/api/subcategories/{parentname}", getSubCategoriesHandler).Methods("GET") // Sub 카테고리를 가지고 온다.
 
 	r.Use(mux.CORSMethodMiddleware(r))
 	http.Handle("/", r)

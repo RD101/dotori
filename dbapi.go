@@ -836,7 +836,7 @@ func GetCategory(client *mongo.Client, id string) (Category, error) {
 	return result, nil
 }
 
-func GetCategories(client *mongo.Client) ([]Category, error) {
+func GetRootCategories(client *mongo.Client) ([]Category, error) {
 	collection := client.Database(*flagDBName).Collection("category")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()

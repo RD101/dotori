@@ -7,8 +7,8 @@ Category Restapi 입니다.
 | URI | Description | Attributes | Curl Example |
 | --- | --- | --- | --- |
 | /api/category/{id} | Category 정보를 가져옵니다 | id | curl -X GET -H "Authorization: Basic {TOKEN}" "https://dotori.lazypic.com/api/category/{id}"
-| /api/categories | 메인 Category 정보를 가져옵니다 | . | curl -X GET -H "Authorization: Basic {TOKEN}" "https://dotori.lazypic.com/api/categories"
-| /api/categories/{parentname} | 서브 Category 정보를 가져옵니다 | parentname | curl -X GET -H "Authorization: Basic {TOKEN}" "https://dotori.lazypic.com/api/categories/{parentname}"
+| /api/rootcategories | 메인 Category 정보를 가져옵니다 | . | curl -X GET -H "Authorization: Basic {TOKEN}" "https://dotori.lazypic.com/api/rootcategories"
+| /api/subcategories/{parentname} | 서브 Category 정보를 가져옵니다 | parentname | curl -X GET -H "Authorization: Basic {TOKEN}" "https://dotori.lazypic.com/api/subcategories/{parentname}"
 
 ## PUT
 

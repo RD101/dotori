@@ -200,7 +200,7 @@ func getCategoryHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 }
 
-func getCategoriesHandler(w http.ResponseWriter, r *http.Request) {
+func getRootCategoriesHandler(w http.ResponseWriter, r *http.Request) {
 	//mongoDB client 연결
 	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 	if err != nil {
@@ -230,7 +230,7 @@ func getCategoriesHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	c, err := GetCategories(client)
+	c, err := GetRootCategories(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
