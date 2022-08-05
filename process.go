@@ -1219,6 +1219,32 @@ func copyInputDataToOutputDataPathFootage(adminSetting Adminsetting, item Item) 
 		if err != nil {
 			return err
 		}
+		// 복사된 파일의 권한을 변경한다.
+		err = setFilePermission(dest, adminSetting)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func setFilePermission(path string, adminSetting Adminsetting) error {
+	umask, err := strconv.Atoi(adminSetting.Umask)
+	if err != nil {
+		return err
+	}
+	unix.Umask(umask)
+	uid, err := strconv.Atoi(adminSetting.UID)
+	if err != nil {
+		return err
+	}
+	gid, err := strconv.Atoi(adminSetting.GID)
+	if err != nil {
+		return err
+	}
+	err = os.Chown(path, uid, gid)
+	if err != nil {
+		return err
 	}
 	return nil
 }
@@ -1239,6 +1265,11 @@ func copyInputDataToOutputDataPathClip(adminSetting Adminsetting, item Item) err
 		return err
 	}
 	err = ioutil.WriteFile(dest, bytesRead, os.FileMode(filePerm))
+	if err != nil {
+		return err
+	}
+	// 복사된 파일의 권한을 변경한다.
+	err = setFilePermission(dest, adminSetting)
 	if err != nil {
 		return err
 	}
