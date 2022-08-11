@@ -836,6 +836,42 @@ func GetCategory(client *mongo.Client, id string) (Category, error) {
 	return result, nil
 }
 
+func GetRootCategories(client *mongo.Client) ([]Category, error) {
+	collection := client.Database(*flagDBName).Collection("category")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	var results []Category
+	opts := options.Find()
+	opts.SetSort(bson.M{"name": 1})
+	cursor, err := collection.Find(ctx, bson.M{"parentname": ""}, opts)
+	if err != nil {
+		return results, err
+	}
+	err = cursor.All(ctx, &results)
+	if err != nil {
+		return results, err
+	}
+	return results, nil
+}
+
+func GetSubCategories(client *mongo.Client, parentname string) ([]Category, error) {
+	collection := client.Database(*flagDBName).Collection("category")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	var results []Category
+	opts := options.Find()
+	opts.SetSort(bson.M{"name": 1})
+	cursor, err := collection.Find(ctx, bson.M{"parentname": parentname}, opts)
+	if err != nil {
+		return results, err
+	}
+	err = cursor.All(ctx, &results)
+	if err != nil {
+		return results, err
+	}
+	return results, nil
+}
+
 func SetCategory(client *mongo.Client, c Category) error {
 	collection := client.Database(*flagDBName).Collection("category")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
