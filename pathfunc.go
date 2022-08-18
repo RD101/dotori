@@ -225,6 +225,9 @@ func RmData(client *mongo.Client, id string) error {
 		return err
 	}
 	for {
+		if splitpath == rootpath {
+			break
+		}
 		splitpath, _ = path.Split(splitpath)
 		splitpath = strings.TrimSuffix(splitpath, "/")
 		c, err := ioutil.ReadDir(splitpath)
@@ -238,9 +241,6 @@ func RmData(client *mongo.Client, id string) error {
 				return err
 			}
 		} else {
-			break
-		}
-		if splitpath == rootpath {
 			break
 		}
 	}
