@@ -123,16 +123,13 @@ function setDetailViewModal(itemid) {
             let outputdatapath=response["outputdatapath"]
             let footerHtml = `
             <button type="button" class="btn btn-sm btn-outline-darkmode" id="modal-detailview-download-button" onclick="location.href='/download-item?id=${itemid}'">Download</button>
-            <button type="button" class="btn btn-sm btn-outline-darkmode" id="modal-detailview-copypath-button" onclick="copyPath('${outputdatapath}')">Copy Path</button>
             `
             let footerHtmlForAdmin=`
             <button type="button" class="btn btn-sm btn-outline-darkmode" id="modal-detailview-download-button" onclick="location.href='/download-item?id=${itemid}'">Download</button>
-            <button type="button" class="btn btn-sm btn-outline-darkmode" id="modal-detailview-copypath-button" onclick="copyPath('${outputdatapath}')">Copy Path</button>
             <button type="button" class="btn btn-sm btn-outline-danger" id="modal-detailview-download-button" onclick="location.href='/rename/${itemid}'">Rename</button>
             <button type="button" class="btn btn-sm btn-outline-danger" id="modal-detailview-delete-button" data-dismiss="modal" data-toggle="modal" data-target="#modal-rmitem">Delete</button>
             `
             if (document.getElementById("accesslevel").value == "admin") {
-                console.log("test")
                 document.getElementById("modal-rmitem-itemid").value = itemid;
                 document.getElementById("modal-detailview-footer").innerHTML = footerHtmlForAdmin       // admin 계정일 때만 delete 버튼이 보인다.
             } else {
