@@ -1,12 +1,13 @@
 # DOTORI
 
+![workflow](https://github.com/rd101/dotori/actions/workflows/go.yml/badge.svg)
 [![Go Report Card](https://goreportcard.com/badge/github.com/rd101/dotori)](https://goreportcard.com/report/github.com/rd101/dotori)
 
-VFX, 애니메이션, 게임, 사운드, 레퍼런스, 기타 데이터 관리 등 콘텐츠 제작에 사용되는 에셋 관리 솔루션
-
-## Screenshot
+VFX, Animation, Game, Sound, Reference Data, Etc Data 등 콘텐츠 제작에 사용되는 에셋 관리 솔루션
 
 ![screenshot](documents/screenshot.png)
+
+![process](documents/process.png)
 
 ## Demo
 
