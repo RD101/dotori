@@ -27,10 +27,6 @@ VFX, Animation, Game, Sound, Reference Data, Etc Data 등 콘텐츠 제작에 �
 
 ## Roadmap 2022
 
-- ~~멀티선택: 에셋의 속성(Tag)를 다중으로 Overwrite, Remove, Add 가능(진행중)~~
-- ~~에셋 소스를 multi select 할 때 한 번에 'copy path'가 단축키 설정(진행중)~~
-- ~~태그 페이지 제작(진행중)~~
-- ~~메인 화면에 에셋이 NEW 4개 / TOP 4개 총 8개까지 보여지고 있으나, 10개 또는 30개까지 보일 수 있도록 개인별로 선택할 수 있게 옵션값 생성~~
 - 카테고리 기능(진행중)
 - 검색 엔진 상단 카테고리 종류 Hide/추가할 수 있게 커스텀 가능하게 수정
 - 검색 엔진에 여러 가지를 검색할 때 'and'의 개념이 아니라 'or'의 기능 추가 (샷그리드에서 콤마쓰듯이)
@@ -50,6 +46,7 @@ VFX, Animation, Game, Sound, Reference Data, Etc Data 등 콘텐츠 제작에 �
 - 내부 인트라넷 서버구축
 - DB 관리모드 지원
 - OpenColorIO, OpenImageIO, FFmpeg 오픈소스를 통한 연산
+- OpenPipelieIO와 연동
 - 유저관리
 
 ## 사용 방법
