@@ -134,7 +134,7 @@ func webserver() {
 	r.HandleFunc("/editfootage", handleEditFootage)
 	r.HandleFunc("/editfootage-submit", handleEditFootageSubmit)
 	r.HandleFunc("/editfootage-success", handleEditFootageSuccess)
-	r.HandleFunc("/api/searchfootages", handleAPISearchFootageAndClip)
+	r.HandleFunc("/api/searchfootages", handleAPISearchFootages)
 	r.HandleFunc("/api/addfootage", handleAPIAddFootage)
 
 	// Clip
