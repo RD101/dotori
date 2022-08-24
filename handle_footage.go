@@ -819,7 +819,7 @@ func handleAPISearchFile(w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 }
 
-func handleAPISearchFootageAndClip(w http.ResponseWriter, r *http.Request) {
+func handleAPISearchFootages(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method Only POST", http.StatusMethodNotAllowed)
 		return
@@ -860,7 +860,7 @@ func handleAPISearchFootageAndClip(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "path 를 설정해주세요", http.StatusBadRequest)
 		return
 	}
-	items, err := searchSeqAndClip(path)
+	items, err := searchSeq(path)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

@@ -9,6 +9,8 @@ VFX, Animation, Game, Sound, Reference Data, Etc Data 등 콘텐츠 제작에 �
 
 ![process](documents/process.png)
 
+![multifootage](documents/multifootages.png)
+
 ## Demo
 
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/VNBdlPDKzTc/0.jpg)](http://www.youtube.com/watch?v=VNBdlPDKzTc "Asset Library System - DOTORI")
