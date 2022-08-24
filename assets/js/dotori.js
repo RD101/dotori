@@ -87,7 +87,7 @@ function setDetailViewModal(itemid) {
             document.getElementById("modal-detailview-itemid").innerHTML = itemid;
             document.getElementById("modal-detailview-itemtype").innerHTML = itemtype;
             document.getElementById("modal-detailview-author").innerHTML = response["author"];
-            document.getElementById("modal-detailview-description").innerHTML = response["description"];
+            document.getElementById("modal-detailview-description").innerHTML = response["description"].replace(/(\r\n|\n|\r)/g,"<br />");
             
             // Tags 세팅
             let tagsHtml = `<strong>Tags</strong><br>`;
