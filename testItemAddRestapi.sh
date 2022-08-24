@@ -212,10 +212,10 @@ echo ""
 echo "----nuke-----"
 echo ""
 curl -H "Authorization: Basic $TOKEN" \
--X POST -F "file1=@$example/nuke/nuke_scene.jpg;type=image/jpeg" \
--F "file2=@$example/nuke/nuke_scene.mov;type=video/quicktime" \
--F "file4=@$example/nuke/nuke_scene.nk;type=application/octet-stream" \
--F "file4=@$example/nuke/nuke_gizmo.gizmo;type=application/octet-stream" \
+-X POST \
+-F "file1=@$example/nuke/nuke_scene.mov;type=video/quicktime" \
+-F "file2=@$example/nuke/nuke_scene.nk;type=application/octet-stream" \
+-F "file3=@$example/nuke/nuke_gizmo.gizmo;type=application/octet-stream" \
 -F "itemtype=nuke" \
 -F "title=nuke restapi test" \
 -F "author=dchecheb" \

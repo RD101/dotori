@@ -852,15 +852,6 @@ func ProcessNukeItem(client *mongo.Client, adminSetting Adminsetting, item Item)
 	if err != nil {
 		return err
 	}
-	// 썸네일 이미지를 생성한다.
-	err = SetStatus(client, item, "creating thumbnail image")
-	if err != nil {
-		return err
-	}
-	err = genThumbImage(adminSetting, item)
-	if err != nil {
-		return err
-	}
 	// .ogg 썸네일 동영상을 생성한다.
 	err = SetStatus(client, item, "creating .ogg media")
 	if err != nil {
