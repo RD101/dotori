@@ -24,6 +24,7 @@ var (
 	flagAdd               = flag.Bool("add", false, "add mode")
 	flagRm                = flag.Bool("remove", false, "remove mode")
 	flagSeek              = flag.Bool("seek", false, "seek mode") // 해당 폴더를 탐색할 때 사용합니다.
+	flagExt               = flag.String("ext", "", "extenstion")  // 확장자
 	flagSearch            = flag.Bool("search", false, "search mode")
 	flagSearchWord        = flag.String("searchword", "", "search word") // DB를 검색할 때 사용합니다.
 	flagSearchID          = flag.Bool("searchid", false, "search a item by its id")
@@ -74,7 +75,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if *flagSeek {
+	if *flagSeek && *flagExt == "" {
 		items, err := searchSeqAndClip(*flagInputDataPath)
 		if err != nil {
 			log.Fatal(err)
@@ -84,6 +85,15 @@ func main() {
 			log.Fatal(err)
 		}
 		fmt.Println(string(data))
+		os.Exit(0)
+	} else if *flagSeek && *flagExt != "" {
+		paths, err := searchExt(*flagInputDataPath, *flagExt)
+		if err != nil {
+			log.Fatal(err)
+		}
+		for _, path := range paths {
+			fmt.Println(path)
+		}
 		os.Exit(0)
 	} else if *flagSearch {
 		//mongoDB client 연결
