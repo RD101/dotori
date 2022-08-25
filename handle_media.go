@@ -70,6 +70,8 @@ func handleMediaData(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, item.OutputThumbnailMovPath+" 파일이 존재하지 않습니다", http.StatusNotFound)
 			return
 		}
+		w.Header().Add("Content-Type", "video/quicktime")
+		w.WriteHeader(http.StatusOK)
 		http.ServeFile(w, r, item.OutputThumbnailMovPath)
 		return
 	case "ogg":
@@ -77,6 +79,8 @@ func handleMediaData(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, item.OutputThumbnailOggPath+" 파일이 존재하지 않습니다", http.StatusNotFound)
 			return
 		}
+		w.Header().Add("Content-Type", "video/ogg")
+		w.WriteHeader(http.StatusOK)
 		http.ServeFile(w, r, item.OutputThumbnailOggPath)
 		return
 	case "png":
@@ -84,6 +88,8 @@ func handleMediaData(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, item.OutputThumbnailPngPath+" 파일이 존재하지 않습니다", http.StatusNotFound)
 			return
 		}
+		w.Header().Add("Content-Type", "image/png")
+		w.WriteHeader(http.StatusOK)
 		http.ServeFile(w, r, item.OutputThumbnailPngPath)
 		return
 	default:
