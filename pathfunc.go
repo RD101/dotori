@@ -208,6 +208,34 @@ func searchClip(searchpath string) ([]Source, error) {
 	return items, nil
 }
 
+// searchExt 함수는 경로와 확장자를 받아서 해당확장자의 경로를 반환한다.
+func searchExt(searchpath, extenstion string) ([]string, error) {
+	_, err := os.Stat(searchpath) // 경로가 존재하는지 체크한다.
+	if err != nil {
+		return nil, err
+	}
+	var paths []string
+	err = filepath.Walk(searchpath, func(path string, info os.FileInfo, err error) error {
+		// 숨김폴더는 스킵한다.
+		if info.IsDir() && strings.HasPrefix(info.Name(), ".") {
+			return nil //filepath.SkipDir
+		}
+		// 숨김파일
+		if strings.HasPrefix(info.Name(), ".") {
+			return nil
+		}
+		ext := strings.ToLower(filepath.Ext(path))
+		if ext == extenstion {
+			paths = append(paths, path)
+		}
+		return nil
+	})
+	if err != nil {
+		log.Printf("error walking the path %q: %v\n", searchpath, err)
+	}
+	return paths, nil
+}
+
 // Seqnum2Sharp 함수는 경로와 파일명을 받아서 시퀀스부분을 #문자열로 바꾸고 시퀀스의 숫자를 int로 바꾼다.
 // "test.0002.jpg" -> "test.####.jpg", 2, nil
 func Seqnum2Sharp(filename string) (string, int, error) {
