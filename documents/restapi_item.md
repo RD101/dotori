@@ -6,6 +6,7 @@
 | --- | --- | --- | --- |
 | /api/item | 아이템 가지고 오기 | id | `$ curl -k -H "Authorization: Basic {TOKEN}" "https://dotori.lazypic.com/api/item?id=61c0189f3080e2b623db8b43"` |
 | /api/donwloadzipfile | 아이템 다운로드 | id | `$ curl -H "Authorization: Basic {TOKEN}" -o "/download/path/filename.zip" "https://dotori.lazypic.com/api/downloadzipfile?id=61ecba13e5fec171fe4e47e8"` |
+| /api/nukepath/{id} | Foundry Nuke Asset 경로 가지고 오기 | id | `$ curl -X GET -H "Authorization: Basic {TOKEN}" "https://dotori.lazypic.com/api/nukepath/{id}"` |
 
 
 ## Post

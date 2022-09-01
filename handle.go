@@ -187,6 +187,7 @@ func webserver() {
 	r.HandleFunc("/editnuke", handleEditNuke)
 	r.HandleFunc("/editnuke-submit", handleEditNukeSubmit)
 	r.HandleFunc("/editnuke-success", handleEditNukeSuccess)
+	r.HandleFunc("/api/nukepath/{id}", getNukePathHandler).Methods("GET")
 
 	// Houdini
 	r.HandleFunc("/addhoudini", handleAddHoudini)
