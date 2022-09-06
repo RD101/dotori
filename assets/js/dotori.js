@@ -384,7 +384,7 @@ function copyClipboard(value) {
 }
 
 
-// copyPath 함수는 아이디값을 받아서, 클립보드로 복사하는 기능이다.
+// copyPath 함수는 경로를 받아서, 클립보드로 복사하는 기능이다.
 function copyPath(path) {
     let admin = new Object()
     fetch('/api/adminsetting', {
@@ -410,6 +410,54 @@ function copyPath(path) {
         path = admin.windowsuncprefix + path.replace(/\//g, "\\")
     }
     copyClipboard(path)
+}
+
+// copyNukePath 함수는 ID값을 받아서, 클립보드로 복사하는 기능이다.
+function copyNukePath(id) {
+    fetch('/api/adminsetting', {
+        method: 'GET',
+        headers: {
+            "Authorization": "Basic "+ document.getElementById("token").value,
+        },
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw Error(response.statusText + " - " + response.url);
+        }
+        return response.json()
+    })
+    .then((admin) => {
+        // 설정을 불러오는 것이 확인되면 경로를 불러온다.
+        fetch('/api/nukepath/'+id, {
+            method: 'GET',
+            headers: {
+                "Authorization": "Basic "+ document.getElementById("token").value,
+            },
+        })
+        .then((response) => {
+            if (!response.ok) {
+                throw Error(response.statusText + " - " + response.url);
+            }
+            return response.json()
+        })
+        .then((data) => {
+            let paths = data.nukepath;
+            let path = ""
+            // 읽어보기 https://elvanov.com/2597
+            if (navigator.userAgent.indexOf("Win") != -1) { // windows 경우
+                path = admin.windowsuncprefix + paths[0].replace(/\//g, "\\")
+            } else {
+                path = paths[0]
+            }
+            copyClipboard(path)
+        })
+        .catch((err) => {
+            alert(err)
+        });
+    })
+    .catch((err) => {
+        alert(err)
+    });
 }
 
 
