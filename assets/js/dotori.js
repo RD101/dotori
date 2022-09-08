@@ -412,22 +412,34 @@ function copyPath(path) {
     copyClipboard(path)
 }
 
-// copyNukePath 함수는 ID값을 받아서, 클립보드로 복사하는 기능이다.
+
+/** copyNukePath 함수는 ID값을 받아서, 클립보드로 복사하는 기능이다.*/
 function copyNukePath(id) {
-    fetch('/api/adminsetting', {
-        method: 'GET',
-        headers: {
-            "Authorization": "Basic "+ document.getElementById("token").value,
-        },
-    })
-    .then((response) => {
-        if (!response.ok) {
-            throw Error(response.statusText + " - " + response.url);
-        }
-        return response.json()
-    })
-    .then((admin) => {
-        // 설정을 불러오는 것이 확인되면 경로를 불러온다.
+    let admin = new Object()
+    let paths = []
+    let getAdmin = new Promise( function( resolve, reject ) {
+        fetch('/api/adminsetting', {
+            method: 'GET',
+            headers: {
+                "Authorization": "Basic "+ document.getElementById("token").value,
+            },
+        })
+        .then((response) => {
+            if (!response.ok) {
+                throw Error(response.statusText + " - " + response.url);
+            }
+            return response.json()
+        })
+        .then((data) => {
+            admin = data;
+            resolve();
+        })
+        .catch((err) => {
+            reject(err)
+        });
+    });
+
+    let getNukePaths = new Promise( function( resolve, reject ) {
         fetch('/api/nukepath/'+id, {
             method: 'GET',
             headers: {
@@ -441,27 +453,36 @@ function copyNukePath(id) {
             return response.json()
         })
         .then((data) => {
-            let paths = data.nukepath;
-            let path = ""
-            // 읽어보기 https://elvanov.com/2597
-            if (navigator.userAgent.indexOf("Win") != -1) { // windows 경우
-                path = admin.windowsuncprefix + paths[0].replace(/\//g, "\\")
-            } else {
-                path = paths[0]
-            }
-            copyClipboard(path)
+            paths = data.nukepath
+            resolve();
         })
         .catch((err) => {
-            alert(err)
+            reject(err)
         });
-    })
-    .catch((err) => {
-        alert(err)
     });
+    Promise.all( [ getAdmin, getNukePaths ] )
+    .then(function () {
+        // 모든 RestAPI가 성공하면 아래 항목을 실행한다.
+        if (paths.length != 1) {
+            tata.error('Copy Clipboard', "There are several .nk files in the data folder.", {
+                position: 'tr',
+                duration: 1000,
+                onClose: null,
+            })
+            return
+        }
+        let path = paths.pop()
+        if (navigator.userAgent.indexOf("Win") != -1) { // windows 경우
+            path = admin.windowsuncprefix + path.replace(/\//g, "\\")
+        }
+        copyClipboard(path)
+    })
+    .catch(function ( reason ) {
+        console.log( reason ); // rejected되었기때문에 여기가 출력
+    });    
 }
 
 
-// copyPath 함수는 아이디값을 받아서, 클립보드로 복사하는 기능이다.
 function rvlink(path) {
     let admin = new Object()
     fetch('/api/adminsetting', {
