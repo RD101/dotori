@@ -89,7 +89,6 @@ func handleMediaData(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		w.Header().Add("Content-Type", "image/png")
-		w.WriteHeader(http.StatusOK)
 		http.ServeFile(w, r, item.OutputThumbnailPngPath)
 		return
 	default:

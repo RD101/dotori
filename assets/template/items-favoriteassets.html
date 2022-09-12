@@ -69,15 +69,20 @@
                         </div>
                         <div>
                             <img class="finger" src="/assets/img/info.svg" data-toggle="modal" data-target="#modal-detailview" onclick="setDetailViewModal('{{.ID.Hex}}')">
-                            {{range .Tags}}
-                                <a href="/search?searchword=tag:{{.}}" class="tag badge badge-outline-darkmode">{{.}}</a>
+                            {{if eq .ItemType "nuke"}}
+                                <div class="tag finger badge badge-outline-warning" onclick="copyNukePath('{{.ID.Hex}}')">.nk</div>
+                            {{else}}
+                                <div class="tag finger badge badge-outline-warning" onclick="copyPath('{{.OutputDataPath}}')">Path</div>
                             {{end}}
-                            <div class="tag finger badge badge-outline-warning" onclick="copyPath('{{.OutputDataPath}}')">Path</div>
                             {{if $.Adminsetting.EnableRVLink}}
                                 {{if eq .ItemType "clip" "footage" "hdri"}}
                                     <div class="tag finger badge badge-outline-rvgreen" onclick="rvlink('{{.OutputDataPath}}')">RV</div>
                                 {{end}}
                             {{end}}
+                            {{range .Tags}}
+                                <a href="/search?searchword=tag:{{.}}" class="tag badge badge-outline-darkmode">{{.}}</a>
+                            {{end}}
+                            
                         </div>
                     </div>
                 </div>
