@@ -5,19 +5,23 @@
 
 <div class="container py-5 px-2">
     <div class="col-lg-12 col-md-12 col-sm-12 mx-auto">
-        <div class="pt-3 pb-3">
-            <h2 class="text-muted">Category</h2>
+        <div class="row">
+            <div class="col text-secondary ps-1 ms-1">Main Category</div>
+            <div class="col text-secondary ps-1 ms-1">Sub Category</div>
         </div>
         <div class="row">
-            <div class="col-sm">
-                <div class="form-group">
-                    <label class="text-muted">Find Path</label>
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Path" id="searchpath">
-                        <button class="btn btn-outline-warning" type="button" id="searchclips">ScanPath</button>
-                    </div>
-                    <small class="form-text text-danger">OS에서 보안상 제약이 걸린 경로가 포함된 경우, 너무 많은 소스가 존재하는 경로를 설정할 경우 웹서버에 부하를 줄 수 있습니다.</small>
+            <div class="col border border-secondary p-1 m-1">
+                <div class="category border border-warning p-2 ps-3 m-1 d-block align-items-center">
+                    <span class="">main1</span>
+                        <img src="/assets/img/delete.svg" class="mt-1 icon finger" data-toggle="modal" data-target="#modal-rmcategory" onclick="setRmCategoryModal('')">
                 </div>
+                <div class="category border border-dark p-2 ps-3 m-1">main2</div>
+                <div class="category border border-dark p-2 ps-3 m-1">main3</div>
+            </div>
+            <div class="col border border-secondary p-1 m-1">
+                <div class="category border border-dark p-2 ps-3 m-1">sub1</div>
+                <div class="category border border-dark p-2 ps-3 m-1">sub2</div>
+                <div class="category border border-dark p-2 ps-3 m-1">sub3</div>
             </div>
         </div>
 </div>

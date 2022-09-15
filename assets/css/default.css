@@ -443,3 +443,12 @@ body {
     -ms-user-select: none;
     user-select: none;
 }
+
+.category {
+	background-color: #3c4043;
+	color: #a8a8a8;
+}
+
+.icon {
+	float: right;
+}
