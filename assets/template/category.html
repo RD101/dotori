@@ -3,27 +3,49 @@
 <body>
 {{template "navbar-bootstrap5" .}}
 
-<div class="container py-5 px-2">
+<div class="container py-4 px-3">
     <div class="col-lg-12 col-md-12 col-sm-12 mx-auto">
         <div class="row">
-            <div class="col text-secondary ps-1 ms-1">Main Category</div>
-            <div class="col text-secondary ps-1 ms-1">Sub Category</div>
+            <div class="col text-darkmode ps-1 ms-1">Main Category</div>
+            <div class="col text-darkmode ps-1 ms-1">Sub Category</div>
         </div>
         <div class="row">
-            <div class="col border border-secondary p-1 m-1">
-                <div class="category border border-warning p-2 ps-3 m-1 d-block align-items-center">
-                    <span class="">main1</span>
+            <div class="col border border-darkmode p-1 m-1">
+                <div class="finger category-add border border-darkmode p-2 m-1 text-center">+</div>
+                <div id="maincategory">
+                    <div class="finger category border border-warning p-2 ps-3 m-1 d-block align-items-center">
+                        Main1
                         <img src="/assets/img/delete.svg" class="mt-1 icon finger" data-toggle="modal" data-target="#modal-rmcategory" onclick="setRmCategoryModal('')">
+                    </div>
+                    <div class="finger category border border-dark p-2 ps-3 m-1">
+                        Main2
+                        <img src="/assets/img/delete.svg" class="mt-1 icon finger" data-toggle="modal" data-target="#modal-rmcategory" onclick="setRmCategoryModal('')">
+                    </div>
+                    <div class="finger category border border-dark p-2 ps-3 m-1">
+                        Main3
+                        <img src="/assets/img/delete.svg" class="mt-1 icon finger" data-toggle="modal" data-target="#modal-rmcategory" onclick="setRmCategoryModal('')">
+                    </div>
                 </div>
-                <div class="category border border-dark p-2 ps-3 m-1">main2</div>
-                <div class="category border border-dark p-2 ps-3 m-1">main3</div>
             </div>
-            <div class="col border border-secondary p-1 m-1">
-                <div class="category border border-dark p-2 ps-3 m-1">sub1</div>
-                <div class="category border border-dark p-2 ps-3 m-1">sub2</div>
-                <div class="category border border-dark p-2 ps-3 m-1">sub3</div>
+            <div class="col border border-darkmode p-1 m-1">
+                <div class="finger category-add border border-darkmode p-2 m-1 text-center">+</div>
+                <div id="subcategory">
+                    <div class="finger category border border-dark p-2 ps-3 m-1">
+                        Sub1
+                        <img src="/assets/img/delete.svg" class="mt-1 icon finger" data-toggle="modal" data-target="#modal-rmcategory" onclick="setRmCategoryModal('')">
+                    </div>
+                    <div class="finger category border border-dark p-2 ps-3 m-1">
+                        Sub2
+                        <img src="/assets/img/delete.svg" class="mt-1 icon finger" data-toggle="modal" data-target="#modal-rmcategory" onclick="setRmCategoryModal('')">
+                    </div>
+                    <div class="finger category border border-dark p-2 ps-3 m-1">
+                        Sub3
+                        <img src="/assets/img/delete.svg" class="mt-1 icon finger" data-toggle="modal" data-target="#modal-rmcategory" onclick="setRmCategoryModal('')">
+                    </div>
+                </div>
             </div>
         </div>
+    </div>
 </div>
 
 
