@@ -425,6 +425,7 @@ func webserver() {
 	r.HandleFunc("/api/taglist", getTaglistHandler).Methods("GET")
 
 	// REST API Category
+	r.HandleFunc("/category", handleCategory)
 	r.HandleFunc("/api/category", helpMethodOptionsHandler).Methods(http.MethodGet, http.MethodPut, http.MethodDelete, http.MethodOptions)
 	r.HandleFunc("/api/category", postCategoryHandler).Methods("POST")
 	r.HandleFunc("/api/category/{id}", getCategoryHandler).Methods("GET")
