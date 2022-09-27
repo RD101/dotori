@@ -154,6 +154,33 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal : Add Category -->
+    <div class="modal" id="modal-addcategory" tabindex="-1" role="dialog" aria-labeledby="modal-addcategory" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content text-white" style="background-color: #2e2d2d">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-addcategory-title">Add Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label class="pt-1 text-darkmode">Name</label>
+                                <input type="text" class="form-control" id="modal-addcategory-name" placeholder="Name" autocomplete="off">
+                                <small class="text-darkmode">Please type in the category name.</small>
+                            </div>
+                        </div>
+                    </div>                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-darkmode" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-outline-warning" onclick="AddCategory()" data-bs-dismiss="modal">ADD</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {{end}}
 
