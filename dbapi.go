@@ -806,7 +806,7 @@ func addCategory(client *mongo.Client, c Category) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	num, err := collection.CountDocuments(ctx, bson.M{"name": c.Name})
+	num, err := collection.CountDocuments(ctx, bson.M{"name": c.Name, "parentid": c.ParentID})
 	if err != nil {
 		return err
 	}
@@ -843,7 +843,7 @@ func GetRootCategories(client *mongo.Client) ([]Category, error) {
 	var results []Category
 	opts := options.Find()
 	opts.SetSort(bson.M{"name": 1})
-	cursor, err := collection.Find(ctx, bson.M{"parentname": ""}, opts)
+	cursor, err := collection.Find(ctx, bson.M{"parentid": ""}, opts)
 	if err != nil {
 		return results, err
 	}
@@ -854,14 +854,14 @@ func GetRootCategories(client *mongo.Client) ([]Category, error) {
 	return results, nil
 }
 
-func GetSubCategories(client *mongo.Client, parentname string) ([]Category, error) {
+func GetSubCategories(client *mongo.Client, parentid string) ([]Category, error) {
 	collection := client.Database(*flagDBName).Collection("category")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	var results []Category
 	opts := options.Find()
 	opts.SetSort(bson.M{"name": 1})
-	cursor, err := collection.Find(ctx, bson.M{"parentname": parentname}, opts)
+	cursor, err := collection.Find(ctx, bson.M{"parentid": parentid}, opts)
 	if err != nil {
 		return results, err
 	}
@@ -895,7 +895,13 @@ func RmCategory(client *mongo.Client, id string) error {
 	if err != nil {
 		return err
 	}
+	// 부모를 삭제한다.
 	_, err = collection.DeleteOne(ctx, bson.M{"_id": objID})
+	if err != nil {
+		return err
+	}
+	// 자식들을 지운다.
+	_, err = collection.DeleteMany(ctx, bson.M{"parentid": id})
 	if err != nil {
 		return err
 	}

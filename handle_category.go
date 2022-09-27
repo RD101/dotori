@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
@@ -101,8 +102,8 @@ func postCategoryHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	type Option struct {
-		Name       string `json:"name"`
-		ParentName string `json:"parentname"`
+		Name     string `json:"name"`
+		ParentID string `json:"parentid"`
 	}
 	opt := Option{}
 	var unmarshalErr *json.UnmarshalTypeError
@@ -120,13 +121,14 @@ func postCategoryHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	c := Category{}
+	c.ID = primitive.NewObjectID()
 	c.Name = opt.Name
-	c.ParentName = opt.ParentName
+	c.ParentID = opt.ParentID
 	err = addCategory(client, c)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-	data, err := json.Marshal(opt)
+	data, err := json.Marshal(c)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -165,8 +167,8 @@ func putCategoryHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	type Option struct {
-		Name       string `json:"name"`
-		ParentName string `json:"parentname"`
+		Name     string `json:"name"`
+		ParentID string `json:"parentid"`
 	}
 	opt := Option{}
 	var unmarshalErr *json.UnmarshalTypeError
@@ -195,7 +197,7 @@ func putCategoryHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	c.Name = opt.Name
-	c.ParentName = opt.ParentName
+	c.ParentID = opt.ParentID
 	err = SetCategory(client, c)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -332,12 +334,12 @@ func getSubCategoriesHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	vars := mux.Vars(r)
-	parentname := vars["parentname"]
-	if parentname == "" {
-		http.Error(w, "parentname을 설정해주세요", http.StatusBadRequest)
+	parentid := vars["parentid"]
+	if parentid == "" {
+		http.Error(w, "parentid를 설정해주세요", http.StatusBadRequest)
 		return
 	}
-	c, err := GetSubCategories(client, parentname)
+	c, err := GetSubCategories(client, parentid)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
