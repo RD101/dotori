@@ -23,6 +23,7 @@ func handleCategory(w http.ResponseWriter, r *http.Request) {
 		Token
 		Adminsetting Adminsetting
 		RootCategory []Category
+		User         User
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -45,6 +46,12 @@ func handleCategory(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	user, err := GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp.User = user
 	adminsetting, err := GetAdminSetting(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
