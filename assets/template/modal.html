@@ -169,6 +169,7 @@
                             <div class="form-group">
                                 <label class="pt-1 text-darkmode">Name</label>
                                 <input type="text" class="form-control" id="modal-addcategory-name" placeholder="Name" autocomplete="off">
+                                <input type="text" class="form-control" id="modal-addcategory-parentid" hidden>
                                 <small class="text-darkmode">Please type in the category name.</small>
                             </div>
                         </div>
@@ -177,6 +178,32 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-darkmode" data-bs-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-outline-warning" onclick="AddCategory()" data-bs-dismiss="modal">ADD</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal : Rm Category -->
+    <div class="modal" id="modal-rmcategory" tabindex="-1" role="dialog" aria-labeledby="modal-rmcategory" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content text-white" style="background-color: #2e2d2d">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-rmcategory-title">Remove Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label class="pt-1 text-darkmode">Are you sure you want to delete the category?</label>
+                                <input type="text" class="form-control" id="modal-rmcategory-id" placeholder="" autocomplete="off" hidden>
+                            </div>
+                        </div>
+                    </div>                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-darkmode" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-outline-danger" onclick="RmCategory()" data-bs-dismiss="modal">DELETE</button>
                 </div>
             </div>
         </div>

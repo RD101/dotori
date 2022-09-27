@@ -1,6 +1,9 @@
 {{define "category"}}
 {{template "head-bootstrap5"}}
 <body>
+<!-- Preset Value -->
+<input type="hidden" id="token" value="{{$.User.Token}}">
+<input type="hidden" id="userid" value="{{$.User.ID}}">
 {{template "navbar-bootstrap5" .}}
 {{template "modal" .}}
 <div class="container py-4 px-3">
@@ -11,18 +14,18 @@
         </div>
         <div class="row">
             <div class="col border border-darkmode p-1 m-1">
-                <div class="finger category-add border border-darkmode p-2 m-1 text-center" data-bs-toggle="modal" data-bs-target="#modal-addcategory">+</div>
+                <div class="finger category-add border border-darkmode p-2 m-1 text-center" onclick="document.getElementById('modal-addcategory-name').value='';document.getElementById('modal-addcategory-parentid').value=''" data-bs-toggle="modal" data-bs-target="#modal-addcategory">+</div>
                 <div id="rootcategory">
                     {{range .RootCategory}}
-                        <div id="{{.ID.Hex}}" class="finger category border border-dark p-2 ps-3 m-1 d-block align-items-center">
+                        <div id="category-{{.ID.Hex}}" class="finger category border border-dark p-2 ps-3 m-1 d-block align-items-center" onclick="selectCategory('{{.ID.Hex}}')">
                             {{.Name}}
-                            <img src="/assets/img/delete.svg" class="mt-1 icon finger" data-toggle="modal" data-target="#modal-rmcategory" onclick="setRmCategoryModal('')">
+                            <img src="/assets/img/delete.svg" class="mt-1 icon finger" onclick="setRmCategoryID('{{.ID.Hex}}')" data-bs-toggle="modal" data-bs-target="#modal-rmcategory">
                         </div>
                     {{end}}
                 </div>
             </div>
             <div class="col border border-darkmode p-1 m-1">
-                <div class="finger category-add border border-darkmode p-2 m-1 text-center" data-bs-toggle="modal" data-bs-target="#modal-addcategory">+</div>
+                <div class="finger category-add border border-darkmode p-2 m-1 text-center" onclick="document.getElementById('modal-addcategory-name').value=''" data-bs-toggle="modal" data-bs-target="#modal-addcategory">+</div>
                 <div id="subcategory">
                 </div>
             </div>
@@ -36,7 +39,6 @@
 <!--add javascript-->
 <script src="/assets/bootstrap-5.1.3-dist/js/bootstrap.bundle.js"></script>
 <script src="/assets/tata/tata.js"></script>
-
 <script src="/assets/js/dotori.js"></script>
 </html>
 {{end}}

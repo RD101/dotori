@@ -628,3 +628,125 @@ function string2array(str) {
     }
     return newArr;
 }
+
+function AddCategory() {
+    let category = new Object()
+    category.name = document.getElementById("modal-addcategory-name").value
+    category.parentid = document.getElementById("modal-addcategory-parentid").value
+    fetch('/api/category', {
+        method: 'POST',
+        headers: {
+            "Authorization": "Basic "+ document.getElementById("token").value,
+        },
+        body: JSON.stringify(category),
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw Error(response.statusText + " - " + response.url);
+        }
+        return response.json()
+    })
+    .then((data) => {
+        let body = `<div id="category-${data.id}" class="finger category border border-dark p-2 ps-3 m-1 d-block align-items-center" onclick="selectCategory('${data.id}')">${data.name}
+                    <img src="/assets/img/delete.svg" class="mt-1 icon finger" onclick="setRmCategoryID('${data.id}')" data-bs-toggle="modal" data-bs-target="#modal-rmcategory">
+                    </div>`
+        if (data.parentid == "") {
+            document.getElementById("rootcategory").innerHTML +=  body
+        } else {
+            document.getElementById("subcategory").innerHTML +=  body
+        }
+        
+        tata.success('Add', "A category has been added.", {position: 'tr',duration: 5000,onClose: null})
+    })
+    .catch((err) => {
+        alert(err)
+    });    
+}
+
+function setRmCategoryID(id) {
+    document.getElementById("modal-rmcategory-id").value = id
+}
+
+function selectCategory(id) {
+    // 기존에 선택된 요소를 삭제한다.
+    let selectlist = document.getElementsByClassName("border-warning")
+    for (let i = 0; i < selectlist.length; i+=1) {
+        let e = selectlist[i]
+        e.classList.remove("border-warning")
+        e.classList.add("border-dark")
+    }
+    // 클릭한 것만 테두리를 표시한다.
+    let e = document.getElementById("category-"+id)
+    e.classList.remove("border-dark");
+    e.classList.add("border-warning");
+
+    // 선택된 ID로 Parentid를 설정한다.
+    if (e.parentNode.id == "rootcategory") {
+        document.getElementById("modal-addcategory-parentid").value = id
+    } else {
+        document.getElementById("modal-addcategory-parentid").value = ""
+    }
+    
+    if (e.parentNode.id != "rootcategory") {
+        return
+    }
+    // 선택된 자식을 서브 카테고리에 띄운다.
+    fetch('/api/subcategories/'+id, {
+        method: 'GET',
+        headers: {
+            "Authorization": "Basic "+ document.getElementById("token").value,
+        },
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw Error(response.statusText + " - " + response.url);
+        }
+        return response.json()
+    })
+    .then((data) => {
+        if (data == null) {
+            // 값이 없다면 subcategory를 비운다.
+            document.getElementById("subcategory").innerHTML = ""
+            return
+        }
+        document.getElementById("subcategory").innerHTML = ""
+        // subcategory를 그린다.
+        for (let i = 0; i < data.length; i+=1) {
+            let body = `<div id="category-${data[i].id}" class="finger category border border-dark p-2 ps-3 m-1 d-block align-items-center" onclick="selectCategory('${data[i].id}')">${data[i].name}
+                    <img src="/assets/img/delete.svg" class="mt-1 icon finger" onclick="setRmCategoryID('${data[i].id}')" data-bs-toggle="modal" data-bs-target="#modal-rmcategory">
+                    </div>`
+            document.getElementById("subcategory").innerHTML +=  body        
+        }
+    })
+    .catch((err) => {
+        alert(err)
+    });    
+}
+
+function RmCategory() {    
+    fetch('/api/category/'+document.getElementById("modal-rmcategory-id").value, {
+        method: 'DELETE',
+        headers: {
+            "Authorization": "Basic "+ document.getElementById("token").value,
+        },
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw Error(response.statusText + " - " + response.url);
+        }
+        return response.json()
+    })
+    .then((data) => {
+        let elem = document.getElementById("category-" + data.id);
+        let elemParentID = elem.parentNode.id
+        elem.parentNode.removeChild(elem);
+        if (elemParentID != "rootcategory") { // sub카테고리를 삭제할 때
+            tata.success('Remove', "A category has been removed.", {position: 'tr',duration: 5000,onClose: null})
+        } else {
+            location.reload(); // root카테고리가 삭제될 때는 페이지를 리로드한다.
+        }
+    })
+    .catch((err) => {
+        alert(err)
+    });    
+}
