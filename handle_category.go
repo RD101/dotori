@@ -22,6 +22,7 @@ func handleCategory(w http.ResponseWriter, r *http.Request) {
 	type recipe struct {
 		Token
 		Adminsetting Adminsetting
+		RootCategory []Category
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -50,6 +51,11 @@ func handleCategory(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rcp.Adminsetting = adminsetting
+	rcp.RootCategory, err = GetRootCategories(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
 	err = TEMPLATES.ExecuteTemplate(w, "category", rcp)
 	if err != nil {
