@@ -149,7 +149,6 @@ function setDetailViewModal(itemid) {
 
 // rmItemModal 은 삭제 modal창에서 Delete 버튼을 누르면 실행되는 아이템 삭제 함수이다.
 function rmItemModal(id) {
-    console.log(id)
     fetch("/api/item?id="+ id, {
         method: 'DELETE',
         headers: {
