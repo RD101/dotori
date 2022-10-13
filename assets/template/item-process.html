@@ -2,6 +2,8 @@
 {{template "head-bootstrap5"}}
 <body>
     {{template "navbar-bootstrap5" .}}
+    <input type="hidden" id="token" value="{{$.User.Token}}">
+    {{template "modal-bootstrap5" .}}
     <div class="container pt-5 pb-5">
         <div class="my-auto pb-5">
             <h5 class="text-muted pb-3">{{.StorageTitle}}</h5>
@@ -39,41 +41,43 @@
         </div>       
         <div class="text-muted text-center">
             {{range .Items}}
-                <div class="row pt-1 pb-1">
-                    <div class="col-sm-4 col-md-4 col-lg-1">
-                        {{.ItemType}}
-                    </div>
-                    <div class="col-sm-4 col-md-4 col-lg-3">
-                        {{.Title}}
-                    </div>
-                    <div class="col-sm-4 col-md-4 col-lg-1">
-                        {{.Author}}
-                    </div>
-                    <div class="col-sm-12 col-md-6 col-lg-3">
-                        {{.ID.Hex}}
-                        <img src="/assets/img/delete.svg" class="mt-1 icon finger" onclick="setRmCategoryID('{{.ID.Hex}}')" data-bs-toggle="modal" data-bs-target="#modal-rmcategory">
-                    </div>
-                    <div class="col-sm-12 col-md-6 col-lg-4">
-                        <span class="text-center">{{.CreateTime}}</span>
-                    </div>
-                </div>
-                <div class="row pt-1 pb-1">
-                    <div class="col-sm-12 col-md-12 col-lg-12 my-auto">
-                        <div class="progress">
-                            {{if eq .Status "error"}}
-                                <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="10" aria-valuemin="1" aria-valuemax="10">
-                                    {{.Status}} - {{LastLog .Logs}}
-                                </div>
-                            {{else}}
-                                <div class="progress-bar progress-bar-animated progress-bar-striped bg-success" role="progressbar" style="width: 100%" aria-valuenow="10" aria-valuemin="1" aria-valuemax="10">
-                                    {{.Status}} - {{LastLog .Logs}}
-                                </div>
-                            {{end}}
+                <div id="{{.ID.Hex}}">
+                    <div class="row pt-1 pb-1">
+                        <div class="col-sm-4 col-md-4 col-lg-1">
+                            {{.ItemType}}
+                        </div>
+                        <div class="col-sm-4 col-md-4 col-lg-3">
+                            {{.Title}}
+                        </div>
+                        <div class="col-sm-4 col-md-4 col-lg-1">
+                            {{.Author}}
+                        </div>
+                        <div class="col-sm-12 col-md-6 col-lg-3">
+                            {{.ID.Hex}}
+                        </div>
+                        <div class="col-sm-12 col-md-6 col-lg-4">
+                            <span class="text-center">{{.CreateTime}}</span>
+                            <img src="/assets/img/delete.svg" class="mt-1 icon finger" onclick="document.getElementById('modal-rmitem-itemid').value='{{.ID.Hex}}'" data-bs-toggle="modal" data-bs-target="#modal-rmitem">
                         </div>
                     </div>
-                </div>
-                <div>
-                    <hr class="my-1 p-0 m-0 divider">
+                    <div class="row pt-1 pb-1">
+                        <div class="col-sm-12 col-md-12 col-lg-12 my-auto">
+                            <div class="progress">
+                                {{if eq .Status "error"}}
+                                    <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="10" aria-valuemin="1" aria-valuemax="10">
+                                        {{.Status}} - {{LastLog .Logs}}
+                                    </div>
+                                {{else}}
+                                    <div class="progress-bar progress-bar-animated progress-bar-striped bg-success" role="progressbar" style="width: 100%" aria-valuenow="10" aria-valuemin="1" aria-valuemax="10">
+                                        {{.Status}} - {{LastLog .Logs}}
+                                    </div>
+                                {{end}}
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <hr class="my-1 p-0 m-0 divider">
+                    </div>
                 </div>
             {{end}}
         </div>
@@ -82,5 +86,7 @@
 </body>
 <!--add javascript-->
 <script src="/assets/bootstrap-5.1.3-dist/js/bootstrap.min.js"></script>
+<script src="/assets/tata/tata.js"></script>
+<script src="/assets/js/dotori.js"></script>
 </html>
 {{end}}

@@ -15,9 +15,8 @@
     <!-- Card Items -->
     <div class="row mx-auto mb-5">
         {{range .FavoriteItems}}
-            {{$itemtype := .ItemType}}
             {{$itemid := .ID.Hex}}
-            <div class="col-lg-4 col-md-6 col-sm-12">
+            <div class="col-lg-4 col-md-6 col-sm-12" id="{{.ID.Hex}}">
                 <div class="card mx-auto" style="width: {{$thumbnailwidth}}px;">
                     <!-- Thumbnail in Card-->
                     {{if eq .ItemType "hwp" "ies" "pdf" "ppt" "sound"}}
