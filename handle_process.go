@@ -16,7 +16,6 @@ func handleItemProcess(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/signin", http.StatusSeeOther)
 		return
 	}
-	w.Header().Set("Content-Type", "text/html")
 	type recipe struct {
 		Items []Item
 		Token
@@ -24,6 +23,7 @@ func handleItemProcess(w http.ResponseWriter, r *http.Request) {
 		StorageTitle   string
 		StoragePercent int64
 		StorageLevel   int64
+		User           User
 	}
 	//mongoDB client 연결
 	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
@@ -58,6 +58,13 @@ func handleItemProcess(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rcp.Adminsetting = adminsetting
+
+	rcp.User, err = GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	ds, err := DiskCheck()
 	if err != nil {
 		rcp.StorageTitle = "Storage Usage (Please set RootPath)"

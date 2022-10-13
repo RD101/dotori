@@ -1,0 +1,26 @@
+{{define "modal-bootstrap5"}}
+<div class="">
+    <!-- Modal : Remove Item -->
+    <div class="modal fade" id="modal-rmitem" tabindex="-1" role="dialog" aria-labeledby="modal-rmitem" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content text-white" style="background-color: #2e2d2d">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-rmitem-title">Delete Item</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="modal-rmitem-itemid" class="col-form-label">Are you sure you want to delete the Asset?</label>
+                        <textarea class="form-control" style="color:#fff;" id="modal-rmitem-itemid" rows="2" disabled></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-darkmode" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-outline-danger" onclick="rmItemModal(document.getElementById('modal-rmitem-itemid').value)">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{end}}
+

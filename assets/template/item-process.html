@@ -2,6 +2,8 @@
 {{template "head-bootstrap5"}}
 <body>
     {{template "navbar-bootstrap5" .}}
+    <input type="hidden" id="token" value="{{$.User.Token}}">
+    {{template "modal-bootstrap5" .}}
     <div class="container pt-5 pb-5">
         <div class="my-auto pb-5">
             <h5 class="text-muted pb-3">{{.StorageTitle}}</h5>
@@ -21,13 +23,10 @@
             <h2 class="text-muted">Item Process</h2>
         </div>
         <div class="row pt-1 pb-1 text-muted text-center">
-            <div class="col-sm-1 col-md-1 col-lg-1">
-                index
-            </div>
-            <div class="col-sm-3 col-md-3 col-lg-1">
+            <div class="col-sm-4 col-md-4 col-lg-1">
                 itemtype
             </div>
-            <div class="col-sm-4 col-md-4 col-lg-2">
+            <div class="col-sm-4 col-md-4 col-lg-3">
                 title
             </div>
             <div class="col-sm-4 col-md-4 col-lg-1">
@@ -41,16 +40,13 @@
             </div>
         </div>       
         <div class="text-muted text-center">
-            {{$index := 1}}
-                {{range .Items}}
+            {{range .Items}}
+                <div id="{{.ID.Hex}}">
                     <div class="row pt-1 pb-1">
-                        <div class="col-sm-1 col-md-1 col-lg-1">
-                            <span class="text-center">{{$index}}</span>
-                        </div>
-                        <div class="col-sm-3 col-md-3 col-lg-1">
+                        <div class="col-sm-4 col-md-4 col-lg-1">
                             {{.ItemType}}
                         </div>
-                        <div class="col-sm-4 col-md-4 col-lg-2">
+                        <div class="col-sm-4 col-md-4 col-lg-3">
                             {{.Title}}
                         </div>
                         <div class="col-sm-4 col-md-4 col-lg-1">
@@ -61,6 +57,7 @@
                         </div>
                         <div class="col-sm-12 col-md-6 col-lg-4">
                             <span class="text-center">{{.CreateTime}}</span>
+                            <img src="/assets/img/delete.svg" class="mt-1 icon finger" onclick="document.getElementById('modal-rmitem-itemid').value='{{.ID.Hex}}'" data-bs-toggle="modal" data-bs-target="#modal-rmitem">
                         </div>
                     </div>
                     <div class="row pt-1 pb-1">
@@ -78,11 +75,10 @@
                             </div>
                         </div>
                     </div>
-                    
                     <div>
                         <hr class="my-1 p-0 m-0 divider">
                     </div>
-                {{$index = add $index 1}}
+                </div>
             {{end}}
         </div>
     </div>
@@ -90,5 +86,7 @@
 </body>
 <!--add javascript-->
 <script src="/assets/bootstrap-5.1.3-dist/js/bootstrap.min.js"></script>
+<script src="/assets/tata/tata.js"></script>
+<script src="/assets/js/dotori.js"></script>
 </html>
 {{end}}

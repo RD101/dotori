@@ -6,7 +6,7 @@
         {{range .RecentlyCreateItems}}
             {{$itemid := .ID.Hex}}
             <!-- Card Items -->
-            <div class="col-lg-4 col-md-6 col-sm-12">
+            <div class="col-lg-4 col-md-6 col-sm-12" id="{{.ID.Hex}}">
                 <div class="card mx-auto" style="width: {{$.Adminsetting.ThumbnailImageWidth}}px;">
                     <!-- Thumbnail in Card-->
                     {{if eq .ItemType "hwp" "ies" "pdf" "ppt" "sound"}}

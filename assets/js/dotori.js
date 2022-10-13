@@ -148,23 +148,27 @@ function setDetailViewModal(itemid) {
 }
 
 // rmItemModal 은 삭제 modal창에서 Delete 버튼을 누르면 실행되는 아이템 삭제 함수이다.
-function rmItemModal(itemId) {
-    let token = document.getElementById("token").value;
-    $.ajax({
-        url: `/api/item?id=${itemId}`,
-        type: "delete",
+function rmItemModal(id) {
+    fetch("/api/item?id="+ id, {
+        method: 'DELETE',
         headers: {
-            "Authorization": "Basic " + token
+            "Authorization": "Basic "+ document.getElementById("token").value,
         },
-        dataType: "json",
-        success: function() {
-            alert("id: "+itemId+"\n\n아이템 삭제를 성공했습니다."); 
-            location.reload();
-        },
-        error: function(){
-            alert("id: "+itemId+"\n\n아이템 삭제를 실패했습니다.");  
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw Error(response.statusText + " - " + response.url);
         }
-    });
+        return response.json()
+    })
+    .then((data) => {
+        let elem = document.getElementById(id);
+        elem.parentNode.removeChild(elem);
+        tata.success('Remove', id + " Asset has been removed.", {position: 'tr',duration: 5000,onClose: null})
+    })
+    .catch((err) => {
+        alert(err)
+    });    
 }
 
 // handlerNumCheck 은 숫자만 적히도록 하는 레귤러익스프레션이다.
