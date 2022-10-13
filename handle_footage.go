@@ -385,7 +385,7 @@ func uploadFootageFile(w http.ResponseWriter, r *http.Request, objectID string) 
 	for _, files := range r.MultipartForm.File {
 		for _, f := range files {
 			if f.Size == 0 {
-				http.Error(w, "파일사이즈가 0 바이트입니다", http.StatusInternalServerError)
+				http.Error(w, "file size is 0 byte", http.StatusInternalServerError)
 				return
 			}
 			file, err := f.Open()
@@ -397,10 +397,10 @@ func uploadFootageFile(w http.ResponseWriter, r *http.Request, objectID string) 
 			unix.Umask(umask)
 			mimeType := f.Header.Get("Content-Type")
 			switch mimeType {
-			case "image/jpeg", "image/x-exr", "application/octet-stream":
+			case "image/jpeg", "image/png", "image/x-exr", "application/octet-stream":
 				ext := strings.ToLower(filepath.Ext(f.Filename))
-				if ext != ".jpg" && ext != ".dpx" && ext != ".exr" { // .jpg .dpx .exr 외에는 허용하지 않는다.
-					http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
+				if ext != ".jpg" && ext != ".png" && ext != ".dpx" && ext != ".exr" { // .jpg .png .dpx .exr 외에는 허용하지 않는다.
+					http.Error(w, "Not support file format", http.StatusBadRequest)
 					return
 				}
 				data, err := ioutil.ReadAll(file)
@@ -427,7 +427,7 @@ func uploadFootageFile(w http.ResponseWriter, r *http.Request, objectID string) 
 				item.DataUploaded = true
 			default:
 				//허용하지 않는 파일 포맷입니다.
-				http.Error(w, "허용하지 않는 파일 포맷입니다", http.StatusBadRequest)
+				http.Error(w, "Not support file format", http.StatusBadRequest)
 				return
 			}
 		}
