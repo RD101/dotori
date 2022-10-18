@@ -1275,13 +1275,27 @@ func genOutputDataPath(adminSetting Adminsetting, item Item) error {
 		return err
 	}
 	unix.Umask(umask)
+	// 퍼미션을 가지고 온다.
 	per, err := strconv.ParseInt(adminSetting.FolderPermission, 8, 64)
 	if err != nil {
 		return err
 	}
-	// 생성할 경로를 가져온다.
+	// 폴더를 생성한다.
 	path := path.Dir(item.OutputDataPath)
 	err = os.MkdirAll(path, os.FileMode(per))
+	if err != nil {
+		return err
+	}
+	// uid, gid 를 설정한다.
+	uid, err := strconv.Atoi(adminSetting.UID)
+	if err != nil {
+		return err
+	}
+	gid, err := strconv.Atoi(adminSetting.GID)
+	if err != nil {
+		return err
+	}
+	err = os.Chown(path, uid, gid)
 	if err != nil {
 		return err
 	}
@@ -1306,6 +1320,19 @@ func genThumbDir(adminSetting Adminsetting, item Item) error {
 	if err != nil {
 		return err
 	}
+	// uid, gid 를 설정한다.
+	uid, err := strconv.Atoi(adminSetting.UID)
+	if err != nil {
+		return err
+	}
+	gid, err := strconv.Atoi(adminSetting.GID)
+	if err != nil {
+		return err
+	}
+	err = os.Chown(path, uid, gid)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -1324,6 +1351,19 @@ func genProxyDir(adminSetting Adminsetting, item Item) error {
 	// 생성할 경로를 가져온다.
 	path := path.Dir(item.OutputProxyImgPath)
 	err = os.MkdirAll(path, os.FileMode(per))
+	if err != nil {
+		return err
+	}
+	// uid, gid 를 설정한다.
+	uid, err := strconv.Atoi(adminSetting.UID)
+	if err != nil {
+		return err
+	}
+	gid, err := strconv.Atoi(adminSetting.GID)
+	if err != nil {
+		return err
+	}
+	err = os.Chown(path, uid, gid)
 	if err != nil {
 		return err
 	}
