@@ -73,13 +73,15 @@
                         </div>
                     </div>
                 </div>
-                
             </div>
         </div>
 
+        {{template "option-category" .}}
+
         <!--Attribute Table-->
-        <div class="row pt-2">
+        <div class="row pt-4">
             <div class="col-sm">
+                <label class="text-muted">Attributes</label>
                 <div class="border-table rounded unselectable" id="attributes"></div>
             </div>
         </div>
@@ -269,6 +271,7 @@
                     "description": description,
                     "author": author,
                     "tags": tags,
+                    "categories": document.getElementById("rootcategory-string").value+" "+document.getElementById("subcategory-string").value,
                     "attributes": JSON.stringify(attributesTable.getData()),
                 })
             })

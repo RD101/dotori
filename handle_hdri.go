@@ -111,7 +111,7 @@ func handleUploadHDRIItem(w http.ResponseWriter, r *http.Request) {
 	item.Description = r.FormValue("description")
 	item.InColorspace = r.FormValue("incolorspace")
 	item.OutColorspace = r.FormValue("outcolorspace")
-	tags := Str2Tags(r.FormValue("tags"))
+	tags := Str2List(r.FormValue("tags"))
 	item.Tags = tags
 	item.ItemType = "hdri"
 	attr := make(map[string]string)
@@ -616,7 +616,7 @@ func handleEditHDRISubmit(w http.ResponseWriter, r *http.Request) {
 	item.Author = r.FormValue("author")
 	item.Title = r.FormValue("title")
 	item.Description = r.FormValue("description")
-	item.Tags = Str2Tags(r.FormValue("tags"))
+	item.Tags = Str2List(r.FormValue("tags"))
 	item.InColorspace = r.FormValue("incolorspace")
 	item.OutColorspace = r.FormValue("outcolorspace")
 	item.Attributes = attr

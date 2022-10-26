@@ -3,6 +3,7 @@
 <body>
 {{template "navbar-bootstrap5" .}}
 {{template "modal" .}}
+
 <form action="/uploadfootage-item" method="post" onsubmit="return addPageBlankCheck()">
 <div class="container py-5 px-2">
     <div class="col-lg-6 col-md-8 col-sm-12 mx-auto">
@@ -85,6 +86,8 @@
                 </div>
             </div>
         </div>
+
+        {{template "option-category" .}}
 
         <div class="row pt-3">
             <div class="col-sm">

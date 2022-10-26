@@ -114,6 +114,8 @@
             </div>
         </div>
 
+        {{template "option-category" .}}
+
         <div class="row pt-3">
             <div class="col-sm">
                 <div class="from-group">
@@ -284,29 +286,10 @@
             })
             return
         }
+
         // going process
         sources = table.getData();
-        
         for (let i = 0; i < sources.length; i += 1) {
-            /*
-            // debug
-            
-            console.log(
-                sources[i].dir,
-                sources[i].base,
-                sources[i].framein,
-                sources[i].frameout,
-                document.getElementById("title").value,
-                document.getElementById("description").value,
-                document.getElementById("author").value,
-                document.getElementById("tags").value,
-                document.getElementById("fps").value,
-                document.getElementById("premult").checked,
-                document.getElementById("incolorspace").value,
-                document.getElementById("outcolorspace").value,
-            )
-            */
-            
             // process
             fetch('/api/addfootage', {
                 method: 'POST',
@@ -327,6 +310,7 @@
                     "incolorspace": document.getElementById("incolorspace").value,
                     "outcolorspace": document.getElementById("outcolorspace").value,
                     "attributes": JSON.stringify(attributesTable.getData()),
+                    "categories": document.getElementById("rootcategory-string").value+" "+document.getElementById("subcategory-string").value,
                 })
             })
             .then((response) => {

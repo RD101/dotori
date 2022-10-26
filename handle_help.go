@@ -24,6 +24,7 @@ func handleHelp(w http.ResponseWriter, r *http.Request) {
 		BuildTime     string
 		NumCPU        int // server CPU 갯수
 		MaxProcessNum int // 최대 동시 연산 갯수
+		User          User
 	}
 	rcp := recipe{}
 	rcp.Sha1ver = SHA1VER
@@ -56,6 +57,12 @@ func handleHelp(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rcp.Adminsetting = adminsetting
+	user, err := GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp.User = user
 	w.Header().Set("Content-Type", "text/html")
 	err = TEMPLATES.ExecuteTemplate(w, "help", rcp)
 	if err != nil {
