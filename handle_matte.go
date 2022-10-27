@@ -37,9 +37,10 @@ func handleAddMatteItem(w http.ResponseWriter, r *http.Request) {
 	}
 	type recipe struct {
 		Token
-		Adminsetting Adminsetting
-		Colorspaces  []Colorspace
-		User         User
+		Adminsetting   Adminsetting
+		Colorspaces    []Colorspace
+		RootCategories []Category
+		User           User
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -62,12 +63,11 @@ func handleAddMatteItem(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	adminsetting, err := GetAdminSetting(client)
+	rcp.Adminsetting, err = GetAdminSetting(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	rcp.Adminsetting = adminsetting
 	ocioConfig, err := loadOCIOConfig(rcp.Adminsetting.OCIOConfig)
 	if err != nil {
 		http.Redirect(w, r, "/error-ocio", http.StatusSeeOther)
@@ -75,6 +75,11 @@ func handleAddMatteItem(w http.ResponseWriter, r *http.Request) {
 	}
 	rcp.Colorspaces = ocioConfig.Colorspaces
 	rcp.User, err = GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp.RootCategories, err = GetRootCategories(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -110,8 +115,8 @@ func handleUploadMatteItem(w http.ResponseWriter, r *http.Request) {
 	item.Description = r.FormValue("description")
 	item.InColorspace = r.FormValue("incolorspace")
 	item.OutColorspace = r.FormValue("outcolorspace")
-	tags := Str2List(r.FormValue("tags"))
-	item.Tags = tags
+	item.Tags = Str2List(r.FormValue("tags"))
+	item.Categories = []string{r.FormValue("rootcategory-string"), r.FormValue("subcategory-string")}
 	item.ItemType = "matte"
 	attr := make(map[string]string)
 	attrNum, err := strconv.Atoi(r.FormValue("attributesNum"))
@@ -192,6 +197,7 @@ func handleAddMatteFile(w http.ResponseWriter, r *http.Request) {
 	type recipe struct {
 		Token
 		Adminsetting Adminsetting
+		User         User
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -214,12 +220,16 @@ func handleAddMatteFile(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	adminsetting, err := GetAdminSetting(client)
+	rcp.Adminsetting, err = GetAdminSetting(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	rcp.Adminsetting = adminsetting
+	rcp.User, err = GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
 	err = TEMPLATES.ExecuteTemplate(w, "addmatte-file", rcp)
 	if err != nil {
@@ -394,6 +404,7 @@ func handleUploadMatteCheckData(w http.ResponseWriter, r *http.Request) {
 		Token
 		Adminsetting Adminsetting
 		Item         Item
+		User         User
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -423,12 +434,16 @@ func handleUploadMatteCheckData(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//rcp에 adminsetting 추가
-	adminsetting, err := GetAdminSetting(client)
+	rcp.Adminsetting, err = GetAdminSetting(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	rcp.Adminsetting = adminsetting
+	rcp.User, err = GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	//rcp에 item 추가
 	item, err := GetItem(client, objectID)
 	if err != nil {
@@ -456,6 +471,7 @@ func handleAddMatteSuccess(w http.ResponseWriter, r *http.Request) {
 	type recipe struct {
 		Token
 		Adminsetting Adminsetting
+		User         User
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -478,12 +494,16 @@ func handleAddMatteSuccess(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	adminsetting, err := GetAdminSetting(client)
+	rcp.Adminsetting, err = GetAdminSetting(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	rcp.Adminsetting = adminsetting
+	rcp.User, err = GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
 	err = TEMPLATES.ExecuteTemplate(w, "addmatte-success", rcp)
 	if err != nil {
@@ -512,6 +532,7 @@ func handleEditMatte(w http.ResponseWriter, r *http.Request) {
 		Colorspaces   []Colorspace       `json:"colorspaces"`
 		Token
 		Adminsetting Adminsetting
+		User         User
 	}
 	q := r.URL.Query()
 	id := q.Get("id")
@@ -567,6 +588,11 @@ func handleEditMatte(w http.ResponseWriter, r *http.Request) {
 		Colorspaces:   ocioConfig.Colorspaces,
 		Token:         token,
 		Adminsetting:  adminsetting,
+	}
+	rcp.User, err = GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	err = TEMPLATES.ExecuteTemplate(w, "editmatte", rcp)
@@ -651,6 +677,7 @@ func handleEditMatteSuccess(w http.ResponseWriter, r *http.Request) {
 	type recipe struct {
 		Token
 		Adminsetting Adminsetting
+		User         User
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -673,12 +700,16 @@ func handleEditMatteSuccess(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	adminsetting, err := GetAdminSetting(client)
+	rcp.Adminsetting, err = GetAdminSetting(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	rcp.Adminsetting = adminsetting
+	rcp.User, err = GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
 	err = TEMPLATES.ExecuteTemplate(w, "editmatte-success", rcp)
 	if err != nil {
