@@ -1,7 +1,8 @@
 {{define "addmodo-item"}}
-{{template "head"}}
+{{template "head-bootstrap5"}}
 <body>
-{{template "navbar" .}}
+{{template "navbar-bootstrap5" .}}
+{{template "modal-bootstrap5" .}}
 <form action="/uploadmodo-item" method="post" onsubmit="return addPageBlankCheck()">
 <div class="container py-5 px-2">
     <div class="col-lg-6 col-md-8 col-sm-12 mx-auto">
@@ -44,6 +45,9 @@
                 </div>
             </div>
         </div>
+
+        {{template "option-category" .}}
+
         <div class="row">
             <div class="col-sm">
                 <div class="form-group">
@@ -81,9 +85,7 @@
 </form>
 {{template "footer"}}
 </body>
-<!--add javascript-->
-<script src="/assets/js/jquery-3.1.1.min.js"></script>
-<script src="/assets/bootstrap-4/js/bootstrap.min.js"></script>
+<script src="/assets/bootstrap-5.1.3-dist/js/bootstrap.bundle.min.js"></script>
 <script src="/assets/js/dotori.js"></script>
 </html>
 {{end}}
