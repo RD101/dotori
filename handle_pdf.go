@@ -36,7 +36,9 @@ func handleAddPdfItem(w http.ResponseWriter, r *http.Request) {
 	}
 	type recipe struct {
 		Token
-		Adminsetting Adminsetting
+		Adminsetting   Adminsetting
+		RootCategories []Category
+		User           User
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -59,12 +61,21 @@ func handleAddPdfItem(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	adminsetting, err := GetAdminSetting(client)
+	rcp.RootCategories, err = GetRootCategories(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	rcp.Adminsetting = adminsetting
+	rcp.Adminsetting, err = GetAdminSetting(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp.User, err = GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
 	err = TEMPLATES.ExecuteTemplate(w, "addpdf-item", rcp)
 	if err != nil {
@@ -94,8 +105,8 @@ func handleUploadPdfItem(w http.ResponseWriter, r *http.Request) {
 	item.Author = r.FormValue("author")
 	item.Title = r.FormValue("title")
 	item.Description = r.FormValue("description")
-	tags := Str2List(r.FormValue("tags"))
-	item.Tags = tags
+	item.Tags = Str2List(r.FormValue("tags"))
+	item.Categories = []string{r.FormValue("rootcategory-string"), r.FormValue("subcategory-string")}
 	item.ItemType = "pdf"
 	attr := make(map[string]string)
 	attrNum, err := strconv.Atoi(r.FormValue("attributesNum"))
@@ -182,6 +193,7 @@ func handleAddPdfFile(w http.ResponseWriter, r *http.Request) {
 	type recipe struct {
 		Token
 		Adminsetting Adminsetting
+		User         User
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -204,12 +216,16 @@ func handleAddPdfFile(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	adminsetting, err := GetAdminSetting(client)
+	rcp.Adminsetting, err = GetAdminSetting(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	rcp.Adminsetting = adminsetting
+	rcp.User, err = GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
 	err = TEMPLATES.ExecuteTemplate(w, "addpdf-file", rcp)
 	if err != nil {
@@ -403,6 +419,7 @@ func handleUploadPdfCheckData(w http.ResponseWriter, r *http.Request) {
 		Token
 		Adminsetting Adminsetting
 		Item         Item
+		User         User
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -431,13 +448,16 @@ func handleUploadPdfCheckData(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	//rcp에 adminsetting 추가
-	adminsetting, err := GetAdminSetting(client)
+	rcp.Adminsetting, err = GetAdminSetting(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	rcp.Adminsetting = adminsetting
+	rcp.User, err = GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	//rcp에 item 추가
 	item, err := GetItem(client, objectID)
 	if err != nil {
@@ -465,6 +485,7 @@ func handleAddPdfSuccess(w http.ResponseWriter, r *http.Request) {
 	type recipe struct {
 		Token
 		Adminsetting Adminsetting
+		User         User
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -487,12 +508,16 @@ func handleAddPdfSuccess(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	adminsetting, err := GetAdminSetting(client)
+	rcp.Adminsetting, err = GetAdminSetting(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	rcp.Adminsetting = adminsetting
+	rcp.User, err = GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
 	err = TEMPLATES.ExecuteTemplate(w, "addpdf-success", rcp)
 	if err != nil {
@@ -518,6 +543,7 @@ func handleEditPdf(w http.ResponseWriter, r *http.Request) {
 		Attributes  map[string]string  `json:"attributes" bson:"attributes"`
 		Token
 		Adminsetting Adminsetting
+		User         User
 	}
 	q := r.URL.Query()
 	id := q.Get("id")
@@ -550,21 +576,25 @@ func handleEditPdf(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	adminsetting, err := GetAdminSetting(client)
+	rcp := recipe{
+		ID:          item.ID,
+		ItemType:    item.ItemType,
+		Author:      item.Author,
+		Title:       item.Title,
+		Description: item.Description,
+		Tags:        item.Tags,
+		Attributes:  item.Attributes,
+		Token:       token,
+	}
+	rcp.Adminsetting, err = GetAdminSetting(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	rcp := recipe{
-		ID:           item.ID,
-		ItemType:     item.ItemType,
-		Author:       item.Author,
-		Title:        item.Title,
-		Description:  item.Description,
-		Tags:         item.Tags,
-		Attributes:   item.Attributes,
-		Token:        token,
-		Adminsetting: adminsetting,
+	rcp.User, err = GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	err = TEMPLATES.ExecuteTemplate(w, "editpdf", rcp)
@@ -647,6 +677,7 @@ func handleEditPdfSuccess(w http.ResponseWriter, r *http.Request) {
 	type recipe struct {
 		Token
 		Adminsetting Adminsetting
+		User         User
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -669,12 +700,16 @@ func handleEditPdfSuccess(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	adminsetting, err := GetAdminSetting(client)
+	rcp.Adminsetting, err = GetAdminSetting(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	rcp.Adminsetting = adminsetting
+	rcp.User, err = GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
 	err = TEMPLATES.ExecuteTemplate(w, "editpdf-success", rcp)
 	if err != nil {
