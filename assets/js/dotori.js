@@ -98,7 +98,7 @@ function setDetailViewModal(itemid) {
                 `;
             }
             document.getElementById("modal-detailview-tags").innerHTML = tagsHtml
-            
+            document.getElementById("modal-detailview-categories").innerHTML = response["categories"].join(" > ")
             // Attributes 세팅
             if (Object.keys(response["attributes"]).length != 0) {
                 let attributesHtml = `<strong>Attributes</strong>
@@ -724,7 +724,7 @@ function selectCategory(id) {
     })
     .catch((err) => {
         alert(err)
-    });    
+    });
 }
 
 function RmCategory() {    
@@ -753,4 +753,51 @@ function RmCategory() {
     .catch((err) => {
         alert(err)
     });    
+}
+
+function changeRootCategory() {
+    document.getElementById("rootcategory-string").value = document.getElementById("rootcategory").options[document.getElementById("rootcategory").selectedIndex].text
+    document.getElementById("subcategory-string").value = ""
+    let id = document.getElementById("rootcategory").value
+    if (id == "") {
+        return
+    }
+    fetch('/api/subcategories/'+id, {
+        method: 'GET',
+        headers: {
+            "Authorization": "Basic "+ document.getElementById("token").value,
+        },
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw Error(response.statusText + " - " + response.url);
+        }
+        return response.json()
+    })
+    .then((data) => {
+        if (data == null) {
+            // 값이 없다면 subcategory를 비운다.
+            document.getElementById("subcategory").value = ""
+            return
+        }
+        let select = document.getElementById("subcategory")
+
+        // 기존 subcategory를 비운다.
+        select.innerHTML = `<option value=""></option>`
+
+        // subcategory를 그린다.
+        for (let i = 0; i < data.length; i+=1) {
+            let opt = document.createElement('option');
+            opt.value = data[i].id;
+            opt.innerHTML = data[i].name;
+            select.appendChild(opt);
+        }
+    })
+    .catch((err) => {
+        console.log(err)
+    });
+}
+
+function changeSubCategory() {
+    document.getElementById("subcategory-string").value = document.getElementById("subcategory").options[document.getElementById("subcategory").selectedIndex].text
 }

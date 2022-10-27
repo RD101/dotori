@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"path/filepath"
+	"sort"
 	"strings"
 )
 
@@ -22,8 +23,8 @@ func SplitBySpace(str string) []string {
 	return result
 }
 
-// Str2Tags 함수는 string 문자열을 " ". , 기준으로 tag 리스트를 반환하는 함수이다.
-func Str2Tags(str string) []string {
+// Str2List 함수는 string 문자열을 " ". , 기준으로 tag 리스트를 반환하는 함수이다.
+func Str2List(str string) []string {
 	var result []string
 	if str == "" {
 		return result
@@ -37,6 +38,8 @@ func Str2Tags(str string) []string {
 			}
 		}
 	}
+	// 태그순으로 정렬한다.
+	sort.Strings(result)
 	return result
 }
 

@@ -38,7 +38,9 @@ func handleAddClipItem(w http.ResponseWriter, r *http.Request) {
 	}
 	type recipe struct {
 		Token
-		Adminsetting Adminsetting
+		Adminsetting   Adminsetting
+		User           User
+		RootCategories []Category
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -67,6 +69,16 @@ func handleAddClipItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rcp.Adminsetting = adminsetting
+	rcp.User, err = GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp.RootCategories, err = GetRootCategories(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
 	err = TEMPLATES.ExecuteTemplate(w, "addclip-item", rcp)
 	if err != nil {
@@ -83,8 +95,9 @@ func handleAddClipItems(w http.ResponseWriter, r *http.Request) {
 	}
 	type recipe struct {
 		Token
-		Adminsetting Adminsetting
-		User         User
+		Adminsetting   Adminsetting
+		User           User
+		RootCategories []Category
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -113,12 +126,16 @@ func handleAddClipItems(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rcp.Adminsetting = adminsetting
-	user, err := GetUser(client, token.ID)
+	rcp.RootCategories, err = GetRootCategories(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	rcp.User = user
+	rcp.User, err = GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
 	err = TEMPLATES.ExecuteTemplate(w, "addclip-items", rcp)
 	if err != nil {
@@ -149,7 +166,7 @@ func handleUploadClipItem(w http.ResponseWriter, r *http.Request) {
 	item.Author = r.FormValue("author")
 	item.Description = r.FormValue("description")
 	item.Fps = r.FormValue("fps")
-	tags := Str2Tags(r.FormValue("tags"))
+	tags := Str2List(r.FormValue("tags"))
 	item.Tags = tags
 	item.ItemType = "clip"
 	attr := make(map[string]string)
@@ -234,6 +251,7 @@ func handleAddClipFile(w http.ResponseWriter, r *http.Request) {
 	type recipe struct {
 		Token
 		Adminsetting Adminsetting
+		User         User
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -262,6 +280,11 @@ func handleAddClipFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rcp.Adminsetting = adminsetting
+	rcp.User, err = GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
 	err = TEMPLATES.ExecuteTemplate(w, "addclip-file", rcp)
 	if err != nil {
@@ -425,6 +448,7 @@ func handleUploadClipCheckData(w http.ResponseWriter, r *http.Request) {
 		Token
 		Adminsetting Adminsetting
 		Item         Item
+		User         User
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -460,6 +484,11 @@ func handleUploadClipCheckData(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rcp.Adminsetting = adminsetting
+	rcp.User, err = GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	//rcp에 item 추가
 	item, err := GetItem(client, objectID)
 	if err != nil {
@@ -487,6 +516,7 @@ func handleAddClipSuccess(w http.ResponseWriter, r *http.Request) {
 	type recipe struct {
 		Token
 		Adminsetting Adminsetting
+		User         User
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -515,6 +545,11 @@ func handleAddClipSuccess(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rcp.Adminsetting = adminsetting
+	rcp.User, err = GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
 	err = TEMPLATES.ExecuteTemplate(w, "addclip-success", rcp)
 	if err != nil {
@@ -577,6 +612,7 @@ func handleEditClip(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
 	rcp := recipe{
 		ID:           item.ID,
 		ItemType:     item.ItemType,
@@ -645,7 +681,7 @@ func handleEditClipSubmit(w http.ResponseWriter, r *http.Request) {
 	item.Author = r.FormValue("author")
 	item.Title = r.FormValue("title")
 	item.Description = r.FormValue("description")
-	item.Tags = Str2Tags(r.FormValue("tags"))
+	item.Tags = Str2List(r.FormValue("tags"))
 	item.Attributes = attr
 	err = item.CheckError()
 	if err != nil {
@@ -669,6 +705,7 @@ func handleEditClipSuccess(w http.ResponseWriter, r *http.Request) {
 	type recipe struct {
 		Token
 		Adminsetting Adminsetting
+		User         User
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -697,6 +734,11 @@ func handleEditClipSuccess(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rcp.Adminsetting = adminsetting
+	rcp.User, err = GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
 	err = TEMPLATES.ExecuteTemplate(w, "editclip-success", rcp)
 	if err != nil {
@@ -808,8 +850,8 @@ func handleAPIAddClip(w http.ResponseWriter, r *http.Request) {
 	item.Title = r.FormValue("title")
 	item.Author = r.FormValue("author")
 	item.Description = r.FormValue("description")
-	tags := Str2Tags(r.FormValue("tags"))
-	item.Tags = tags
+	item.Tags = Str2List(r.FormValue("tags"))
+	item.Categories = Str2List(r.FormValue("categories"))
 	item.ItemType = "clip"
 	// set Attribute
 	item.Attributes = make(map[string]string) // init
@@ -820,7 +862,7 @@ func handleAPIAddClip(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	item.Status = "fileuploaded" // <- 이 부분은 모순이 있지만 input 소스를 이용해서 경로가 입력된 상황이다.
+	item.Status = "fileuploaded" // <- 이미 input 소스를 이용해서 경로가 입력된 상황이다.
 	item.Logs = append(item.Logs, "아이템이 생성되었습니다.")
 	item.ThumbImgUploaded = false
 	item.ThumbClipUploaded = false

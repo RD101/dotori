@@ -36,7 +36,9 @@ func handleAddSoundItem(w http.ResponseWriter, r *http.Request) {
 	}
 	type recipe struct {
 		Token
-		Adminsetting Adminsetting
+		Adminsetting   Adminsetting
+		RootCategories []Category
+		User           User
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -59,12 +61,21 @@ func handleAddSoundItem(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	adminsetting, err := GetAdminSetting(client)
+	rcp.Adminsetting, err = GetAdminSetting(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	rcp.Adminsetting = adminsetting
+	rcp.RootCategories, err = GetRootCategories(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp.User, err = GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
 	err = TEMPLATES.ExecuteTemplate(w, "addsound-item", rcp)
 	if err != nil {
@@ -94,8 +105,8 @@ func handleUploadSoundItem(w http.ResponseWriter, r *http.Request) {
 	item.Author = r.FormValue("author")
 	item.Title = r.FormValue("title")
 	item.Description = r.FormValue("description")
-	tags := Str2Tags(r.FormValue("tags"))
-	item.Tags = tags
+	item.Tags = Str2List(r.FormValue("tags"))
+	item.Categories = []string{r.FormValue("rootcategory-string"), r.FormValue("subcategory-string")}
 	item.ItemType = "sound"
 	attr := make(map[string]string)
 	attrNum, err := strconv.Atoi(r.FormValue("attributesNum"))
@@ -176,6 +187,7 @@ func handleAddSoundFile(w http.ResponseWriter, r *http.Request) {
 	type recipe struct {
 		Token
 		Adminsetting Adminsetting
+		User         User
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -198,12 +210,16 @@ func handleAddSoundFile(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	adminsetting, err := GetAdminSetting(client)
+	rcp.Adminsetting, err = GetAdminSetting(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	rcp.Adminsetting = adminsetting
+	rcp.User, err = GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
 	err = TEMPLATES.ExecuteTemplate(w, "addsound-file", rcp)
 	if err != nil {
@@ -312,8 +328,7 @@ func uploadSoundFile(w http.ResponseWriter, r *http.Request, objectID string) {
 			mimeType := f.Header.Get("Content-Type")
 			switch mimeType {
 			// 허용하는 audio file format: mp3, wav, m4a, amr, au, flac, midi, ra, wma
-			// chrome에서는 'audio/x-ms-wma'가 'video/x-ms-wma'로 뜬다
-			case "audio/mp3", "audio/wav": //, "audio/x-m4a", "audio/amr", "audio/basic", "audio/flac", "audio/midi", "audio/vnd.rn-realaudio", "audio/x-ms-wma", "video/x-ms-wma", "audio/ac3":
+			case "audio/mp3", "audio/wav", "audio/mpeg", "audio/x-m4a", "audio/amr", "audio/basic", "audio/flac", "audio/midi", "audio/vnd.rn-realaudio", "audio/x-ms-wma", "video/x-ms-wma", "audio/ac3":
 				data, err := ioutil.ReadAll(file)
 				if err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -398,6 +413,7 @@ func handleUploadSoundCheckData(w http.ResponseWriter, r *http.Request) {
 		Token
 		Adminsetting Adminsetting
 		Item         Item
+		User         User
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -427,12 +443,16 @@ func handleUploadSoundCheckData(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//rcp에 adminsetting 추가
-	adminsetting, err := GetAdminSetting(client)
+	rcp.Adminsetting, err = GetAdminSetting(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	rcp.Adminsetting = adminsetting
+	rcp.User, err = GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	//rcp에 item 추가
 	item, err := GetItem(client, objectID)
 	if err != nil {
@@ -460,6 +480,7 @@ func handleAddSoundSuccess(w http.ResponseWriter, r *http.Request) {
 	type recipe struct {
 		Token
 		Adminsetting Adminsetting
+		User         User
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -482,12 +503,16 @@ func handleAddSoundSuccess(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	adminsetting, err := GetAdminSetting(client)
+	rcp.Adminsetting, err = GetAdminSetting(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	rcp.Adminsetting = adminsetting
+	rcp.User, err = GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
 	err = TEMPLATES.ExecuteTemplate(w, "addsound-success", rcp)
 	if err != nil {
@@ -513,6 +538,7 @@ func handleEditSound(w http.ResponseWriter, r *http.Request) {
 		Attributes  map[string]string  `json:"attributes" bson:"attributes"`
 		Token
 		Adminsetting Adminsetting
+		User         User
 	}
 	q := r.URL.Query()
 	id := q.Get("id")
@@ -545,21 +571,25 @@ func handleEditSound(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	adminsetting, err := GetAdminSetting(client)
+	rcp := recipe{
+		ID:          item.ID,
+		ItemType:    item.ItemType,
+		Author:      item.Author,
+		Title:       item.Title,
+		Description: item.Description,
+		Tags:        item.Tags,
+		Attributes:  item.Attributes,
+		Token:       token,
+	}
+	rcp.Adminsetting, err = GetAdminSetting(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	rcp := recipe{
-		ID:           item.ID,
-		ItemType:     item.ItemType,
-		Author:       item.Author,
-		Title:        item.Title,
-		Description:  item.Description,
-		Tags:         item.Tags,
-		Attributes:   item.Attributes,
-		Token:        token,
-		Adminsetting: adminsetting,
+	rcp.User, err = GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	err = TEMPLATES.ExecuteTemplate(w, "editsound", rcp)
@@ -618,7 +648,7 @@ func handleEditSoundSubmit(w http.ResponseWriter, r *http.Request) {
 	item.Author = r.FormValue("author")
 	item.Title = r.FormValue("title")
 	item.Description = r.FormValue("description")
-	item.Tags = Str2Tags(r.FormValue("tags"))
+	item.Tags = Str2List(r.FormValue("tags"))
 	item.Attributes = attr
 	err = item.CheckError()
 	if err != nil {
@@ -642,6 +672,7 @@ func handleEditSoundSuccess(w http.ResponseWriter, r *http.Request) {
 	type recipe struct {
 		Token
 		Adminsetting Adminsetting
+		User         User
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -664,12 +695,16 @@ func handleEditSoundSuccess(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	adminsetting, err := GetAdminSetting(client)
+	rcp.Adminsetting, err = GetAdminSetting(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	rcp.Adminsetting = adminsetting
+	rcp.User, err = GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
 	err = TEMPLATES.ExecuteTemplate(w, "editsound-success", rcp)
 	if err != nil {

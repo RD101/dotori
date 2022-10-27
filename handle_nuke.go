@@ -39,7 +39,9 @@ func handleAddNukeItem(w http.ResponseWriter, r *http.Request) {
 	}
 	type recipe struct {
 		Token
-		Adminsetting Adminsetting
+		Adminsetting   Adminsetting
+		RootCategories []Category
+		User           User
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -62,12 +64,21 @@ func handleAddNukeItem(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	adminsetting, err := GetAdminSetting(client)
+	rcp.Adminsetting, err = GetAdminSetting(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	rcp.Adminsetting = adminsetting
+	rcp.RootCategories, err = GetRootCategories(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp.User, err = GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	w.Header().Set("Content-Type", "text/html")
 	err = TEMPLATES.ExecuteTemplate(w, "addnuke-item", rcp)
@@ -97,8 +108,8 @@ func handleUploadNukeItem(w http.ResponseWriter, r *http.Request) {
 	item.Author = r.FormValue("author")
 	item.Title = r.FormValue("title")
 	item.Description = r.FormValue("description")
-	tags := Str2Tags(r.FormValue("tags"))
-	item.Tags = tags
+	item.Tags = Str2List(r.FormValue("tags"))
+	item.Categories = []string{r.FormValue("rootcategory-string"), r.FormValue("subcategory-string")}
 	item.ItemType = "nuke"
 	attr := make(map[string]string)
 	attrNum, err := strconv.Atoi(r.FormValue("attributesNum"))
@@ -181,6 +192,7 @@ func handleAddNukeFile(w http.ResponseWriter, r *http.Request) {
 	type recipe struct {
 		Token
 		Adminsetting Adminsetting
+		User         User
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -203,12 +215,16 @@ func handleAddNukeFile(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	adminsetting, err := GetAdminSetting(client)
+	rcp.Adminsetting, err = GetAdminSetting(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	rcp.Adminsetting = adminsetting
+	rcp.User, err = GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
 	err = TEMPLATES.ExecuteTemplate(w, "addnuke-file", rcp)
 	if err != nil {
@@ -418,6 +434,7 @@ func handleUploadNukeCheckData(w http.ResponseWriter, r *http.Request) {
 		Token
 		Adminsetting Adminsetting
 		Item         Item
+		User         User
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -447,12 +464,16 @@ func handleUploadNukeCheckData(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//rcp에 adminsetting 추가
-	adminsetting, err := GetAdminSetting(client)
+	rcp.Adminsetting, err = GetAdminSetting(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	rcp.Adminsetting = adminsetting
+	rcp.User, err = GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	//rcp에 item 추가
 	item, err := GetItem(client, objectID)
 	if err != nil {
@@ -480,6 +501,7 @@ func handleAddNukeSuccess(w http.ResponseWriter, r *http.Request) {
 	type recipe struct {
 		Token
 		Adminsetting Adminsetting
+		User         User
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -502,12 +524,16 @@ func handleAddNukeSuccess(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	adminsetting, err := GetAdminSetting(client)
+	rcp.Adminsetting, err = GetAdminSetting(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	rcp.Adminsetting = adminsetting
+	rcp.User, err = GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
 	err = TEMPLATES.ExecuteTemplate(w, "addnuke-success", rcp)
 	if err != nil {
@@ -533,6 +559,7 @@ func handleEditNuke(w http.ResponseWriter, r *http.Request) {
 		Attributes  map[string]string  `json:"attributes" bson:"attributes"`
 		Token
 		Adminsetting Adminsetting
+		User         User
 	}
 	q := r.URL.Query()
 	id := q.Get("id")
@@ -559,7 +586,6 @@ func handleEditNuke(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
 	item, err := SearchItem(client, id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -581,7 +607,11 @@ func handleEditNuke(w http.ResponseWriter, r *http.Request) {
 		Token:        token,
 		Adminsetting: adminsetting,
 	}
-
+	rcp.User, err = GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	err = TEMPLATES.ExecuteTemplate(w, "editnuke", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -638,7 +668,7 @@ func handleEditNukeSubmit(w http.ResponseWriter, r *http.Request) {
 	item.Author = r.FormValue("author")
 	item.Title = r.FormValue("title")
 	item.Description = r.FormValue("description")
-	item.Tags = Str2Tags(r.FormValue("tags"))
+	item.Tags = Str2List(r.FormValue("tags"))
 	item.Attributes = attr
 	err = item.CheckError()
 	if err != nil {
@@ -662,6 +692,7 @@ func handleEditNukeSuccess(w http.ResponseWriter, r *http.Request) {
 	type recipe struct {
 		Token
 		Adminsetting Adminsetting
+		User         User
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -684,12 +715,16 @@ func handleEditNukeSuccess(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	adminsetting, err := GetAdminSetting(client)
+	rcp.Adminsetting, err = GetAdminSetting(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	rcp.Adminsetting = adminsetting
+	rcp.User, err = GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
 	err = TEMPLATES.ExecuteTemplate(w, "editnuke-success", rcp)
 	if err != nil {

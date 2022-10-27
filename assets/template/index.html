@@ -1,10 +1,6 @@
 {{define "index"}}
     {{template "head"}}
-    <body>      
-        <!-- Preset Value -->
-        <input type="hidden" id="token" value="{{$.User.Token}}">
-        <input type="hidden" id="userid" value="{{$.User.ID}}">
-        <!-- Templates -->
+    <body>
         {{template "navbar" .}}
         {{template "search" .}}
         {{template "modal" .}}
@@ -14,7 +10,6 @@
         {{end}}
         {{template "footer"}}
     </body>
-    <!--add javascript-->
     <script src="/assets/js/jquery-3.1.1.min.js"></script>
     <script src="/assets/bootstrap-4/js/bootstrap.min.js"></script>
     <script src="/assets/tata/tata.js"></script>

@@ -23,6 +23,7 @@ func handleCleanUpDB(w http.ResponseWriter, r *http.Request) {
 		Items []Item
 		Token
 		Adminsetting Adminsetting
+		User         User
 	}
 	//mongoDB client 연결
 	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
@@ -52,6 +53,12 @@ func handleCleanUpDB(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rcp.Adminsetting = adminsetting
+	user, err := GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp.User = user
 	err = TEMPLATES.ExecuteTemplate(w, "cleanup-db", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

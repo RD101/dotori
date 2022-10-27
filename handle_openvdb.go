@@ -38,7 +38,9 @@ func handleAddOpenVDBItem(w http.ResponseWriter, r *http.Request) {
 	}
 	type recipe struct {
 		Token
-		Adminsetting Adminsetting
+		Adminsetting   Adminsetting
+		RootCategories []Category
+		User           User
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -61,12 +63,21 @@ func handleAddOpenVDBItem(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	adminsetting, err := GetAdminSetting(client)
+	rcp.RootCategories, err = GetRootCategories(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	rcp.Adminsetting = adminsetting
+	rcp.Adminsetting, err = GetAdminSetting(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp.User, err = GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
 	err = TEMPLATES.ExecuteTemplate(w, "addopenvdb-item", rcp)
 	if err != nil {
@@ -97,8 +108,8 @@ func handleUploadOpenVDBItem(w http.ResponseWriter, r *http.Request) {
 	item.Author = r.FormValue("author")
 	item.Title = r.FormValue("title")
 	item.Description = r.FormValue("description")
-	tags := Str2Tags(r.FormValue("tags"))
-	item.Tags = tags
+	item.Tags = Str2List(r.FormValue("tags"))
+	item.Categories = []string{r.FormValue("rootcategory-string"), r.FormValue("subcategory-string")}
 	item.ItemType = "openvdb"
 	attr := make(map[string]string)
 	attrNum, err := strconv.Atoi(r.FormValue("attributesNum"))
@@ -184,6 +195,7 @@ func handleAddOpenVDBFile(w http.ResponseWriter, r *http.Request) {
 	type recipe struct {
 		Token
 		Adminsetting Adminsetting
+		User         User
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -206,12 +218,16 @@ func handleAddOpenVDBFile(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	adminsetting, err := GetAdminSetting(client)
+	rcp.Adminsetting, err = GetAdminSetting(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	rcp.Adminsetting = adminsetting
+	rcp.User, err = GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
 	err = TEMPLATES.ExecuteTemplate(w, "addopenvdb-file", rcp)
 	if err != nil {
@@ -474,6 +490,7 @@ func handleUploadOpenVDBCheckData(w http.ResponseWriter, r *http.Request) {
 		Token
 		Adminsetting Adminsetting
 		Item         Item
+		User         User
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -502,13 +519,16 @@ func handleUploadOpenVDBCheckData(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	//rcp에 adminsetting 추가
-	adminsetting, err := GetAdminSetting(client)
+	rcp.Adminsetting, err = GetAdminSetting(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	rcp.Adminsetting = adminsetting
+	rcp.User, err = GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	//rcp에 item 추가
 	item, err := GetItem(client, objectID)
 	if err != nil {
@@ -537,6 +557,7 @@ func handleAddOpenVDBSuccess(w http.ResponseWriter, r *http.Request) {
 	type recipe struct {
 		Token
 		Adminsetting Adminsetting
+		User         User
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -559,12 +580,16 @@ func handleAddOpenVDBSuccess(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	adminsetting, err := GetAdminSetting(client)
+	rcp.Adminsetting, err = GetAdminSetting(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	rcp.Adminsetting = adminsetting
+	rcp.User, err = GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
 	err = TEMPLATES.ExecuteTemplate(w, "addopenvdb-success", rcp)
 	if err != nil {
@@ -591,6 +616,7 @@ func handleEditOpenVDB(w http.ResponseWriter, r *http.Request) {
 		Attributes  map[string]string  `json:"attributes" bson:"attributes"`
 		Token
 		Adminsetting Adminsetting
+		User         User
 	}
 	q := r.URL.Query()
 	id := q.Get("id")
@@ -623,23 +649,26 @@ func handleEditOpenVDB(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	adminsetting, err := GetAdminSetting(client)
+	rcp := recipe{
+		ID:          item.ID,
+		ItemType:    item.ItemType,
+		Author:      item.Author,
+		Title:       item.Title,
+		Description: item.Description,
+		Tags:        item.Tags,
+		Attributes:  item.Attributes,
+		Token:       token,
+	}
+	rcp.Adminsetting, err = GetAdminSetting(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	rcp := recipe{
-		ID:           item.ID,
-		ItemType:     item.ItemType,
-		Author:       item.Author,
-		Title:        item.Title,
-		Description:  item.Description,
-		Tags:         item.Tags,
-		Attributes:   item.Attributes,
-		Token:        token,
-		Adminsetting: adminsetting,
+	rcp.User, err = GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
-
 	err = TEMPLATES.ExecuteTemplate(w, "editopenvdb", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -696,7 +725,7 @@ func handleEditOpenVDBSubmit(w http.ResponseWriter, r *http.Request) {
 	item.Author = r.FormValue("author")
 	item.Title = r.FormValue("title")
 	item.Description = r.FormValue("description")
-	item.Tags = Str2Tags(r.FormValue("tags"))
+	item.Tags = Str2List(r.FormValue("tags"))
 	item.Attributes = attr
 	err = item.CheckError()
 	if err != nil {
@@ -721,6 +750,7 @@ func handleEditOpenVDBSuccess(w http.ResponseWriter, r *http.Request) {
 	type recipe struct {
 		Token
 		Adminsetting Adminsetting
+		User         User
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -743,12 +773,16 @@ func handleEditOpenVDBSuccess(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	adminsetting, err := GetAdminSetting(client)
+	rcp.Adminsetting, err = GetAdminSetting(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	rcp.Adminsetting = adminsetting
+	rcp.User, err = GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
 	err = TEMPLATES.ExecuteTemplate(w, "editopenvdb-success", rcp)
 	if err != nil {

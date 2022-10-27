@@ -207,6 +207,10 @@ func Search(client *mongo.Client, itemType, words string) ([]Item, error) {
 		//"tag:"가 앞에 붙어있으면 태그에서 검색한다.
 		if strings.HasPrefix(word, "tag:") {
 			querys = append(querys, bson.M{"tags": strings.TrimPrefix(word, "tag:")})
+		} else if strings.HasPrefix(word, "categories:") {
+			querys = append(querys, bson.M{"categories": strings.TrimPrefix(word, "categories:")})
+		} else if strings.HasPrefix(word, "category:") {
+			querys = append(querys, bson.M{"categories": strings.TrimPrefix(word, "category:")})
 		} else if strings.HasPrefix(word, "author:") {
 			querys = append(querys, bson.M{"author": strings.TrimPrefix(word, "author:")})
 		} else if strings.HasPrefix(word, "title:") {
@@ -271,6 +275,10 @@ func SearchPage(client *mongo.Client, itemType, words string, page, limitnum int
 		//"tag:"가 앞에 붙어있으면 태그에서 검색한다.
 		if strings.HasPrefix(word, "tag:") {
 			querys = append(querys, bson.M{"tags": strings.TrimPrefix(word, "tag:")})
+		} else if strings.HasPrefix(word, "categories:") {
+			querys = append(querys, bson.M{"categories": strings.TrimPrefix(word, "categories:")})
+		} else if strings.HasPrefix(word, "category:") {
+			querys = append(querys, bson.M{"categories": strings.TrimPrefix(word, "category:")})
 		} else if strings.HasPrefix(word, "author:") {
 			querys = append(querys, bson.M{"author": strings.TrimPrefix(word, "author:")})
 		} else if strings.HasPrefix(word, "title:") {

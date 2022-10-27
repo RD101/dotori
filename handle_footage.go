@@ -38,9 +38,10 @@ func handleAddFootageItem(w http.ResponseWriter, r *http.Request) {
 	}
 	type recipe struct {
 		Token
-		Adminsetting Adminsetting
-		Colorspaces  []Colorspace
-		User         User
+		Adminsetting   Adminsetting
+		Colorspaces    []Colorspace
+		User           User
+		RootCategories []Category
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -75,6 +76,11 @@ func handleAddFootageItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rcp.User = user
+	rcp.RootCategories, err = GetRootCategories(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	ocioConfig, err := loadOCIOConfig(rcp.Adminsetting.OCIOConfig)
 	if err != nil {
 		http.Redirect(w, r, "/error-ocio", http.StatusSeeOther)
@@ -97,9 +103,10 @@ func handleAddFootageItems(w http.ResponseWriter, r *http.Request) {
 	}
 	type recipe struct {
 		Token
-		Adminsetting Adminsetting
-		Colorspaces  []Colorspace
-		User         User
+		Adminsetting   Adminsetting
+		RootCategories []Category
+		Colorspaces    []Colorspace
+		User           User
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -134,6 +141,12 @@ func handleAddFootageItems(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rcp.User = user
+	categories, err := GetRootCategories(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp.RootCategories = categories
 	ocioConfig, err := loadOCIOConfig(rcp.Adminsetting.OCIOConfig)
 	if err != nil {
 		http.Redirect(w, r, "/error-ocio", http.StatusSeeOther)
@@ -172,7 +185,7 @@ func handleUploadFootageItem(w http.ResponseWriter, r *http.Request) {
 	item.InColorspace = r.FormValue("incolorspace")
 	item.OutColorspace = r.FormValue("outcolorspace")
 	item.Fps = r.FormValue("fps")
-	tags := Str2Tags(r.FormValue("tags"))
+	tags := Str2List(r.FormValue("tags"))
 	item.Tags = tags
 	item.ItemType = "footage"
 	if r.FormValue("premult") == "" {
@@ -200,6 +213,7 @@ func handleUploadFootageItem(w http.ResponseWriter, r *http.Request) {
 	item.ThumbImgUploaded = false
 	item.ThumbClipUploaded = false
 	item.DataUploaded = false
+	item.Categories = []string{r.FormValue("rootcategory-string"), r.FormValue("subcategory-string")}
 
 	//mongoDB client 연결
 	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
@@ -262,6 +276,7 @@ func handleAddFootageFile(w http.ResponseWriter, r *http.Request) {
 	type recipe struct {
 		Token
 		Adminsetting Adminsetting
+		User         User
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -290,6 +305,12 @@ func handleAddFootageFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rcp.Adminsetting = adminsetting
+	user, err := GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp.User = user
 	w.Header().Set("Content-Type", "text/html")
 	err = TEMPLATES.ExecuteTemplate(w, "addfootage-file", rcp)
 	if err != nil {
@@ -515,6 +536,7 @@ func handleAddFootageSuccess(w http.ResponseWriter, r *http.Request) {
 	type recipe struct {
 		Token
 		Adminsetting Adminsetting
+		User         User
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -543,6 +565,12 @@ func handleAddFootageSuccess(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rcp.Adminsetting = adminsetting
+	user, err := GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp.User = user
 	w.Header().Set("Content-Type", "text/html")
 	err = TEMPLATES.ExecuteTemplate(w, "addfootage-success", rcp)
 	if err != nil {
@@ -686,7 +714,7 @@ func handleEditFootageSubmit(w http.ResponseWriter, r *http.Request) {
 	item.Author = r.FormValue("author")
 	item.Title = r.FormValue("title")
 	item.Description = r.FormValue("description")
-	item.Tags = Str2Tags(r.FormValue("tags"))
+	item.Tags = Str2List(r.FormValue("tags"))
 	item.InColorspace = r.FormValue("incolorspace")
 	item.OutColorspace = r.FormValue("outcolorspace")
 	item.Attributes = attr
@@ -937,8 +965,8 @@ func handleAPIAddFootage(w http.ResponseWriter, r *http.Request) {
 	item.InColorspace = r.FormValue("incolorspace")
 	item.OutColorspace = r.FormValue("outcolorspace")
 	item.Fps = r.FormValue("fps")
-	tags := Str2Tags(r.FormValue("tags"))
-	item.Tags = tags
+	item.Tags = Str2List(r.FormValue("tags"))
+	item.Categories = Str2List(r.FormValue("categories"))
 	item.ItemType = "footage"
 	if r.FormValue("premult") == "" {
 		item.Premultiply = false

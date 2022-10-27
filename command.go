@@ -41,7 +41,7 @@ func addMayaItemCmd() {
 	i.Title = *flagTitle
 	i.Author = *flagAuthor
 	i.Description = *flagDescription
-	i.Tags = Str2Tags(*flagTag)
+	i.Tags = Str2List(*flagTag)
 	attr, err := StringToMap(*flagAttributes)
 	if err != nil {
 		log.Fatal(err)
@@ -227,7 +227,7 @@ func addMaxItemCmd() {
 	i.Title = *flagTitle
 	i.Author = *flagAuthor
 	i.Description = *flagDescription
-	i.Tags = Str2Tags(*flagTag)
+	i.Tags = Str2List(*flagTag)
 	attr, err := StringToMap(*flagAttributes)
 	if err != nil {
 		log.Fatal(err)
@@ -413,7 +413,7 @@ func addFusion360ItemCmd() {
 	i.Title = *flagTitle
 	i.Author = *flagAuthor
 	i.Description = *flagDescription
-	i.Tags = Str2Tags(*flagTag)
+	i.Tags = Str2List(*flagTag)
 	attr, err := StringToMap(*flagAttributes)
 	if err != nil {
 		log.Fatal(err)
@@ -599,7 +599,7 @@ func addOpenVDBItemCmd() {
 	i.Title = *flagTitle
 	i.Author = *flagAuthor
 	i.Description = *flagDescription
-	i.Tags = Str2Tags(*flagTag)
+	i.Tags = Str2List(*flagTag)
 	attr, err := StringToMap(*flagAttributes)
 	if err != nil {
 		log.Fatal(err)
@@ -785,7 +785,7 @@ func addModoItemCmd() {
 	i.Title = *flagTitle
 	i.Author = *flagAuthor
 	i.Description = *flagDescription
-	i.Tags = Str2Tags(*flagTag)
+	i.Tags = Str2List(*flagTag)
 	attr, err := StringToMap(*flagAttributes)
 	if err != nil {
 		log.Fatal(err)
@@ -971,7 +971,7 @@ func addKatanaItemCmd() {
 	i.Title = *flagTitle
 	i.Author = *flagAuthor
 	i.Description = *flagDescription
-	i.Tags = Str2Tags(*flagTag)
+	i.Tags = Str2List(*flagTag)
 	attr, err := StringToMap(*flagAttributes)
 	if err != nil {
 		log.Fatal(err)
@@ -1157,7 +1157,7 @@ func addHoudiniItemCmd() {
 	i.Title = *flagTitle
 	i.Author = *flagAuthor
 	i.Description = *flagDescription
-	i.Tags = Str2Tags(*flagTag)
+	i.Tags = Str2List(*flagTag)
 	attr, err := StringToMap(*flagAttributes)
 	if err != nil {
 		log.Fatal(err)
@@ -1343,7 +1343,7 @@ func addBlenderItemCmd() {
 	i.Title = *flagTitle
 	i.Author = *flagAuthor
 	i.Description = *flagDescription
-	i.Tags = Str2Tags(*flagTag)
+	i.Tags = Str2List(*flagTag)
 	attr, err := StringToMap(*flagAttributes)
 	if err != nil {
 		log.Fatal(err)
@@ -1526,7 +1526,7 @@ func addLutItemCmd() {
 	i.Title = *flagTitle
 	i.Author = *flagAuthor
 	i.Description = *flagDescription
-	i.Tags = Str2Tags(*flagTag)
+	i.Tags = Str2List(*flagTag)
 	attr, err := StringToMap(*flagAttributes)
 	if err != nil {
 		log.Fatal(err)
@@ -1687,7 +1687,7 @@ func addClipItemCmd() {
 	i.Author = *flagAuthor
 	i.Description = *flagDescription
 	i.Fps = *flagFPS
-	i.Tags = Str2Tags(*flagTag)
+	i.Tags = Str2List(*flagTag)
 	attr, err := StringToMap(*flagAttributes)
 	if err != nil {
 		log.Fatal(err)
@@ -1819,7 +1819,7 @@ func addPdfItemCmd() {
 	i.Title = *flagTitle
 	i.Author = *flagAuthor
 	i.Description = *flagDescription
-	i.Tags = Str2Tags(*flagTag)
+	i.Tags = Str2List(*flagTag)
 	attr, err := StringToMap(*flagAttributes)
 	if err != nil {
 		log.Fatal(err)
@@ -1951,7 +1951,7 @@ func addIesItemCmd() {
 	i.Title = *flagTitle
 	i.Author = *flagAuthor
 	i.Description = *flagDescription
-	i.Tags = Str2Tags(*flagTag)
+	i.Tags = Str2List(*flagTag)
 	attr, err := StringToMap(*flagAttributes)
 	if err != nil {
 		log.Fatal(err)
@@ -2083,7 +2083,7 @@ func addPptItemCmd() {
 	i.Title = *flagTitle
 	i.Author = *flagAuthor
 	i.Description = *flagDescription
-	i.Tags = Str2Tags(*flagTag)
+	i.Tags = Str2List(*flagTag)
 	attr, err := StringToMap(*flagAttributes)
 	if err != nil {
 		log.Fatal(err)
@@ -2215,7 +2215,7 @@ func addSoundItemCmd() {
 	i.Title = *flagTitle
 	i.Author = *flagAuthor
 	i.Description = *flagDescription
-	i.Tags = Str2Tags(*flagTag)
+	i.Tags = Str2List(*flagTag)
 	attr, err := StringToMap(*flagAttributes)
 	if err != nil {
 		log.Fatal(err)
@@ -2347,7 +2347,7 @@ func addTextureItemCmd() {
 	i.Title = *flagTitle
 	i.Author = *flagAuthor
 	i.Description = *flagDescription
-	i.Tags = Str2Tags(*flagTag)
+	i.Tags = Str2List(*flagTag)
 	attr, err := StringToMap(*flagAttributes)
 	if err != nil {
 		log.Fatal(err)
@@ -2479,7 +2479,7 @@ func addHwpItemCmd() {
 	i.Title = *flagTitle
 	i.Author = *flagAuthor
 	i.Description = *flagDescription
-	i.Tags = Str2Tags(*flagTag)
+	i.Tags = Str2List(*flagTag)
 	attr, err := StringToMap(*flagAttributes)
 	if err != nil {
 		log.Fatal(err)
@@ -2617,7 +2617,7 @@ func addHdriItemCmd() {
 	i.Title = *flagTitle
 	i.Author = *flagAuthor
 	i.Description = *flagDescription
-	i.Tags = Str2Tags(*flagTag)
+	i.Tags = Str2List(*flagTag)
 	attr, err := StringToMap(*flagAttributes)
 	if err != nil {
 		log.Fatal(err)
@@ -2751,7 +2751,7 @@ func addUnrealItemCmd() {
 	i.Title = *flagTitle
 	i.Author = *flagAuthor
 	i.Description = *flagDescription
-	i.Tags = Str2Tags(*flagTag)
+	i.Tags = Str2List(*flagTag)
 	attr, err := StringToMap(*flagAttributes)
 	if err != nil {
 		log.Fatal(err)
@@ -2895,7 +2895,7 @@ func addFootageItemCmd() {
 	i.Fps = *flagFPS
 	i.InColorspace = *flagInColorspace
 	i.OutColorspace = *flagOutColorspace
-	i.Tags = Str2Tags(*flagTag)
+	i.Tags = Str2List(*flagTag)
 	i.Premultiply = *flagPremultiply
 	attr, err := StringToMap(*flagAttributes)
 	if err != nil {
@@ -3035,7 +3035,7 @@ func addUSDItemCmd() {
 	i.Title = *flagTitle
 	i.Author = *flagAuthor
 	i.Description = *flagDescription
-	i.Tags = Str2Tags(*flagTag)
+	i.Tags = Str2List(*flagTag)
 	attr, err := StringToMap(*flagAttributes)
 	if err != nil {
 		log.Fatal(err)
@@ -3221,7 +3221,7 @@ func addAlembicItemCmd() {
 	i.Title = *flagTitle
 	i.Author = *flagAuthor
 	i.Description = *flagDescription
-	i.Tags = Str2Tags(*flagTag)
+	i.Tags = Str2List(*flagTag)
 	attr, err := StringToMap(*flagAttributes)
 	if err != nil {
 		log.Fatal(err)
@@ -3407,7 +3407,7 @@ func addNukeItemCmd() {
 	i.Title = *flagTitle
 	i.Author = *flagAuthor
 	i.Description = *flagDescription
-	i.Tags = Str2Tags(*flagTag)
+	i.Tags = Str2List(*flagTag)
 	attr, err := StringToMap(*flagAttributes)
 	if err != nil {
 		log.Fatal(err)

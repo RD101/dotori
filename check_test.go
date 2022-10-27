@@ -421,7 +421,7 @@ func Test_Title(t *testing.T) {
 	}
 }
 
-func Test_Str2Tags(t *testing.T) {
+func Test_Str2List(t *testing.T) {
 	cases := []struct {
 		input string
 		want  []string
@@ -449,9 +449,9 @@ func Test_Str2Tags(t *testing.T) {
 	},
 	}
 	for _, c := range cases {
-		v := Str2Tags(c.input)
+		v := Str2List(c.input)
 		if !testIsEqualSlice(c.want, v) {
-			t.Fatalf("Test_Str2Tags(): 입력 값: %v, 원하는 값: %v, 얻은 값: %v\n", c.input, c.want, v)
+			t.Fatalf("Test_Str2List(): 입력 값: %v, 원하는 값: %v, 얻은 값: %v\n", c.input, c.want, v)
 		}
 	}
 }

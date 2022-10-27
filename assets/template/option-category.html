@@ -1,0 +1,29 @@
+{{define "option-category"}}
+    <div class="row pt-3">
+        <div class="col-sm">
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label class="text-muted">Root Category</label>
+                        <select id="rootcategory" name="rootcategory" class="form-control" onchange="changeRootCategory()">
+                            <option value=""></option>
+                            {{range .RootCategories}}
+                                <option value="{{.ID.Hex}}">{{.Name}}</option>
+                            {{end}}
+                        </select>
+                        <input type="text" class="form-control" id="rootcategory-string" name="rootcategory-string" hidden> <!--디버그를 위해서 사용한다.-->
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label class="text-muted">Sub Category</label>
+                        <select id="subcategory" name="subcategory"  class="form-control" onchange="changeSubCategory()">
+                            <option value=""></option>
+                        </select>
+                        <input type="text" class="form-control" id="subcategory-string" name="subcategory-string" hidden> <!--디버그를 위해서 사용한다.-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{{end}}
