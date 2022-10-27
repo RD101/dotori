@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"path/filepath"
+	"sort"
 	"strings"
 )
 
@@ -37,6 +38,8 @@ func Str2List(str string) []string {
 			}
 		}
 	}
+	// 태그순으로 정렬한다.
+	sort.Strings(result)
 	return result
 }
 
