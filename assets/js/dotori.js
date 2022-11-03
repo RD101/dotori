@@ -98,7 +98,9 @@ function setDetailViewModal(itemid) {
                 `;
             }
             document.getElementById("modal-detailview-tags").innerHTML = tagsHtml
-            document.getElementById("modal-detailview-categories").innerHTML = response["categories"].join(" > ")
+            if (response["categories"] !== null) {
+                document.getElementById("modal-detailview-categories").innerHTML = response["categories"].join(" > ")
+            }
             // Attributes 세팅
             if (Object.keys(response["attributes"]).length != 0) {
                 let attributesHtml = `<strong>Attributes</strong>
