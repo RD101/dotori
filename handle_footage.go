@@ -600,6 +600,7 @@ func handleEditFootage(w http.ResponseWriter, r *http.Request) {
 		Colorspaces   []Colorspace       `json:"colorspaces"`
 		Token
 		Adminsetting Adminsetting
+		User         User
 	}
 	q := r.URL.Query()
 	id := q.Get("id")
@@ -637,6 +638,7 @@ func handleEditFootage(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
 	ocioConfig, err := loadOCIOConfig(adminsetting.OCIOConfig)
 	if err != nil {
 		http.Redirect(w, r, "/error-ocio", http.StatusSeeOther)
@@ -657,7 +659,12 @@ func handleEditFootage(w http.ResponseWriter, r *http.Request) {
 		Adminsetting:  adminsetting,
 		Fps:           item.Fps,
 	}
-
+	user, err := GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp.User = user
 	err = TEMPLATES.ExecuteTemplate(w, "editfootage", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -740,6 +747,7 @@ func handleEditFootageSuccess(w http.ResponseWriter, r *http.Request) {
 	type recipe struct {
 		Token
 		Adminsetting Adminsetting
+		User         User
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -768,6 +776,12 @@ func handleEditFootageSuccess(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rcp.Adminsetting = adminsetting
+	user, err := GetUser(client, token.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	rcp.User = user
 	w.Header().Set("Content-Type", "text/html")
 	err = TEMPLATES.ExecuteTemplate(w, "editfootage-success", rcp)
 	if err != nil {
