@@ -151,6 +151,24 @@
                     <div class="row">
                         <div class="col-sm">
                             <div class="form-group">
+                                <label class="text-muted">Mongodump</label>
+                                <input type="text" name="mongodump" class="form-control" placeholder="/path/mongodump" value="{{.Adminsetting.Mongodump}}">
+                                <small class="form-text text-muted">mongodump path</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <div class="form-group">
+                                <label class="text-muted">Backup Path</label>
+                                <input type="text" name="backuppath" class="form-control" placeholder="/backup/path" value="{{.Adminsetting.Backuppath}}">
+                                <small class="form-text text-muted">DB Backup path</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <div class="form-group">
                                 <label class="text-muted">MultipartForm Buffer Size</label>
                                 <input type="number" name="multipartformbuffersize" class="form-control" placeholder="200000" value="{{.Adminsetting.MultipartFormBufferSize}}">
                                 <small class="form-text text-muted">MultipartForm Buffersize</small>
