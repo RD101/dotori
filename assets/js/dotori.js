@@ -669,6 +669,35 @@ function AddCategory() {
     });    
 }
 
+function BackupDB() {
+    let today = new Date();
+    let yyyy = today.getFullYear();
+    let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    let dd = String(today.getDate()).padStart(2, '0');
+    let obj = new Object()
+    obj.date = yyyy+mm+dd
+    fetch('/api/dbbackup', {
+        method: 'POST',
+        headers: {
+            "Authorization": "Basic "+ document.getElementById("token").value,
+        },
+        body: JSON.stringify(obj),
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw Error(response.statusText + " - " + response.url);
+        }
+        return response.json()
+    })
+    .then((data) => {
+        tata.success('Backup', "Backup finished", {position: 'tr',duration: 5000,onClose: null})
+    })
+    .catch((err) => {
+        alert(err)
+    });    
+}
+
+
 function setRmCategoryID(id) {
     document.getElementById("modal-rmcategory-id").value = id
 }
