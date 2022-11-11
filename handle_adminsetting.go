@@ -2,7 +2,11 @@ package main
 
 import (
 	"context"
+	"encoding/json"
+	"errors"
 	"net/http"
+	"os"
+	"os/exec"
 	"strconv"
 	"time"
 
@@ -97,6 +101,8 @@ func handleAdminSettingSubmit(w http.ResponseWriter, r *http.Request) {
 	a.FFmpeg = r.FormValue("ffmpeg")
 	a.OCIOConfig = r.FormValue("ocioconfig")
 	a.OpenImageIO = r.FormValue("openimageio")
+	a.Mongodump = r.FormValue("mongodump")
+	a.Backuppath = r.FormValue("backuppath")
 	a.LDLibraryPath = r.FormValue("ldlibrarypath")
 	bsize, err := strconv.Atoi(r.FormValue("multipartformbuffersize"))
 	if err != nil {
@@ -250,4 +256,85 @@ func handleAdminSettingSuccess(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+}
+
+func postDBBackupHandler(w http.ResponseWriter, r *http.Request) {
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer client.Disconnect(ctx)
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	accesslevel, err := GetAccessLevelFromHeader(r, client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if accesslevel != "default" && accesslevel != "manager" && accesslevel != "admin" {
+		http.Error(w, "등록 권한이 없는 계정입니다", http.StatusUnauthorized)
+		return
+	}
+	type Option struct {
+		Date       string `json:"date"`
+		Mongodump  string `json:"mongodump"`
+		Backuppath string `json:"backuppath"`
+	}
+	opt := Option{}
+	var unmarshalErr *json.UnmarshalTypeError
+
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&opt)
+	if err != nil {
+		if errors.As(err, &unmarshalErr) {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		} else {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+	}
+
+	// adminsetting을 불러오기
+	adminsetting, err := GetAdminSetting(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if _, err := os.Stat(adminsetting.Mongodump); errors.Is(err, os.ErrNotExist) {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	if _, err := os.Stat(adminsetting.Backuppath); errors.Is(err, os.ErrNotExist) {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	opt.Mongodump = adminsetting.Mongodump
+	opt.Backuppath = adminsetting.Backuppath
+	args := []string{
+		"-o",
+		adminsetting.Backuppath + "/" + opt.Date,
+	}
+	err = exec.Command(adminsetting.Mongodump, args...).Run()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	data, err := json.Marshal(opt)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	w.Write(data)
 }

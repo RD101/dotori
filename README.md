@@ -69,7 +69,7 @@ Dafault로 설치되어 있는 yum으로는 필요한 라이브러리를 설치�
 
 도토리는 mongoDB를 사용하고 있습니다. mongoDB를 설치해주세요.
 
-- [mongoDB 설치하는 법](https://github.com/cgiseminar/curriculum/blob/master/docs/install_mongodb.md)
+- [mongoDB 설치하는 법](https://github.com/lazypic/tdcourse/blob/master/docs/install_mongodb.md)
 
 ### 기타 라이브러리 및 명령어 설치
 
