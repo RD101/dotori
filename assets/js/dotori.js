@@ -389,6 +389,19 @@ function copyClipboard(value) {
     })
 }
 
+function SelectAll() {
+    let checkboxs = document.querySelectorAll('.select-item')    
+    for (let i = 0; i < checkboxs.length; i += 1) {        
+        checkboxs[i].checked = true
+    }
+}
+
+function SelectNone() {
+    let checkboxs = document.querySelectorAll('.select-item')    
+    for (let i = 0; i < checkboxs.length; i += 1) {        
+        checkboxs[i].checked = false
+    }
+}
 
 // copyPath 함수는 경로를 받아서, 클립보드로 복사하는 기능이다.
 function copyPath(path) {
