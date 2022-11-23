@@ -521,20 +521,19 @@ function rvlink(path) {
     })
     .then((data) => {
         admin = data;
+        if (navigator.userAgent.indexOf("Win") != -1) { // windows 경우
+            path = path.replace(admin.rootpath,"") // linux의 루트경로를 지운다.
+            path = admin.windowsuncprefix.replace(/\//g, "\\") + path.replace(/\//g, "\\")
+        }
+        let obj = document.createElement("a");   // input요소를 만듬
+        obj.href = "rvlink://" + path
+        document.body.appendChild(obj);
+        obj.click()
+        document.body.removeChild(obj);
     })
     .catch((err) => {
         alert(err)
     });
-
-    if (navigator.userAgent.indexOf("Win") != -1) { // windows 경우
-        path = admin.windowsuncprefix + path.replace(/\//g, "\\")
-    }
-
-    let obj = document.createElement("a");   // input요소를 만듬
-    obj.href = "rvlink://" + path
-    document.body.appendChild(obj);
-    obj.click()
-    document.body.removeChild(obj);
 }
 
 function EditTags() {
