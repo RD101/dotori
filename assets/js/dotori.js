@@ -420,15 +420,18 @@ function copyPath(path) {
     })
     .then((data) => {
         admin = data;
+        
+        if (navigator.userAgent.indexOf("Win") != -1) { // windows 경우
+            path = path.replace(admin.rootpath,"") // linux의 루트경로를 지운다.
+            path = admin.windowsuncprefix.replace(/\//g, "\\") + path.replace(/\//g, "\\")
+        }
+        copyClipboard(path)
+        
     })
     .catch((err) => {
         alert(err)
     });
-
-    if (navigator.userAgent.indexOf("Win") != -1) { // windows 경우
-        path = admin.windowsuncprefix + path.replace(/\//g, "\\")
-    }
-    copyClipboard(path)
+    
 }
 
 
