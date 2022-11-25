@@ -34,8 +34,9 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 		TotalPage   int64
 		Pages       []int64
 		Token
-		User         User
-		Adminsetting Adminsetting
+		User           User
+		Adminsetting   Adminsetting
+		RootCategories []Category
 	}
 	rcp := recipe{}
 	rcp.Searchword = searchword
@@ -87,6 +88,11 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rcp.Adminsetting = adminsetting
+	rcp.RootCategories, err = GetRootCategories(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	err = TEMPLATES.ExecuteTemplate(w, "index", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

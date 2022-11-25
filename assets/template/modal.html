@@ -129,6 +129,27 @@
         </div>
     </div>
 
+    <!-- Modal : Set Category -->
+    <div class="modal" id="modal-setcategory" tabindex="-1" role="dialog" aria-labeledby="modal-preset-colorspace" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content text-white" style="background-color: #2e2d2d">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-setcategory-title">Set Category</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" class="text-darkmode">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{template "option-category" .}}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-darkmode" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-outline-warning" onclick="SetCategory()" data-dismiss="modal">Edit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal : Add Category -->
     <div class="modal" id="modal-addcategory" tabindex="-1" role="dialog" aria-labeledby="modal-addcategory" aria-hidden="true">
         <div class="modal-dialog" role="document">

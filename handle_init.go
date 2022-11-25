@@ -31,6 +31,7 @@ func handleInit(w http.ResponseWriter, r *http.Request) {
 		RecentlyTotalItemNum int64
 		TopUsingTotalItemNum int64
 		User                 User
+		RootCategories       []Category
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -101,6 +102,11 @@ func handleInit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rcp.TopUsingItems = TopUsingItems
+	rcp.RootCategories, err = GetRootCategories(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	err = TEMPLATES.ExecuteTemplate(w, "initPage", rcp)
 	if err != nil {
