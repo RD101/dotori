@@ -144,12 +144,13 @@ func handleTags(w http.ResponseWriter, r *http.Request) {
 	}
 	type recipe struct {
 		Token
-		Adminsetting Adminsetting
-		User         User
-		Tags         []string
-		ItemType     string
-		Searchword   string
-		TotalNum     int64
+		Adminsetting   Adminsetting
+		User           User
+		Tags           []string
+		ItemType       string
+		Searchword     string
+		TotalNum       int64
+		RootCategories []Category
 	}
 	rcp := recipe{}
 	rcp.Token = token
@@ -188,6 +189,12 @@ func handleTags(w http.ResponseWriter, r *http.Request) {
 	}
 
 	rcp.Tags, err = GetTags(client) // 전체 tag 정보 가져옴
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	rcp.RootCategories, err = GetRootCategories(client) // 전체 루트 카테고리를 가지고옴
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

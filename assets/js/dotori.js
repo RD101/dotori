@@ -590,6 +590,78 @@ function EditTags() {
     }
     tata.success('Edit', "태그가 편집되었습니다.", {position: 'tr',duration: 5000,onClose: null})
 }
+
+function SetItemCategory() {
+    let rootCategory = document.getElementById("rootcategory").options[document.getElementById("rootcategory").selectedIndex].text
+    let subCategory = document.getElementById("subcategory").options[document.getElementById("subcategory").selectedIndex].text
+    
+    // 선택한 ID를 출력한다.
+    let idcheckboxs = document.querySelectorAll("[id^='idcheckbox-']")
+    let ids = []
+    for (let i = 0; i < idcheckboxs.length; i += 1) {
+        if (!idcheckboxs[i].checked) {
+            continue
+        }
+        ids.push(idcheckboxs[i].value)
+    }
+    if (ids.length === 0) {
+        tata.error('Error', "Please select assets", {position: 'tr',duration: 5000,onClose: null})
+        return
+    }
+    for (let i = 0; i < ids.length; i += 1) {
+        let id = ids[i]
+        fetch('/api/item?id='+id, {
+            method: 'GET',
+            headers: {
+                "Authorization": "Basic "+ document.getElementById("token").value,
+            },
+        })
+        .then((response) => {
+            if (!response.ok) {
+                response.text().then(function (text) {
+                    tata.error('Error', text, {position: 'tr',duration: 5000,onClose: null})
+                    return
+                });
+            }
+            return response.json()
+        })
+        .then((data) => {
+            console.log(data)
+            console.log(rootCategory, subCategory)
+            data.categories = [rootCategory, subCategory]
+            // data 업데이트
+            fetch('/api/item/'+data.id, {
+                method: 'PUT',
+                headers: {
+                    "Authorization": "Basic "+ document.getElementById("token").value,
+                },
+                body: JSON.stringify(data),
+            })
+            .then((response) => {
+                if (!response.ok) {
+                    response.text().then(function (text) {
+                        tata.error('Error', text, {position: 'tr',duration: 5000,onClose: null})
+                        return
+                    });
+                }
+                return response.json()
+            })
+            .then((data) => {
+                console.log(data)
+                
+            })
+            .catch((err) => {
+                console.log(err)
+            });
+
+        })
+        .catch((err) => {
+            console.log(err)
+        });
+    }
+    tata.success('Success', ids.length + " Items<br>Set Categories "+rootCategory+" > "+subCategory, {position: 'tr',duration: 5000,onClose: null})
+}
+
   
 function CopyPaths() {
     GetOutputDataPaths().then(function(data) { // Promise 타입은 then을 이용해서 값을 가지고 와야한다.
@@ -672,9 +744,9 @@ function AddCategory() {
                     <img src="/assets/img/delete.svg" class="mt-1 icon finger" onclick="setRmCategoryID('${data.id}')" data-bs-toggle="modal" data-bs-target="#modal-rmcategory">
                     </div>`
         if (data.parentid == "") {
-            document.getElementById("rootcategory").innerHTML +=  body
+            document.getElementById("listofrootcategory").innerHTML +=  body
         } else {
-            document.getElementById("subcategory").innerHTML +=  body
+            document.getElementById("listofsubcategory").innerHTML +=  body
         }
         
         tata.success('Add', "A category has been added.", {position: 'tr',duration: 5000,onClose: null})
@@ -731,13 +803,13 @@ function selectCategory(id) {
     e.classList.add("border-warning");
 
     // 선택된 ID로 Parentid를 설정한다.
-    if (e.parentNode.id == "rootcategory") {
+    if (e.parentNode.id == "listofrootcategory") {
         document.getElementById("modal-addcategory-parentid").value = id
     } else {
         document.getElementById("modal-addcategory-parentid").value = ""
     }
     
-    if (e.parentNode.id != "rootcategory") {
+    if (e.parentNode.id != "listofrootcategory") {
         return
     }
     // 선택된 자식을 서브 카테고리에 띄운다.
@@ -754,18 +826,19 @@ function selectCategory(id) {
         return response.json()
     })
     .then((data) => {
+        console.log(data)
         if (data == null) {
             // 값이 없다면 subcategory를 비운다.
-            document.getElementById("subcategory").innerHTML = ""
+            document.getElementById("listofsubcategory").innerHTML = ""
             return
         }
-        document.getElementById("subcategory").innerHTML = ""
+        document.getElementById("listofsubcategory").innerHTML = ""
         // subcategory를 그린다.
         for (let i = 0; i < data.length; i+=1) {
             let body = `<div id="category-${data[i].id}" class="finger category border border-dark p-2 ps-3 m-1 d-block align-items-center" onclick="selectCategory('${data[i].id}')">${data[i].name}
                     <img src="/assets/img/delete.svg" class="mt-1 icon finger" onclick="setRmCategoryID('${data[i].id}')" data-bs-toggle="modal" data-bs-target="#modal-rmcategory">
                     </div>`
-            document.getElementById("subcategory").innerHTML +=  body        
+            document.getElementById("listofsubcategory").innerHTML +=  body
         }
     })
     .catch((err) => {
@@ -790,7 +863,7 @@ function RmCategory() {
         let elem = document.getElementById("category-" + data.id);
         let elemParentID = elem.parentNode.id
         elem.parentNode.removeChild(elem);
-        if (elemParentID != "rootcategory") { // sub카테고리를 삭제할 때
+        if (elemParentID != "listofrootcategory") { // sub카테고리를 삭제할 때
             tata.success('Remove', "A category has been removed.", {position: 'tr',duration: 5000,onClose: null})
         } else {
             location.reload(); // root카테고리가 삭제될 때는 페이지를 리로드한다.
@@ -845,5 +918,5 @@ function changeRootCategory() {
 }
 
 function changeSubCategory() {
-    document.getElementById("subcategory-string").value = document.getElementById("subcategory").options[document.getElementById("subcategory").selectedIndex].text
+    document.getElementById("subcategory-string").value = document.getElementById("listofsubcategory").options[document.getElementById("listofsubcategory").selectedIndex].text
 }

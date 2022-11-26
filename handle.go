@@ -402,7 +402,10 @@ func webserver() {
 	r.HandleFunc("/invalidaccess", handleInvalidAccess)
 
 	// RestAPI
-	r.HandleFunc("/api/item", handleAPIItem)
+	r.HandleFunc("/api/item", handleAPIGetItem).Methods("GET")
+	r.HandleFunc("/api/item/{id}", handleAPIPutItem).Methods("PUT")
+	r.HandleFunc("/api/item", handleAPIPostItem).Methods("POST")
+	r.HandleFunc("/api/item", handleAPIDeleteItem).Methods("DETELE")
 	r.HandleFunc("/api/search", handleAPISearch)
 	r.HandleFunc("/api/adminsetting", handleAPIAdminSetting)
 	r.HandleFunc("/api/dbbackup", postDBBackupHandler).Methods("POST")
@@ -425,7 +428,7 @@ func webserver() {
 	r.HandleFunc("/api/taglist", helpMethodOptionsHandler).Methods(http.MethodOptions)
 	r.HandleFunc("/api/taglist", getTaglistHandler).Methods("GET")
 
-	// REST API Category
+	// REST API Category managing
 	r.HandleFunc("/category", handleCategory)
 	r.HandleFunc("/api/category", helpMethodOptionsHandler).Methods(http.MethodGet, http.MethodPut, http.MethodDelete, http.MethodOptions)
 	r.HandleFunc("/api/category", postCategoryHandler).Methods("POST")

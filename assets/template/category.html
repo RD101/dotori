@@ -15,8 +15,8 @@
         <div class="row">
             <div class="col border border-darkmode p-1 m-1">
                 <div class="finger category-add border border-darkmode p-2 m-1 text-center" onclick="document.getElementById('modal-addcategory-name').value='';document.getElementById('modal-addcategory-parentid').value=''" data-bs-toggle="modal" data-bs-target="#modal-addcategory">+</div>
-                <div id="rootcategory">
-                    {{range .RootCategory}}
+                <div id="listofrootcategory">
+                    {{range .RootCategories}}
                         <div id="category-{{.ID.Hex}}" class="finger category border border-dark p-2 ps-3 m-1 d-block align-items-center" onclick="selectCategory('{{.ID.Hex}}')">
                             {{.Name}}
                             <img src="/assets/img/delete.svg" class="mt-1 icon finger" onclick="setRmCategoryID('{{.ID.Hex}}')" data-bs-toggle="modal" data-bs-target="#modal-rmcategory">
@@ -26,7 +26,7 @@
             </div>
             <div class="col border border-darkmode p-1 m-1">
                 <div class="finger category-add border border-darkmode p-2 m-1 text-center" onclick="document.getElementById('modal-addcategory-name').value=''" data-bs-toggle="modal" data-bs-target="#modal-addcategory">+</div>
-                <div id="subcategory">
+                <div id="listofsubcategory">
                 </div>
             </div>
         </div>
