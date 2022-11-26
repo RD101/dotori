@@ -51,9 +51,10 @@ func handleRename(w http.ResponseWriter, r *http.Request) {
 	id := vars["id"]
 	type recipe struct {
 		Adminsetting
-		Token Token
-		User  User
-		Item  Item
+		Token          Token
+		User           User
+		Item           Item
+		RootCategories []Category
 	}
 	rcp := recipe{}
 	setting, err := GetAdminSetting(client)
@@ -62,6 +63,11 @@ func handleRename(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rcp.Adminsetting = setting
+	rcp.RootCategories, err = GetRootCategories(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	rcp.Token = token
 	rcp.User, err = GetUser(client, token.ID) // user 정보 가져옴
 	if err != nil {
