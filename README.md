@@ -27,10 +27,8 @@ VFX, Animation, Game, Sound, Reference Data, Etc Data 등 콘텐츠 제작에 �
 
 ## Roadmap 2022
 
-- 카테고리 기능(진행중)
 - 검색 엔진 상단 카테고리 종류 Hide/추가할 수 있게 커스텀 가능하게 수정
 - 검색 엔진에 여러 가지를 검색할 때 'and'의 개념이 아니라 'or'의 기능 추가 (샷그리드에서 콤마쓰듯이)
-- 태그가 배열되는 순서를 알파벳 순서 등으로 sorting 가능하게 수정 필요
 - 'Users'에서 계정 어드민 권한 부여 또는 수정 바로 가능하게 수정
 
 ## 특 징
@@ -48,6 +46,7 @@ VFX, Animation, Game, Sound, Reference Data, Etc Data 등 콘텐츠 제작에 �
 - OpenColorIO, OpenImageIO, FFmpeg 오픈소스를 통한 연산
 - OpenPipelieIO와 연동
 - 유저관리
+- 카테고리 관리
 
 ## 사용 방법
 
