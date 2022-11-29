@@ -405,7 +405,7 @@ func webserver() {
 	r.HandleFunc("/api/item", handleAPIGetItem).Methods("GET")
 	r.HandleFunc("/api/item/{id}", handleAPIPutItem).Methods("PUT")
 	r.HandleFunc("/api/item", handleAPIPostItem).Methods("POST")
-	r.HandleFunc("/api/item", handleAPIDeleteItem).Methods("DETELE")
+	r.HandleFunc("/api/item", handleAPIDeleteItem).Methods("DELETE")
 	r.HandleFunc("/api/search", handleAPISearch)
 	r.HandleFunc("/api/adminsetting", handleAPIAdminSetting)
 	r.HandleFunc("/api/dbbackup", postDBBackupHandler).Methods("POST")
