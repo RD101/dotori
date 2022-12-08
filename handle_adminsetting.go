@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"strconv"
+	"strings"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -322,7 +323,10 @@ func postDBBackupHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	opt.Mongodump = adminsetting.Mongodump
 	opt.Backuppath = adminsetting.Backuppath
+	dbHostName := strings.ReplaceAll(*flagMongoDBURI, "mongodb://", "")
 	args := []string{
+		"-h",
+		dbHostName,
 		"-o",
 		adminsetting.Backuppath + "/" + opt.Date,
 	}
