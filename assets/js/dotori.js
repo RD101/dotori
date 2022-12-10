@@ -917,6 +917,47 @@ function changeRootCategory() {
     });
 }
 
+function changeSearchboxRootCategory() {
+    let id = document.getElementById("searchbox-rootcategory").value
+    if (id == "") {
+        return
+    }
+    fetch('/api/subcategories/'+id, {
+        method: 'GET',
+        headers: {
+            "Authorization": "Basic "+ document.getElementById("token").value,
+        },
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw Error(response.statusText + " - " + response.url);
+        }
+        return response.json()
+    })
+    .then((data) => {
+        if (data == null) {
+            // 값이 없다면 subcategory를 비운다.
+            document.getElementById("searchbox-subcategory").value = ""
+            return
+        }
+        let select = document.getElementById("searchbox-subcategory")
+
+        // 기존 subcategory를 비운다.
+        select.innerHTML = `<option value="">Sub Category</option>`
+
+        // subcategory를 그린다.
+        for (let i = 0; i < data.length; i+=1) {
+            let opt = document.createElement('option');
+            opt.value = data[i].id;
+            opt.innerHTML = data[i].name;
+            select.appendChild(opt);
+        }
+    })
+    .catch((err) => {
+        console.log(err)
+    });
+}
+
 function changeSubCategory() {
     document.getElementById("subcategory-string").value = document.getElementById("listofsubcategory").options[document.getElementById("listofsubcategory").selectedIndex].text
 }
