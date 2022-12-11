@@ -4,13 +4,13 @@
         <nav aria-label="Page navigation">
             <ul class="pagination">
                 <li class="page-item">
-                    <a class="page-link btn-darkmode" href="/search?itemtype={{$.ItemType}}&searchword={{$.Searchword}}&page=1" aria-label="Previous">
+                    <a class="page-link btn-darkmode" href="/search?itemtype={{$.ItemType}}&searchword={{$.Searchword}}&page=1&rootcategoryid={{$.RootCategoryID}}&subcategoryid={{$.SubCategoryID}}" aria-label="Previous">
                         <span aria-hidden="true">&#60;&#60;</span>
                         <span class="sr-only">First</span>
                     </a>
                 </li>
                 <li class="page-item">
-                    <a id="previous" class="page-link btn-darkmode" href="/search?itemtype={{$.ItemType}}&searchword={{$.Searchword}}&page={{PreviousPage .CurrentPage .TotalPage}}" aria-label="Previous">
+                    <a id="previous" class="page-link btn-darkmode" href="/search?itemtype={{$.ItemType}}&searchword={{$.Searchword}}&page={{PreviousPage .CurrentPage .TotalPage}}&rootcategoryid={{$.RootCategoryID}}&subcategoryid={{$.SubCategoryID}}" aria-label="Previous">
                         <span aria-hidden="true">&#60;</span>
                         <span class="sr-only">Previous</span>
                     </a>
@@ -18,20 +18,20 @@
 
                 {{range .Pages}}
                     <li class="page-item">
-                        <a class="{{if eq $.CurrentPage .}}text-white {{end}}page-link btn-darkmode" href="/search?itemtype={{$.ItemType}}&searchword={{$.Searchword}}&page={{.}}">
+                        <a class="{{if eq $.CurrentPage .}}text-white {{end}}page-link btn-darkmode" href="/search?itemtype={{$.ItemType}}&searchword={{$.Searchword}}&page={{.}}&rootcategoryid={{$.RootCategoryID}}&subcategoryid={{$.SubCategoryID}}">
                             {{.}}
                         </a>
                     </li>
                 {{end}}
                 
                 <li class="page-item">
-                    <a id="next" class="page-link btn-darkmode" href="/search?itemtype={{$.ItemType}}&searchword={{$.Searchword}}&page={{NextPage .CurrentPage .TotalPage}}" aria-label="Next">
+                    <a id="next" class="page-link btn-darkmode" href="/search?itemtype={{$.ItemType}}&searchword={{$.Searchword}}&page={{NextPage .CurrentPage .TotalPage}}&rootcategoryid={{$.RootCategoryID}}&subcategoryid={{$.SubCategoryID}}" aria-label="Next">
                         <span aria-hidden="true">&#62;</span>
                         <span class="sr-only">Next</span>
                     </a>
                 </li>
                 <li class="page-item">
-                    <a id="next" class="page-link btn-darkmode" href="/search?itemtype={{$.ItemType}}&searchword={{$.Searchword}}&page={{.TotalPage}}" aria-label="Next">
+                    <a id="next" class="page-link btn-darkmode" href="/search?itemtype={{$.ItemType}}&searchword={{$.Searchword}}&page={{.TotalPage}}&rootcategoryid={{$.RootCategoryID}}&subcategoryid={{$.SubCategoryID}}" aria-label="Next">
                         <span aria-hidden="true">&#62;&#62;</span>
                         <span class="sr-only">Last</span>
                     </a>

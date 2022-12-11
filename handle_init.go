@@ -31,7 +31,10 @@ func handleInit(w http.ResponseWriter, r *http.Request) {
 		RecentlyTotalItemNum int64
 		TopUsingTotalItemNum int64
 		User                 User
+		RootCategoryID       string
+		SubCategoryID        string
 		RootCategories       []Category
+		SubCategories        []Category
 	}
 	rcp := recipe{}
 	rcp.Token = token
