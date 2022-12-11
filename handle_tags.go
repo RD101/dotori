@@ -150,7 +150,10 @@ func handleTags(w http.ResponseWriter, r *http.Request) {
 		ItemType       string
 		Searchword     string
 		TotalNum       int64
+		RootCategoryID string
+		SubCategoryID  string
 		RootCategories []Category
+		SubCategories  []Category
 	}
 	rcp := recipe{}
 	rcp.Token = token
