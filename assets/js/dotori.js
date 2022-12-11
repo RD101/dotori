@@ -918,7 +918,7 @@ function changeRootCategory() {
 }
 
 function changeSearchboxRootCategory() {
-    let id = document.getElementById("searchbox-rootcategory").value
+    let id = document.getElementById("searchbox-rootcategory-id").value
     if (id == "") {
         return
     }
@@ -937,10 +937,10 @@ function changeSearchboxRootCategory() {
     .then((data) => {
         if (data == null) {
             // 값이 없다면 subcategory를 비운다.
-            document.getElementById("searchbox-subcategory").value = ""
+            document.getElementById("searchbox-subcategory-id").value = ""
             return
         }
-        let select = document.getElementById("searchbox-subcategory")
+        let select = document.getElementById("searchbox-subcategory-id")
 
         // 기존 subcategory를 비운다.
         select.innerHTML = `<option value="">Sub Category</option>`

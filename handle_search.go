@@ -21,22 +21,27 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query()
 	itemType := q.Get("itemtype")
 	searchword := q.Get("searchword")
+	rootCategoryID := q.Get("rootcategoryid")
+	subCategoryID := q.Get("subcategoryid")
 	page := PageToString(q.Get("page"))
 	if page == "" {
 		page = "1"
 	}
 	type recipe struct {
-		Items       []Item
-		Searchword  string
-		ItemType    string
-		TotalNum    int64
-		CurrentPage int64
-		TotalPage   int64
-		Pages       []int64
+		Items          []Item
+		Searchword     string
+		ItemType       string
+		RootCategoryID string
+		SubCategoryID  string
+		TotalNum       int64
+		CurrentPage    int64
+		TotalPage      int64
+		Pages          []int64
 		Token
 		User           User
 		Adminsetting   Adminsetting
 		RootCategories []Category
+		SubCategories  []Category
 	}
 	rcp := recipe{}
 	rcp.Searchword = searchword
@@ -62,6 +67,36 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rcp.CurrentPage = PageToInt(page)
+
+	rcp.RootCategories, err = GetRootCategories(client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if rootCategoryID != "" {
+		rcp.RootCategoryID = rootCategoryID
+		c, err := GetCategory(client, rootCategoryID)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		searchword += " categories:" + c.Name
+
+		rcp.SubCategories, err = GetSubCategories(client, rootCategoryID)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+	if subCategoryID != "" {
+		rcp.SubCategoryID = subCategoryID
+		c, err := GetCategory(client, subCategoryID)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		searchword += " categories:" + c.Name
+	}
 	totalPage, totalNum, items, err := SearchPage(client, itemType, searchword, rcp.CurrentPage, *flagPagenum)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -88,11 +123,7 @@ func handleSearch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rcp.Adminsetting = adminsetting
-	rcp.RootCategories, err = GetRootCategories(client)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+
 	err = TEMPLATES.ExecuteTemplate(w, "index", rcp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -108,6 +139,8 @@ func handleSearchSubmit(w http.ResponseWriter, r *http.Request) {
 	}
 	itemType := r.FormValue("itemtype")
 	searchword := r.FormValue("searchword")
+	rootCategoryID := r.FormValue("searchbox-rootcategory-id")
+	subCategoryID := r.FormValue("searchbox-subcategory-id")
 	page := PageToString(r.FormValue("page"))
-	http.Redirect(w, r, fmt.Sprintf("/search?itemtype=%s&searchword=%s&page=%s", itemType, searchword, page), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/search?itemtype=%s&searchword=%s&page=%s&rootcategoryid=%s&subcategoryid=%s", itemType, searchword, page, rootCategoryID, subCategoryID), http.StatusSeeOther)
 }

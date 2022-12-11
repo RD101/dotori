@@ -33,17 +33,21 @@
 				</div>
 				{{if $.Adminsetting.EnableCategory}}
 					<div class="input-group-append">
-						<select id="searchbox-rootcategory" name="searchbox-rootcategory" class="form-select custom-select" onchange="changeSearchboxRootCategory()">
+						<select id="searchbox-rootcategory-id" name="searchbox-rootcategory-id" class="form-select custom-select" onchange="changeSearchboxRootCategory()">
 							<option value="">Root Category</option>
 							{{range .RootCategories}}
-								<option value="{{.ID.Hex}}">{{.Name}}</option>
+								<option value="{{.ID.Hex}}" {{if eq $.RootCategoryID .ID.Hex}}selected{{end}}>{{.Name}}</option>
 							{{end}}
 						</select>
 					</div>
 
 					<div class="input-group-append">
-						<select id="searchbox-subcategory" name="searchbox-subcategory" class="form-select custom-select">
+						<select id="searchbox-subcategory-id" name="searchbox-subcategory-id" class="form-select custom-select">
 							<option value="">Sub Category</option>
+							{{range .SubCategories}}
+								<option value="{{.ID.Hex}}" {{if eq $.SubCategoryID .ID.Hex}}selected{{end}}>{{.Name}}</option>
+							{{end}}
+							
 						</select>
 					</div>
 				{{end}}
