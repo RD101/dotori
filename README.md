@@ -27,7 +27,6 @@ VFX, Animation, Game, Sound, Reference Data, Etc Data 등 콘텐츠 제작에 �
 
 ## Roadmap 2022
 
-- 검색 엔진에 여러 가지를 검색할 때 'and'의 개념이 아니라 'or'의 기능 추가 (샷그리드에서 콤마쓰듯이)
 - 'Users'에서 계정 어드민 권한 부여 또는 수정 바로 가능하게 수정
 
 ## 특 징
