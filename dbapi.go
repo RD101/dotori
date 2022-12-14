@@ -203,6 +203,8 @@ func Search(client *mongo.Client, itemType, words string) ([]Item, error) {
 		if word == "" {
 			continue
 		}
+		// 쉼표가 존재한다면 쉼표를 제거합니다.
+		word = strings.Trim(word, ",")
 		querys := []bson.M{}
 		//"tag:"가 앞에 붙어있으면 태그에서 검색한다.
 		if strings.HasPrefix(word, "tag:") {
@@ -235,6 +237,10 @@ func Search(client *mongo.Client, itemType, words string) ([]Item, error) {
 	}
 	// 사용률이 많은 소스가 위로 출력되도록 한다.
 	q := bson.M{"$and": wordsQueries} // 최종 쿼리는 BSON type 오브젝트가 되어야 한다.
+	// word에 "," 표시가 존재한다면 or 검색을 진행합니다.
+	if strings.Contains(words, ",") {
+		q = bson.M{"$or": wordsQueries} // 최종 쿼리는 BSON type 오브젝트가 되어야 한다.
+	}
 	opts := options.Find()
 	opts.SetSort(bson.M{"usingrate": -1})
 	cursor, err := collection.Find(ctx, q, opts)
@@ -271,6 +277,8 @@ func SearchPage(client *mongo.Client, itemType, words string, page, limitnum int
 		if word == "" {
 			continue
 		}
+		// 쉼표가 존재한다면 쉼표를 제거합니다.
+		word = strings.Trim(word, ",")
 		querys := []bson.M{}
 		//"tag:"가 앞에 붙어있으면 태그에서 검색한다.
 		if strings.HasPrefix(word, "tag:") {
@@ -306,7 +314,13 @@ func SearchPage(client *mongo.Client, itemType, words string, page, limitnum int
 		wordsQueries = append(wordsQueries, bson.M{"$or": querys})
 	}
 	// 사용률이 많은 소스가 위로 출력되도록 한다.
+
 	q := bson.M{"$and": wordsQueries} // 최종 쿼리는 BSON type 오브젝트가 되어야 한다.
+
+	// word에 "," 표시가 존재한다면 or 검색을 진행합니다.
+	if strings.Contains(words, ",") {
+		q = bson.M{"$or": wordsQueries} // 최종 쿼리는 BSON type 오브젝트가 되어야 한다.
+	}
 	opts := options.Find()
 	opts.SetSort(bson.M{"usingrate": -1})
 	opts.SetSkip(int64((page - 1) * limitnum))
