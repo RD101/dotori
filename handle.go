@@ -413,7 +413,7 @@ func webserver() {
 	r.HandleFunc("/api/recentitem", handleAPIRecentItem)
 	r.HandleFunc("/api/topusingitem", handleAPITopUsingItem)
 	r.HandleFunc("/api/favoriteasset", handleAPIFavoriteAsset)
-	r.HandleFunc("/api/initpassword", handleAPIInitPassword)
+	r.HandleFunc("/api/initpassword", handleAPIInitPassword).Methods("POST")
 	r.HandleFunc("/api/downloadzipfile", handleAPIDownloadZipfile)
 	r.HandleFunc("/api/user/autoplay", handleAPIUserAutoplay).Methods("PUT")
 	r.HandleFunc("/api/user/newsnum", handleAPIUserNewsNum).Methods("PUT")
