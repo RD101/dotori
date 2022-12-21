@@ -772,10 +772,6 @@ func handleAPIFavoriteAsset(w http.ResponseWriter, r *http.Request) {
 
 // handleAPIInitPassword 함수는 rest API를 이용하여 사용자의 비밀번호를 초기화하는 함수이다.
 func handleAPIInitPassword(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		http.Error(w, "Post Only", http.StatusMethodNotAllowed)
-		return
-	}
 	//mongoDB client 연결
 	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 	if err != nil {
@@ -816,14 +812,28 @@ func handleAPIInitPassword(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	u := User{}
+	var unmarshalErr *json.UnmarshalTypeError
 
-	userID := r.FormValue("id")
-	if userID == "" {
-		http.Error(w, "id를 설정해주세요", http.StatusBadRequest)
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&u)
+	if err != nil {
+		if errors.As(err, &unmarshalErr) {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		} else {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+	}
+
+	if u.ID == "" {
+		http.Error(w, "need id", http.StatusBadRequest)
 		return
 	}
 
-	user, err := GetUser(client, userID)
+	user, err := GetUser(client, u.ID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

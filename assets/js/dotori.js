@@ -204,7 +204,7 @@ function addPageBlankCheck(){
 }
 
 // toggoleItems는 상단의 체크박스를 클릭하면 작동하는 함수로, 모든 체크박스를 선택 혹은 선택해제 한다.
-function toggleItems(){
+function toggleCheckboxs(){
     // 기준이 되는 체크박스의 상태값을 가지고 온다.
     let status = document.getElementById("toggle-checkbox").checked
     // 가져온 상태값을 기준으로 모든 체크박스의 상태를 설정한다.
@@ -261,28 +261,29 @@ function clickBookmarkIcon(target, fillBool, itemid) {
 
 // initPasword 함수는 비밀번호 초기화 버튼을 눌렀을 때 실행되는 함수이다.
 function initPasword() {
-    let token = document.getElementById("token").value;
     let checkboxes = document.querySelectorAll('*[name^="checkbox"]:checked');
-
     for (i = 0; i < checkboxes.length; i++) {
-        let userID = checkboxes[i].value;
-        $.ajax({
-            url: "/api/initpassword",
+        let user = new Object()
+        user.id = checkboxes[i].value;
+        fetch('/api/initpassword', {
+            method: 'POST',
             headers: {
-                "Authorization": "Basic " + token
+                "Authorization": "Basic "+ document.getElementById("token").value,
             },
-            type: "post",
-            data: {
-                id: userID,
-            },
-            success: function() {
-                alert(userID+" 사용자의 패스워드가 초기화 되었습니다");
-                location.reload();
-            },
-            error: function() {
-                alert(userID+" 사용자의 패스워드를 초기화하는 데 실패하였습니다.")
-            }
+            body: JSON.stringify(user),
         })
+        .then((response) => {
+            if (!response.ok) {
+                throw Error(response.statusText + " - " + response.url);
+            }
+            return response.json()
+        })
+        .then((data) => {
+            tata.success('InitPassword', data.id+" 사용자의 패스워드가 초기화 되었습니다", {position: 'tr', duration: 5000, onClose: null})
+        })
+        .catch((err) => {
+            alert(err)
+        });
     }
 }
 
@@ -781,7 +782,7 @@ function BackupDB() {
     })
     .catch((err) => {
         alert(err)
-    });    
+    });
 }
 
 

@@ -1,7 +1,7 @@
 {{define "users"}}
-{{template "head"}}
+{{template "head-bootstrap5"}}
 <body>
-    {{template "navbar" .}}
+    {{template "navbar-bootstrap5" .}}
     <input type="hidden" id="token" value="{{$.User.Token}}">
     <div class="container pt-5 pb-5">
         <div class="text-center mx-auto pt-5">
@@ -15,7 +15,7 @@
                 index
             </div>
             <div class="col-sm-2 col-md-2 col-lg-2">
-                <input type="checkbox" class="form-check-input" id="toggle-checkbox" onclick="toggleItems();">
+                <input type="checkbox" class="form-check-input" id="toggle-checkbox" onclick="toggleCheckboxs();">
             </div>
             <div class="col-sm-4 col-md-4 col-lg-4">
                 ID
@@ -57,8 +57,8 @@
     {{template "footer"}}
 </body>
 <!--add javascript-->
-<script src="/assets/js/jquery-3.1.1.min.js"></script>
-<script src="/assets/bootstrap-4/js/bootstrap.min.js"></script>
+<script src="/assets/bootstrap-5.1.3-dist/js/bootstrap.bundle.min.js"></script>
+<script src="/assets/tata/tata.js"></script>
 <script src="/assets/js/dotori.js"></script>
 </html>
 {{end}}
