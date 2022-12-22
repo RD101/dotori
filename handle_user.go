@@ -534,7 +534,7 @@ func handleAPIUserTopNum(w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 }
 
-func handleAPIUserPermission(w http.ResponseWriter, r *http.Request) {
+func handleAPIUserAccessLevel(w http.ResponseWriter, r *http.Request) {
 	//mongoDB client 연결
 	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
 	if err != nil {
@@ -587,6 +587,11 @@ func handleAPIUserPermission(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	user.AccessLevel = data.AccessLevel
+	err = user.CheckAccessLevel()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 	user.CreateToken()
 	err = SetUser(client, user)
 	if err != nil {
