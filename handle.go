@@ -418,6 +418,7 @@ func webserver() {
 	r.HandleFunc("/api/user/autoplay", handleAPIUserAutoplay).Methods("PUT")
 	r.HandleFunc("/api/user/newsnum", handleAPIUserNewsNum).Methods("PUT")
 	r.HandleFunc("/api/user/topnum", handleAPIUserTopNum).Methods("PUT")
+	r.HandleFunc("/api/user/accesslevel", handleAPIUserAccessLevel).Methods("POST")
 
 	// RestAPI Tags for an item
 	r.HandleFunc("/api/tags", helpMethodOptionsHandler).Methods(http.MethodGet, http.MethodPut, http.MethodOptions)

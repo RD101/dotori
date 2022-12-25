@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"strconv"
 	"time"
@@ -531,4 +532,78 @@ func handleAPIUserTopNum(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
 	w.Write(data)
+}
+
+func handleAPIUserAccessLevel(w http.ResponseWriter, r *http.Request) {
+	//mongoDB client 연결
+	client, err := mongo.NewClient(options.Client().ApplyURI(*flagMongoDBURI))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	err = client.Connect(ctx)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer client.Disconnect(ctx)
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	accessUser, err := GetUserFromHeader(r, client)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+	// RestAPI에 접근한 User의 AccessLevel을 체크한다.
+	if !(accessUser.AccessLevel == "admin") {
+		http.Error(w, "Need permission", http.StatusUnauthorized)
+		return
+	}
+	// client로 부터 받은 데이터를 파싱한다.
+	data := User{}
+	var unmarshalErr *json.UnmarshalTypeError
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&data)
+	if err != nil {
+		if errors.As(err, &unmarshalErr) {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		} else {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+	}
+	// 파싱된 ID를 이용해서 권한을 변경할 유저의 토큰과 엑세스 레벨을 수정하고 업데이트 한다.
+	user, err := GetUser(client, data.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+	user.AccessLevel = data.AccessLevel
+	err = user.CheckAccessLevel()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	user.CreateToken()
+	err = SetUser(client, user)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
+		return
+	}
+	resp, err := json.Marshal(user)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	w.Write(resp)
 }

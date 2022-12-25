@@ -26,6 +26,19 @@ type User struct {
 	TopNum           int      `json:"topnum"`           // 자주 사용하는 에셋 표시갯수
 }
 
+func (u *User) CheckAccessLevel() error {
+	switch u.AccessLevel {
+	case "admin":
+		return nil
+	case "manager":
+		return nil
+	case "default":
+		return nil
+	default:
+		return errors.New("not support " + u.AccessLevel)
+	}
+}
+
 // CreateToken 메소드는 토큰을 생성합니다.
 func (u *User) CreateToken() error {
 	if u.ID == "" {
