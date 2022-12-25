@@ -64,6 +64,13 @@ body {
 	-webkit-appearance:none;
 }
 
+.form-select, .form-select:valid {
+	background-color:  #1C1C1C!important;
+	border:1px solid #A7A59C;
+	color: #A7A59C;
+	-webkit-appearance:none;
+}
+
 .custom-check-input {
 	display: none;
 }

@@ -42,7 +42,11 @@
                             {{.ID}}
                         </div>
                         <div class="col-sm-4 col-md-4 col-lg-4">
-                            {{.AccessLevel}}
+                            <select id="accesslevel" class="form-select form-select-sm" onchange="changeUserAccessLevel('{{.ID}}', this.value)">
+                                <option value="admin" {{if eq .AccessLevel "admin" }}selected{{end}}>admin</option>
+                                <option value="manager" {{if eq .AccessLevel "manager" }}selected{{end}}>manager</option>
+                                <option value="default" {{if eq .AccessLevel "default" "" }}selected{{end}}>default</option>
+                            </select>
                         </div>
                     </div>
                     <div>

@@ -287,6 +287,31 @@ function initPasword() {
     }
 }
 
+function changeUserAccessLevel(userid, level) {
+    let user = new Object()
+    user.id = userid
+    user.accesslevel = level
+    fetch('/api/user/accesslevel', {
+        method: 'POST',
+        headers: {
+            "Authorization": "Basic "+ document.getElementById("token").value,
+        },
+        body: JSON.stringify(user),
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw Error(response.statusText + " - " + response.url);
+        }
+        return response.json()
+    })
+    .then((data) => {
+        tata.success('Change AccessLevel', "AccessLevel of " + data.id + " user have been changed.", {position: 'tr', duration: 5000, onClose: null})
+    })
+    .catch((err) => {
+        alert(err)
+    });
+}
+
 function getCookie(name) {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
