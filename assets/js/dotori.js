@@ -260,31 +260,28 @@ function clickBookmarkIcon(target, fillBool, itemid) {
 }
 
 // initPasword 함수는 비밀번호 초기화 버튼을 눌렀을 때 실행되는 함수이다.
-function initPasword() {
-    let checkboxes = document.querySelectorAll('*[name^="checkbox"]:checked');
-    for (i = 0; i < checkboxes.length; i++) {
-        let user = new Object()
-        user.id = checkboxes[i].value;
-        fetch('/api/initpassword', {
-            method: 'POST',
-            headers: {
-                "Authorization": "Basic "+ document.getElementById("token").value,
-            },
-            body: JSON.stringify(user),
-        })
-        .then((response) => {
-            if (!response.ok) {
-                throw Error(response.statusText + " - " + response.url);
-            }
-            return response.json()
-        })
-        .then((data) => {
-            tata.success('InitPassword', data.id+" 사용자의 패스워드가 초기화 되었습니다", {position: 'tr', duration: 5000, onClose: null})
-        })
-        .catch((err) => {
-            alert(err)
-        });
-    }
+function initPasword(userid) {
+    let user = new Object()
+    user.id = userid
+    fetch('/api/initpassword', {
+        method: 'POST',
+        headers: {
+            "Authorization": "Basic "+ document.getElementById("token").value,
+        },
+        body: JSON.stringify(user),
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw Error(response.statusText + " - " + response.url);
+        }
+        return response.json()
+    })
+    .then((data) => {
+        tata.success('InitPassword', data.id+" 사용자의 패스워드가 초기화 되었습니다", {position: 'tr', duration: 5000, onClose: null})
+    })
+    .catch((err) => {
+        alert(err)
+    });
 }
 
 function changeUserAccessLevel(userid, level) {
