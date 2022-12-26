@@ -2,25 +2,19 @@
 {{template "head-bootstrap5"}}
 <body>
     {{template "navbar-bootstrap5" .}}
-    <input type="hidden" id="token" value="{{$.User.Token}}">
+    
     <div class="container pt-5 pb-5">
         <div class="text-center mx-auto pt-5">
             <h2 class="text-muted">Users</h2>
         </div>
-        <div class="text-center pt-3 pb-5">
-            <span class="btn btn-outline-danger btn-sm" onclick="initPasword()">패스워드 초기화</span>
-        </div>
         <div class="row pt-1 pb-1 text-muted text-center">
-            <div class="col-sm-2 col-md-2 col-lg-2">
-                index
-            </div>
-            <div class="col-sm-2 col-md-2 col-lg-2">
-                <input type="checkbox" class="form-check-input" id="toggle-checkbox" onclick="toggleCheckboxs();">
-            </div>
-            <div class="col-sm-4 col-md-4 col-lg-4">
+            <div class="col col-sm-4 col-md-4 col-lg-4">
                 ID
             </div>
-            <div class="col-sm-4 col-md-4 col-lg-4">
+            <div class="col col-sm-4 col-md-4 col-lg-4">
+                Reset Password
+            </div>
+            <div class="col col-sm-4 col-md-4 col-lg-4">
                 Access Level
             </div>
         </div>
@@ -28,31 +22,27 @@
             <hr class="my-1 p-0 m-0 divider">
         </div>
         <div class="text-muted text-center">
-            {{$index := 1}}
             {{range .Users}}
-                <label style="width : 100%; margin-bottom : 0px">
-                    <div class="row py-1">
-                        <div class="col-sm-2 col-md-2 col-lg-2">
-                            <span class="text-center">{{$index}}</span>
-                        </div>
-                        <div class="col-sm-2 col-md-2 col-lg-2">
-                            <input type="checkbox" id="item{{$index}}" name="checkbox{{$index}}" class="form-check-input" value="{{.ID}}">
-                        </div>
-                        <div class="col-sm-4 col-md-4 col-lg-4">
-                            {{.ID}}
-                        </div>
-                        <div class="col-sm-4 col-md-4 col-lg-4">
-                            {{.AccessLevel}}
-                        </div>
+                <div class="row py-1">
+                    <div class="col col-sm-4 col-md-4 col-lg-4">
+                        {{.ID}}
                     </div>
-                    <div>
-                        <hr class="my-1 p-0 m-0 divider">
+                    <div class="col col-sm-4 col-md-4 col-lg-4">
+                        <span class='btn btn-sm btn-outline-danger{{if ne $.User.AccessLevel "admin" }} disabled{{end}}' onclick="initPasword('{{.ID}}')" {{if ne $.User.AccessLevel "admin" }}disabled{{end}}>RESET PASSWORD</span>
                     </div>
-                </label>
-            {{$index = add $index 1}}
+                    <div class="col col-sm-4 col-md-4 col-lg-4">
+                        <select id="accesslevel" class="form-select form-select-sm" onchange="changeUserAccessLevel('{{.ID}}', this.value)" {{if ne $.User.AccessLevel "admin" }}disabled{{end}}>
+                            <option value="admin" {{if eq .AccessLevel "admin" }}selected{{end}}>admin</option>
+                            <option value="manager" {{if eq .AccessLevel "manager" }}selected{{end}}>manager</option>
+                            <option value="default" {{if eq .AccessLevel "default" "" }}selected{{end}}>default</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <hr class="my-1 p-0 m-0 divider">
+                </div>
             {{end}}
         </div>
-        <input type="hidden" id="usernum" name="usernum" value="{{$index}}">
     </div>
     {{template "footer"}}
 </body>

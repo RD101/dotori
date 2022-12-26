@@ -64,10 +64,10 @@
         <li class="nav-item">
           <a class="nav-link" href="/help">Help</a>
         </li>
-        {{if eq $.Token.AccessLevel "admin"}}
+        {{if eq $.Token.AccessLevel "admin" "manager"}}
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle text-danger" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-               Admin
+               Setting
             </a>
             <div class="dropdown-menu">
                 <a class="dropdown-item" href="/users">Users</a>
