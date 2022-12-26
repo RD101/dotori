@@ -2,7 +2,7 @@
 {{template "head-bootstrap5"}}
 <body>
     {{template "navbar-bootstrap5" .}}
-    <input type="hidden" id="token" value="{{$.User.Token}}">
+    
     <div class="container pt-5 pb-5">
         <div class="text-center mx-auto pt-5">
             <h2 class="text-muted">Users</h2>
@@ -28,10 +28,10 @@
                         {{.ID}}
                     </div>
                     <div class="col col-sm-4 col-md-4 col-lg-4">
-                        <span class="btn btn-sm btn-outline-danger" onclick="initPasword('{{.ID}}')">RESET PASSWORD</span>
+                        <span class='btn btn-sm btn-outline-danger{{if ne $.User.AccessLevel "admin" }} disabled{{end}}' onclick="initPasword('{{.ID}}')" {{if ne $.User.AccessLevel "admin" }}disabled{{end}}>RESET PASSWORD</span>
                     </div>
                     <div class="col col-sm-4 col-md-4 col-lg-4">
-                        <select id="accesslevel" class="form-select form-select-sm" onchange="changeUserAccessLevel('{{.ID}}', this.value)">
+                        <select id="accesslevel" class="form-select form-select-sm" onchange="changeUserAccessLevel('{{.ID}}', this.value)" {{if ne $.User.AccessLevel "admin" }}disabled{{end}}>
                             <option value="admin" {{if eq .AccessLevel "admin" }}selected{{end}}>admin</option>
                             <option value="manager" {{if eq .AccessLevel "manager" }}selected{{end}}>manager</option>
                             <option value="default" {{if eq .AccessLevel "default" "" }}selected{{end}}>default</option>

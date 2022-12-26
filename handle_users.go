@@ -37,10 +37,6 @@ func handleUsers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Access level 체크
-	if token.AccessLevel != "admin" {
-		http.Redirect(w, r, "/invalidaccess", http.StatusSeeOther)
-		return
-	}
 
 	type recipe struct {
 		User         User
@@ -55,6 +51,12 @@ func handleUsers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rcp.Token = token
+
+	if !(rcp.User.AccessLevel == "admin" || rcp.User.AccessLevel == "manager") {
+		http.Redirect(w, r, "/invalidaccess", http.StatusSeeOther)
+		return
+	}
+
 	rcp.Adminsetting, err = GetAdminSetting(client)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
